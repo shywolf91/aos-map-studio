@@ -26,7 +26,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 Python **3.11** is the tested version.
 
 ```powershell
-cd $HOME\Documents\Development\aosmap
+cd "D:\Ace of Spades\Aos_Map"
 py -3.11 -m venv venv
 .\venv\Scripts\pip install -r requirements.txt
 .\venv\Scripts\python -m pytest -q tests
@@ -77,15 +77,17 @@ x, y ∈ 0..511, z ∈ 0..63, **z = 0 is the top of the sky**, z = 63 the bottom
 
 ## Working alongside Claude
 
-Claude keeps working in its own copy and sends updates as git **bundles** into `..\aosmap-updates\`.
-Keep your experiments on your own branch so updates never clash:
+Repo location: `D:\Ace of Spades\Aos_Map`. Claude keeps working in its own copy and drops updates as git
+**bundles** into `_updates\` inside this folder (ignored by git). Keep your experiments on your own branch so
+updates never clash:
 
 ```powershell
 git switch -c play                                   # your sandbox branch (once)
-git fetch ..\aosmap-updates\<name>.bundle main:claude # bring Claude's latest main in as branch 'claude'
+git fetch _updates\<name>.bundle main:claude          # bring Claude's latest main in as branch 'claude'
 git switch main; git merge --ff-only claude          # update main
 git switch play; git merge main                      # pull it into your work when you want
 ```
+If you haven't changed anything, `git pull _updates\<name>.bundle main` on `main` is enough.
 To hand your changes back, commit on `play` and say so — Claude can read the folder.
 
 ## Pinned environment (what was actually tested, 2026-10-12/13)

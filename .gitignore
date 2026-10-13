@@ -13,3 +13,6 @@ server_test/*/*.log
 server_test/*/bans.txt
 # third-party reference maps (you have the originals)
 refs/**/*.vxl
+
+# update bundles from Claude land here
+_updates/
