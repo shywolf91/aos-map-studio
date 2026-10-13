@@ -10,7 +10,8 @@ metadata, art calibration, workflow, validation checklist, open questions).
 
 | Path | What |
 |---|---|
-| `maps/kestrel_spires_art_v1/` | Kestrel Spires (Babel) art v1 — ready to drop into a server's `maps/` |
+| `maps/kestrel_spires_art_v2/` | Kestrel Spires (Babel) **art v2 — current**, ready to drop into a server's `maps/` |
+| `maps/kestrel_spires_art_v1/` | art v1 as first delivered |
 | `maps/kestrel_spires_graybox_v1/` | the same layout as a function-coloured graybox |
 | `aosmap/` | library: VXL reader/writer, scene + materials, art kit, validators, route graph, metadata, renders |
 | `scenes/` | map generators (`kestrel_spires.py` graybox, `kestrel_spires_art.py` art pass) and their `_check` scripts |
@@ -39,27 +40,35 @@ Python, the generators and validators still work with `numpy scipy pillow`.
 
 ```powershell
 .\venv\Scripts\python scenes\kestrel_spires.py out\kestrel_spires            # graybox
-.\venv\Scripts\python scenes\kestrel_spires_art.py out\kestrel_spires_art    # art pass (same seed -> same bytes)
-.\venv\Scripts\python scenes\kestrel_spires_check.py out\kestrel_spires_art  # routes, parity, gaps, floating
-.\venv\Scripts\python tools\art_metrics.py out\metrics.json out\kestrel_spires_art\kestrel_spires.vxl
+.\venv\Scripts\python scenes\kestrel_spires_art.py out\kestrel_spires_art2   # art v2 (same seed -> same bytes; --v1 for v1)
+.\venv\Scripts\python scenes\kestrel_spires_check.py out\kestrel_spires_art2 # routes, parity, gaps, perches, floating
+.\venv\Scripts\python tools\art_metrics.py out\metrics.json out\kestrel_spires_art2\kestrel_spires.vxl
 ```
 `art_metrics.py` takes the **output JSON first**, then maps.
 
 Things worth playing with:
 * `SPEC` in `scenes/kestrel_spires.py` — every layout number (mesa radii, deck height, spire/finger positions,
   stair, river). Change, rebuild, re-check.
-* Material colours and shaders near the top of `build()` in `scenes/kestrel_spires_art.py`.
+* Material colours and shaders near the top of `build()` in `scenes/kestrel_spires_art.py`; the v2 canyon,
+  walls, dwellings and outcrops live in `scenes/kestrel_spires_v2.py` (`WASHES` = the wash centre lines).
+* `FOG_V2` in `kestrel_spires_art.py` — or try fogs live on a server with `/fog r g b` as admin.
 * `SEED` — changes noise, vegetation and prop placement, not the layout.
 
 ## Run it on a server
 
 ```powershell
-copy maps\kestrel_spires_art_v1\* server_test\kestrel\maps\
+copy maps\kestrel_spires_art_v2\* server_test\kestrel\maps\
 .\venv\Scripts\piqueserver -d server_test\kestrel          # Babel, port 32921, blue/red
 .\venv\Scripts\python tools\babel_live_check.py 32921      # bots: platform, intel, bases, spawns, fog
 ```
 Or copy the two files into your own server's `maps/` and add `kestrel_spires` to its rotation with
 `game_mode = "piqueserver.game_modes.babel"` and `piqueserver.scripts.babel_script` in `scripts`.
+
+## Real-client screenshots (Linux)
+
+`tools/betterspades_capture.sh` joins a running server in the real BetterSpades client as a spectator and
+screenshots camera positions from a views file (setup steps are in the script header; it needs
+`tools/betterspades_camfile.patch` applied to a BetterSpades checkout).
 
 ## Coordinates
 

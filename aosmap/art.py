@@ -14,6 +14,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+import zlib
+
 import numpy as np
 
 # ------------------------------------------------------------------ deterministic noise
@@ -100,7 +102,7 @@ class SurfaceShader:
         z0, z1 = self.z_range
         th = np.clip((z0 - z) / max(z0 - z1, 1), 0, 1)
         n = fbm(x, y, z if self.noise_3d else None, scale=self.noise_scale, octaves=3,
-                seed=ctx['seed'] * 31 + self.seed_salt + hash(ctx['name']) % 997)
+                seed=ctx['seed'] * 31 + self.seed_salt + zlib.crc32(ctx['name'].encode()) % 997)
         t = self.height_w * th + self.noise_w * n
         t = t / max(self.height_w + self.noise_w, 1e-6)
         top = ramp(self.top, t, self.steps)

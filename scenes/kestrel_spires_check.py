@@ -19,6 +19,19 @@ def mirror_pt(p):
     return (512 - p[0],) + tuple(p[1:])
 
 
+def snap(g, x, y, z, r=4, dz=3):
+    """Nearest node to (x, y, z) within r columns and +-dz levels (art props may sit on the exact voxel)."""
+    best, bd = -1, 1e9
+    for xx in range(x - r, x + r + 1):
+        for yy in range(y - r, y + r + 1):
+            for zz in range(max(z - dz, 0), min(z + dz, 63) + 1):
+                n = int(g.index[xx, yy, zz])
+                d = (xx - x) ** 2 + (yy - y) ** 2 + (zz - z) ** 2
+                if n >= 0 and d < bd:
+                    best, bd = n, d
+    return best
+
+
 def main(out):
     vm, rep = load(os.path.join(out, 'kestrel_spires.vxl'))
     R = {'reader_ok': rep.ok}
@@ -52,24 +65,41 @@ def main(out):
         d = nav.distances(g, spawn_nodes(*base))
         T[team] = {'platform_reachable_without_building': bool(np.isfinite(d[plat]).any())}
         for name, p in targets.items():
-            q = p if team == 'team1' else mirror_pt(p)
-            n = g.node(*q)
+            n = snap(g, *p)                       # snap on the west side, then use the exact mirror node
+            if team == 'team2' and n >= 0:
+                x1, y1, z1 = (int(v) for v in xyz[n])
+                n = int(g.index[512 - x1, y1, z1])
             T[team][name] = round(float(d[n]), 1) if n >= 0 and np.isfinite(d[n]) else None
     R['routes_from_spawn'] = T
     R['route_parity_max_diff'] = max(abs((T['team1'][k] or 0) - (T['team2'][k] or 0)) for k in targets)
 
     # climb back: canyon floor -> own spawn plaza (directed graph: must exist for both teams)
     back = {}
-    for team, base, p in (('team1', sc['bases'][0], (150, 200, 56)), ('team2', sc['bases'][1], (362, 200, 56))):
-        d = nav.distances(g, [g.node(*p)])
+    n1 = snap(g, 150, 200, 56)
+    x1, y1, z1 = (int(v) for v in xyz[n1])
+    for team, base, n in (('team1', sc['bases'][0], n1), ('team2', sc['bases'][1], int(g.index[512 - x1, y1, z1]))):
+        d = nav.distances(g, [n])
         ids = spawn_nodes(*base)
         back[team] = round(float(np.min(d[ids])), 1) if np.isfinite(d[ids]).any() else None
     R['canyon_to_own_spawn'] = back
 
     # river exit: from water under the platform to the bank top
     d = nav.distances(g, [g.node(256, 300)])
-    bank = g.node(214, 300, 56)
+    bank = snap(g, 214, 300, 56)
     R['river_exit_cost'] = round(float(d[bank]), 1) if np.isfinite(d[bank]) else None
+
+    # canyon perches: highest standable point reachable on foot in the canyon (away from the mesa stair)
+    P = {}
+    for team, base, flip in (('team1', sc['bases'][0], False), ('team2', sc['bases'][1], True)):
+        d = nav.distances(g, spawn_nodes(*base))
+        ok = np.isfinite(d) & (xyz[:, 2] >= 36)                 # below mesa-top heights
+        x = np.where(xyz[:, 0] > 256, 512 - xyz[:, 0], xyz[:, 0])        # both teams' slot stairs
+        stair = (x >= 84) & (x <= 134) & (xyz[:, 1] >= 186) & (xyz[:, 1] <= 219)
+        ok &= ~stair
+        zmin = int(xyz[ok, 2].min()) if ok.any() else None
+        P[team] = {'highest_z': zmin, 'height_above_floor': None if zmin is None else SPEC['canyon_floor_z'] - zmin,
+                   'nodes_above_3': int((ok & (xyz[:, 2] < SPEC['canyon_floor_z'] - 3)).sum())}
+    R['canyon_perches'] = P
 
     # build gap per bridgehead (straight-line from its walkable top to the platform's standing surface)
     def gap(top_cells):

@@ -1,0 +1,16 @@
+[
+ {
+  "map": "kestrel_spires",
+  "colours": 5765,
+  "hue_families_90": 2,
+  "top_noise": 1.94,
+  "coherence_4": 1.58,
+  "top_flat_pct": 26.7,
+  "ramp_step": 1.43,
+  "height_L_corr": 0.28,
+  "side_minus_top_L": -14.5,
+  "vert_detail": 2.84,
+  "relief_16": 19.3,
+  "land_cols": 91116
+ }
+]

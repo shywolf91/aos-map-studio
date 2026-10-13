@@ -1,6 +1,7 @@
 # aos_map.md — Ace of Spades 0.75 map-making knowledge base
 
 Consolidated 2026-10-13 from the aosmap project (research, exporter, validators, Kestrel Spires).
+Last updated 2026-10-13 (Kestrel art v2, first real-client inspection in BetterSpades, fog findings).
 Target: classic AoS **0.75** clients (OpenSpades, BetterSpades, vanilla) + **piqueserver 1.4.2**
 (pyspades), Python 3.11. Detailed per-topic docs live in `docs/`; this file is the single place to start.
 
@@ -259,6 +260,16 @@ density **only** — never copy their objects, landmarks or terrain arrangements
 * Contrast dwellings/buildings against their rock (plaster vs sandstone) or they vanish.
 * Avoid: random colour noise, scattered cubes, flat empty expanses, oversized primitives as landmarks,
   decoration that blocks movement or hides players unfairly. Treat "lighting" as colour/composition only.
+* Patterned shaders on mirrored maps must fold x (x > 255 → 512 − x) or the second half shows a different
+  pattern (Kestrel's red paving came out striped).
+
+**Fog** `[RUN]` (BetterSpades, 2026-10-13): AoS fog is strong — past ~60 voxels everything blends toward the
+fog colour, and silhouettes are what survive. Rules that came out of testing Kestrel live with `/fog r g b`:
+* Don't match fog to the dominant material (tan fog + sandstone = landmarks dissolve). Pick a hue the palette
+  doesn't use so silhouettes separate.
+* Keep the fog hue roughly neutral between the two team colours (blue fog hides blue players more at range).
+* Check the mode's objective still reads against it (Babel's cyan platform vs a blue fog).
+* Fog is server-side (`fog` in the `.txt`, `/fog` live) — cheap to iterate without re-exporting the map.
 
 ## 11. The aosmap toolchain (this repo)
 
@@ -277,7 +288,7 @@ aosmap/render.py    top_down, isometric (4 views), contact_sheet
 aosmap/pipeline.py  run_diagnostic: export → parser checks → real-piqueserver runtime checks → renders
 scenes/             diagnostic, kit_showcase, babel_concepts, kestrel_spires (graybox), kestrel_spires_art, *_check
 tools/              compare_refs, art_metrics, movement_sim, fetch_map_from_server, bot_protect_test,
-                    babel_live_check, aosweb_capture.cjs
+                    babel_live_check, aosweb_capture.cjs, betterspades_capture.sh (+ betterspades_camfile.patch)
 server_scripts/     authored_protect.py
 ```
 
@@ -289,13 +300,15 @@ server_scripts/     authored_protect.py
 5. **Art pass** in a separate scene file built on the graybox function; re-run every check; compare numbers.
 6. Export `.vxl` + `.txt`, art metrics, renders (top-down, iso, close-ups), aos_web eye-level shots.
 7. Load on a real piqueserver with the target mode (`tools/babel_live_check.py` for Babel).
-8. Client inspection in OpenSpades/BetterSpades, then playtest with people. Iterate.
+8. Client inspection: `tools/betterspades_capture.sh` joins the server in real BetterSpades as a spectator and
+   screenshots set camera positions (headless, Mesa software GL); try fogs live with `/fog`. Then OpenSpades,
+   then playtest with people. Iterate.
 
 **Commands** (venv with `requirements.txt`):
 ```
 python -m pytest -q tests/
 python scenes/kestrel_spires.py out/kestrel_spires            # graybox
-python scenes/kestrel_spires_art.py out/kestrel_spires_art    # art v1
+python scenes/kestrel_spires_art.py out/kestrel_spires_art2   # art v2 (add --v1 for v1)
 python scenes/kestrel_spires_check.py out/kestrel_spires_art  # validation.json
 python tools/art_metrics.py out/metrics.json map1.vxl [map2.vxl ...]   # first arg is the OUTPUT json!
 piqueserver -d server_test/kestrel                            # after copying the .vxl/.txt into its maps/
@@ -314,12 +327,14 @@ Automated (before any hand-off):
 - [ ] no team-colour clashes in authored palette
 - [ ] entity settling (no roofs over intel/base/CP columns)
 - [ ] art metrics within calibration; renders reviewed for floating props, blocked routes, noise
+- [ ] canyon/ground perches: highest point reachable on foot near objectives/routes (Kestrel check)
+- [ ] deterministic build: same seed → same bytes in a fresh process (no `hash()`, no unseeded RNG)
 - [ ] `.txt` loads (`check_map_txt`), only real keys used
 
 Live / in-game:
 - [ ] server loads map + `.txt`, mode objects present (e.g. Babel platform 3,200 cells), fog colour
 - [ ] spawns land where expected for both teams
-- [ ] client inspection: colours, edges, landmarks at gameplay distance
+- [ ] client inspection: colours, edges, landmarks at gameplay distance, landmark readability through fog
 - [ ] movement: jumps, steps, crouch tunnels, fall damage, water exit
 - [ ] objective pickup/return/capture/reset; build/dig/grenade permissions; protection script behaviour
 - [ ] camping spots, spawn pressure, performance at real player counts
@@ -328,20 +343,24 @@ Route checks are preliminary (no real collision sim); never present them as proo
 
 ## 13. Kestrel Spires — current state
 
-Sky-Babel, sandstone mesas over a canyon river. Generator `scenes/kestrel_spires.py` (graybox, `SPEC`) +
-`scenes/kestrel_spires_art.py` (art v1), seed 7317. Spec and numbers: `docs/kestrel_spires_spec.md`.
+Sky-Babel, sandstone mesas over a canyon river. Generators: `scenes/kestrel_spires.py` (graybox, `SPEC`),
+`scenes/kestrel_spires_art.py` (art; `build(version=2)` default, `--v1` for v1) + `scenes/kestrel_spires_v2.py`.
+Seed 7317. Spec and numbers: `docs/kestrel_spires_spec.md`. Map files: `maps/kestrel_spires_art_v2/`.
 
-* Status: generated · exported · parser-validated · server-loaded on live Babel · previewed in aos_web ·
-  **not** inspected in OpenSpades/BetterSpades · **not** playtested.
+* Status (art v2): generated · exported · parser-validated · server-loaded on live Babel · **client-inspected in
+  BetterSpades** · **not** inspected in OpenSpades · **not** playtested.
 * Spawn decks z 10 (±20 square fully flat), sentinel spire bridgehead (gap 25), two hoodoo flank fingers (gap ~40),
-  slot stair descent, canyon floor z 56, river under the platform, water_damage 0.
-* Routes identical for both teams; platform unreachable without building; 0 floating components.
-* Art v1: banded sandstone, kestrel relief, hoodoos, cliff dwellings, junipers/sage groves, paving rings, painted river.
-* Next (art v2): canyon floor interest/cover, flatter deck outcrops, south dwelling visibility, outer-wall buttresses.
+  slot stair descent, canyon floor z 56 with dry washes, slickrock benches and river fins, water_damage 0.
+* Routes identical for both teams; platform unreachable without building; 0 floating components; highest
+  walkable canyon point 4 above the floor.
+* Fog: lilac dusk (200, 188, 206) since v2 (v1 used tan (196, 170, 140)).
+* Next: OpenSpades look, playtest.
 
 ## 14. Gotchas we hit (so you don't)
 
 * `tools/art_metrics.py`'s first argument is the output JSON — passing a .vxl first overwrites it.
+* Never seed noise with Python's `hash()` — it's randomised per process, so builds stop being reproducible
+  (art v1 shipped with this; `tests/test_determinism.py` now guards it). Use `zlib.crc32`.
 * Mirroring with `mat[257:] = mat[1:256][::-1]` leaves column 256 empty → copy 255 into 256.
 * Trees placed with diagonal trunk shifts lost their crowns to collapse → enforce face contact.
 * Carving door openings removed the wall under roof beams → 8 floating vigas; place attachments only where the
@@ -355,8 +374,9 @@ Sky-Babel, sandstone mesas over a canyon river. Generator `scenes/kestrel_spires
 
 ## 15. Open questions `[OPEN]`
 
-1. In-client confirmation of jump height, step-up, crouch tunnels and fall damage (diagnostic course).
-2. How Kestrel's colours read under OpenSpades/BetterSpades lighting and fog.
+1. In-client confirmation of jump height, step-up, crouch tunnels and fall damage (diagnostic course) —
+   needs a controlled player, not the spectator capture.
+2. How Kestrel reads in OpenSpades (BetterSpades done 2026-10-13).
 3. Whether your live server's babel_script platform differs from stock (shape/colour/z).
 4. Hallway / custom modes: need their actual scripts before designing to them.
 5. Arena-with-building and the custom Babel stair/descent variant: need script changes, not just maps.
@@ -369,5 +389,6 @@ Sky-Babel, sandstone mesas over a canyon river. Generator `scenes/kestrel_spires
 * OpenSpades master ff9b3e7 (2024-06-02): GameMap.cpp, GameMapWrapper. BetterSpades master a695aaa (2025-07-30)
   + libvxl.
 * D-VXLMapPreview (rakiru) master, built with LDC 1.8.0 + dlib 0.7.1 — independent decode check.
+* BetterSpades master a695aaa built locally (GLFW, sound off, Mesa llvmpipe under Xvfb) for real-client views.
 * Your 36 reference VXLs + Cloud Smash `.txt`; your aos_web Ruby client.
 * Tested environment: Python 3.11.17, numpy 2.4.6, scipy 1.17.1, pillow 10.4.0, pyenet 1.3.17, Twisted 26.4.0.

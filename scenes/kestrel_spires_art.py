@@ -1,11 +1,14 @@
-"""KESTREL SPIRES - art pass v1 on top of the verified graybox (same layout, same route numbers).
+"""KESTREL SPIRES - art pass on top of the verified graybox (same layout, same route numbers).
+
+build(version=1) reproduces art v1 byte-for-byte; version=2 (default) adds scenes/kestrel_spires_v2.py:
+canyon washes/benches/fins/cottonwoods, wall buttresses and slots, v2 cliff dwellings, mini-mesa deck outcrops.
 
 Order: graybox (west half, unmirrored) -> keep-out mask of every walkable route surface ->
 material remap (strata sandstone, crust, paving, trails, caprock) -> silhouette shaping (rimrock lip,
 cliff flutes, tapered spire + kestrel relief, curved arch underside, hoodoo fingers, cliff dwellings)
 -> vegetation/props -> mirror -> painted river / haze bottom plane.
 
-Run: python scenes/kestrel_spires_art.py out/kestrel_spires_art
+Run: python scenes/kestrel_spires_art.py out/kestrel_spires_art2 [--v1]
 """
 import json
 import os
@@ -19,6 +22,7 @@ from aosmap import art                                             # noqa: E402
 from aosmap.art import StrataShader, SurfaceShader, PatternShader  # noqa: E402
 from scenes.kestrel_spires import build_graybox, mirror, SPEC, SEED, metadata_txt   # noqa: E402
 
+FOG_V2 = (200, 188, 206)
 SAND_BANDS = ['#e2c39a', '#d4a77a', '#c78a5c', '#b8714b', '#cf9670', '#a95f41', '#dcb48a', '#9b5639']
 WALL_BANDS = ['#c9a27d', '#b9855f', '#a96d4f', '#c4936c', '#94593f', '#d2ad87']
 
@@ -37,7 +41,7 @@ KESTREL = [  # original 15 x 11 pictogram, wings spread; 1 = body, 2 = dark acce
 ]
 
 
-def build():
+def build(version=2):
     s = build_graybox(mirror_output=False)
     ids = dict(s._ids)
     gm = s.mat.copy()                                      # graybox materials (west half)
@@ -68,6 +72,7 @@ def build():
     cx, cy = SPEC['script_constants']['bases'][0]
 
     def paving(x, y, z):                                    # concentric square courses around the base
+        x = np.where(x > 255, 512 - x, x)                   # evaluated after mirroring: fold to the west half
         r = np.maximum(np.abs(x - cx), np.abs(y - cy))
         ring = (r // 3) % 2
         inlay = ((np.abs(x - cx) == np.abs(y - cy)) & (r % 3 == 0)).astype(int) * 2
@@ -93,6 +98,13 @@ def build():
                                       occ_dark=0.1))
     m_sage = A('sage', SurfaceShader(top=['#9aa284', '#8b957a', '#a7ad8f'], side=['#7c856c'], noise_scale=3,
                                     noise_w=0.8, height_w=0))
+
+    if version >= 2:
+        from scenes import kestrel_spires_v2 as V2
+        M2 = V2.materials(s)
+        c2 = {'X': X, 'Y': Y, 'keep': keep, 'near_walk': near_walk, 'm_gravel': m_gravel, 'm_sand': m_sand,
+              'm_cap': m_cap, 'm_wall': m_wall, 'm_adobe': m_adobe, 'm_viga': m_viga, 'm_crust': m_crust,
+              'm_wood': m_wood, 'deck_z': SPEC['mesa']['deck_z']}
 
     # ---------------------------------------------------------------- material remap
     def remap(old, new, where=None):
@@ -233,8 +245,14 @@ def build():
         for z in range(ztop - 6, zfloor):
             if s.mat[lx, y1 - 1, z] == 0 and s.mat[lx - 1, y1 - 1, z] > 0:
                 s.mat[lx, y1 - 1, z] = m_viga
-    dwelling(234, 247)
-    dwelling(265, 278)
+    if version >= 2:
+        V2.dwelling(s, c2, M2, 234, 247, flip=False)
+        V2.dwelling(s, c2, M2, 265, 278, flip=True)
+        res2 = V2.canyon(s, c2, M2, SEED)
+        res2.update(V2.walls(s, c2, M2, SEED))
+    else:
+        dwelling(234, 247)
+        dwelling(265, 278)
 
     # ---------------------------------------------------------------- vegetation and props
     rng = np.random.default_rng(SEED + 40)
@@ -313,6 +331,8 @@ def build():
         art.stamp(s, pf, int(x), int(y), int(topz[x, y]), replace_air_only=True)
         used[x - 3:x + 4, y - 3:y + 4] = True
         n_b += 1
+    if version >= 2:
+        res2['cottonwoods'] = V2.cottonwoods(s, c2, M2, res2['wash_d'], used, SEED)
 
     # deck outcrops: small caprock-topped rock stacks for cover on the open mesa top
     deck_ok = deck & ~near_walk & ~spawn_sq & ~ndimage.binary_dilation(~deck, iterations=4)
@@ -323,6 +343,11 @@ def build():
         if n_out >= 7:
             break
         if used[max(x - 7, 0):x + 8, max(y - 7, 0):y + 8].any():
+            continue
+        if version >= 2:
+            V2.mini_mesa(s, c2, int(x), int(y), rng, SEED + 900 + n_out)
+            used[x - 8:x + 9, y - 8:y + 9] = True
+            n_out += 1
             continue
         h = int(rng.integers(3, 6)); r0 = float(rng.uniform(2.0, 3.2))
         rr = np.sqrt((X[x - 5:x + 6, y - 5:y + 6] - x) ** 2 + (Y[x - 5:x + 6, y - 5:y + 6] - y) ** 2)
@@ -366,18 +391,26 @@ def build():
     bottom = np.where((in_canyon & (rx <= 30))[..., None], water, haze)
     s.paint_bottom(np.clip(bottom, 0, 255).astype(np.uint8))
     s.markers.update({'trees': n_trees, 'sage': n_sage, 'boulders': n_b})
+    if version >= 2:
+        s.markers['v2'] = {k: v for k, v in res2.items() if k != 'wash_d'}
+        s.markers['wash_d'] = res2['wash_d']
     return s
 
 
 if __name__ == '__main__':
     from aosmap.vxl import write_vxl
-    out = sys.argv[1] if len(sys.argv) > 1 else 'out/kestrel_spires_art'
+    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    version = 1 if '--v1' in sys.argv else 2
+    out = args[0] if args else ('out/kestrel_spires_art' if version == 1 else 'out/kestrel_spires_art2')
     os.makedirs(out, exist_ok=True)
-    s = build()
+    s = build(version)
     vm = s.to_voxelmap()
     data = write_vxl(vm)
     open(os.path.join(out, 'kestrel_spires.vxl'), 'wb').write(data)
-    txt = metadata_txt().replace('graybox v1', 'art v1').replace(' Graybox - layout only.', '')
+    # v2 fog: lilac dusk, chosen in BetterSpades (2026-10-13). The v1 tan fog matched the sandstone, so
+    # landmarks dissolved; this hue separates rock from sky and sits between the blue and red team colours.
+    fog = SPEC['fog'] if version == 1 else FOG_V2
+    txt = metadata_txt(fog).replace('graybox v1', 'art v%d' % version).replace(' Graybox - layout only.', '')
     open(os.path.join(out, 'kestrel_spires.txt'), 'w').write(txt)
     json.dump(SPEC, open(os.path.join(out, 'spec.json'), 'w'), indent=1, default=list)
-    print('written', len(data), 'bytes', {k: v for k, v in s.markers.items() if k in ('trees', 'sage', 'boulders', 'outcrops', 'pools')})
+    print('written', len(data), 'bytes', {k: v for k, v in s.markers.items() if k in ('trees', 'sage', 'boulders', 'outcrops', 'pools', 'v2')})
