@@ -126,3 +126,17 @@ Built on `build_graybox(mirror_output=False)`, then mirrored. Walk surfaces (spa
 ### Remaining ideas
 * OpenSpades inspection (different lighting/AO than BetterSpades).
 * Playtest: canyon raids under the enemy spire, slot-stair camping, bench/fin cover value.
+
+## v3 — spawn screen (2026-10-13)
+`python scenes/kestrel_spires_art.py out/kestrel_spires_art3` (v3 is now the default; `--v2` / `--v1` rebuild the
+older versions byte-identically). Map files: `maps/kestrel_spires_art_v3/`.
+* Why: the new spawn exposure check (after the aloha.pk Babel rotation guide) found the v2 spawn deck 100 % visible
+  from the platform with 26 viewing positions per spawn spot — the deck is almost level with the platform
+  (tradeoff's "spawncamp hell" pattern: 61).
+* Change: two staggered sandstone windbreak walls on each deck between spawn and arch (x 144–146 y 230–262 and
+  x 151–153 y 250–283, 7 tall, caprock crest, broken ends, buttress piers). Spans overlap, so no straight line from
+  the platform reaches the plaza; players zig-zag between them.
+* Result: exposure 100 % → 12.7 %, viewers 26 → 0.2 per spot (both teams). 0 floating, parity 0.0, platform
+  unreachable, build gaps unchanged. Spire top walk 41.8 → 56.4 (zig-zag), fingers 35.5–36.7. Live Babel server
+  loaded it (platform 3,200/3,200, fog from .txt, spawns on the deck). BetterSpades view from the platform edge:
+  `docs/img/kestrel_v2_vs_v3_platform_view.png`.

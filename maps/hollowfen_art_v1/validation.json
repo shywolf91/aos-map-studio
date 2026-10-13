@@ -81,5 +81,23 @@
     27
    ]
   }
+ },
+ "spawn_exposure": {
+  "team1": {
+   "spawn_points": 441,
+   "exposed_pct": 91.8,
+   "mean_viewers_per_point": 7.4,
+   "median_depression_angle_deg": 32.6,
+   "median_floor_z": 57,
+   "median_horizontal_dist": 87.5
+  },
+  "team2": {
+   "spawn_points": 441,
+   "exposed_pct": 91.2,
+   "mean_viewers_per_point": 7.4,
+   "median_depression_angle_deg": 32.3,
+   "median_floor_z": 57,
+   "median_horizontal_dist": 88.5
+  }
  }
 }

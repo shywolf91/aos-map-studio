@@ -10,6 +10,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 
 | Path | What |
 |---|---|
+| `maps/kestrel_spires_art_v3/` | Kestrel Spires v3 — v2 plus spawn screen walls (spawn camping fix) |
 | `maps/kestrel_spires_art_v2/` | Kestrel Spires (Babel) **art v2 — current**, ready to drop into a server's `maps/` |
 | `maps/kestrel_spires_art_v1/` | art v1 as first delivered |
 | `maps/hollowfen_vale_v1/` | **Hollowfen Vale** — single central village, hilltop spawns, open tower meadows, Babel + CTF (`docs/hollowfen_vale_spec.md`) |

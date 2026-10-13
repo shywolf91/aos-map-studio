@@ -1,0 +1,106 @@
+{
+ "reader_ok": true,
+ "floating_components": 0,
+ "babel_static": [
+  "info: base 118,256: spawn heights median z=10, min z=10, water columns=0",
+  "info: base 394,256: spawn heights median z=10, min z=10, water columns=0",
+  "info: spawn-zone heights equal under x-mirror: 1.00, under 180 rotation: 1.00"
+ ],
+ "team_colour_clashes": [],
+ "routes_from_spawn": {
+  "team1": {
+   "platform_reachable_without_building": false,
+   "spire_top": 56.4,
+   "finger_north_top": 36.7,
+   "finger_south_top": 35.5,
+   "slot_stair_bottom_floor": 82.7,
+   "own_canyon_floor_mid": 159.3,
+   "enemy_canyon_floor_near_spire": 383.7,
+   "river_bank_top": 288.8
+  },
+  "team2": {
+   "platform_reachable_without_building": false,
+   "spire_top": 56.4,
+   "finger_north_top": 36.7,
+   "finger_south_top": 35.5,
+   "slot_stair_bottom_floor": 82.7,
+   "own_canyon_floor_mid": 159.3,
+   "enemy_canyon_floor_near_spire": 383.7,
+   "river_bank_top": 288.8
+  }
+ },
+ "route_parity_max_diff": 0.0,
+ "canyon_to_own_spawn": {
+  "team1": 180.0,
+  "team2": 180.0
+ },
+ "river_exit_cost": 46.5,
+ "canyon_perches": {
+  "team1": {
+   "highest_z": 52,
+   "height_above_floor": 4,
+   "nodes_above_3": 82
+  },
+  "team2": {
+   "highest_z": 52,
+   "height_above_floor": 4,
+   "nodes_above_3": 82
+  }
+ },
+ "build_gaps": {
+  "spire_team1": {
+   "gap": 25.1,
+   "out_x": 22,
+   "out_y": 0,
+   "up": 12
+  },
+  "spire_team2": {
+   "gap": 25.9,
+   "out_x": 23,
+   "out_y": 0,
+   "up": 12
+  },
+  "finger_north_team1": {
+   "gap": 39.4,
+   "out_x": 34,
+   "out_y": 12,
+   "up": 16
+  },
+  "finger_north_team2": {
+   "gap": 40.3,
+   "out_x": 35,
+   "out_y": 12,
+   "up": 16
+  },
+  "finger_south_team1": {
+   "gap": 39.8,
+   "out_x": 34,
+   "out_y": 13,
+   "up": 16
+  },
+  "finger_south_team2": {
+   "gap": 40.6,
+   "out_x": 35,
+   "out_y": 13,
+   "up": 16
+  }
+ },
+ "spawn_exposure": {
+  "team1": {
+   "spawn_points": 441,
+   "exposed_pct": 12.7,
+   "mean_viewers_per_point": 0.2,
+   "median_depression_angle_deg": 5.9,
+   "median_floor_z": 10,
+   "median_horizontal_dist": 87.5
+  },
+  "team2": {
+   "spawn_points": 441,
+   "exposed_pct": 12.5,
+   "mean_viewers_per_point": 0.2,
+   "median_depression_angle_deg": 5.8,
+   "median_floor_z": 10,
+   "median_horizontal_dist": 88.5
+  }
+ }
+}

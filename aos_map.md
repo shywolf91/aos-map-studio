@@ -232,6 +232,26 @@ Put `<map>.vxl` + `<map>.txt` in `<config dir>/maps/`, custom scripts in `<confi
 * Foundations must not create unintended walkable shortcuts across water/gaps/climbs (we caught a decorative
   ledge that cut a descent from 280 to 125 walk cost).
 
+## 9b. Spawn camping from the platform (Babel rotation guide, 2026-10-13)
+
+The aloha.pk *Babel map rotation guide* v1.8 (project file; distilled in `docs/babel_rotation_guide_notes.md`)
+names spawn camping from the platform as the main way Babel maps fail. Its rules `[GUIDE]`: balanced; no spawn
+camping that empties the server; spawn/tower protection not prone to self-grief or blocking; no roof spawns;
+variety across a rotation; avoid spawns too close to or too low under the platform; avoid lag (1-voxel pillar
+fields), flicker (1-voxel stripes) and glaring/white fogs.
+* **Check:** `aosmap/sightline.py` → `babel_spawn_report(solid)` (in every map check as `spawn_exposure`). Eyes on
+  the platform perimeter → heads in each stock ±20 spawn zone. `[RUN]` calibration on 13 rated maps: spawns level
+  with the platform are seen by 25–60 edge positions per spot (tradeoff 61 = "spawncamp hell"); ground maps ~5–10;
+  liked ones hide 5–40 % of spawn spots. **Targets: ≤ ~10 viewers per spot, ≥ 15 % hidden, no open deck level with
+  the platform.**
+* **Fix patterns:** near-level spawns → a staggered pair of tall walls/ridges between spawn and platform whose spans
+  overlap (blocks every straight line, players zig-zag) — Kestrel v3 went from 100 % exposed / 26 viewers to
+  12.7 % / 0.2. Steep spawns (ground maps) need cover close to the spawn or overhead, and stock Babel spawns on the
+  topmost voxel, so cover *inside* the ±20 zone becomes something players spawn on top of — keep it low (≤ 3).
+* Stock vs aloha: stock babel_script ignores the map's spawn/tent hooks `[SRC]`; aloha's custom scripts use them
+  plus platform variants (normal, pinpoint, random, big hole, diamond, checkerboard, fork, reversed pp) and spawn
+  protection zones. Our `.txt` hooks are a bonus for such servers, not relied on.
+
 ## 10. Art direction knowledge
 
 Your priorities: beauty/craft is the top artistic goal; a valid but crude VXL is a prototype, not a map. Use the
@@ -328,6 +348,9 @@ Automated (before any hand-off):
 - [ ] entity settling (no roofs over intel/base/CP columns)
 - [ ] art metrics within calibration; renders reviewed for floating props, blocked routes, noise
 - [ ] canyon/ground perches: highest point reachable on foot near objectives/routes (Kestrel check)
+- [ ] Babel spawn exposure (`spawn_exposure`): ≤ ~10 platform viewers per spot, ≥ 15 % hidden
+- [ ] no sealable single-entrance spawn, no griefable only-route; tower zones on solid support
+- [ ] no 1-voxel high-contrast stripes or 1×1 pillar fields; fog not glaring/white, HUD readable
 - [ ] deterministic build: same seed → same bytes in a fresh process (no `hash()`, no unseeded RNG)
 - [ ] `.txt` loads (`check_map_txt`), only real keys used
 

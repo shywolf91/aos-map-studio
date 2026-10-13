@@ -115,6 +115,10 @@ def main(out, name='hollowfen_vale'):
     sqm = (L.X >= sq['x'][0]) & (L.X <= sq['x'][1]) & (L.Y >= sq['y'][0]) & (L.Y <= sq['y'][1])
     sqm = sqm | ((512 - L.X >= sq['x'][0]) & (512 - L.X <= sq['x'][1]) & (L.Y >= sq['y'][0]) & (L.Y <= sq['y'][1]))
     R['spawn_square_columns_with_structures'] = int((sqm & (top < Hfull)).sum())
+    # spawn exposure to platform snipers (see docs/babel_rotation_guide_notes.md); targets: <= ~10 viewers/spot
+    from aosmap.sightline import babel_spawn_report
+    R['spawn_exposure'] = {k: {kk: (float(vv) if hasattr(vv, 'item') else vv) for kk, vv in v.items()}
+                           for k, v in babel_spawn_report(vm.solid).items()}
     json.dump(R, open(os.path.join(out, 'validation.json'), 'w'), indent=1, default=str)
     print(json.dumps(R, indent=1, default=str))
 

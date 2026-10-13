@@ -74,5 +74,23 @@
   "ctf_spawn_points_bad": [],
   "carry_enemy_intel_to_own_tent": 354.3
  },
- "spawn_square_columns_with_structures": 0
+ "spawn_square_columns_with_structures": 0,
+ "spawn_exposure": {
+  "team1": {
+   "spawn_points": 441,
+   "exposed_pct": 100.0,
+   "mean_viewers_per_point": 10.3,
+   "median_depression_angle_deg": 28.2,
+   "median_floor_z": 49,
+   "median_horizontal_dist": 87.5
+  },
+  "team2": {
+   "spawn_points": 441,
+   "exposed_pct": 100.0,
+   "mean_viewers_per_point": 10.0,
+   "median_depression_angle_deg": 28.0,
+   "median_floor_z": 49,
+   "median_horizontal_dist": 88.5
+  }
+ }
 }

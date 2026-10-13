@@ -119,6 +119,10 @@ def main(out):
                      if (x - cc[0]) ** 2 + (y - cc[1]) ** 2 < r * r and g.node(x, y, tz) >= 0]
             G[f'{name}_{team}'] = gap(cells)
     R['build_gaps'] = G
+    # spawn exposure to platform snipers (see docs/babel_rotation_guide_notes.md); targets: <= ~10 viewers/spot
+    from aosmap.sightline import babel_spawn_report
+    R['spawn_exposure'] = {k: {kk: (float(vv) if hasattr(vv, 'item') else vv) for kk, vv in v.items()}
+                           for k, v in babel_spawn_report(vm.solid).items()}
     json.dump(R, open(os.path.join(out, 'validation.json'), 'w'), indent=1, default=str)
     print(json.dumps(R, indent=1, default=str))
 

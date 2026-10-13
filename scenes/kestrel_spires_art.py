@@ -375,6 +375,26 @@ def build(version=2):
         n_pool += 1
     s.markers.update({'outcrops': n_out, 'pools': n_pool})
 
+    if version >= 3:
+        # spawn screen (2026-10-13, after the Babel rotation guide + spawn exposure check): the deck is almost level
+        # with the platform, so platform sightlines to the spawn are near-horizontal. Two staggered windbreak walls
+        # (7 tall) whose spans overlap block every straight line; players zig-zag between them.
+        rngw = np.random.default_rng(SEED + 333)
+        for (wx0, wx1, wy0, wy1) in ((144, 146, 230, 262), (151, 153, 250, 283)):
+            for x in range(wx0, wx1 + 1):
+                for y in range(wy0, wy1 + 1):
+                    if s.mat[x, y, dz] == 0 or keep[x, y, dz - 7:dz].any():
+                        continue
+                    hgt = 7 if (y % 5) else 6                       # weathered, slightly uneven crest
+                    if (y - wy0) < 2 or (wy1 - y) < 2:
+                        hgt -= 1 + int(rngw.integers(0, 2))         # broken ends
+                    s.mat[x, y, dz - hgt:dz] = m_wall
+                    s.mat[x, y, dz - hgt] = m_cap
+            for y in range(wy0 + 3, wy1 - 2, 7):                     # buttress piers on the spawn side
+                if s.mat[wx0 - 1, y, dz] > 0 and s.mat[wx0, y, dz - 1] > 0:
+                    s.mat[wx0 - 1, y, dz - 4:dz] = m_wall
+        s.markers['spawn_screen'] = True
+
     mirror(s)
 
     # ---------------------------------------------------------------- painted bottom: river + desert haze
@@ -400,8 +420,8 @@ def build(version=2):
 if __name__ == '__main__':
     from aosmap.vxl import write_vxl
     args = [a for a in sys.argv[1:] if not a.startswith('--')]
-    version = 1 if '--v1' in sys.argv else 2
-    out = args[0] if args else ('out/kestrel_spires_art' if version == 1 else 'out/kestrel_spires_art2')
+    version = 1 if '--v1' in sys.argv else (2 if '--v2' in sys.argv else 3)
+    out = args[0] if args else {1: 'out/kestrel_spires_art', 2: 'out/kestrel_spires_art2', 3: 'out/kestrel_spires_art3'}[version]
     os.makedirs(out, exist_ok=True)
     s = build(version)
     vm = s.to_voxelmap()
