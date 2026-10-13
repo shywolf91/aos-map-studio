@@ -1,0 +1,45 @@
+{
+ "state": {
+  "fog": [
+   118,
+   92,
+   124
+  ],
+  "team1": "Blue",
+  "team2": "Red",
+  "team1_flag": [
+   256.0,
+   256.0,
+   1.0
+  ],
+  "team2_flag": [
+   256.0,
+   256.0,
+   1.0
+  ],
+  "team1_base": [
+   118.0,
+   256.0,
+   57.0
+  ],
+  "team2_base": [
+   394.0,
+   256.0,
+   57.0
+  ],
+  "cap_limit": 10
+ },
+ "map_reader_ok": true,
+ "platform_cells_present": 3200,
+ "platform_cells_expected": 3200,
+ "spawn_blue": [
+  123.5,
+  238.5,
+  54.6
+ ],
+ "spawn_red": [
+  387.5,
+  242.5,
+  54.6
+ ]
+}

@@ -1,0 +1,19 @@
+name = "hollowfen babel test"
+port = 32931
+master = false
+ip_getter = ""
+scripts = ["piqueserver.scripts.rollback", "piqueserver.scripts.protect", "piqueserver.scripts.map_extensions", "piqueserver.scripts.disco", "piqueserver.scripts.votekick", "piqueserver.scripts.trusted", "piqueserver.scripts.ratio", "piqueserver.scripts.passreload", "piqueserver.scripts.blockinfo", "piqueserver.scripts.squad", "piqueserver.scripts.afk", "piqueserver.scripts.babel_script"]
+rotation = ["hollowfen"]
+game_mode = "piqueserver.game_modes.babel"
+default_time_limit = "2hours"
+[team1]
+name = "Blue"
+color = [0, 0, 255]
+[team2]
+name = "Red"
+color = [255, 0, 0]
+[status_server]
+enabled = false
+
+[passwords]
+admin = ["camtest"]

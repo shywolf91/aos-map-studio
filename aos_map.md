@@ -1,7 +1,7 @@
 # aos_map.md — Ace of Spades 0.75 map-making knowledge base
 
 Consolidated 2026-10-13 from the aosmap project (research, exporter, validators, Kestrel Spires).
-Last updated 2026-10-13 (Kestrel art v2, first real-client inspection in BetterSpades, fog findings).
+Last updated 2026-10-13 (Kestrel art v2, Hollowfen Halloween Babel+CTF map, BetterSpades inspection, fog findings).
 Target: classic AoS **0.75** clients (OpenSpades, BetterSpades, vanilla) + **piqueserver 1.4.2**
 (pyspades), Python 3.11. Detailed per-topic docs live in `docs/`; this file is the single place to start.
 
@@ -356,9 +356,29 @@ Seed 7317. Spec and numbers: `docs/kestrel_spires_spec.md`. Map files: `maps/kes
 * Fog: lilac dusk (200, 188, 206) since v2 (v1 used tan (196, 170, 140)).
 * Next: OpenSpades look, playtest.
 
+## 13b. Hollowfen — Halloween Babel + CTF (2026-10-13)
+
+Haunted fen village at dusk, full 512 × 512, classic destructible terrain solid to the bottom. Generators:
+`scenes/hollowfen.py` (shared layout + graybox), `hollowfen_art.py`, `hollowfen_props.py`, check `hollowfen_check.py`.
+Spec: `docs/hollowfen_spec.md`. Map files: `maps/hollowfen_art_v1/`.
+* Status: generated · exported · parser-validated · server-loaded in **Babel and CTF** · client-inspected in
+  BetterSpades · not in OpenSpades · not playtested.
+* One layout serves both modes: village squares = Babel spawn zones = CTF spawns + tents (118/394, 256); church
+  belfry decks = Babel bridgeheads (gap 33.6); CTF intel on each village's pumpkin farm; neutral cemetery midfield
+  under the platform; bog boardwalks as flank loops. Mirror parity 0.0.
+* Witches are requested floating scenery, placed after mirroring; the check counts them and flags anything else.
+
+**Dual-mode layout pattern** `[DESIGN]`: put the CTF tents on the Babel base coordinates and the CTF spawn hooks on
+the Babel ±20 spawn squares, so both modes share one balanced spawn; keep those squares flat and prop-free; give
+each side its own bridgehead inside its own Babel corridor (y 240–272, between its base and the platform) so the
+babel_script anti-grief zones protect it.
+
 ## 14. Gotchas we hit (so you don't)
 
 * `tools/art_metrics.py`'s first argument is the output JSON — passing a .vxl first overwrites it.
+* Mirror first, then place free-standing scenery (witches) — anything placed before `mirror()` is duplicated.
+* Decor scatter (reeds, roadside pumpkins) must test the surface it lands on: reeds landed on boardwalks and a
+  pumpkin landed on a CTF intel spot. Keep objective columns and walkways in an explicit no-prop mask and check them.
 * Never seed noise with Python's `hash()` — it's randomised per process, so builds stop being reproducible
   (art v1 shipped with this; `tests/test_determinism.py` now guards it). Use `zlib.crc32`.
 * Mirroring with `mat[257:] = mat[1:256][::-1]` leaves column 256 empty → copy 255 into 256.

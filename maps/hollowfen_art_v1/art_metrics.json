@@ -1,0 +1,44 @@
+[
+ {
+  "map": "hollowfen",
+  "colours": 5550,
+  "hue_families_90": 4,
+  "top_noise": 1.97,
+  "coherence_4": 1.7,
+  "top_flat_pct": 18.3,
+  "ramp_step": 0.97,
+  "height_L_corr": -0.0,
+  "side_minus_top_L": -12.2,
+  "vert_detail": 2.78,
+  "relief_16": 16.6,
+  "land_cols": 260154
+ },
+ {
+  "map": "normandie",
+  "colours": 1833,
+  "hue_families_90": 4,
+  "top_noise": 0.24,
+  "coherence_4": 2.26,
+  "top_flat_pct": 61.3,
+  "ramp_step": 0.07,
+  "height_L_corr": -0.11,
+  "side_minus_top_L": 5.4,
+  "vert_detail": 1.38,
+  "relief_16": 7.8,
+  "land_cols": 225176
+ },
+ {
+  "map": "remus",
+  "colours": 32730,
+  "hue_families_90": 4,
+  "top_noise": 3.16,
+  "coherence_4": 1.64,
+  "top_flat_pct": 14.6,
+  "ramp_step": 1.18,
+  "height_L_corr": -0.22,
+  "side_minus_top_L": 12.0,
+  "vert_detail": 2.54,
+  "relief_16": 3.8,
+  "land_cols": 88388
+ }
+]

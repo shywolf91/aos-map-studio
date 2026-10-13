@@ -12,6 +12,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 |---|---|
 | `maps/kestrel_spires_art_v2/` | Kestrel Spires (Babel) **art v2 — current**, ready to drop into a server's `maps/` |
 | `maps/kestrel_spires_art_v1/` | art v1 as first delivered |
+| `maps/hollowfen_art_v1/` | **Hollowfen** — Halloween haunted village, Babel **and** CTF (see `docs/hollowfen_spec.md`) |
 | `maps/kestrel_spires_graybox_v1/` | the same layout as a function-coloured graybox |
 | `aosmap/` | library: VXL reader/writer, scene + materials, art kit, validators, route graph, metadata, renders |
 | `scenes/` | map generators (`kestrel_spires.py` graybox, `kestrel_spires_art.py` art pass) and their `_check` scripts |
@@ -53,6 +54,16 @@ Things worth playing with:
   walls, dwellings and outcrops live in `scenes/kestrel_spires_v2.py` (`WASHES` = the wash centre lines).
 * `FOG_V2` in `kestrel_spires_art.py` — or try fogs live on a server with `/fog r g b` as admin.
 * `SEED` — changes noise, vegetation and prop placement, not the layout.
+
+## Hollowfen
+
+```powershell
+.\venv\Scripts\python scenes\hollowfen.py out\hollowfen_graybox     # layout only
+.\venv\Scripts\python scenes\hollowfen_art.py out\hollowfen         # full map (seed 1031, ~10 s)
+.\venv\Scripts\python scenes\hollowfen_check.py out\hollowfen       # both modes: floating, routes, CTF entities, boardwalks
+```
+Server configs: `server_test\hollowfen_babel` (Babel) and `server_test\hollowfen_ctf` (CTF) — copy the map into
+their `maps\` folder first.
 
 ## Run it on a server
 
