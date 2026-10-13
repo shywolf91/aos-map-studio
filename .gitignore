@@ -1,0 +1,15 @@
+# build outputs (regenerate with scenes/*.py)
+out/
+__pycache__/
+*.pyc
+.pytest_cache/
+venv/
+.venv/
+node_modules/
+# local server runs
+server_test/*/logs/
+server_test/*/maps/
+server_test/*/*.log
+server_test/*/bans.txt
+# third-party reference maps (you have the originals)
+refs/**/*.vxl

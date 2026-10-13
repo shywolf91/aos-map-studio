@@ -1,0 +1,14 @@
+name = "aosmap diagnostic (ctf)"
+master = false
+port = 32901
+ip_getter = ""
+max_players = 32
+user_blocks_only = true
+scripts = ["piqueserver.scripts.map_extensions"]
+rotation = ["aosmap_diagnostic"]
+game_mode = "ctf"
+default_time_limit = "2hours"
+[status_server]
+enabled = false
+[logging]
+loglevel = "info"

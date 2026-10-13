@@ -1,0 +1,6 @@
+# tested 2026-10-12 with Python 3.11.17
+piqueserver==1.4.2
+numpy==2.4.6
+scipy==1.17.1
+pillow==10.4.0
+pytest==9.1.1

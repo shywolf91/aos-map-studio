@@ -1,0 +1,14 @@
+name = "aosmap diagnostic (arena)"
+master = false
+port = 32902
+ip_getter = ""
+max_players = 32
+user_blocks_only = true
+scripts = ["piqueserver.scripts.map_extensions"]
+rotation = ["aosmap_diagnostic"]
+game_mode = "piqueserver.game_modes.arena"
+default_time_limit = "2hours"
+[status_server]
+enabled = false
+[logging]
+loglevel = "info"

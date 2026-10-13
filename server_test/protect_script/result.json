@@ -1,0 +1,103 @@
+{
+ "label": "script",
+ "actions": {
+  "T1_blue_builds_P1": [
+   [
+    0,
+    0,
+    201,
+    260,
+    57
+   ]
+  ],
+  "T2_blue_shoots_authored_ground": [],
+  "T3_red_shoots_blue_P1": [
+   [
+    1,
+    1,
+    201,
+    260,
+    57
+   ]
+  ],
+  "T4a_blue_builds_P2": [
+   [
+    0,
+    0,
+    201,
+    262,
+    57
+   ]
+  ],
+  "T4b_blue_shoots_own_P2": [
+   [
+    0,
+    1,
+    201,
+    262,
+    57
+   ]
+  ],
+  "T5a_blue_builds_P3": [
+   [
+    0,
+    0,
+    199,
+    261,
+    57
+   ]
+  ],
+  "T5b_red_spades_P3": [
+   [
+    1,
+    1,
+    199,
+    261,
+    57
+   ]
+  ],
+  "T6a_blue_builds_P4_P5": [
+   [
+    0,
+    0,
+    205,
+    259,
+    57
+   ],
+   [
+    0,
+    0,
+    205,
+    260,
+    57
+   ]
+  ],
+  "T6b_red_grenade_at_P4_P5": [
+   [
+    1,
+    1,
+    205,
+    259,
+    57
+   ],
+   [
+    1,
+    1,
+    205,
+    260,
+    57
+   ]
+  ]
+ },
+ "final_server_map": {
+  "P1": false,
+  "P2": false,
+  "P3": false,
+  "P4": false,
+  "P5": false,
+  "ground_G": true,
+  "ground_under_P3": true,
+  "ground_under_P4": true
+ },
+ "chat": []
+}
