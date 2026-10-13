@@ -12,6 +12,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 |---|---|
 | `maps/kestrel_spires_art_v2/` | Kestrel Spires (Babel) **art v2 — current**, ready to drop into a server's `maps/` |
 | `maps/kestrel_spires_art_v1/` | art v1 as first delivered |
+| `maps/hollowfen_vale_v1/` | **Hollowfen Vale** — single central village, hilltop spawns, open tower meadows, Babel + CTF (`docs/hollowfen_vale_spec.md`) |
 | `maps/hollowfen_art_v1/` | **Hollowfen** — Halloween haunted village, Babel **and** CTF (see `docs/hollowfen_spec.md`) |
 | `maps/kestrel_spires_graybox_v1/` | the same layout as a function-coloured graybox |
 | `aosmap/` | library: VXL reader/writer, scene + materials, art kit, validators, route graph, metadata, renders |
@@ -62,6 +63,9 @@ Things worth playing with:
 .\venv\Scripts\python scenes\hollowfen_art.py out\hollowfen         # full map (seed 1031, ~10 s)
 .\venv\Scripts\python scenes\hollowfen_check.py out\hollowfen       # both modes: floating, routes, CTF entities, boardwalks
 ```
+Vale variant: `scenes\hollowfen_vale.py out\hollowfen_vale` then `scenes\hollowfen_vale_check.py out\hollowfen_vale`
+(configs `server_test\vale_babel`, `server_test\vale_ctf`).
+
 Server configs: `server_test\hollowfen_babel` (Babel) and `server_test\hollowfen_ctf` (CTF) — copy the map into
 their `maps\` folder first.
 

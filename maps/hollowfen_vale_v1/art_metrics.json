@@ -1,0 +1,16 @@
+[
+ {
+  "map": "hollowfen_vale",
+  "colours": 5497,
+  "hue_families_90": 4,
+  "top_noise": 1.9,
+  "coherence_4": 1.44,
+  "top_flat_pct": 22.8,
+  "ramp_step": 0.93,
+  "height_L_corr": -0.13,
+  "side_minus_top_L": -12.4,
+  "vert_detail": 2.78,
+  "relief_16": 16.1,
+  "land_cols": 261422
+ }
+]

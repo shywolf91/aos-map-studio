@@ -368,6 +368,15 @@ Spec: `docs/hollowfen_spec.md`. Map files: `maps/hollowfen_art_v1/`.
   under the platform; bog boardwalks as flank loops. Mirror parity 0.0.
 * Witches are requested floating scenery, placed after mirroring; the check counts them and flags anything else.
 
+**Hollowfen Vale** (variant, same day): one central village spreading north/south of the platform, hilltop
+spawns, rolling hills, and the Babel tower corridors kept as **open meadow with zero structures** (checked:
+`tower_zone_columns_with_structures`). Near the platform only ≤ 6-tall props, so the village gives ≤ 7 voxels of
+free scaffolding (`nearest_structure_to_platform` 49 vs ground gap 56). Central landmarks (church) are pasted whole
+after mirroring — equidistant, but a spiral stair makes shared-landmark routes differ by ~1 %. Spec:
+`docs/hollowfen_vale_spec.md`; maps `maps/hollowfen_vale_v1/`.
+* Client gotcha: BetterSpades draws the team base (tent) model at the Babel/CTF base; a camera placed on the base
+  coordinate renders its inside as large green polygons — not map geometry.
+
 **Dual-mode layout pattern** `[DESIGN]`: put the CTF tents on the Babel base coordinates and the CTF spawn hooks on
 the Babel ±20 spawn squares, so both modes share one balanced spawn; keep those squares flat and prop-free; give
 each side its own bridgehead inside its own Babel corridor (y 240–272, between its base and the platform) so the

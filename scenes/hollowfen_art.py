@@ -143,50 +143,36 @@ def materials(s):
     return m
 
 
-def build():
-    L = Layout()
-    s = Scene('hollowfen', seed=SEED)
-    m = materials(s)
-    M = {'grass': m['grass'], 'forest': m['forest'], 'soil': m['soil'], 'rock': m['rock'], 'cobble': m['cobble'],
-         'dirt': m['dirt'], 'square': m['square'], 'farm': m['farm'], 'cem': m['cem'], 'cemwall': m['cemwall'],
-         'bank': m['bank'], 'boardwalk': m['boardwalk']}
-    X, Y = L.X, L.Y
-    west = X <= 255
-    rng = np.random.default_rng(SEED + 100)
-    H = ground(s, L, M)
-    water = bogs(s, L, M)
-    cemetery_wall(s, L, M)
-    cm = SPEC['cemetery']; cz = cm['z']
-    counts = {}
-
-    # ------------------------------------------------------------------ houses on the shared plots
-    for n, p in enumerate(L.plots):
-        (x0, x1), (y0, y1) = p['x'], p['y']
-        w, d = x1 - x0 + 1, y1 - y0 + 1
-        r = np.random.default_rng(p['seed'])
-        ridge = 'y' if (w <= 10 and r.random() < 0.45) else 'x'
-        pf = P.house(p['seed'], w, d, p['storeys'], m, m['plasters'][int(r.integers(0, len(m['plasters'])))],
-                     m['roofs'][int(r.integers(0, len(m['roofs'])))], ridge=ridge,
-                     jetty=(p['storeys'] >= 2 and ridge == 'x' and r.random() < 0.5))
-        a = pf.a; ox, oy = pf.origin
-        if p['front'] == 's':                                     # door must face the lane (south)
-            a = a[:, ::-1, :]; oy = a.shape[1] - 1 - oy
-            art.stamp(s, P.Prefab(a, origin=(ox, oy)), x0, y1, G, replace_air_only=True)
+def place_house(s, m, p, floor_z=G):
+    """Detailed house on a plot dict (x, y, front, storeys, seed) + doorstep jack-o'-lantern."""
+    (x0, x1), (y0, y1) = p['x'], p['y']
+    w, d = x1 - x0 + 1, y1 - y0 + 1
+    r = np.random.default_rng(p['seed'])
+    ridge = 'y' if (w <= 10 and r.random() < 0.45) else 'x'
+    pf = P.house(p['seed'], w, d, p['storeys'], m, m['plasters'][int(r.integers(0, len(m['plasters'])))],
+                 m['roofs'][int(r.integers(0, len(m['roofs'])))], ridge=ridge,
+                 jetty=(p['storeys'] >= 2 and ridge == 'x' and r.random() < 0.5))
+    a = pf.a; ox, oy = pf.origin
+    if p['front'] == 's':                                     # door must face the lane (south)
+        a = a[:, ::-1, :]; oy = a.shape[1] - 1 - oy
+        art.stamp(s, P.Prefab(a, origin=(ox, oy)), x0, y1, floor_z, replace_air_only=True)
+    else:
+        art.stamp(s, P.Prefab(a, origin=(ox, oy)), x0, y0, floor_z, replace_air_only=True)
+    # doorstep jack-o'-lantern beside the door
+    if r.random() < 0.7:
+        dc = (x0 + x1) // 2 + (3 if r.random() < 0.5 else -2)
+        sz = int(r.integers(1, 3))
+        pk = P.pumpkin(p['seed'] + 1, m, size=sz, lantern=True, face='-j')
+        if p['front'] == 's':
+            pk = P.Prefab(pk.a[:, ::-1, :], origin=(pk.origin[0], pk.a.shape[1] - 1 - pk.origin[1]))
+            art.stamp(s, pk, dc, y1 + sz, floor_z, replace_air_only=True)
         else:
-            art.stamp(s, P.Prefab(a, origin=(ox, oy)), x0, y0, G, replace_air_only=True)
-        # doorstep jack-o'-lantern beside the door
-        if r.random() < 0.7:
-            dc = (x0 + x1) // 2 + (3 if r.random() < 0.5 else -2)
-            sz = int(r.integers(1, 3))
-            pk = P.pumpkin(p['seed'] + 1, m, size=sz, lantern=True, face='-j')
-            if p['front'] == 's':
-                pk = P.Prefab(pk.a[:, ::-1, :], origin=(pk.origin[0], pk.a.shape[1] - 1 - pk.origin[1]))
-                art.stamp(s, pk, dc, y1 + sz, G, replace_air_only=True)
-            else:
-                art.stamp(s, pk, dc, y0 - sz, G, replace_air_only=True)
-    counts['houses'] = len(L.plots)
+            art.stamp(s, pk, dc, y0 - sz, floor_z, replace_air_only=True)
 
-    # ------------------------------------------------------------------ church (shared massing + detail)
+
+
+def church_full(s, m):
+    """Church massing (scenes.hollowfen.church, SPEC coordinates) + all art detail."""
     church(s, m['church'], m['stair'], m['belfry'], m['slate'])
     c = SPEC['church']
     (nx0, nx1), (ny0, ny1) = c['nave_x'], c['nave_y']
@@ -249,6 +235,85 @@ def build():
     if k_ridge is not None:
         row = s.mat[nx0 - 1:nx1 + 1, yc, k_ridge]
         s.mat[nx0 - 1:nx1 + 1, yc, k_ridge] = np.where(row == m['slate'], m['slate_ridge'], row)
+
+
+def plant_forest(s, m, rng, notree, bog_d, X, Y, x_max=255):
+    """Forest on the west half: autumn broadleaf, pines (edges / high ground), dead trees (bogs), bushes."""
+    topz = np.argmax(s.mat > 0, axis=2)
+    dens = art.fbm(X, Y, None, scale=60, octaves=3, seed=SEED + 200)
+    leaf_pick = [0, 1, 3, 0, 1, 3, 2, 0]                                   # orange, red, rust heavy; gold rare
+    lib_broad = [art.tree(SEED + 300 + i, m['trunk'], m['leaves'][leaf_pick[i % 8]], height=int(5 + i % 4),
+                          crown_r=3.0 + (i % 3) * 0.6, crown_h=4 + i % 2, lean=((i % 5) - 2) * 0.3) for i in range(24)]
+    lib_pine = [P.pine(SEED + 400 + i, m, height=10 + i % 6, r0=3.0 + (i % 3) * 0.5) for i in range(12)]
+    lib_dead = [P.dead_tree(SEED + 500 + i, m['deadwood'], height=7 + i % 5, spread=3 + i % 2) for i in range(10)]
+    lib_bush = [P.bush(SEED + 600 + i, m['bush'], r=1.4 + (i % 3) * 0.4) for i in range(6)]
+    tree_used = np.zeros(X.shape, bool)
+    nt = {'broad': 0, 'pine': 0, 'dead': 0, 'bush': 0}
+    for gx in range(2, 256, 5):
+        for gy in range(2, 510, 5):
+            x = gx + int(rng.integers(0, 4)); y = gy + int(rng.integers(0, 4))
+            if x > 254 or y > 509 or notree[x, y] or tree_used[x, y]:
+                continue
+            dv = dens[x, y]
+            edge = min(x, y, 511 - y)
+            p_place = 0.35 + 0.6 * dv + (0.3 if edge < 40 else 0)
+            if rng.random() > p_place:
+                continue
+            fz = int(topz[x, y])
+            if fz >= 62 or s.mat[x, y, fz] not in (m['forest'], m['grass']):
+                continue
+            near_bog = bog_d[x, y] < 1.5
+            r_ = rng.random()
+            if near_bog and r_ < 0.6:
+                pf, kind = lib_dead[int(rng.integers(0, len(lib_dead)))], 'dead'
+            elif edge < 50 or fz < 52:
+                pf, kind = (lib_pine[int(rng.integers(0, len(lib_pine)))], 'pine') if r_ < 0.7 else \
+                           (lib_broad[int(rng.integers(0, len(lib_broad)))], 'broad')
+            elif r_ < 0.10:
+                pf, kind = lib_bush[int(rng.integers(0, len(lib_bush)))], 'bush'
+            elif r_ < 0.22:
+                pf, kind = lib_dead[int(rng.integers(0, len(lib_dead)))], 'dead'
+            elif r_ < 0.47:
+                pf, kind = lib_pine[int(rng.integers(0, len(lib_pine)))], 'pine'
+            else:
+                pf, kind = lib_broad[int(rng.integers(0, len(lib_broad)))], 'broad'
+            fp = pf.a.any(axis=2)
+            ox, oy = pf.origin
+            xs0, ys0 = x - ox, y - oy
+            if xs0 < 0 or ys0 < 0 or xs0 + fp.shape[0] > 256 or ys0 + fp.shape[1] > 511:
+                continue
+            if (notree[xs0:xs0 + fp.shape[0], ys0:ys0 + fp.shape[1]] & fp).any():
+                continue
+            art.stamp(s, pf, x, y, fz, replace_air_only=True)
+            rr = 2 if kind == 'bush' else 3
+            tree_used[x - rr:x + rr + 1, y - rr:y + rr + 1] = True
+            nt[kind] += 1
+    return nt
+
+
+def build():
+    L = Layout()
+    s = Scene('hollowfen', seed=SEED)
+    m = materials(s)
+    M = {'grass': m['grass'], 'forest': m['forest'], 'soil': m['soil'], 'rock': m['rock'], 'cobble': m['cobble'],
+         'dirt': m['dirt'], 'square': m['square'], 'farm': m['farm'], 'cem': m['cem'], 'cemwall': m['cemwall'],
+         'bank': m['bank'], 'boardwalk': m['boardwalk']}
+    X, Y = L.X, L.Y
+    west = X <= 255
+    rng = np.random.default_rng(SEED + 100)
+    H = ground(s, L, M)
+    water = bogs(s, L, M)
+    cemetery_wall(s, L, M)
+    cm = SPEC['cemetery']; cz = cm['z']
+    counts = {}
+
+    # ------------------------------------------------------------------ houses on the shared plots
+    for p in L.plots:
+        place_house(s, m, p)
+    counts['houses'] = len(L.plots)
+
+    # ------------------------------------------------------------------ church (shared massing + detail)
+    church_full(s, m)
 
     # ------------------------------------------------------------------ mausoleum (centre, mirrored halves)
     mx, my = cm['mausoleum_x'], cm['mausoleum_y']
@@ -381,55 +446,7 @@ def build():
     notree = (ndimage.binary_dilation(L.roads, iterations=2) | ndimage.binary_dilation(L.plot_mask, iterations=3)
               | L.village | L.cem | L.farm | ndimage.binary_dilation(L.bog & (L.bog_d < 0.9), iterations=1)
               | ((X - 40) ** 2 + (Y - 120) ** 2 <= 100) | (X > 255) | (X < 1))
-    dens = art.fbm(X, Y, None, scale=60, octaves=3, seed=SEED + 200)
-    leaf_pick = [0, 1, 3, 0, 1, 3, 2, 0]                                   # orange, red, rust heavy; gold rare
-    lib_broad = [art.tree(SEED + 300 + i, m['trunk'], m['leaves'][leaf_pick[i % 8]], height=int(5 + i % 4),
-                          crown_r=3.0 + (i % 3) * 0.6, crown_h=4 + i % 2, lean=((i % 5) - 2) * 0.3) for i in range(24)]
-    lib_pine = [P.pine(SEED + 400 + i, m, height=10 + i % 6, r0=3.0 + (i % 3) * 0.5) for i in range(12)]
-    lib_dead = [P.dead_tree(SEED + 500 + i, m['deadwood'], height=7 + i % 5, spread=3 + i % 2) for i in range(10)]
-    lib_bush = [P.bush(SEED + 600 + i, m['bush'], r=1.4 + (i % 3) * 0.4) for i in range(6)]
-    tree_used = np.zeros(X.shape, bool)
-    nt = {'broad': 0, 'pine': 0, 'dead': 0, 'bush': 0}
-    for gx in range(2, 256, 5):
-        for gy in range(2, 510, 5):
-            x = gx + int(rng.integers(0, 4)); y = gy + int(rng.integers(0, 4))
-            if x > 254 or y > 509 or notree[x, y] or tree_used[x, y]:
-                continue
-            dv = dens[x, y]
-            edge = min(x, y, 511 - y)
-            p_place = 0.35 + 0.6 * dv + (0.3 if edge < 40 else 0)
-            if rng.random() > p_place:
-                continue
-            fz = int(topz[x, y])
-            if fz >= 62 or s.mat[x, y, fz] not in (m['forest'], m['grass']):
-                continue
-            near_bog = L.bog_d[x, y] < 1.5
-            r_ = rng.random()
-            if near_bog and r_ < 0.6:
-                pf, kind = lib_dead[int(rng.integers(0, len(lib_dead)))], 'dead'
-            elif edge < 50 or fz < 52:
-                pf, kind = (lib_pine[int(rng.integers(0, len(lib_pine)))], 'pine') if r_ < 0.7 else \
-                           (lib_broad[int(rng.integers(0, len(lib_broad)))], 'broad')
-            elif r_ < 0.10:
-                pf, kind = lib_bush[int(rng.integers(0, len(lib_bush)))], 'bush'
-            elif r_ < 0.22:
-                pf, kind = lib_dead[int(rng.integers(0, len(lib_dead)))], 'dead'
-            elif r_ < 0.47:
-                pf, kind = lib_pine[int(rng.integers(0, len(lib_pine)))], 'pine'
-            else:
-                pf, kind = lib_broad[int(rng.integers(0, len(lib_broad)))], 'broad'
-            fp = pf.a.any(axis=2)
-            ox, oy = pf.origin
-            xs0, ys0 = x - ox, y - oy
-            if xs0 < 0 or ys0 < 0 or xs0 + fp.shape[0] > 256 or ys0 + fp.shape[1] > 511:
-                continue
-            if (notree[xs0:xs0 + fp.shape[0], ys0:ys0 + fp.shape[1]] & fp).any():
-                continue
-            art.stamp(s, pf, x, y, fz, replace_air_only=True)
-            rr = 2 if kind == 'bush' else 3
-            tree_used[x - rr:x + rr + 1, y - rr:y + rr + 1] = True
-            nt[kind] += 1
-    counts['trees'] = nt
+    counts['trees'] = plant_forest(s, m, rng, notree, L.bog_d, X, Y)
     # reeds and dead snags along the bog shores
     shore = west & (L.bog_d > 0.75) & (L.bog_d < 1.0)
     for x, y in np.argwhere(shore)[::3]:

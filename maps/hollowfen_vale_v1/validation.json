@@ -1,0 +1,78 @@
+{
+ "reader_ok": true,
+ "floating_components": 6,
+ "floating_witch_components": 6,
+ "floating_unexpected": [],
+ "tower_zone_columns": 8436,
+ "tower_zone_columns_with_structures": 0,
+ "tower_zone_examples": [],
+ "nearest_structure_to_platform": {
+  "distance": 49.0,
+  "at": [
+   219,
+   240,
+   50
+  ]
+ },
+ "ground_gap_from_zone_edge": 56.0,
+ "babel_static": [
+  "info: base 118,256: spawn heights median z=49, min z=47, water columns=0",
+  "info: base 394,256: spawn heights median z=49, min z=47, water columns=0",
+  "info: spawn-zone heights equal under x-mirror: 1.00, under 180 rotation: 0.96"
+ ],
+ "babel": {
+  "team1": {
+   "platform_reachable_without_building": false,
+   "walkable_build_gap": 53.0,
+   "gap_from": [
+    233,
+    241,
+    54
+   ]
+  },
+  "team2": {
+   "platform_reachable_without_building": false,
+   "walkable_build_gap": 53.0,
+   "gap_from": [
+    233,
+    241,
+    54
+   ]
+  }
+ },
+ "routes_from_spawn": {
+  "team1": {
+   "green_centre": 103.4,
+   "church_door": 161.4,
+   "belfry": 184.1,
+   "cemetery_gate": 105.8,
+   "mausoleum": 136.9,
+   "own_intel": 46.0,
+   "enemy_intel": 330.9,
+   "enemy_spawn": 264.1
+  },
+  "team2": {
+   "green_centre": 103.4,
+   "church_door": 161.4,
+   "belfry": 186.3,
+   "cemetery_gate": 105.8,
+   "mausoleum": 136.9,
+   "own_intel": 46.0,
+   "enemy_intel": 330.9,
+   "enemy_spawn": 264.1
+  }
+ },
+ "route_parity_max_diff": 2.200000000000017,
+ "ctf": {
+  "blue_flag_z": 51,
+  "blue_flag_ground": 51,
+  "green_flag_z": 51,
+  "blue_base_z": 47,
+  "base_ground": 47,
+  "green_base_z": 47,
+  "ctf_spawn_points": 50,
+  "ctf_spawn_points_bad": [],
+  "carry_enemy_intel_to_own_tent": 354.3
+ },
+ "spawn_square_columns_with_structures": 0
+}
