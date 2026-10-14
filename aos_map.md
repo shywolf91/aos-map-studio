@@ -64,6 +64,10 @@ server-loaded → client-inspected → playtested. Never skip a rung when report
   subtract tunnel, add tunnel floor) `[DOC]`. `tools/share/vxl_analyzer.py` exports `heightmap_raw.png`
   (grey = height × 4, which that formula reads back exactly) and `colormap_raw.png` `[RUN]`. A heightmap only
   holds the top surface — caves, overhangs, interiors and bridges are lost.
+* **Build and Shoot GIMP tutorials** (Influx 2013; `docs/heightmap_colourmap_tutorials.md`): heightmap first
+  (it decides gameplay), drawn as flat contour levels; layer 0 = water, layer 1 = unbreakable z 62 `[SRC]`;
+  lowest ground on layer 3 (2 blocks of digging), cap ~50 to leave building room. Their converter (Bildramer's,
+  24-bit BMP) appears to map grey ≈ 4 × (layer + 1) — one level off the pyspades editor's grey / 4 `[OPEN]`.
 * **Our writer (`aosmap/vxl.py write_vxl`) is byte-identical to pyspades `generate()`** on all 36 reference files
   (34 distinct maps), colours and shade byte included. `[RUN]` It forces z = 63 solid unless `force_bottom=False`.
 
@@ -440,8 +444,9 @@ babel_script anti-grief zones protect it.
 3. Whether your live server's babel_script platform differs from stock (shape/colour/z).
 4. Hallway / custom modes: need their actual scripts before designing to them.
 5. Arena-with-building and the custom Babel stair/descent variant: need script changes, not just maps.
-6. Build and Shoot heightmap/colormap tutorial (forums t=4922) could not be fetched from here (site blocked);
-   check it against the convention above when someone pastes it.
+6. Heightmap grey convention differs by one level between Bildramer's converter and the pyspades editor —
+   confirm with a test image before building a heightmap importer. Also: do 0.75 clients show the map tiled at
+   its edges (the tutorials tile roads/dirt across borders)?
 
 ## 16. Sources and versions
 

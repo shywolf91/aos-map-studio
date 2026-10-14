@@ -668,7 +668,8 @@ def height_view(m):
 def heightmap_raw(m):
     """Plain 512x512 greyscale heightmap, no overlays, ABSOLUTE scale: grey = (63 - z) * 4, so black (0) = water
     plane and 252 = z 0. This matches the pyspades-era map editor convention h = (r + g + b) / 12 with black = water
-    (infogulch/pyspades wiki, "Map Editor Tips"), so it can be fed back into heightmap-based tools."""
+    (infogulch/pyspades wiki, "Map Editor Tips"). Bildramer's converter (Build and Shoot tutorials) appears to use
+    one level higher grey for the same height (~4 x (height + 1)); check a tool's convention before feeding it."""
     h = (63 - topmost(m.solid)).astype(np.uint8) * 4
     return Image.fromarray(h.T, 'L')
 
