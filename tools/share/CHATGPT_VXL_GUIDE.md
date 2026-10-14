@@ -48,7 +48,7 @@ Finish with a comparison table: `va.run([...all maps...], '/mnt/data/analysis', 
 * The map is 512 × 512 columns, 64 voxels deep. x and y run 0–511.
 * **z = 0 is the top of the sky and z = 63 is the bottom.** Height above water = 63 − z.
 * z = 63 is the water plane. It is solid everywhere, and its colour is the water/ground colour. Some maps paint a picture into it; Cloud Smash paints a sunset.
-* There is no header. Columns are stored y-major (x varies fastest). Each column is a list of spans: `N S E A` plus colours. Colours are B, G, R plus a shade byte, which clients mostly ignore.
+* The file has no header; it is just every column one after another, stored row by row (x changes fastest). Each column is made of one or more spans, and each span starts with four bytes (`N S E A`) followed by colours. Each colour is blue, green, red and a shade byte that most clients ignore. The docstring at the top of `vxl_analyzer.py` explains the span layout in full.
 * Voxels between coloured runs are solid but buried, and everything below a column's last span is solid.
 * Terms: **surface** ("exposed") = a solid voxel with at least one air face-neighbour, or at z = 0 (off-map counts as solid, same as pyspades `is_surface`). **Buried** ("filled" / "surrounded") = a solid voxel whose 6 face-neighbours are all solid.
 * Only **surface** voxels store a colour; buried voxels have none. Renders cut the map open at its edges (and at

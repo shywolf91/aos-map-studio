@@ -26,17 +26,29 @@ AS A LIBRARY
     va.side_view(m, 'south').save('s.png')
     rep = va.analyze(m, name='normandie', babel=True)
 
-FORMAT FACTS (verified against piqueserver 1.4.2 pyspades/vxl_c.h and the aosprotocol map spec)
-    512 x 512 columns, 64 voxels deep. x, y in 0..511; z in 0..63 with z = 0 the TOP (sky) and z = 63 the BOTTOM.
-    Height above the water = 63 - z. z = 63 is the water plane / bottom layer and must be solid everywhere.
-    No file header. Columns are stored y-major, x-minor: (0,0), (1,0) ... (511,0), (0,1) ...
-    Each column = spans. Span header 4 bytes: N (span length in 4-byte words incl. header, 0 = last span),
-    S (first z of the top coloured run), E (last z of the top coloured run, inclusive), A (z where this span's
-    air starts; for later spans it ends the previous span's bottom colours). Then (E - S + 1) top colours, then
-    the previous solid block's bottom colours. Colours: 4 bytes B, G, R, A(=shade byte, ignored by OpenSpades).
-    Voxels between coloured runs are solid but uncoloured. Everything below the last span is solid.
-    Terms: SURFACE (exposed) = solid with an air face-neighbour or z == 0 (off-map counts as solid, as in pyspades
-    is_surface); BURIED (filled / surrounded) = solid with all 6 face-neighbours solid.
+FORMAT FACTS (checked against piqueserver 1.4.2 pyspades/vxl_c.h and the aosprotocol map spec)
+    A map is 512 x 512 columns, each 64 voxels tall. x and y run from 0 to 511, and z runs from 0 to 63. z = 0 is
+    the top of the sky and z = 63 is the bottom, so a voxel's height above the water is 63 - z. The bottom layer
+    (z = 63) is the water plane, and it should be solid in every column.
+
+    The file has no header; it is simply every column one after another. They are stored row by row: (0,0), (1,0),
+    ... (511,0), then (0,1), and so on, so x changes fastest.
+
+    Each column is made of one or more spans. A span starts with a 4-byte header:
+      N - the length of this span in 4-byte words, counting the header itself. N = 0 marks the column's last span.
+      S - the z of the first voxel in this span's top run of coloured voxels.
+      E - the z of the last voxel in that top run (inclusive). If E = S - 1, the top run is empty.
+      A - the z where this span's air begins. (The first span's air always starts at z = 0.)
+    After the header come the colours of the top run (E - S + 1 of them). In every span except the last, those are
+    followed by colours for the bottom of the same solid block - the voxels just above where the next span's air
+    begins. Each colour is 4 bytes: blue, green, red, and a shade byte that most clients ignore.
+
+    Only exposed voxels need colours. Voxels between a top run and a bottom run are solid but have no colour, and
+    everything below the last span's top run is solid down to z = 63.
+
+    Two terms used throughout: a SURFACE (exposed) voxel is a solid voxel with at least one air face-neighbour, or
+    any solid voxel at z = 0; off-map neighbours count as solid, the same rule pyspades uses (is_surface). A BURIED
+    (filled, surrounded) voxel is a solid voxel whose six face-neighbours are all solid.
 """
 from __future__ import annotations
 
