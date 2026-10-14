@@ -10,6 +10,8 @@ metadata, art calibration, workflow, validation checklist, open questions).
 
 | Path | What |
 |---|---|
+| `maps/drowned_cathedral_v1/` | **Drowned Cathedral** — Halloween Babel: sunken gothic cathedral in a fen, quay-mole tower zones, bell-tower race (`docs/drowned_cathedral_spec.md`) |
+| `maps/drowned_cathedral_v2/` | **Drowned Cathedral v2** — rotated redesign after playtest feedback: nave between the teams under the platform, twin fronts, wider fen, 6 stone ghats + gallery per team for safe descents (`docs/drowned_cathedral_v2_spec.md`) |
 | `maps/kestrel_spires_art_v3/` | Kestrel Spires v3 — v2 plus spawn screen walls (spawn camping fix) |
 | `maps/kestrel_spires_art_v2/` | Kestrel Spires (Babel) **art v2 — current**, ready to drop into a server's `maps/` |
 | `maps/kestrel_spires_art_v1/` | art v1 as first delivered |
@@ -18,7 +20,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 | `maps/kestrel_spires_graybox_v1/` | the same layout as a function-coloured graybox |
 | `aosmap/` | library: VXL reader/writer, scene + materials, art kit, validators, route graph, metadata, renders |
 | `scenes/` | map generators (`kestrel_spires.py` graybox, `kestrel_spires_art.py` art pass) and their `_check` scripts |
-| `tools/` | reference comparison, art metrics, movement sim, live-server bots, aos_web screenshot driver |
+| `tools/` | reference comparison, art metrics, movement sim, live-server bots, aos_web screenshot driver, `fp_view.py` first-person preview ray marcher |
 | `tools/share/` | **shareable review kit**: standalone `vxl_analyzer.py` (numpy + Pillow) + `CHATGPT_VXL_GUIDE.md` for other assistants to review reference maps and return Reference Map Cards |
 | `server_scripts/authored_protect.py` | piqueserver script: authored map protected, players build, enemies destroy player blocks |
 | `server_test/*/config.toml` | the headless server configs used in testing (kestrel = Babel) |

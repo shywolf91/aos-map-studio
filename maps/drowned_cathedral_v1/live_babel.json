@@ -1,0 +1,73 @@
+{
+ "state": {
+  "fog": [
+   152,
+   174,
+   168
+  ],
+  "team1": "Blue",
+  "team2": "Red",
+  "team1_flag": [
+   256.0,
+   256.0,
+   1.0
+  ],
+  "team2_flag": [
+   256.0,
+   256.0,
+   1.0
+  ],
+  "team1_base": [
+   118.0,
+   256.0,
+   40.0
+  ],
+  "team2_base": [
+   394.0,
+   256.0,
+   40.0
+  ],
+  "cap_limit": 10
+ },
+ "map_reader_ok": true,
+ "platform_cells_present": 3200,
+ "platform_cells_expected": 3200,
+ "voxels_differing_from_file": 3200,
+ "differences_outside_platform": 0,
+ "spawns": {
+  "blue": [
+   [
+    118.5,
+    251.5,
+    37.6
+   ],
+   [
+    128.5,
+    270.5,
+    37.6
+   ],
+   [
+    103.5,
+    272.5,
+    37.6
+   ]
+  ],
+  "red": [
+   [
+    389.5,
+    269.5,
+    37.6
+   ],
+   [
+    397.5,
+    238.5,
+    37.6
+   ],
+   [
+    399.5,
+    238.5,
+    37.6
+   ]
+  ]
+ }
+}

@@ -1,0 +1,30 @@
+[
+ {
+  "map": "drowned_cathedral_v2",
+  "colours": 8098,
+  "hue_families_90": 4,
+  "top_noise": 1.51,
+  "coherence_4": 1.47,
+  "top_flat_pct": 35.6,
+  "ramp_step": 0.85,
+  "height_L_corr": 0.17,
+  "side_minus_top_L": -5.5,
+  "vert_detail": 2.16,
+  "relief_16": 19.0,
+  "land_cols": 248306
+ },
+ {
+  "map": "drowned_cathedral",
+  "colours": 8218,
+  "hue_families_90": 4,
+  "top_noise": 1.65,
+  "coherence_4": 1.37,
+  "top_flat_pct": 34.9,
+  "ramp_step": 0.87,
+  "height_L_corr": 0.18,
+  "side_minus_top_L": -5.0,
+  "vert_detail": 2.26,
+  "relief_16": 19.4,
+  "land_cols": 242192
+ }
+]

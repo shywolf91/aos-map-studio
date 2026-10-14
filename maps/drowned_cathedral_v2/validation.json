@@ -1,0 +1,349 @@
+{
+ "reader_ok": true,
+ "colours_missing_on_surface": 5229071,
+ "floating_components": 0,
+ "mirror_occupancy_match": 0.998963,
+ "tower_zone_columns": 6612,
+ "tower_zone_columns_not_flat_z40": 0,
+ "spawn_square_columns_not_flat_z40": 0,
+ "babel_static": [
+  "info: base 118,256: spawn heights median z=40, min z=40, water columns=0",
+  "info: base 394,256: spawn heights median z=40, min z=40, water columns=0",
+  "info: spawn-zone heights equal under x-mirror: 1.00, under 180 rotation: 1.00"
+ ],
+ "nearest_voxel_to_platform": {
+  "distance": 17.0,
+  "at": [
+   245,
+   245,
+   18
+  ]
+ },
+ "babel": {
+  "team1": {
+   "platform_reachable_without_building": false,
+   "walkable_build_gap_any": 30.0,
+   "from": [
+    243,
+    250,
+    31
+   ],
+   "build_gap_from_own_esplanade": 39.0,
+   "esplanade_from": [
+    205,
+    240,
+    40
+   ]
+  },
+  "team2": {
+   "platform_reachable_without_building": false,
+   "walkable_build_gap_any": 30.0,
+   "from": [
+    243,
+    250,
+    31
+   ],
+   "build_gap_from_own_esplanade": 39.1,
+   "esplanade_from": [
+    307,
+    240,
+    40
+   ]
+  }
+ },
+ "routes_from_spawn": {
+  "team1": {
+   "esplanade_edge": 66.0,
+   "gallery": 84.0,
+   "ghat_foot": 62.4,
+   "precinct_ghat_foot": 71.5,
+   "fen_water_north": 116.8,
+   "nave_floor": 109.9,
+   "crossing_floor": 123.4,
+   "transept_north_door": 182.3,
+   "belfry_floor": 167.8,
+   "enemy_esplanade": 202.5,
+   "enemy_spawn": 288.5
+  },
+  "team2": {
+   "esplanade_edge": 66.0,
+   "gallery": 84.0,
+   "ghat_foot": 62.4,
+   "precinct_ghat_foot": 71.5,
+   "fen_water_north": 116.8,
+   "nave_floor": 109.9,
+   "crossing_floor": 123.4,
+   "transept_north_door": 182.3,
+   "belfry_floor": 167.8,
+   "enemy_esplanade": 202.5,
+   "enemy_spawn": 288.5
+  },
+  "nodes": {
+   "esplanade_edge": [
+    [
+     204,
+     256,
+     40
+    ],
+    [
+     308,
+     256,
+     40
+    ]
+   ],
+   "gallery": [
+    [
+     222,
+     256,
+     40
+    ],
+    [
+     290,
+     256,
+     40
+    ]
+   ],
+   "ghat_foot": [
+    [
+     161,
+     191,
+     59
+    ],
+    [
+     351,
+     191,
+     59
+    ]
+   ],
+   "precinct_ghat_foot": [
+    [
+     129,
+     170,
+     59
+    ],
+    [
+     383,
+     170,
+     59
+    ]
+   ],
+   "fen_water_north": [
+    [
+     201,
+     164,
+     61
+    ],
+    [
+     311,
+     164,
+     61
+    ]
+   ],
+   "nave_floor": [
+    [
+     238,
+     252,
+     59
+    ],
+    [
+     274,
+     252,
+     59
+    ]
+   ],
+   "crossing_floor": [
+    [
+     253,
+     250,
+     59
+    ],
+    [
+     259,
+     250,
+     59
+    ]
+   ],
+   "transept_north_door": [
+    [
+     255,
+     193,
+     59
+    ],
+    [
+     257,
+     193,
+     59
+    ]
+   ],
+   "belfry_floor": [
+    [
+     250,
+     252,
+     32
+    ],
+    [
+     262,
+     252,
+     32
+    ]
+   ],
+   "enemy_esplanade": [
+    [
+     308,
+     256,
+     40
+    ],
+    [
+     204,
+     256,
+     40
+    ]
+   ],
+   "enemy_spawn": [
+    [
+     394,
+     256,
+     40
+    ],
+    [
+     118,
+     256,
+     40
+    ]
+   ]
+  }
+ },
+ "route_parity_max_diff": 0.0,
+ "routes_unreachable": [],
+ "spawn_exposure": {
+  "team1": {
+   "spawn_points": 441,
+   "exposed_pct": 62.8,
+   "mean_viewers_per_point": 3.8,
+   "median_depression_angle_deg": 24.0,
+   "median_floor_z": 40,
+   "median_horizontal_dist": 87.5
+  },
+  "team2": {
+   "spawn_points": 441,
+   "exposed_pct": 62.4,
+   "mean_viewers_per_point": 3.5,
+   "median_depression_angle_deg": 23.8,
+   "median_floor_z": 40,
+   "median_horizontal_dist": 88.5
+  }
+ },
+ "safe_descent": {
+  "team1": {
+   "targets": {
+    "esplanade_edge": {
+     "any": 66.0,
+     "no_fall_damage": 66.0
+    },
+    "gallery": {
+     "any": 84.0,
+     "no_fall_damage": 84.0
+    },
+    "ghat_foot": {
+     "any": 62.4,
+     "no_fall_damage": 62.4
+    },
+    "precinct_ghat_foot": {
+     "any": 71.5,
+     "no_fall_damage": 71.5
+    },
+    "fen_water_north": {
+     "any": 116.8,
+     "no_fall_damage": 116.8
+    },
+    "nave_floor": {
+     "any": 109.9,
+     "no_fall_damage": 109.9
+    },
+    "crossing_floor": {
+     "any": 123.4,
+     "no_fall_damage": 123.4
+    },
+    "transept_north_door": {
+     "any": 182.3,
+     "no_fall_damage": 182.3
+    },
+    "belfry_floor": {
+     "any": 167.8,
+     "no_fall_damage": 167.8
+    },
+    "enemy_esplanade": {
+     "any": 202.5,
+     "no_fall_damage": 202.5
+    },
+    "enemy_spawn": {
+     "any": 288.5,
+     "no_fall_damage": 288.5
+    }
+   },
+   "fen_nodes_own_half": 16562,
+   "fen_nodes_reachable_any": 16396,
+   "fen_nodes_reachable_without_fall_damage": 16396,
+   "fen_nodes_that_can_walk_back_to_spawn_safely": 16430,
+   "one_way_nodes": 114
+  },
+  "team2": {
+   "targets": {
+    "esplanade_edge": {
+     "any": 66.0,
+     "no_fall_damage": 66.0
+    },
+    "gallery": {
+     "any": 84.0,
+     "no_fall_damage": 84.0
+    },
+    "ghat_foot": {
+     "any": 62.4,
+     "no_fall_damage": 62.4
+    },
+    "precinct_ghat_foot": {
+     "any": 71.5,
+     "no_fall_damage": 71.5
+    },
+    "fen_water_north": {
+     "any": 116.8,
+     "no_fall_damage": 116.8
+    },
+    "nave_floor": {
+     "any": 109.9,
+     "no_fall_damage": 109.9
+    },
+    "crossing_floor": {
+     "any": 123.4,
+     "no_fall_damage": 123.4
+    },
+    "transept_north_door": {
+     "any": 182.3,
+     "no_fall_damage": 182.3
+    },
+    "belfry_floor": {
+     "any": 167.8,
+     "no_fall_damage": 167.8
+    },
+    "enemy_esplanade": {
+     "any": 202.5,
+     "no_fall_damage": 202.5
+    },
+    "enemy_spawn": {
+     "any": 288.5,
+     "no_fall_damage": 288.5
+    }
+   },
+   "fen_nodes_own_half": 16562,
+   "fen_nodes_reachable_any": 16396,
+   "fen_nodes_reachable_without_fall_damage": 16396,
+   "fen_nodes_that_can_walk_back_to_spawn_safely": 16430,
+   "one_way_nodes": 114
+  }
+ },
+ "unguarded_edges_on_descent_routes": {
+  "route_nodes": 5316,
+  "count": 0,
+  "examples": []
+ }
+}

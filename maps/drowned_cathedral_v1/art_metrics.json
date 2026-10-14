@@ -1,0 +1,16 @@
+[
+ {
+  "map": "drowned_cathedral",
+  "colours": 8218,
+  "hue_families_90": 4,
+  "top_noise": 1.65,
+  "coherence_4": 1.37,
+  "top_flat_pct": 34.9,
+  "ramp_step": 0.87,
+  "height_L_corr": 0.18,
+  "side_minus_top_L": -5.0,
+  "vert_detail": 2.26,
+  "relief_16": 19.4,
+  "land_cols": 242192
+ }
+]

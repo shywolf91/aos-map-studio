@@ -1,0 +1,194 @@
+{
+ "reader_ok": true,
+ "colours_missing_on_surface": 4909083,
+ "floating_components": 0,
+ "mirror_occupancy_match": 0.998961,
+ "tower_zone_columns": 6612,
+ "tower_zone_columns_not_flat_z40": 0,
+ "spawn_square_columns_not_flat_z40": 0,
+ "babel_static": [
+  "info: base 118,256: spawn heights median z=40, min z=40, water columns=0",
+  "info: base 394,256: spawn heights median z=40, min z=40, water columns=0",
+  "info: spawn-zone heights equal under x-mirror: 1.00, under 180 rotation: 1.00"
+ ],
+ "nearest_voxel_to_platform": {
+  "distance": 17.0,
+  "at": [
+   245,
+   245,
+   18
+  ]
+ },
+ "babel": {
+  "team1": {
+   "platform_reachable_without_building": false,
+   "walkable_build_gap_any": 30.0,
+   "from": [
+    243,
+    247,
+    31
+   ],
+   "build_gap_from_own_esplanade": 39.0,
+   "esplanade_from": [
+    205,
+    240,
+    40
+   ]
+  },
+  "team2": {
+   "platform_reachable_without_building": false,
+   "walkable_build_gap_any": 30.0,
+   "from": [
+    243,
+    247,
+    31
+   ],
+   "build_gap_from_own_esplanade": 39.1,
+   "esplanade_from": [
+    307,
+    240,
+    40
+   ]
+  }
+ },
+ "routes_from_spawn": {
+  "team1": {
+   "esplanade_edge": 66.0,
+   "stair_landing": 59.9,
+   "transept_door": 103.0,
+   "portal": 184.4,
+   "crossing_floor": 136.8,
+   "belfry_floor": 187.8,
+   "enemy_esplanade": 319.3,
+   "enemy_spawn": 322.8
+  },
+  "team2": {
+   "esplanade_edge": 66.0,
+   "stair_landing": 59.9,
+   "transept_door": 103.0,
+   "portal": 184.4,
+   "crossing_floor": 136.8,
+   "belfry_floor": 187.8,
+   "enemy_esplanade": 319.3,
+   "enemy_spawn": 322.8
+  },
+  "nodes": {
+   "esplanade_edge": [
+    [
+     204,
+     256,
+     40
+    ],
+    [
+     308,
+     256,
+     40
+    ]
+   ],
+   "stair_landing": [
+    [
+     183,
+     214,
+     59
+    ],
+    [
+     329,
+     214,
+     59
+    ]
+   ],
+   "transept_door": [
+    [
+     217,
+     256,
+     59
+    ],
+    [
+     295,
+     256,
+     59
+    ]
+   ],
+   "portal": [
+    [
+     253,
+     140,
+     59
+    ],
+    [
+     259,
+     140,
+     59
+    ]
+   ],
+   "crossing_floor": [
+    [
+     250,
+     254,
+     59
+    ],
+    [
+     262,
+     254,
+     59
+    ]
+   ],
+   "belfry_floor": [
+    [
+     252,
+     250,
+     32
+    ],
+    [
+     260,
+     250,
+     32
+    ]
+   ],
+   "enemy_esplanade": [
+    [
+     308,
+     256,
+     40
+    ],
+    [
+     204,
+     256,
+     40
+    ]
+   ],
+   "enemy_spawn": [
+    [
+     394,
+     256,
+     40
+    ],
+    [
+     118,
+     256,
+     40
+    ]
+   ]
+  }
+ },
+ "route_parity_max_diff": 0.0,
+ "routes_unreachable": [],
+ "spawn_exposure": {
+  "team1": {
+   "spawn_points": 441,
+   "exposed_pct": 62.8,
+   "mean_viewers_per_point": 3.8,
+   "median_depression_angle_deg": 24.0,
+   "median_floor_z": 40,
+   "median_horizontal_dist": 87.5
+  },
+  "team2": {
+   "spawn_points": 441,
+   "exposed_pct": 62.4,
+   "mean_viewers_per_point": 3.5,
+   "median_depression_angle_deg": 23.8,
+   "median_floor_z": 40,
+   "median_horizontal_dist": 88.5
+  }
+ }
+}
