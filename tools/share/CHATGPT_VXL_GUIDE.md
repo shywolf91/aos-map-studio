@@ -50,6 +50,10 @@ Finish with a comparison table: `va.run([...all maps...], '/mnt/data/analysis', 
 * z = 63 is the water plane. It is solid everywhere, and its colour is the water/ground colour. Some maps paint a picture into it; Cloud Smash paints a sunset.
 * There is no header. Columns are stored y-major (x varies fastest). Each column is a list of spans: `N S E A` plus colours. Colours are B, G, R plus a shade byte, which clients mostly ignore.
 * Voxels between coloured runs are solid but buried, and everything below a column's last span is solid.
+* Only **surface** voxels store a colour; buried voxels have none. Renders cut the map open at its edges (and at
+  `iso` crop boxes), so buried voxels show there as a **hatched grey "section"** — that is the cut, not map content.
+  Black in a render is a real stored black colour.
+* The ASCII height map uses 8 x-columns × 16 y-rows per character (monospace cells are ~1:2), so it stays square.
 * Images use north up (y = 0 at the top) and west on the left (x = 0).
 * Region-grid cells are 64 × 64: A–H run west→east, 1–8 north→south.
 * The VXL holds geometry and colours only. Game mode, spawns, intel/tents, fog and protection come from the server, its scripts and the map's `.txt` metadata. A `.txt` file is Python, so the analyzer only reads it as text and never executes it.
@@ -77,6 +81,8 @@ Finish with a comparison table: `va.run([...all maps...], '/mnt/data/analysis', 
 | `top_equal_neighbour_pct`, `shading_step_dL` | flat-painted style (many equal neighbours, big steps) vs fine gradients (small steps of 1–2 L*) | Shenlong is flat-painted (~74 % equal, ~11 L* steps); tradeoff and alpine use fine gradients |
 | `relief_16` | mean height range inside 16 × 16 chunks: terrain articulation | compare between maps |
 | `surface_voxels_per_land_column` | vertical detail / structure density | ~1.0 = bare heightfield; higher = buildings, overhangs, vegetation |
+| `columns_with_air_gap_pct`, `air_under_surface_mean` | columns with an air gap under solid (occupancy only — colours play no part): caves, hollow crust over water, overhangs, bridges, roofs, tree crowns; and mean air voxels between the surface and the water plane | normandie 5.7 % / 0.2 (solid ground); 1mirror2forts 79 % / 12 (a ~15-voxel crust over a cavern of water) |
+| spec checks | bottom-layer holes and surface voxels without colour should be 0; colours stored on buried voxels are harmless | |
 | `water_plane_colours` | colours in the z = 63 plane | > 1000 usually means a painted backdrop |
 
 **Babel spawn exposure** (`babel=True`). Eyes are placed on the platform edge and heads on a 2-voxel grid of each spawn square. The check uses straight-line visibility and ignores fog, so it is an upper bound.

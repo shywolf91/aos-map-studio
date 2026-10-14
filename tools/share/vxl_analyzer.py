@@ -63,6 +63,9 @@ WATER_Z = 63
 BABEL_PLATFORM = {'x': (206, 305), 'y': (240, 271), 'z': 1}
 BABEL_BASES = ((118, 256), (394, 256))
 BABEL_SPAWN_HALF = 20
+# Solid voxels with no stored colour are buried (the file only stores colours for surface voxels). Renders cut the
+# map open at its edges / crop boxes, so such voxels are drawn in this hatched "section" grey, never as black.
+SECTION_RGB = np.array((92, 84, 76), np.float32)
 
 
 # =========================================================================== reading
@@ -246,6 +249,8 @@ def basic_stats(m):
     hl = h[land]
     surf = surface_mask(s)
     runs = (s[:, :, 1:] & ~s[:, :, :-1]).sum(axis=2) + s[:, :, 0]       # solid runs per column (incl. bottom)
+    zz = np.arange(Z)[None, None, :]
+    gap = ((~s) & (zz > top[:, :, None]) & (zz < 63)).sum(axis=2)       # air below the topmost voxel
     hist_edges = [0, 1, 4, 8, 16, 24, 32, 40, 48, 56, 64]
     hist = np.histogram(hl, bins=hist_edges)[0] if hl.size else np.zeros(len(hist_edges) - 1, int)
     return {
@@ -257,8 +262,13 @@ def basic_stats(m):
         'height_median_land': float(np.median(hl)) if hl.size else 0,
         'height_histogram_land': {f'{a}-{b - 1}': int(c) for a, b, c in zip(hist_edges[:-1], hist_edges[1:], hist)},
         'highest_point': [int(v) for v in np.unravel_index(int(np.argmax(h)), h.shape)] + [int(top.min())],
-        'columns_with_overhang_pct': round(100 * (runs >= 2).mean(), 2),
+        # occupancy only (colours play no part): >= 2 separate solid runs = an air gap under solid somewhere in the
+        # column (cave, hollow crust over water, overhang, bridge, tunnel, roof, tree crown)
+        'columns_with_air_gap_pct': round(100 * (runs >= 2).mean(), 2),
         'max_runs_in_a_column': int(runs.max()),
+        # air voxels between the topmost voxel and the water plane, per land column (large = hollow map / caves)
+        'air_under_surface_mean': round(float(gap[land].mean()), 1) if land.any() else 0,
+        'columns_with_8plus_air_under_surface_pct': round(100 * float((gap >= 8).mean()), 1),
         'sky_level_columns(z<=3)': int((top <= 3).sum()),
         'bounding_box_of_land': _bbox(land),
     }
@@ -430,27 +440,27 @@ def region_grid(m, cells=8):
     return rows
 
 
-def ascii_height(m, cell=8):
-    """64x64 character height map (each char = 8x8 columns, max height). '~' = water only.
-    The ramp ' .:-=+*#%@' is stretched over THIS map's land height range (printed underneath), so low maps still
-    show their relief. North (y = 0) at the top, west (x = 0) on the left - same orientation as top.png."""
+def ascii_height(m, cw=8, ch=16):
+    """64 x 32 character height map: each char = 8 columns (x) by 16 rows (y), max height, so the map keeps its
+    square shape in a monospace font (character cells are ~1:2). '~' = water only. The ramp '.:-=+*#%@' is stretched
+    over THIS map's land height range (legend underneath). North (y = 0) at the top, west (x = 0) on the left."""
     top = topmost(m.solid)
     h = 63 - top
     land = h > 0
     lo, hi = (int(h[land].min()), int(h[land].max())) if land.any() else (0, 1)
-    ramp = '.:-=+*#%@'
-    n = X // cell
-    lines = ['    ' + ''.join('ABCDEFGH'[i * cell // 64] if (i * cell) % 64 == 0 else ' ' for i in range(n))]
-    for gy in range(n):
-        line = ''
-        for gx in range(n):
-            mx = int(h[gx * cell:(gx + 1) * cell, gy * cell:(gy + 1) * cell].max())
-            line += '~' if mx == 0 else ramp[min(len(ramp) - 1, (mx - lo) * len(ramp) // max(hi - lo + 1, 1))]
-        lines.append(f'{gy * cell:3d} ' + line)
     R = max(hi - lo + 1, 1)
+    ramp = '.:-=+*#%@'
+    lines = ['    ' + ''.join('ABCDEFGH'[i * cw // 64] if (i * cw) % 64 == 0 else ' ' for i in range(X // cw))]
+    for gy in range(Y // ch):
+        line = ''
+        for gx in range(X // cw):
+            mx = int(h[gx * cw:(gx + 1) * cw, gy * ch:(gy + 1) * ch].max())
+            line += '~' if mx == 0 else ramp[min(len(ramp) - 1, (mx - lo) * len(ramp) // R)]
+        lines.append(f'{gy * ch:3d} ' + line)
     vals = {c: [v for v in range(lo, hi + 1) if ramp[min(len(ramp) - 1, (v - lo) * len(ramp) // R)] == c] for c in ramp}
     legend = ', '.join(f"'{c}' {v[0]}-{v[-1]}" for c, v in vals.items() if v)
-    return '\n'.join(lines) + f'\n    ~ water only; heights (63 - z): {legend}'
+    return ('\n'.join(lines) + f'\n    each char = 8 x-columns by 16 y-rows (max height); row labels = first y; '
+            f'~ water only; heights (63 - z): {legend}')
 
 
 # ---------------------------------------------------------------- Babel-specific
@@ -462,7 +472,7 @@ def babel_geometry(m):
     P = BABEL_PLATFORM
     (x0, x1), (y0, y1), pz = P['x'], P['y'], P['z']
     top = topmost(s)
-    out = {'platform_footprint_occupied_voxels_z0_3': int(s[x0:x1 + 1, y0:y1 + 1, 0:4].sum())}
+    out = {'platform_footprint_occupied_voxels_z0_2': int(s[x0:x1 + 1, y0:y1 + 1, 0:pz + 2].sum())}   # platform z=1 +-1
     xs, ys, zs = np.nonzero(s[:, :, :63])
     dx = np.maximum(0, np.maximum(x0 - xs, xs - x1))
     dy = np.maximum(0, np.maximum(y0 - ys, ys - y1))
@@ -579,29 +589,39 @@ def height_view(m):
         d.line([(k, 0), (k, 511)], fill=(200, 60, 60))
         d.line([(0, k), (511, k)], fill=(200, 60, 60))
     for gx in range(8):
-        d.text((gx * 64 + 3, 2), 'ABCDEFGH'[gx], fill=(255, 220, 0))
+        _label(d, (gx * 64 + 3, 2), 'ABCDEFGH'[gx])
     for gy in range(8):
-        d.text((3, gy * 64 + 12), str(gy + 1), fill=(255, 220, 0))
-    d.text((70, 500), f'grey = land height {int(lo)} (dark) .. {int(hi)} (white); blue = water', fill=(255, 220, 0))
+        _label(d, (3, gy * 64 + 14), str(gy + 1))
+    _label(d, (66, 497), f'grey = land height {int(lo)} (dark) .. {int(hi)} (white); blue = water')
     return im
+
+
+def _label(d, xy, text):
+    """Text on a dark box so it stays readable on any background."""
+    x, y = xy
+    w = 6 * len(text) + 4
+    d.rectangle([x - 2, y - 1, x + w, y + 11], fill=(0, 0, 0))
+    d.text((x, y), text, fill=(255, 230, 90))
 
 
 def side_view(m, frm='south', fog=(150, 160, 175)):
     """Orthographic elevation: first solid voxel seen looking in from one side; distance fades toward fog.
     'south' looks north from y = 511 (x left->right), 'north' from y = 0, 'west' from x = 0, 'east' from x = 511."""
-    s, c = m.solid, m.color
+    s, c, kd = m.solid, m.color, m.colored
     if frm == 'south':
-        s, c = s[:, ::-1, :], c[:, ::-1, :]
+        s, c, kd = s[:, ::-1, :], c[:, ::-1, :], kd[:, ::-1, :]
     elif frm == 'north':
-        s, c = s[::-1, :, :], c[::-1, :, :]
+        s, c, kd = s[::-1, :, :], c[::-1, :, :], kd[::-1, :, :]
     elif frm == 'west':
-        s, c = s.transpose(1, 0, 2), c.transpose(1, 0, 2)
+        s, c, kd = (a.transpose(1, 0, 2) for a in (s, c, kd))
     elif frm == 'east':
-        s, c = s.transpose(1, 0, 2)[::-1, ::-1, :], c.transpose(1, 0, 2)[::-1, ::-1, :]
+        s, c, kd = (a.transpose(1, 0, 2)[::-1, ::-1, :] for a in (s, c, kd))
     hit = s.any(axis=1)                                   # [u, z]
     depth = np.argmax(s, axis=1)
     u, z = np.indices(depth.shape)
     col = rgb_of(c[u, depth, z])
+    k = ~kd[u, depth, z] & hit                       # no stored colour = buried voxel cut open at the map edge
+    col[k] = SECTION_RGB * np.where(((u + z) % 4 < 2)[k], 1.0, 0.85)[:, None]
     t = np.clip(depth / 400.0, 0, 0.85)[..., None]
     img = col * (1 - t) + np.array(fog, np.float32) * t
     img[~hit] = (25, 28, 34)
@@ -628,12 +648,13 @@ def _sprite(s):
 
 def iso(m, crop=None, view=0, s=2, bg=(24, 26, 30)):
     """Isometric render. crop=(x0, y0, x1, y1) inclusive; view 0..3 rotates 90 degrees."""
-    solid, color = m.solid, m.color
+    solid, color, kd = m.solid, m.color, m.colored
     if crop:
         x0, y0, x1, y1 = crop
-        solid, color = solid[x0:x1 + 1, y0:y1 + 1], color[x0:x1 + 1, y0:y1 + 1]
+        solid, color, kd = solid[x0:x1 + 1, y0:y1 + 1], color[x0:x1 + 1, y0:y1 + 1], kd[x0:x1 + 1, y0:y1 + 1]
     solid = np.rot90(solid, view, axes=(0, 1))
     color = np.rot90(color, view, axes=(0, 1))
+    kd = np.rot90(kd, view, axes=(0, 1))
     Xs, Ys, _ = solid.shape
     air = ~solid
     e = np.zeros_like(solid)
@@ -650,6 +671,7 @@ def iso(m, crop=None, view=0, s=2, bg=(24, 26, 30)):
     sy = ((x + y) * s) // 2 + (63 - h) * s
     depth = (x + y + h).astype(np.int32)
     rgb = rgb_of(color[x, y, z])
+    rgb[~kd[x, y, z]] = SECTION_RGB                # buried voxels exposed by the crop/map edge
     W = (Xs + Ys + 2) * s
     H = ((Xs + Ys) * s) // 2 + 64 * s + 2 * s
     sp = _sprite(s)
@@ -672,8 +694,18 @@ def iso(m, crop=None, view=0, s=2, bg=(24, 26, 30)):
 
 # =========================================================================== driver
 
+def file_quality(m):
+    """Spec conformance beyond parsing. Surface rule = pyspades is_surface (off-map neighbours count as solid)."""
+    surf = surface_mask(m.solid)
+    return {'bottom_layer_holes(z63_air)': int((~m.solid[:, :, 63]).sum()),
+            'surface_voxels_without_colour': int((surf & ~m.colored).sum()),
+            'colour_stored_on_buried_voxels': int((m.colored & ~surf).sum()),
+            'note': 'colours on buried voxels are harmless (editors and pyspades keep bottom-run colours)'}
+
+
 def analyze(m, name='map', babel=False, meta=None):
     rep = {'map': name, 'parse': m.report, 'metadata_txt': meta}
+    rep['parse']['quality'] = file_quality(m)
     rep['basic'] = basic_stats(m)
     rep['spikes'] = spike_stats(m)
     rep['connectivity'] = connectivity(m)
@@ -693,7 +725,8 @@ def report_md(rep):
          'Measured by vxl_analyzer.py (geometry + colour only; no in-game behaviour is implied).', '']
     p = rep['parse']
     L += ['## File', f"- parse ok: **{p['parse_ok']}**, {p['bytes']:,} bytes, {p['spans']:,} spans, "
-          f"all-air columns: {p['all_air_columns']}", *(f'- issue: {i}' for i in p['issues'][:10])]
+          f"all-air columns: {p['all_air_columns']}", *(f'- issue: {i}' for i in p['issues'][:10]),
+          f"- spec checks: {({k: v for k, v in p['quality'].items() if k != 'note'})} ({p['quality']['note']})"]
     if rep.get('metadata_txt'):
         mt = rep['metadata_txt']
         L += [f"- metadata {mt['file']}: {mt['fields']}; hooks: {mt['hooks_defined'] or 'none'}"]
@@ -704,8 +737,11 @@ def report_md(rep):
           f"- land height (63 - z): min {b['height_min']}, median {b['height_median_land']}, mean {b['height_mean_land']}, "
           f"max {b['height_max']} at {b['highest_point']} [x, y, z]",
           f"- height histogram (land columns): {b['height_histogram_land']}",
-          f"- columns with overhangs/bridges/tunnels (>= 2 solid runs): {b['columns_with_overhang_pct']}% "
-          f"(max runs in one column {b['max_runs_in_a_column']})",
+          f"- columns with an air gap under solid (>= 2 solid runs; occupancy only, colours not involved): "
+          f"{b['columns_with_air_gap_pct']}% (max runs in one column {b['max_runs_in_a_column']}) - caves, hollow crust, "
+          f"overhangs, bridges, roofs, tree crowns",
+          f"- air under the surface: mean {b['air_under_surface_mean']} voxels per land column; columns with >= 8: "
+          f"{b['columns_with_8plus_air_under_surface_pct']}% (high = hollow map / big caves)",
           f"- sky-level columns (top z <= 3): {b['sky_level_columns(z<=3)']}; 1x1 spikes: {rep['spikes']['one_by_one_spikes']}",
           f"- solid voxels {b['solid_voxels']:,}; surface voxels above water {b['surface_voxels_above_water']:,}"]
     if cn.get('available'):
@@ -732,7 +768,8 @@ def report_md(rep):
           '- top colours: ' + ', '.join(f"{c['hex']} {c['share_pct']}%" for c in a.get('top_colours', [])[:12])]
     g = rep['babel_geometry']
     L += ['', '## Babel geometry (stock piqueserver: platform z=1, x 206-305, y 240-271; bases (118,256)/(394,256))',
-          f"- map voxels inside the platform footprint z 0-3: {g['platform_footprint_occupied_voxels_z0_3']}"]
+          f"- map voxels in the platform footprint at z 0-2 (platform layer +-1, inclusive): "
+          f"{g['platform_footprint_occupied_voxels_z0_2']}"]
     for side in ('west', 'east'):
         k = f'nearest_solid_to_platform_{side}'
         if k in g:
@@ -753,7 +790,7 @@ def report_md(rep):
         L.append(f"| {row[0]['cell'][1:]} | " + ' | '.join(
             f"{c['land_pct']}% h{c['h_mean']}/{c['h_max']} d{c['detail']} {c['colour']}" for c in row) + ' |')
     L += ['', 'cell = land% h(mean)/(max) d(surface voxels per land column = structure density) dominant top colour',
-          '', '## ASCII height map (north up, 8x8 columns per char)', '```', rep['ascii_height'], '```']
+          '', '## ASCII height map (north up, 8 x 16 columns per char)', '```', rep['ascii_height'], '```']
     return '\n'.join(L) + '\n'
 
 
@@ -776,7 +813,8 @@ def run(paths, out, babel=False, iso_on=False, render=True):
             sheet = Image.new('RGB', (512, sum(i.height + 14 for i in sides)), (15, 15, 18))
             dr = ImageDraw.Draw(sheet)
             yy = 0
-            for f, im in zip(('from south (looking north)', 'from north', 'from west', 'from east'), sides):
+            for f, im in zip(('from south (looking north); hatched grey = buried voxels cut open at the map edge',
+                              'from north', 'from west', 'from east'), sides):
                 dr.text((4, yy), f, fill=(230, 230, 230))
                 sheet.paste(im, (0, yy + 14))
                 yy += im.height + 14
@@ -787,7 +825,7 @@ def run(paths, out, babel=False, iso_on=False, render=True):
         b, a, sy = rep['basic'], rep['art'], rep['symmetry']
         row = {'map': name, 'parse_ok': rep['parse']['parse_ok'], 'land_pct': b['land_columns_pct'],
                'h_median': b['height_median_land'], 'h_max': b['height_max'],
-               'overhang_pct': b['columns_with_overhang_pct'],
+               'air_gap_cols_pct': b['columns_with_air_gap_pct'], 'air_under_mean': b['air_under_surface_mean'],
                'floating': rep['connectivity'].get('floating_components'),
                'sym_x_pct': sy['mirror_x (east-west)']['height_match_pct'], 'sym_best': sy['best'],
                'colours': a.get('unique_colours'), 'hue_fam_90': a.get('hue_families_90'),
