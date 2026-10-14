@@ -34,7 +34,9 @@ FORMAT FACTS (verified against piqueserver 1.4.2 pyspades/vxl_c.h and the aospro
     S (first z of the top coloured run), E (last z of the top coloured run, inclusive), A (z where this span's
     air starts; for later spans it ends the previous span's bottom colours). Then (E - S + 1) top colours, then
     the previous solid block's bottom colours. Colours: 4 bytes B, G, R, A(=shade byte, ignored by OpenSpades).
-    Voxels between coloured runs are solid but uncoloured (buried). Everything below the last span is solid.
+    Voxels between coloured runs are solid but uncoloured. Everything below the last span is solid.
+    Terms: SURFACE (exposed) = solid with an air face-neighbour or z == 0 (off-map counts as solid, as in pyspades
+    is_surface); BURIED (filled / surrounded) = solid with all 6 face-neighbours solid.
 """
 from __future__ import annotations
 
@@ -85,7 +87,7 @@ def read_vxl(data: bytes) -> VoxelMap:
     colored = np.zeros((Y, X, Z), bool)
     u32 = struct.Struct('<I').unpack_from
     n, p = len(data), 0
-    issues, spans, void_cols = [], 0, 0
+    issues, spans, open_bottom = [], 0, 0
 
     def flag(kind, x, y, d=''):
         if len(issues) < 50:
@@ -101,7 +103,9 @@ def read_vxl(data: bytes) -> VoxelMap:
                 N, S, E, A = data[p], data[p + 1], data[p + 2], data[p + 3]
                 spans += 1
                 if N == 0 and S == 64 and E == 63:
-                    void_cols += 1                # all-air column (non-standard but loads in pyspades)
+                    # last span has no voxels: z = 63 (the water plane) is AIR in this column. The column may still
+                    # have solid voxels above (earlier spans). Non-standard, but pyspades loads it.
+                    open_bottom += 1
                 elif S > 63 or E > 63:
                     flag('z_out_of_range', x, y, f'S={S} E={E}')
                 if E < S - 1:
@@ -137,7 +141,9 @@ def read_vxl(data: bytes) -> VoxelMap:
     m = VoxelMap(np.ascontiguousarray(solid.transpose(1, 0, 2)),
                  np.ascontiguousarray(color.transpose(1, 0, 2)),
                  np.ascontiguousarray(colored.transpose(1, 0, 2)))
-    m.report = {'bytes': n, 'bytes_consumed': p, 'spans': spans, 'all_air_columns': void_cols,
+    m.report = {'bytes': n, 'bytes_consumed': p, 'spans': spans,
+                'columns_without_z63_bottom': open_bottom,
+                'all_air_columns': int((~m.solid.any(axis=2)).sum()),
                 'issues': issues, 'parse_ok': not issues and p == n}
     return m
 
@@ -695,12 +701,24 @@ def iso(m, crop=None, view=0, s=2, bg=(24, 26, 30)):
 # =========================================================================== driver
 
 def file_quality(m):
-    """Spec conformance beyond parsing. Surface rule = pyspades is_surface (off-map neighbours count as solid)."""
+    """Cross-column consistency checks (z = 63 holes are already counted by the reader as
+    columns_without_z63_bottom). Surface rule = pyspades is_surface: off-map neighbours count as SOLID.
+
+    surface_voxels_without_colour: a column only stores colours for the runs it lists; whether a voxel is exposed
+      depends on the NEIGHBOURING columns, so a writer that ignores neighbours can leave exposed voxels with no
+      colour (clients then draw garbage). Should be 0; pyspades and our writer guarantee it.
+    colour_on_buried_*: colours stored for voxels that are not exposed. Harmless. If they all sit in map-border
+      columns, the saving editor treated off-map as AIR (so it coloured the outer walls); elsewhere they are usually
+      left over from edits. Not a sign of overlapping spans (the reader flags those as issues)."""
     surf = surface_mask(m.solid)
-    return {'bottom_layer_holes(z63_air)': int((~m.solid[:, :, 63]).sum()),
-            'surface_voxels_without_colour': int((surf & ~m.colored).sum()),
-            'colour_stored_on_buried_voxels': int((m.colored & ~surf).sum()),
-            'note': 'colours on buried voxels are harmless (editors and pyspades keep bottom-run colours)'}
+    cb = m.colored & ~surf
+    border = np.zeros((X, Y), bool)
+    border[0] = border[-1] = True
+    border[:, 0] = border[:, -1] = True
+    return {'surface_voxels_without_colour': int((surf & ~m.colored).sum()),
+            'colour_on_buried_voxels_map_border': int((cb & border[:, :, None]).sum()),
+            'colour_on_buried_voxels_interior': int((cb & ~border[:, :, None]).sum()),
+            'colour_on_air_voxels': int((m.colored & ~m.solid).sum())}
 
 
 def analyze(m, name='map', babel=False, meta=None):
@@ -725,8 +743,10 @@ def report_md(rep):
          'Measured by vxl_analyzer.py (geometry + colour only; no in-game behaviour is implied).', '']
     p = rep['parse']
     L += ['## File', f"- parse ok: **{p['parse_ok']}**, {p['bytes']:,} bytes, {p['spans']:,} spans, "
-          f"all-air columns: {p['all_air_columns']}", *(f'- issue: {i}' for i in p['issues'][:10]),
-          f"- spec checks: {({k: v for k, v in p['quality'].items() if k != 'note'})} ({p['quality']['note']})"]
+          f"columns with no z=63 bottom voxel: {p['columns_without_z63_bottom']} (of which entirely air: "
+          f"{p['all_air_columns']})", *(f'- issue: {i}' for i in p['issues'][:10]),
+          f"- consistency checks: {p['quality']} (surface without colour should be 0; buried colours are harmless - "
+          f"all on the map border = the saving editor treated off-map as air)"]
     if rep.get('metadata_txt'):
         mt = rep['metadata_txt']
         L += [f"- metadata {mt['file']}: {mt['fields']}; hooks: {mt['hooks_defined'] or 'none'}"]

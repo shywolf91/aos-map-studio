@@ -86,7 +86,7 @@ class ReadReport:
     bytes_consumed: int = 0
     spans: int = 0
     empty_top_runs: int = 0     # spans with E == S-1 (zero colours in top run) - informational
-    void_columns: int = 0       # columns with no solid voxel at all (S=64, E=63) - informational
+    void_columns: int = 0       # columns whose z = 63 is AIR (last span S=64, E=63); may still have solid above
     issues: list = field(default_factory=list)   # (kind, x, y, detail) - capped
 
     def flag(self, kind, x, y, detail=""):
@@ -121,7 +121,7 @@ def read_vxl(data: bytes) -> tuple[VoxelMap, ReadReport]:
                 N, S, E, A = data[p], data[p + 1], data[p + 2], data[p + 3]
                 rep.spans += 1
                 if N == 0 and S == 64 and E == 63:
-                    rep.void_columns += 1       # whole column air incl. z=63 (spec-violating, but
+                    rep.void_columns += 1       # z=63 is air in this column (spec-violating, but
                                                 # pyspades loads/re-emits it; seen in 10yearsaloha)
                 elif S > 63 or E > 63:
                     rep.flag('z_out_of_range', x, y, f'S={S} E={E}')
