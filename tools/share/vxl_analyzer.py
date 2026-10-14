@@ -15,7 +15,7 @@ USAGE
 
   Per map it writes  <out>/<mapname>/report.md   (read this first - text, ASCII height map, region grid)
                      <out>/<mapname>/report.json (every number)
-                     <out>/<mapname>/*.png       (top.png, height.png, voids.png, sides.png, iso_*.png)
+                     <out>/<mapname>/*.png       (top, height, heightmap_raw, height_contours, voids, sides, iso_*)
   and for several maps <out>/summary.md + summary.csv (one row per map).
 
 AS A LIBRARY
@@ -605,7 +605,7 @@ def _grid(d):
         _label(d, (3, gy * 64 + 14), str(gy + 1))
 
 
-def height_view(m, contour=2):
+def contour_view(m, contour=2):
     """Hypsometric height map of the TOP surface (63 - z), colours stretched over this map's land range, with a
     dark contour line every `contour` voxels and a legend bar. Water = blue. North up."""
     top = topmost(m.solid)
@@ -628,6 +628,36 @@ def height_view(m, contour=2):
     _label(d, (300, 494), f'{int(lo)}')
     _label(d, (504 - 6 * len(str(int(hi))), 494), f'{int(hi)}')
     return im
+
+
+def height_view(m):
+    """Classic AoS-style greyscale height map (the project's default view): brightness = height of the top surface,
+    stretched over this map's land range; water blue; 64-voxel grid and labels on top."""
+    top = topmost(m.solid)
+    h = (63 - top).astype(np.float32)
+    land = top < 63
+    lo, hi = (h[land].min(), h[land].max()) if land.any() else (0, 1)
+    g = (40 + 215 * np.clip((h - lo) / max(hi - lo, 1), 0, 1)).astype(np.uint8)
+    img = np.stack([g, g, g], -1)
+    img[~land] = (40, 70, 140)
+    im = Image.fromarray(img.transpose(1, 0, 2), 'RGB')
+    d = ImageDraw.Draw(im)
+    for k in range(64, 512, 64):
+        d.line([(k, 0), (k, 511)], fill=(200, 60, 60))
+        d.line([(0, k), (511, k)], fill=(200, 60, 60))
+    for gx in range(8):
+        _label(d, (gx * 64 + 3, 2), 'ABCDEFGH'[gx])
+    for gy in range(8):
+        _label(d, (3, gy * 64 + 14), str(gy + 1))
+    _label(d, (66, 497), f'grey = land height {int(lo)} (dark) .. {int(hi)} (white); blue = water')
+    return im
+
+
+def heightmap_raw(m):
+    """Plain 512x512 greyscale heightmap, no overlays, ABSOLUTE scale: grey = (63 - z) * 4 (0 = water plane,
+    252 = z 0). For feeding heightmap-based tools or comparing maps on one scale."""
+    h = (63 - topmost(m.solid)).astype(np.uint8) * 4
+    return Image.fromarray(h.T, 'L')
 
 
 def void_view(m):
@@ -873,6 +903,8 @@ def run(paths, out, babel=False, iso_on=False, render=True):
         if render and Image is not None:
             top_view(m).save(os.path.join(d, 'top.png'))
             height_view(m).save(os.path.join(d, 'height.png'))
+            heightmap_raw(m).save(os.path.join(d, 'heightmap_raw.png'))
+            contour_view(m).save(os.path.join(d, 'height_contours.png'))
             void_view(m).save(os.path.join(d, 'voids.png'))
             sides = [side_view(m, f) for f in ('south', 'north', 'west', 'east')]
             sheet = Image.new('RGB', (512, sum(i.height + 14 for i in sides)), (15, 15, 18))
