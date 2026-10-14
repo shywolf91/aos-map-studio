@@ -55,7 +55,15 @@ server-loaded → client-inspected → playtested. Never skip a rung when report
   (This is why Arena gates must be ≤ 2 thick — see §7.)
 * Quirks seen in real maps: "void columns" (whole column air including z = 63; 10yearsaloha) load fine in
   pyspades `[RUN]`; OpenSpades copies the z = 62 colour to z = 63 `[SRC]`; some editors store colours on hidden
-  voxels (harmless).
+  voxels (harmless) — in 1mirror2forts all 5,335 such colours sit in the map-border columns, i.e. the saving editor
+  treated off-map as air `[RUN]`. A last span with S = 64, E = 63 means z = 63 is air in that column; the column
+  can still have solid voxels above (10yearsaloha's 512 happen to be entirely air) `[RUN]`.
+* **Heightmap + colormap convention** (the old pyspades map editor; infogulch/pyspades wiki "Map Editor Tips"):
+  512 × 512 heightmap, height h = (r + g + b) / 12, black (0,0,0) = water; the colormap gives the top colour per
+  column. "Additive" stamps heightmap + colormap over existing voxels, "subtractive" carves (tunnels: surface,
+  subtract tunnel, add tunnel floor) `[DOC]`. `tools/share/vxl_analyzer.py` exports `heightmap_raw.png`
+  (grey = height × 4, which that formula reads back exactly) and `colormap_raw.png` `[RUN]`. A heightmap only
+  holds the top surface — caves, overhangs, interiors and bridges are lost.
 * **Our writer (`aosmap/vxl.py write_vxl`) is byte-identical to pyspades `generate()`** on all 36 reference files
   (34 distinct maps), colours and shade byte included. `[RUN]` It forces z = 63 solid unless `force_bottom=False`.
 
@@ -432,6 +440,8 @@ babel_script anti-grief zones protect it.
 3. Whether your live server's babel_script platform differs from stock (shape/colour/z).
 4. Hallway / custom modes: need their actual scripts before designing to them.
 5. Arena-with-building and the custom Babel stair/descent variant: need script changes, not just maps.
+6. Build and Shoot heightmap/colormap tutorial (forums t=4922) could not be fetched from here (site blocked);
+   check it against the convention above when someone pastes it.
 
 ## 16. Sources and versions
 

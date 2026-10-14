@@ -15,7 +15,7 @@ USAGE
 
   Per map it writes  <out>/<mapname>/report.md   (read this first - text, ASCII height map, region grid)
                      <out>/<mapname>/report.json (every number)
-                     <out>/<mapname>/*.png       (top, height, heightmap_raw, height_contours, voids, sides, iso_*)
+                     <out>/<mapname>/*.png       (top, height, heightmap_raw, colormap_raw, height_contours, voids, sides, iso_*)
   and for several maps <out>/summary.md + summary.csv (one row per map).
 
 AS A LIBRARY
@@ -666,10 +666,19 @@ def height_view(m):
 
 
 def heightmap_raw(m):
-    """Plain 512x512 greyscale heightmap, no overlays, ABSOLUTE scale: grey = (63 - z) * 4 (0 = water plane,
-    252 = z 0). For feeding heightmap-based tools or comparing maps on one scale."""
+    """Plain 512x512 greyscale heightmap, no overlays, ABSOLUTE scale: grey = (63 - z) * 4, so black (0) = water
+    plane and 252 = z 0. This matches the pyspades-era map editor convention h = (r + g + b) / 12 with black = water
+    (infogulch/pyspades wiki, "Map Editor Tips"), so it can be fed back into heightmap-based tools."""
     h = (63 - topmost(m.solid)).astype(np.uint8) * 4
     return Image.fromarray(h.T, 'L')
+
+
+def colormap_raw(m):
+    """Plain 512x512 colormap: the stored colour of each column's topmost voxel, no shading or overlays.
+    Together with heightmap_raw.png this is the classic heightmap + colormap pair."""
+    top = topmost(m.solid)
+    xs, ys = np.indices(top.shape)
+    return Image.fromarray(rgb_of(m.color[xs, ys, top]).astype(np.uint8).transpose(1, 0, 2), 'RGB')
 
 
 def void_view(m):
@@ -916,6 +925,7 @@ def run(paths, out, babel=False, iso_on=False, render=True):
             top_view(m).save(os.path.join(d, 'top.png'))
             height_view(m).save(os.path.join(d, 'height.png'))
             heightmap_raw(m).save(os.path.join(d, 'heightmap_raw.png'))
+            colormap_raw(m).save(os.path.join(d, 'colormap_raw.png'))
             contour_view(m).save(os.path.join(d, 'height_contours.png'))
             void_view(m).save(os.path.join(d, 'voids.png'))
             sides = [side_view(m, f) for f in ('south', 'north', 'west', 'east')]
