@@ -26,7 +26,7 @@ Then show the pictures:
 
 ```python
 from PIL import Image
-for f in ('top', 'height', 'sides'):
+for f in ('top', 'height', 'voids', 'sides'):
     display(Image.open(f'/mnt/data/analysis/normandie/{f}.png'))
 ```
 
@@ -54,6 +54,7 @@ Finish with a comparison table: `va.run([...all maps...], '/mnt/data/analysis', 
 * Only **surface** voxels store a colour; buried voxels have none. Renders cut the map open at its edges (and at
   `iso` crop boxes), so buried voxels show there as a **hatched grey "section"** — that is the cut, not map content.
   Black in a render is a real stored black colour.
+* `height.png` is a hypsometric map of the TOP surface (green low → yellow → brown → white peaks, contour every 2 voxels, stretched over that map's range — read the legend). It cannot show anything under the surface, so `voids.png` maps the air between the surface and the water plane (black = solid to the bottom; purple → red → yellow = more air: caves, hollow crust, building interiors).
 * The ASCII height map uses 8 x-columns × 16 y-rows per character (monospace cells are ~1:2), so it stays square.
 * Images use north up (y = 0 at the top) and west on the left (x = 0).
 * Region-grid cells are 64 × 64: A–H run west→east, 1–8 north→south.

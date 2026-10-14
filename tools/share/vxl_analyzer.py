@@ -15,7 +15,7 @@ USAGE
 
   Per map it writes  <out>/<mapname>/report.md   (read this first - text, ASCII height map, region grid)
                      <out>/<mapname>/report.json (every number)
-                     <out>/<mapname>/*.png       (top.png, height.png, sides.png, iso_*.png)
+                     <out>/<mapname>/*.png       (top.png, height.png, voids.png, sides.png, iso_*.png)
   and for several maps <out>/summary.md + summary.csv (one row per map).
 
 AS A LIBRARY
@@ -581,24 +581,68 @@ def top_view(m, scale=1):
     return im.resize((X * scale, Y * scale), Image.NEAREST) if scale != 1 else im
 
 
-def height_view(m):
-    top = topmost(m.solid)
-    h = (63 - top).astype(np.float32)
-    land = top < 63
-    lo, hi = (h[land].min(), h[land].max()) if land.any() else (0, 1)
-    g = (40 + 215 * np.clip((h - lo) / max(hi - lo, 1), 0, 1)).astype(np.uint8)    # stretched to this map's range
-    img = np.stack([g, g, g], -1)
-    img[top == 63] = (40, 70, 140)
-    im = Image.fromarray(img.transpose(1, 0, 2), 'RGB')
-    d = ImageDraw.Draw(im)
+HYPSO = [(0.0, (40, 92, 60)), (0.25, (110, 150, 70)), (0.5, (205, 190, 95)), (0.75, (160, 105, 60)),
+         (1.0, (245, 245, 245))]          # low green -> yellow -> brown -> white peaks
+
+
+def _ramp(t, stops=HYPSO):
+    t = np.clip(t, 0, 1)
+    out = np.zeros(t.shape + (3,), np.float32)
+    for (t0, c0), (t1, c1) in zip(stops[:-1], stops[1:]):
+        k = (t >= t0) & (t <= t1)
+        f = ((t - t0) / (t1 - t0))[k][:, None]
+        out[k] = np.array(c0) * (1 - f) + np.array(c1) * f
+    return out
+
+
+def _grid(d):
     for k in range(64, 512, 64):              # 64-voxel grid matching the region-grid cells
-        d.line([(k, 0), (k, 511)], fill=(200, 60, 60))
-        d.line([(0, k), (511, k)], fill=(200, 60, 60))
+        d.line([(k, 0), (k, 511)], fill=(0, 0, 0))
+        d.line([(0, k), (511, k)], fill=(0, 0, 0))
     for gx in range(8):
         _label(d, (gx * 64 + 3, 2), 'ABCDEFGH'[gx])
     for gy in range(8):
         _label(d, (3, gy * 64 + 14), str(gy + 1))
-    _label(d, (66, 497), f'grey = land height {int(lo)} (dark) .. {int(hi)} (white); blue = water')
+
+
+def height_view(m, contour=2):
+    """Hypsometric height map of the TOP surface (63 - z), colours stretched over this map's land range, with a
+    dark contour line every `contour` voxels and a legend bar. Water = blue. North up."""
+    top = topmost(m.solid)
+    h = (63 - top).astype(np.float32)
+    land = top < 63
+    lo, hi = (float(h[land].min()), float(h[land].max())) if land.any() else (0.0, 1.0)
+    img = _ramp((h - lo) / max(hi - lo, 1))
+    hb = (h // contour).astype(int)
+    edge = np.zeros_like(land)
+    edge[1:] |= hb[1:] != hb[:-1]
+    edge[:, 1:] |= hb[:, 1:] != hb[:, :-1]
+    img[edge & land] *= 0.62
+    img[~land] = (40, 70, 140)
+    im = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8).transpose(1, 0, 2), 'RGB')
+    d = ImageDraw.Draw(im)
+    _grid(d)
+    bar = _ramp(np.linspace(0, 1, 160)[:, None].repeat(8, 1))      # legend bar
+    im.paste(Image.fromarray(bar.astype(np.uint8).transpose(1, 0, 2), 'RGB'), (340, 482))
+    _label(d, (66, 482), f'height {int(lo)}..{int(hi)}  contour {contour}')
+    _label(d, (300, 494), f'{int(lo)}')
+    _label(d, (504 - 6 * len(str(int(hi))), 494), f'{int(hi)}')
+    return im
+
+
+def void_view(m):
+    """What a top-down height map hides: air between the top surface and the water plane (caves, hollow crust,
+    tunnels, interiors). Black = solid all the way down; brighter = more air underneath; blue = water column."""
+    s = m.solid
+    top = topmost(s)
+    zz = np.arange(Z)[None, None, :]
+    gap = ((~s) & (zz > top[:, :, None]) & (zz < 63)).sum(axis=2).astype(np.float32)
+    img = _ramp(gap / 40.0, [(0.0, (12, 12, 14)), (0.15, (70, 40, 110)), (0.5, (200, 80, 60)), (1.0, (255, 230, 120))])
+    img[top == 63] = (40, 70, 140)
+    im = Image.fromarray(np.clip(img, 0, 255).astype(np.uint8).transpose(1, 0, 2), 'RGB')
+    d = ImageDraw.Draw(im)
+    _grid(d)
+    _label(d, (66, 494), f'air under surface: black 0 .. yellow 40+ voxels (max {int(gap.max())})')
     return im
 
 
@@ -829,6 +873,7 @@ def run(paths, out, babel=False, iso_on=False, render=True):
         if render and Image is not None:
             top_view(m).save(os.path.join(d, 'top.png'))
             height_view(m).save(os.path.join(d, 'height.png'))
+            void_view(m).save(os.path.join(d, 'voids.png'))
             sides = [side_view(m, f) for f in ('south', 'north', 'west', 'east')]
             sheet = Image.new('RGB', (512, sum(i.height + 14 for i in sides)), (15, 15, 18))
             dr = ImageDraw.Draw(sheet)
