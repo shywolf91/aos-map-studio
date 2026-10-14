@@ -19,6 +19,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 | `aosmap/` | library: VXL reader/writer, scene + materials, art kit, validators, route graph, metadata, renders |
 | `scenes/` | map generators (`kestrel_spires.py` graybox, `kestrel_spires_art.py` art pass) and their `_check` scripts |
 | `tools/` | reference comparison, art metrics, movement sim, live-server bots, aos_web screenshot driver |
+| `tools/share/` | **shareable review kit**: standalone `vxl_analyzer.py` (numpy + Pillow) + `CHATGPT_VXL_GUIDE.md` for other assistants to review reference maps and return Reference Map Cards |
 | `server_scripts/authored_protect.py` | piqueserver script: authored map protected, players build, enemies destroy player blocks |
 | `server_test/*/config.toml` | the headless server configs used in testing (kestrel = Babel) |
 | `docs/` | detailed references and the Kestrel Spires spec; `docs/img/` renders |
