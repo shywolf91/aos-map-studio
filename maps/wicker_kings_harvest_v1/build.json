@@ -1,0 +1,44 @@
+{
+ "sha256": "6d7f8064f564fda9bcb050bd30bb53ffa24f3cfcdf9529d68ca8b8344bcff3fd",
+ "bytes": 2432280,
+ "build_s": 7.1,
+ "tag_rect": [
+  10,
+  158,
+  494,
+  501
+ ],
+ "cleanup": {
+  "tiny_floating_removed_voxels": 20,
+  "trap_cells_raised": 22
+ },
+ "cosmetic_asymmetric_bbox": [
+  208,
+  257,
+  70,
+  131
+ ],
+ "scatter_props": 87,
+ "piers": [
+  {
+   "th": 2.02,
+   "coast": 191.5,
+   "zin": 44
+  },
+  {
+   "th": 2.92,
+   "coast": 201.5,
+   "zin": 44
+  },
+  {
+   "th": 3.81,
+   "coast": 196.0,
+   "zin": 44
+  },
+  {
+   "th": 1.57,
+   "coast": 187.0,
+   "zin": 43
+  }
+ ]
+}

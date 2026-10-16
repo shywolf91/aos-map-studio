@@ -10,6 +10,7 @@ metadata, art calibration, workflow, validation checklist, open questions).
 
 | Path | What |
 |---|---|
+| `maps/wicker_kings_harvest_v1/` | **The Wicker King's Harvest** — Halloween island Babel: the island is a carved jack-o'-lantern (eye pits, nose, interlocking-tooth grin), ritual clearing under the platform, farm hamlets on the cheeks, giant Wicker King + curling stem; `maps/wicker_kings_harvest_v1_1/` adds floating crows, bats and a crescent moon. Generator in `scenes/wicker_kings_harvest/` (`docs/wicker_kings_harvest_spec.md`) |
 | `maps/drowned_cathedral_v1/` | **Drowned Cathedral** — Halloween Babel: sunken gothic cathedral in a fen, quay-mole tower zones, bell-tower race (`docs/drowned_cathedral_spec.md`) |
 | `maps/drowned_cathedral_v2/` | **Drowned Cathedral v2** — rotated redesign after playtest feedback: nave between the teams under the platform, twin fronts, wider fen, 6 stone ghats + gallery per team for safe descents (`docs/drowned_cathedral_v2_spec.md`) |
 | `maps/kestrel_spires_art_v3/` | Kestrel Spires v3 — v2 plus spawn screen walls (spawn camping fix) |

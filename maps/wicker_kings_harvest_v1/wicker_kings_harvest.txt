@@ -1,0 +1,10 @@
+name = "The Wicker King's Harvest"
+version = '1.0'
+author = 'aosmap'
+description = ('Tower of Babel on a carved jack-o-lantern island. Build from the ritual clearing up to the '
+               'sky platform; the Wicker King watches from the north.')
+fog = (176, 160, 186)
+extensions = {
+    'babel': True,
+    'water_damage': 0,
+}

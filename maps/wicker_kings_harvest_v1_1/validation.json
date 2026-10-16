@@ -1,0 +1,284 @@
+{
+ "reader": {
+  "bytes": 2439444,
+  "reencode_identical": true,
+  "surface_all_coloured": true,
+  "z63_solid": true
+ },
+ "floating_components": {
+  "count": 0,
+  "voxels": 0,
+  "list": []
+ },
+ "sky_layer": {
+  "objects": 16,
+  "voxels": 1280,
+  "floating_components_found": 16,
+  "min_platform_dist": 89.0,
+  "any_over_spawn": false,
+  "min_air_below": 10,
+  "rows": [
+   {
+    "name": "moon",
+    "voxels": 671,
+    "platform_dist": 165.0,
+    "over_spawn_square": false,
+    "air_below_min": 26,
+    "z": [
+     1,
+     31
+    ]
+   },
+   {
+    "name": "crow0",
+    "voxels": 36,
+    "platform_dist": 130.0,
+    "over_spawn_square": false,
+    "air_below_min": 36,
+    "z": [
+     5,
+     6
+    ]
+   },
+   {
+    "name": "crow1",
+    "voxels": 34,
+    "platform_dist": 144.0,
+    "over_spawn_square": false,
+    "air_below_min": 11,
+    "z": [
+     8,
+     9
+    ]
+   },
+   {
+    "name": "crow2",
+    "voxels": 33,
+    "platform_dist": 144.0,
+    "over_spawn_square": false,
+    "air_below_min": 37,
+    "z": [
+     4,
+     5
+    ]
+   },
+   {
+    "name": "crow3",
+    "voxels": 39,
+    "platform_dist": 146.0,
+    "over_spawn_square": false,
+    "air_below_min": 29,
+    "z": [
+     7,
+     8
+    ]
+   },
+   {
+    "name": "crow4",
+    "voxels": 37,
+    "platform_dist": 133.0,
+    "over_spawn_square": false,
+    "air_below_min": 31,
+    "z": [
+     10,
+     11
+    ]
+   },
+   {
+    "name": "crow5",
+    "voxels": 34,
+    "platform_dist": 113.0,
+    "over_spawn_square": false,
+    "air_below_min": 10,
+    "z": [
+     6,
+     7
+    ]
+   },
+   {
+    "name": "crow6",
+    "voxels": 34,
+    "platform_dist": 95.0,
+    "over_spawn_square": false,
+    "air_below_min": 31,
+    "z": [
+     4,
+     5
+    ]
+   },
+   {
+    "name": "crow7",
+    "voxels": 35,
+    "platform_dist": 101.0,
+    "over_spawn_square": false,
+    "air_below_min": 32,
+    "z": [
+     9,
+     10
+    ]
+   },
+   {
+    "name": "crow8",
+    "voxels": 38,
+    "platform_dist": 89.0,
+    "over_spawn_square": false,
+    "air_below_min": 31,
+    "z": [
+     5,
+     6
+    ]
+   },
+   {
+    "name": "bat0",
+    "voxels": 50,
+    "platform_dist": 167.0,
+    "over_spawn_square": false,
+    "air_below_min": 27,
+    "z": [
+     7,
+     8
+    ]
+   },
+   {
+    "name": "bat1",
+    "voxels": 48,
+    "platform_dist": 179.0,
+    "over_spawn_square": false,
+    "air_below_min": 48,
+    "z": [
+     13,
+     14
+    ]
+   },
+   {
+    "name": "bat2",
+    "voxels": 48,
+    "platform_dist": 152.0,
+    "over_spawn_square": false,
+    "air_below_min": 19,
+    "z": [
+     14,
+     15
+    ]
+   },
+   {
+    "name": "bat3",
+    "voxels": 48,
+    "platform_dist": 169.0,
+    "over_spawn_square": false,
+    "air_below_min": 51,
+    "z": [
+     5,
+     6
+    ]
+   },
+   {
+    "name": "bat4",
+    "voxels": 46,
+    "platform_dist": 192.0,
+    "over_spawn_square": false,
+    "air_below_min": 43,
+    "z": [
+     18,
+     19
+    ]
+   },
+   {
+    "name": "bat5",
+    "voxels": 49,
+    "platform_dist": 174.1,
+    "over_spawn_square": false,
+    "air_below_min": 49,
+    "z": [
+     10,
+     11
+    ]
+   }
+  ]
+ },
+ "mirror_solid_mismatch": 0,
+ "mirror_material_mismatch": 0,
+ "mirror_excluded_cosmetic_bbox": [
+  208,
+  257,
+  70,
+  131
+ ],
+ "platform_volume_voxels": 0,
+ "platform_margin_voxels": 0,
+ "ground_under_platform_ends": {
+  "blue_end_x206_211": {
+   "top_z_min": 44,
+   "top_z_max": 44,
+   "water_cols": 0
+  },
+  "red_end_x300_305": {
+   "top_z_min": 44,
+   "top_z_max": 44,
+   "water_cols": 0
+  }
+ },
+ "spawn_squares": {
+  "blue": {
+   "top_z_values": {
+    "42": 18,
+    "43": 10,
+    "44": 1653
+   },
+   "water_cols": 0
+  },
+  "red": {
+   "top_z_values": {
+    "42": 18,
+    "43": 10,
+    "44": 1653
+   },
+   "water_cols": 0
+  }
+ },
+ "spawn_heights_mirror_equal": true,
+ "routes": {
+  "blue": {
+   "to_own_platform_end": 68.0,
+   "to_enemy_spawn": 236.0,
+   "to_wicker_king": 218.0,
+   "reachable_nodes_pct": 94.7
+  },
+  "red": {
+   "to_own_platform_end": 69.0,
+   "to_enemy_spawn": 236.0,
+   "to_wicker_king": 218.0,
+   "reachable_nodes_pct": 94.7
+  }
+ },
+ "trap_cells_z44_63": {
+  "count": 0,
+  "sample": []
+ },
+ "water_exit": {
+  "sea_cells": 127230,
+  "can_reach_plateau_pct": 100.0
+ },
+ "build_gap": {
+  "highest_reachable_near_platform_z": 41,
+  "blocks_to_build_up_to_platform_level": 39,
+  "platform_reachable_on_foot": false
+ },
+ "spawn_exposure": {
+  "blue": {
+   "viewers_per_spot_mean": 7.43,
+   "viewers_max": 11,
+   "hidden_pct": 18.8,
+   "n_viewers": 65,
+   "n_spots": 441
+  },
+  "red": {
+   "viewers_per_spot_mean": 6.8,
+   "viewers_max": 10,
+   "hidden_pct": 19.7,
+   "n_viewers": 65,
+   "n_spots": 441
+  }
+ },
+ "check_seconds": 3.6
+}
