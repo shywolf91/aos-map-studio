@@ -19,3 +19,8 @@ _updates/
 
 # per-map material grids written by scenes/*/wkh_main.py (regenerate)
 maps/**/mat.npy
+
+# community reference maps and guides (not ours to publish)
+refs/
+*.pdf
+opencode.jsonc

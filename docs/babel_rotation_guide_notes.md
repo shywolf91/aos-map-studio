@@ -41,6 +41,7 @@ how each maps onto our pipeline. Tags: `[GUIDE]` = stated in the guide (communit
   with fixed bases (118, 256)/(394, 256), spawns random ±20 on the topmost voxel `[SRC]`. aloha runs custom scripts
   (platform variants, spawn protection, tower protection, "Ferraris spawn protection zones"). → Our maps target
   stock behaviour but also ship `.txt` hooks so a server like aloha's can use them.
+  *(Later owner rule, 2026-10-15: no AI-authored spawn hooks in `.txt` files — leave them out.)*
 * Testing tips: use the dev environment with aloha's scripts; set spawn time 0.
 * `snow.py` "broke the platform regularly" — seasonal scripts can interfere with Babel.
 * Rotation size ~15–24 maps, sometimes weighted toward a favourite; maps grouped by type to keep variety.
