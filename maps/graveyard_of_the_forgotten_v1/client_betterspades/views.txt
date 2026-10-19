@@ -1,0 +1,11 @@
+c01_blue_spawn_front 112 256 41.6 240 256 26
+c02_court_to_transept 168 302 36 234 254 28
+c03_facade 256 82 30 256 140 24
+c04_nave_ribcage 249 228 37 256 160 16
+c05_hand_reaching 256 128 32 256 64 20
+c06_hand_clawing 256 382 34 256 436 38
+c07_platform_to_blue_spawn 208 256 -1.4 118 256 44
+c08_overview_sw 40 470 2 256 256 40
+c09_cemetery_nw 60 222 32 140 150 40
+c10_red_spawn_front 400 256 41.6 272 256 26
+c11_crossing_bell 256 296 38 256 254 40

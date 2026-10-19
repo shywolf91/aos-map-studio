@@ -4,7 +4,7 @@ This repo is a prompt-to-map pipeline for **classic Ace of Spades 0.75** maps (`
 metadata (`.txt`). It contains the VXL toolchain (`aosmap/`), map generators (`scenes/`), finished maps
 (`maps/`), validators, renderers, server test configs and the design knowledge collected while building them.
 
-Owner: shywolf91. Last consolidated 2026-10-16.
+Owner: shywolf91. Last consolidated 2026-10-16 (catalogue + cap-limit note updated 2026-10-19).
 
 > Claude Code reads `CLAUDE.md`, which imports this file. Codex, opencode, Cursor and most other agents read
 > `AGENTS.md` directly. Keep the rules in this one file.
@@ -104,7 +104,9 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   * **Keep z ≤ 2 empty above it.**
   * Servers may change these constants, so treat them as parameters (`BABEL_DEFAULT`).
 * Bases are at (118,256) and (394,256). Spawns are random within ±20 at the **topmost solid voxel**, so squares x 98–138 / 374–414, y 236–276 must be clear, flat land.
-* One intel at (256,256), on the platform. Carry it to **your own** base; cap_limit is 1.
+* One intel at (256,256), on the platform. Carry it to **your own** base.
+  * `babel_script` sets `map_info.cap_limit = 1`, but `server.set_map` reads `max_score` *before* that runs, so the
+    live score limit is the config `cap_limit` (default 10; bots saw 10 in StateData, 2026-10-19). Admins set it.
   * A drop off the platform returns it; the carrier is killed after 150 s.
 * Build ban: you can't build while standing in the enemy's tower corridor (blue x 301–384, red x 128–211, y 240–272).
   * Ending your anchor ground at x 211 / 301 means an enemy standing on it can't build.
@@ -179,6 +181,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Witchwood Isles | Halloween island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/witchwood_isles_spec.md` |
 | Backyard Babel | Grounded-style backyard Babel | v2.x | server-loaded | **zip from its chat**; spec `docs/backyard_babel_spec.md` |
 | The Wicker King's Harvest | Halloween island Babel | v1.0 / v1.1 (sky) | server-loaded | `scenes/wicker_kings_harvest/` |
+| Graveyard of the Forgotten (The Bone Cathedral) | Halloween ground Babel | v1.0 | client-inspected (BetterSpades screenshots) | `scenes/graveyard_forgotten/`, `docs/graveyard_of_the_forgotten_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
 chat. Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo.
