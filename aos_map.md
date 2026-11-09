@@ -1,7 +1,9 @@
 # aos_map.md — Ace of Spades 0.75 map-making knowledge base
 
 Consolidated 2026-10-13 from the aosmap project (research, exporter, validators, Kestrel Spires).
-Last updated 2026-10-13 (Kestrel art v2, Hollowfen Halloween Babel+CTF map, BetterSpades inspection, fog findings).
+Last updated 2026-11-08 (custom Babel variant redefined as "assist structures"; earlier: Kestrel art v2, Hollowfen
+Halloween Babel+CTF map, BetterSpades inspection, fog findings). The fuller, newer knowledge base (2026-10-30, updated
+2026-11-08) is `docs/knowledge/aos_map_design_knowledge.md`; where the two differ, that one wins.
 Target: classic AoS **0.75** clients (OpenSpades, BetterSpades, vanilla) + **piqueserver 1.4.2**
 (pyspades), Python 3.11. Detailed per-topic docs live in `docs/`; this file is the single place to start.
 
@@ -173,13 +175,22 @@ Identify the exact script before designing; a mode's name doesn't define its rul
 * Anti-grief: can't build while standing near the enemy tower corridor (team1 x 301–384, team2 x 128–211,
   y 240–272); a team can destroy blocks only once past x 288 (team1) / below x 224 (team2) — i.e. not on its own half.
 * **Map requirements**: leave z ≤ 2 free over the platform area; provide land at both base coordinates;
-  near-identical spawn areas for both teams `[USER]`; platform must not be reachable without building.
+  near-identical spawn areas for both teams `[USER]`; platform must not be reachable without building
+  (standard Babel — relaxed for the assist-structure variant below).
 * Note the stock asymmetry: platform is symmetric about x = 255.5, bases about x = 256 → mirror maps with
   x' = 512 − x and accept a 1-voxel build-gap difference.
 * Styles in your references `[RUN]`: **sky babel** (abridgetoofar, tradeoff, anticbridgebabelv2 — decks at z 2–13
   around spawn) vs **ground babel** (alexandria-babel2, islandbabel, babelpocalypse). Build gap (closest walkable
   point → platform top): anticbridge 6, alexandria 5, tradeoff ~17, abridgetoofar ~54, islandbabel ~56.
-* "Stairways/ledges/return-descent tower" Babel = **custom variant** unless a script supports it.
+* **Custom variant — Babel with assist structures** `[USER]` (redefined 2026-11-08): normal stock Babel (same
+  script, platform, intel and capture rules), but the map has authored structures (ruins, a tall tree, a crag, a
+  belfry…) that players can climb to reach the platform/intel on foot or with a short build, without building a
+  tower in their tower zone. Towers stay a real option; the structure is the faster, contested route. Needs equal
+  access for both teams (mirrored pair or symmetric central piece), z 0–2 over the platform kept empty, spawn-exposure
+  and round-length checks, and a per-map destructibility decision. "Platform unreachable without building" and the
+  free-scaffolding check are relaxed; label such maps clearly. No script change while platform/intel/base rules
+  stay stock. Spec: `docs/project_brief/AoS_Map_Requirements.md`; full rules in
+  `docs/knowledge/aos_map_design_knowledge.md` §8.8.
 
 ### Push — needs the push game mode script `[SRC][RUN]`
 * Required extensions: `push_blue_spawn, push_green_spawn, push_blue_cp, push_green_cp` (server raises without
@@ -443,7 +454,8 @@ babel_script anti-grief zones protect it.
 2. How Kestrel reads in OpenSpades (BetterSpades done 2026-10-13).
 3. Whether your live server's babel_script platform differs from stock (shape/colour/z).
 4. Hallway / custom modes: need their actual scripts before designing to them.
-5. Arena-with-building and the custom Babel stair/descent variant: need script changes, not just maps.
+5. Arena-with-building needs script changes, not just maps. (The Babel assist-structure variant runs on stock
+   babel_script; still to confirm on the target server and tune build gaps by playtest.)
 6. Heightmap grey convention differs by one level between Bildramer's converter and the pyspades editor —
    confirm with a test image before building a heightmap importer. Also: do 0.75 clients show the map tiled at
    its edges (the tutorials tile roads/dirt across borders)?

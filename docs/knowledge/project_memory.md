@@ -1,0 +1,88 @@
+# Project memory — owner's decisions and feedback log
+
+Exported 2026-11-09 from the claude.ai Project "AoS_Map_Making" memory, so Claude Code (and any other agent) has the
+same context. Every line is something the owner (shywolf91) stated or chose. Newest entries are at the bottom.
+AGENTS.md §4 distils the standing rules from this log; when the two disagree, the newer dated entry here wins.
+
+Add new decisions at the bottom in the same style (`- [stated] … (date)`), and promote standing rules into AGENTS.md §4.
+
+## Environment and setup
+- [stated] building maps for classic Ace of Spades 0.75 / piqueserver; targets Python 3.11 for the toolchain
+- [stated] his server runs stock piqueserver with the normal scripts and blue/red team colours
+- [stated] wrote his own AoS spectator web client "aos_web" in Ruby (localhost only); currently tests maps only in that client
+- [stated] also checks maps in the alohacraft.cc VXL viewer
+- [stated] wants the aosmap git repo to live at D:\Ace of Spades\Aos_Map on his computer
+- [stated] wants to host the Aos_Map repo on a git host (e.g. GitHub) so it can be used with other Claude sessions or other AIs (2026-10-16) → https://github.com/shywolf91/Aos_Map
+
+## Standing rules (general)
+- [stated] standing rule (2026-10-28): always ask the user questions before building a map — never just build a map without getting these questions answered
+- [stated] floating authored pieces are fun/unique but opt-in — only include them when he requests them
+- [stated] map ground should be solid all the way down (like remus/normandie) unless an underground tunnel/structure is built; the bottom layer is water or whatever block is put there; no protection script needed for that
+- [stated] corner tag: only the map name, no credit line, unless he says otherwise; usually on the ground (painted on ground blocks or 1 level above), but put it at sky level when the scenery/objects/props in that corner suit it better; only clear the area under the tag, not the other corners
+- [stated] doesn't trust AI-generated spawn coordinates: leave spawn hooks out of map .txt files and use the game mode defaults, or he specifies exact spawns after the map is made
+- [stated] from testing, fog only looks acceptable at brightness ~150+; he gives his night maps a bright tint rather than a dark fog
+- [stated] his map .txt extensions use water_damage (1), babel (True) and heavens_color (RGBA tuple, e.g. (255, 215, 130, 255)) — heavens_color sets the sky colour separately from fog
+- [stated] standing rule (2026-10-22): the author field in every map .txt file is "shywolf91 + AI"
+- [stated] no buildings should be solid — they should have rooms, stairs and places to explore/hide
+- [stated] standing rule (2026-10-20): every structure (houses, churches, chapels, tombs, towers, etc.) must be "real" — enterable through open doorways, with real rooms inside, real window openings, and stairs to any upper floors; applies to all maps going forward (applied retroactively to The Hollow Crown as v1.1)
+- [stated] game draw distance is ~110 voxels; nothing beyond that is visible
+- [stated] vegetation: plants were too uniform — generator must be non-deterministic, with a wide variety of unique colours and smooth, aesthetically pleasing transitions that fit the scene; each plant gets three unique randomly occurring details; plants should be striking, high craftsmanship, intricate detail, strong visual style
+- [stated] really likes the concept of unique objects on maps
+- [stated] player feedback: players hate maps that are too white — snowy maps must be designed with that in mind
+- [stated] some players like playing the centre regions, others the outer skirts — all areas need great artistic detail; spread structures out rather than packing them in one location
+- [stated] asked to remember: use the "Babel map rotation guide v1.8" (aloha.pk community guide, in the project files) to improve the map process — its key Babel rules: maps must be balanced; spawn design must not allow spawn camping from the platform (cover spawns with trees/walls/buildings/terrain; avoid spawns too close to or too low under the platform, steep angles); spawns/tower protection must not be prone to self-grief or blocking; no roof spawns; vary playstyles across a rotation; avoid laggy 1-block pillar fields, flickering 1-voxel stripes and glaring/white fogs; rotation admins set platform type, fog and cap limit per map. Distilled notes live in docs/babel_rotation_guide_notes.md
+- [stated] standing convention (2026-11-06): a prompt tagged [recreate] with a map file attached means analyze that map and redesign it to give it new life, using the map-making knowledge/process (an addition to the normal workflow, not a replacement)
+
+## Standing rules (layout, from 2026-10-28 feedback — apply to all maps)
+- [stated] the central area has consistently been left the most empty — discard the "keep the centre empty" default unless the map/theme specifies it (ask). Most combat happens in a central zone of ~300–400 × 150–250 voxels: focus effort there, pack it with gameplay elements and distinct objects, to the same standard as the periphery
+- [stated] centre traversal: easy on foot, no bridge/stair building needed to reach the enemy spawn; large structures are fine if easy to navigate (many wall openings, 7–10 voxel open gaps between structures); not a labyrinth — relatively direct movement with only minor detours
+- [stated] flank route: a route bypassing the centre along the edges, 130–210 voxels from the centre, so players can flank and attack the enemy from the rear
+- [stated] tower-construction zone: 32 voxels wide, 44 to 135 voxels from the centre; same-team players can't destroy voxels in it (anti-grief); known exploit: griefers switch teams to block narrow passages in the zone, forcing others around or over
+- [stated] periphery must stay passable — objects must not be packed too tightly or overlap (Backyard Babel's periphery was impassable)
+
+## Standing rules (Babel)
+- [stated] Babel rule: players need a safe way down from where they spawn to the tower build zone and to ground level (the rest of the map)
+- [stated] Babel maps need solid ground directly under both ends of the script-built platform so towers can anchor on each side
+- [stated] Babel rule: a team's tower-anchor ground must not have stairs on the enemy-facing side (makes it too easy for the enemy to get up to that team's tower)
+- [stated] Babel design: many players dislike structures/screens placed between spawn and the tower zone — OK occasionally, but not a default for every map; likewise don't default to a raised tower zone, players like building towers (from the ground)
+- [stated] Babel spawns should be mainly similar; they can differ in structure, but the fronts (spawn → tower zone) must be open and must not give either team an advantage
+- [stated] Babel front rule clarified: nothing solid may block players between tent/spawn and the tower zone; structures there are fine as long as there is an opening to pass through (examples: aos.party/view/413, aos.party/view/1248); a solid blocker only when he specifies it
+- [stated] Babel: the babel script generates the platform, so don't include the platform in the VXL
+- [stated] Babel spawns should not be 100 % flat but must be easy to spawn on and navigate (no spawning in holes)
+- [stated] his "custom Babel variant" (2026-11-08) is NOT a ready-made tower with the intel on top — it's normal Babel, but some maps have structures (e.g. ruins, turv) players can use to reach the platform/heaven and intel easily without building a tower in their tower zone (= "Babel with assist structures", see docs/project_brief/AoS_Map_Requirements.md)
+
+## Map history (newest last)
+- [stated] wants the first map to be Babel/CTF; chose concept A "Kestrel Spires" (sky babel) for it
+- [stated] liked the Hollowfen maps as good first attempts and wants iteration to continue ("keep at it")
+- [stated] working on Halloween Babel maps; picked "Drowned Cathedral" (sunken gothic cathedral in a bog) from a set of Halloween Babel concepts and asked for it to be built
+- [stated] Drowned Cathedral playtest feedback (tester): v1 felt too tall, would play better rotated 90°, hard to get down; he chose a rotated redesign (v2: nave between the teams under the platform, twin fronts) over a literal rotation
+- [stated] wanted the Drowned Cathedral v2 work saved (2026-10-14); v2 lives in maps/drowned_cathedral_v2 of the repo, v1 kept alongside
+- [stated] picked "Witchwood Isles" (Halloween island-style Babel: twin wooded islands, cauldron lagoon, central stone island) from three island concepts
+- [stated] wanted a Tower of Babel map based on the game Grounded (backyard theme); asked for it to be built (2026-10-16)
+- [stated] Backyard Babel: wants one giant house (exterior only, a small piece is enough as long as it reads as a house) with the rest of the map as its backyard, enclosed by a giant fence on the other sides; liked the fence and the unique items
+- [stated] Backyard Babel brief (2026-10-28): somewhere in the centre a 30-voxel-tall toy Barbie house with a Barbie doll and other toys; yard objects/debris high quality but in moderation, non-deterministic placement; include a bicycle lying down, a bench, a toy monster truck, small puddles, a pair of rubber boots, a stump with an axe, a grill, a covered firewood stack, other unique large objects, and a sandbox with a sandcastle in one corner; plants from ~10 voxels tall up to 30–40 (the tall ones placed individually); centre densely populated with diverse distinct objects; no platform leading to the tower; the ground should have no flat, level surfaces
+- [stated] asked for a Halloween Babel map from his "Wicker King's Harvest" pumpkin-island mockup (2026-10-16) and liked the result; trialled optional floating sky decor (moon, crow/bat flocks) kept away from the Babel platform
+- [stated] players really enjoyed Wicker King's Harvest
+- [stated] asked for a Halloween Babel map "Graveyard of the Forgotten — The Bone Cathedral" (cursed graveyard, ruined gothic cathedral, two giant skeletal hands) to be built (2026-10-19)
+- [stated] asked for a Halloween Babel map "The Hollow Crown" (ruined Blackthorn Citadel courtyard as tower zone, graveyard, village, woods) from his brief and mockup (2026-10-19); accepted its Crown Gate archway on the fronts
+- [stated] asked for a Push map "Death Swamp" inspired by his swamp battle-map screenshot, wanting its colours used (2026-10-19) — first Push map in the project
+- [stated] asked for a Halloween island Babel map (renamed by him to "Haunted Fairground", previously "Haunted Fairground Isles") using the same/similar layout as his reference Ruins.vxl (2026-10-20); wants a central building like Ruins' that both teams fight over, with the Ferris wheel as a secondary point, and a darker/spookier autumn atmosphere for this map
+- [stated] asked for a Babel map from a toxic-river/skull battle-map screenshot (2026-10-20): mountain ring like 1mirror2forts, toxic green river through the middle, one central bone bridge, skull carved into the mountain as an explorable easter egg (eye and mouth chambers, staircases, tunnels into the mountain)
+- [stated] for that skull/river map, felt the ground was too close to the platform; wants ground like 1river2night/1mirror2forts, only 3-5 blocks above the water, with the original (first) skull kept; then asked to go a little higher while keeping the stairs, and for the spawn areas to look like decrepit buildings/castles (missing walls, missing roofs)
+- [stated] renamed the skull/toxic-river Babel map to "Ferrari's Revenge" (2026-10-20)
+- [stated] asked for a Halloween edit of the community map Royal Parade Night (by Bradley & Mile), keeping the map relatively the same: cars replaced with horse-drawn carriages, jack-o'-lanterns at spawn (2026-10-21)
+- [stated] asked for an improved 1river2night (2026-10-27): keep the night-map vibe but less of the "too black" look players hate, and use glow blocks like hallweebalohabeta
+- [stated] asked for a glow edit of the Push map Bikini Atoll (by IAmYourFriend) (2026-10-28): glow blocks only on the nuclear mushroom cloud, surrounding atmosphere/blocks darkened; then wanted the cloud to look realistic, not just a giant fireball
+- [stated] asked for a Halloween snowy Tower of Babel map "Silverpine Hunt" (moonlit werewolf snow forest: hunters' lodge spawns, werewolf den in the centre, silver mine flank tunnel, wolf-skull gate, bear traps, trophy tree, frozen waterfall) (2026-10-30); chose a full 512×512 map over an island, wanted the optional sky layer, and a werewolf plus bones/nest/claw marks in the den; left fog and lake design to Claude
+- [stated] felt Silverpine Hunt v1 was slightly ugly and too noisy; approved a full art pass (natural mountains, calmer ground, grove-based trees, better lodge, lake/skull) and shared MountainRoad.vxl and alpine_desaturated.vxl as inspiration (2026-10-30)
+- [stated] called the Silverpine Hunt v2 art pass a "major improvement" he really digs; then asked to keep its underground den but make the top-ground centre less sparse (2026-10-30)
+- [stated] asked for a Babel map "Mossglade Pond" (512×512 sunlit forest pond: twin treeline spawns, hourglass turquoise pond under the platform, mossy flank ravines, one ruin per side, water damage on) to be built (2026-10-30); spec and validation in docs/mossglade_pond_spec.md. Owner still to decide: spawn-exposure trade-off (open front = every spawn spot visible from the platform) and the water damage value
+- [stated] asked for a full 512×512 ground Babel "Lantern Bazaar Canals" (warm canal city: terraced market quarters hold spawns, canals/arched bridges/domed cistern square under the platform, minarets, dry-dock flank, covered-bazaar route) (2026-11-02); chose walkable canals (water_damage 0), a sunken square with a low enterable dome, painted lanterns (no glow blocks), and a roofed arcade that drops into an under-street passage
+- [stated] asked for an island Babel "Highland Loch Castle" (2026-11-02): two ruined stone-castle islets holding the spawns in a misty highland loch, broken bridges stopping short of a standing-stone circle on a central rock under the platform, heather/bracken/moss, boat house, sheep fold, signal tower, crag flanks; chose a loch ringed by highlands, wadeable loch with light water damage, one of each set piece on neutral flanks, and grey-green mist fog (152, 168, 154)
+- [stated] asked for a summer island Babel "Sunken Reef Atoll" (2026-11-03): crescent palm islets with spawns, turquoise lagoon, wrecked tall ship + coral shelf under the platform, lifeguard lookouts, lighthouse stumps, piers, rope-bridge ruin, pale cyan fog; chose walkable shallows (water_damage 0), a full atoll reef ring carrying the flanks, the wreck heeled over and split in two, and gull flocks + cloud puffs as sky decor
+- [stated] asked for a full 512×512 steampunk sky Babel "Clockwork Skyyard" (2026-11-05): riveted brass/iron airship-dock spawns on high ledges, cog towers, chimneys, boiler hall under the platform, rail-and-viaduct flank, smoky amber dusk; chose high docks (~z 16), a foundry floor with toxic canals (water damage on), moored airships plus floating sky decor, and glow-block lamps with amber fog
+- [stated] asked for a full 512×512 spring ground Babel "Cherry Terrace Gardens" (2026-11-06): tea-house estate spawns, rice terraces, koi ponds, blossom groves, ritual pavilion under the platform, waterfall-fed stream, peach fog; chose walkable water (water_damage 0), bamboo flank on one side and a waterfall gorge on the other, a low enterable pavilion with painted lanterns, and kites + petal clouds as sky decor (rebuilt the same day as "Cherry Gardens")
+- [stated] first [recreate]: remus.vxl, wanting changed gameplay dynamics (2026-11-06); chose Seven Hills / Reimagine / Babel only / Ruined Rome, concept "Capitol Hill" (hill under the platform), walkable water, underground + sky layer + glow, and asked for a better name (became "Remoria")
+- [stated] asked for a Tower of Babel map inspired by Super Mario Bros and related franchises (2026-11-09); chose original concept "Bloomhop Kingdom" (bright hills, castle-keep spawns, giant mushroom grove + toy-block hill under the platform), full 512×512 ground, light water damage, with underground layer, glow blocks and sky decor
+- [stated] asked for a Christmas themed Tower of Babel map (2026-11-09); chose concept "Under the Tree" (giant-scale living room: gift-box spawns, present stacks, toy train flank, tree and fireplace, no snow), assist-structure Babel, glow blocks and sky decor, warm evening mood
+- [stated] moved the project to Claude Code (2026-11-09), working in D:\Ace of Spades\Aos_Map on DRAGONSPIRE

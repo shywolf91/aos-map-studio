@@ -1,64 +1,91 @@
-# Backyard Babel — miniature-world backyard Babel (v2.0, 2026-10-16)
+# Backyard Babel (v5.0, 2026-10-28)
 
-v2 is a full rewrite after tester feedback on v1 ("empty, big gaps, centre empty, ground shouldn't be green, needs
-many varied plants and lots of junk, non-deterministic generation"). Also from Dylan: don't default to structures
-between spawn and tower zone, and don't raise the tower zone — players like building towers.
+(The earlier v2.0 spec is kept as `docs/backyard_babel_v2_spec.md`.)
+
+The backyard of one giant house: a toy dollhouse under the Babel platform, a packed centre, rolling ground, a
+fenced yard and unique set pieces. Built to Dylan's 2026-10-28 feedback (saved in project memory as standing
+rules).
+* The centre must be packed and easy to cross on foot.
+* Flank route 130–210 voxels from the centre.
+* Passable periphery.
+* Draw distance ~110 voxels.
+* Plants non-deterministic, with smooth varied colours and three random details each.
+* No flat ground.
+* No platform leading to the tower.
+
+**Answers to the build questions:**
+* House stays at the map edge.
+* Dollhouse directly under the platform.
+* Gentle rolls everywhere, softer in the spawn and tower zones.
+* From v4, keep only the painted fence name. The ant hill, pergolas and gravel path were removed.
 
 **Status:** specified · generated · exported · parser-validated (own reader + pyspades 1.4.2) · server-loaded
-(piqueserver 1.4.2, `piqueserver.game_modes.babel` + `babel_script`) · **not** client-inspected · **not** playtested.
-Renders are numpy previews.
+(piqueserver 1.4.2, Babel). **Not** client-inspected or playtested. Renders are my own previews.
 
 ## Layout
-* **Playable core** x 81–430 × y 131–380 (350 × 250), centred on the platform. Everything outside is environment.
-* **Ground**: earth-coloured layered soil (humus / mid / dry / clay tones, grit, cracks, isolated moss-turf patches),
-  dirt mounds, 1-voxel max slope (slope limiter), shallow painted puddles (solid, not water).
-* **Tower anchors**: flat ground-level dirt patches under each platform end, x 190–226 / 286–322, y 236–276, z 50
-  (towers are built from the ground, ~49 blocks). Nothing is placed on them.
-* **Spawns**: flat dirt squares (base ±21, z 50) inside a clearing of tall grass/weeds with open N/S/E/W exits.
-  Grove plants are random but each one is mirrored exactly to the other team → identical cover. No walls/screens.
-* **Under the platform**: a puddle, small junk (caps, coins, buttons, dice, marbles…), low clover/moss/mushrooms.
-  Height cap near the platform (x 186–326, y 200–312): nothing taller than 12 (z ≥ 38).
-* **Core cover**: ~26 mirrored slots of junk (cans, paper balls, toy bricks, balls, juice boxes, newspapers, pencils,
-  bottles, chip bags, pots, watering cans, rocks, twigs, rope, toy shovels) + ~95 mirrored plant clusters + fill.
-  Positions/types mirrored, every instance generated independently (≈85 % column match).
-* **Outer ring**: dense (~7-voxel jittered grid) plants 10–40 tall, ~190 junk items, rocks, fallen leaves, twigs, acorns.
-* **Set pieces**: yellow-or-random-colour bicycle lying in the north grass, garden bench (west), tree stump with an axe
-  (south), toy monster truck (north-centre, in the core), rubber boots (east, one standing, one fallen).
-  Each gets a 7-voxel apron kept clear of plant stems.
-* **Corner tag** SW, "BACKYARD BABEL" painted on the ground.
+Coordinates: x runs west→east, y north→south, z down. The yard surface is ~z 50 and rolls everywhere.
 
-## Plants (10 + extras), after Grounded's harvestable flora
-grass blade (bent, twisted, broken, dry-tipped variants), flowering/seed grass, clover (3-leaf, rare 4-leaf, pale
-chevron), dandelion (toothed rosette, bloom or seed puff, partly blown puffs), bur weed (branching, spiky burs),
-husky weed (broad veined leaves + seed spike), thistle (spiny lobed leaves, purple heads), sprig/seedling,
-mushrooms (bolete/button/ochre/spotted clusters), moss cushions with sporophytes, flowers (daisy/tulip), fern;
-litter: fallen leaves, twigs, acorns, pebbles. Every plant call is randomised.
+| zone | where | rules |
+|---|---|---|
+| spawns | stock (118,256) / (394,256) ±20 | strict: nothing > 2 voxels above the ground, not even overhangs; get_z 48–51 |
+| fronts + tower zones | x 139–212 / 300–373, y 236–276; tower zone x 121–212 (32 wide, 44–135 from the centre) | strict as above; ground cover and litter only |
+| dollhouse | x 218–294, y 226–286, centred under the platform, 30 tall (floor z 49, roof ridge z 20) | pink/white with a lilac roof. Real structure: arched doors on all 4 sides (9 wide), mirrored stairs to the upper floor, two bedrooms with a partition door, balconies N/S, shuttered windows, heart windows, chimneys. Furniture: sofas, counters, canopy beds, wardrobes, chandelier. Built on a 1-voxel plinth with a step ring |
+| fashion doll | (256, ~214), on the mirror axis north of the dollhouse | generic, unbranded, ~28 tall on a stand; random hair, dress and skin colours |
+| combat zone | x 81–431, y 156–356 | mirrored twins: 28 large toys/objects + 14 tall single plants (30–40) + ~65 medium plants + ground cover. 7–9 voxel gaps between features. Open lanes: E–W y 192–201 / 311–320; N–S x 160–169, 236–245 + mirrors |
+| spawn backs | x 82–94 and spawn sides | tall plants behind and beside the spawns, never in front |
+| flank ring | north trail y 112–124 (~138 from centre); side trails x 66–78 / 434–446 (~184); south = patio y 396–439 | worn-dirt trails, connected to the spawn rear exits |
+| periphery | rest | spaced plants with no overlaps, moderate junk, set pieces |
+| house | exterior wall along the south edge (house_ext.py) | unchanged from v4 |
+| fence | W / N / E, painted "BACKYARD BABEL" on the north fence | unchanged from v4 |
 
-## Non-determinism and reproducibility
-Each run draws a new random seed from the OS; the seed is printed and saved in `build_info.json`.
-`python3.11 world.py OUTDIR --seed N` rebuilds that exact map. Delivered v2.0: seed **1609119889**, SHA-256 `969de31d…`.
+**Set pieces:**
+* Sandbox with a sandcastle in the NE corner: curtain walls, 4 towers with flags, a gate, a hollow keep, a moat
+  mark and shells. Stone steps lead in, and a toy pail sits in the sand.
+* North strip: stump with axe, toy monster truck, wading pool with a rubber duck, bicycle lying down.
+* East strip: garden gnome, wheelbarrow, gas grill, bench.
+* West strip: covered firewood stack (log rounds, tarp, bricks, bungees) and a pair of rubber boots.
+* A few small puddles in the periphery.
 
-## Validation (v2.0)
+**Toys in the centre:** pink toy car, teddy bears, tea set with stools, rocking horses, letter-block towers,
+beach balls, jump rope, pails, plus soda cans, juice boxes, dice, watering cans and the like. All are randomly
+rotated and scaled.
+
+## Plants (flora2.py)
+* **Species:** the 12 v2 species plus sunflower, foxglove, allium and coleus.
+* **Colour:** each plant picks one of 9 foliage families and gets a smooth smoothstep gradient from base to tip,
+  keeping the original vein and edge contrast.
+* **Flowers:** only real flowers get a per-species flower palette. Mushrooms, burs and seed heads keep their
+  natural colours.
+* **Details:** each plant gets exactly 3 different random details from 14: ladybug, dew, chewed holes (never
+  cutting the plant apart), snail, caterpillar, autumn patch, variegation, withered tips, bud, aphids,
+  butterfly, berries, bee, moss collar.
+* **v5.0 counts:** foliage families emerald 135, forest 126, chartreuse 83, olive 74, teal 65, sage 56,
+  bronze 37, plum 24, coleus 20, silver 19.
+
+## Validation (seed 2818246686, SHA-256 9e7bef26…)
 | check | result |
 |---|---|
-| own reader round trip / pyspades 1.4.2 | identical; 0/40 000 solid, 0/20 000 colour mismatches |
-| floating components | 0 (62 tiny fragments, 149 voxels, removed at build time) |
-| platform clearance | 0 voxels at z ≤ 2; highest voxel z 5 |
-| ground under platform ends | z 50 both sides (live server too) |
-| spawn squares | flat z 50, 3-air clearance; live server 400 spawns/team all z 50 |
-| spawn exposure from platform edge | blue 77.6 % hidden (0.5 viewers/spot), red 76.6 % (0.7) |
-| routes (no building/jump/crouch) | spawn → own anchor 98 / 97 steps; back 101 / 97; enemy anchor 193 / 191 |
-| highest walkable without building near platform | z 39 |
-| dead-end cells (model) | 11 701 of ~305 000 reachable — pockets under dense foliage; real players can crouch/dig out |
-| coverage | core 65 % plant columns / 21 % prop; outer 72 % / 33 % |
-| VXL size | 7.6 MB (≈3× normandie) — check client load time / FPS |
+| round trip / pyspades | identical; 0/40 000 solid, 0/20 000 colour mismatches |
+| floating | 0 (38 small fragments / 189 voxels dropped at build) |
+| platform clearance | 0 voxels at z ≤ 2; highest voxel z 3 |
+| ground under platform ends | ground z 50–53, solid to the bottom |
+| spawns | live server: 400/400 per team on ground z 48–51 |
+| fronts | 0 columns with anything ≥ 3 high |
+| flat ground | 0.5 % of 9×9 windows are level (built surfaces only: patio, dollhouse) |
+| mirror | combat-zone column tops 99.0 % |
+| routes (no building) | spawn → own tower zone 88/89; → enemy spawn 278/278; dollhouse ground 133/134; dollhouse upstairs 162/193 (the doll-side room is on the west, behind the partition door); sandcastle court reachable |
+| flank routes (avoiding ±130 of the centre) | north 574/574, south 682/684 |
+| reachability on foot | periphery ground 99.9 %, combat-zone ground 99.6 % |
+| spawn exposure from platform | 0 % hidden: with open fronts and no pergola, both spawns are fully visible from the platform edge (equal for both teams) |
+| VXL | 5.2 MB |
 
 ## Open points
-* Client performance with ~4 000 plants is untested.
-* Foliage pockets: model says ~4 % of walkable cells can't be walked out of without crouching/digging.
-* Set pieces are toy-scale (a bike at true bug scale would be bigger than the map).
-* Puddles are painted solid voxels (water in AoS only exists at z 63).
+* Spawns are visible from the platform; this is the trade-off of open fronts with no pergola. Options: a
+  pergola-style overhead, moving the spawns, or accepting it.
+* The dollhouse roof is ~19 blocks below the platform (accepted).
+* Client FPS has not been tested.
 
 ## Regenerate
-`python3.11 world.py OUTDIR [--seed N]`, `python3.11 validate2.py OUTDIR`, `python3.11 render2.py OUTDIR/backyard_babel.vxl OUTDIR`.
-Kit `vox.py`, plants `flora.py`, props `props.py`, layout `world.py`; uses `vxlio.py`, `noise.py`, `build.py` (font).
+* Build: `python3.11 v5/world5.py OUTDIR [--seed N]`. Every run is new; the seed is saved.
+* Validate: `python3.11 v5/validate5.py OUTDIR`.
+* Render: `python3.11 v5/iso.py OUTDIR/backyard_babel.vxl OUT.png [--scale 2]`.

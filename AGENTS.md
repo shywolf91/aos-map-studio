@@ -4,7 +4,7 @@ This repo is a prompt-to-map pipeline for **classic Ace of Spades 0.75** maps (`
 metadata (`.txt`). It contains the VXL toolchain (`aosmap/`), map generators (`scenes/`), finished maps
 (`maps/`), validators, renderers, server test configs and the design knowledge collected while building them.
 
-Owner: shywolf91. Last consolidated 2026-10-16.
+Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project "AoS_Map_Making" to Claude Code).
 
 > Claude Code reads `CLAUDE.md`, which imports this file. Codex, opencode, Cursor and most other agents read
 > `AGENTS.md` directly. Keep the rules in this one file.
@@ -13,15 +13,20 @@ Owner: shywolf91. Last consolidated 2026-10-16.
 
 ## 1. Read in this order
 
-1. **This file.** It holds the owner's standing rules (§4). Those rules are recorded nowhere else in the repo.
-2. `aos_map.md` is the knowledge base. It covers the format, collapse, metadata, protection, modes, art direction, toolchain, checklist and gotchas.
-3. `docs/vxl_and_runtime_reference.md` is the source-verified technical reference, with file and function citations.
-4. `docs/babel_rotation_guide_notes.md` covers Babel spawn-camping rules and the calibrated spawn-exposure targets.
-5. `docs/project_brief/` holds the original project brief, the role instructions and the per-mode design prompts.
-6. Read the spec of the newest map closest to your task:
-   * `docs/wicker_kings_harvest_spec.md` is the newest and most complete Babel example.
-   * The other specs are listed in §9.
+1. **This file.** It holds the owner's standing rules (§4).
+2. `docs/knowledge/project_memory.md` is the owner's decision and feedback log (every `[USER]` rule with its date,
+   plus the history of each map request). Newest entries win.
+3. `docs/knowledge/aos_map_design_knowledge.md` is the newest, most complete knowledge base (2026-10-30, updated
+   2026-11-08): format, physics, metadata, modes, Babel design rules, art direction, fog/glow, house rules, toolchain,
+   workflow, checklist, portfolio, reference measurements. `aos_map.md` is the older (10-13) version of it.
+4. `docs/vxl_and_runtime_reference.md` is the source-verified technical reference, with file and function citations.
+5. `docs/babel_rotation_guide_notes.md` covers Babel spawn-camping rules and the calibrated spawn-exposure targets.
+6. `docs/project_brief/` holds the original project brief, the role instructions and the per-mode design prompts.
+7. Read the spec of the newest map closest to your task (§9):
+   * `docs/under_the_tree_spec.md` and `docs/bloomhop_kingdom_spec.md` are the newest Babel examples (2026-11-09).
+   * `docs/remus_recreate_report.md` is the template for a `[recreate]` job.
 
+`docs/knowledge/aos_map_designer_agent_prompt.md` is a self-contained system prompt for other AIs.
 `docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md` and `docs/heightmap_colourmap_tutorials.md` are
 deeper background. Read them when you touch those areas.
 
@@ -51,13 +56,23 @@ Never import mechanics from the Jagex/Steam Ace of Spades. It is a different gam
 * **Graybox first.** Check gameplay before decorating. The art pass must not change gameplay geometry.
 * Builds must be reproducible. Use a fixed seed and `zlib.crc32` for hashing, never Python's `hash()`.
   Same seed → same SHA-256 in a fresh process.
-  * Exception: a brief that asks for random generation (Backyard Babel). Draw an OS seed and save it to `build_info.json` so the map can be rebuilt.
+  * Vegetation and decoration placement is **non-deterministic by owner rule**: draw an OS seed per build and save it
+    (`build.json`) so that exact map can be rebuilt. Layout seeds stay fixed.
 * **Beauty is the top artistic priority.** A valid but crude VXL is a prototype, not a finished map.
   The reference maps are for craft and detail density only. Never copy their objects, landmarks or terrain.
 
 ## 4. Owner's standing rules `[USER]`
 
-These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026-10-16. Follow them unless a brief says otherwise.
+These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026-11-09 (dated log:
+`docs/knowledge/project_memory.md`). Follow them unless a brief says otherwise.
+
+### Process
+* **Always ask questions before building a map** — never build without the answers (question list: knowledge base §14).
+  Then offer three concepts unless he supplied one.
+* `[recreate]` tag + attached `.vxl` = analyse that map and redesign it with new life through the normal pipeline
+  (example: `docs/remus_recreate_report.md`). Edits of community maps otherwise stay "relatively the same" and credit
+  the original author.
+* `.txt` author is always `author = 'shywolf91 + AI'`.
 
 ### General
 * **Ground is solid all the way down** (like remus/normandie), unless a tunnel or underground structure is intended.
@@ -76,6 +91,18 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   * Put it on the ground (painted on ground blocks or 1 above) in a free corner.
   * Use sky level only when that corner's scenery suits it. Clear only the area under the tag.
 * Keep finished versions side by side (`maps/<name>_v1`, `_v2`, …). Never overwrite a released version.
+* **Every structure is real** (2026-10-20): open doorways, real rooms, window openings, stairs to every upper floor,
+  furniture, places to explore/hide. No solid boxes, no painted doors. Validate with an interiors reachability test.
+* **Don't leave the centre empty** (2026-10-28). Most combat is in a central ~300–400 × 150–250 zone: pack it with
+  distinct objects and gameplay elements, crossable on foot (7–10 voxel gaps, many openings, not a labyrinth).
+* **Flank route** along the edges, 130–210 voxels from the centre. **Periphery passable** — no packed/overlapping props.
+* Every area (centre and skirts) gets artistic detail; spread structures out. He **loves unique one-off objects**.
+* Draw distance is ~110 voxels.
+* **Vegetation:** non-deterministic, varied colours with smooth gradients, **three random details per plant**,
+  groves not even scatter, striking and intricate.
+* Players hate maps that are **too white** (snow: cap max channel ~212) and **too black** (floors luma ≥ 40).
+* Optional extras he often picks: glow blocks (format in knowledge base §11.4), a floating sky-decor layer, an
+  underground layer, `heavens_color`. Ask; don't assume.
 
 ### Babel (the main mode so far)
 * **Balanced spawns.** Both spawns should be mainly similar; usually the team's half is mirrored `x' = 512 − x`.
@@ -97,7 +124,14 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   * These rules pull against "open fronts". When both can't be met, report the trade-off to the owner instead of silently picking one.
 * Avoid lag and flicker: no dense 1×1 pillar fields, no high-contrast 1-voxel stripes, no glaring or white fog.
 * Vary playstyles across the rotation (sky babel, ground babel, island babel, joke maps).
-* The owner's "stairs / ledges / return-descent" tower idea is a **custom variant**. Stock Babel needs a script change for it.
+* **Never put the platform in the VXL**; the script builds it.
+* Spawns not 100 % flat but easy to spawn on (gentle mounds, no holes). Nothing solid blocks the front; structures
+  on it need a walk-through opening (aos.party/view/413, /1248). Tower zone 32 wide, 44–135 from centre, no narrow
+  passages (team-switch griefers block them), no authored ramp to the tower.
+* **Custom variant = "Babel with assist structures"** (redefined 2026-11-08): stock Babel, but the map has climbable
+  structures (ruins, tree, crag, mast…) that reach the platform on foot or with a short build. It is **not** a
+  ready-made tower with the intel on top. Equal access, contestable, report build gap per structure, label the map.
+  Full rules: `docs/project_brief/AoS_Map_Requirements.md` and knowledge base §8.8.
 
 ### Babel facts that constrain every map (stock 1.4.2) `[SRC]`
 * The script builds the platform: x 206–305, y 240–271, z 1, colour (0,255,255).
@@ -138,10 +172,11 @@ The full checklist is in `aos_map.md` §12. Route checks are a graph model, not 
 ```python
 name = 'Map Name'
 version = '1.0'
-author = 'shywolf91'
+author = 'shywolf91 + AI'
 description = 'Babel: ...'          # beware apostrophes inside single quotes; a .txt that fails to parse is only logged
 fog = (176, 160, 186)               # bright, hue absent from the palette
 extensions = {'babel': True, 'water_damage': 0}
+# optional (owner's setup): 'heavens_color': (r, g, b, 255), 'glow_enabled': True, 'glow_stored_colors': {...}
 # no get_spawn_location / get_entity_location hooks (owner rule)
 ```
 A `.txt` that fails to load leaves the map running without extensions, and water damage silently disappears.
@@ -177,14 +212,47 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | spinline | joke Babel (pinline-style) | v1.4 | client-loaded by owner | **zip from its chat**; spec `docs/spinline_spec.md` |
 | Brimstone Atoll | Halloween island Babel | v1.3 | server-loaded | **zip from its chat**; spec `docs/brimstone_atoll_spec.md` |
 | Witchwood Isles | Halloween island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/witchwood_isles_spec.md` |
-| Backyard Babel | Grounded-style backyard Babel | v2.x | server-loaded | **zip from its chat**; spec `docs/backyard_babel_spec.md` |
+| Backyard Babel | Grounded-style backyard Babel | v5.0 | server-loaded | **zip from its chat**; spec `docs/backyard_babel_spec.md` (v2 spec kept) |
 | The Wicker King's Harvest | Halloween island Babel | v1.0 / v1.1 (sky) | server-loaded | `scenes/wicker_kings_harvest/` |
+| Graveyard of the Forgotten — The Bone Cathedral | Halloween ground Babel | v1.0 | client-inspected (BetterSpades) | **zip from its chat**; spec `docs/graveyard_of_the_forgotten_spec.md` |
+| The Hollow Crown | Halloween ground Babel | v1.1 | server-loaded + bots | **zip from its chat**; spec `docs/hollow_crown_spec.md` |
+| Death Swamp | Push (first) | v1.0 | server-loaded + bots | **zip from its chat**; spec `docs/death_swamp_spec.md` |
+| Haunted Fairground | Halloween island Babel (Ruins layout) | v1.3 | server-loaded | **zip from its chat**; spec `docs/haunted_fairground_isles_v1.md` |
+| Ferrari's Revenge (Skull River) | Babel | v3 | parser-validated | **zip from its chat**; spec `docs/skull_river_spec.md` |
+| Royal Parade Halloween | community-map edit (Bradley & Mile) | v1.1 | parser-validated; viewed on alohacraft | **zip from its chat**; spec `docs/royal_parade_halloween_spec.md` |
+| 1river2night v2.2 | night recolour + glow | v2.2 | parser-validated | **zip from its chat**; spec `docs/1river2night_v2_spec.md` |
+| Bikini Atoll (Detonation) | Push glow edit (IAmYourFriend) | v1.2 | parser-validated | **zip from its chat**; spec `docs/bikini_atoll_detonation_spec.md` |
+| Silverpine Hunt | Halloween snow Babel | v1.x → v2.2 (+sky) | server-loaded | **zip from its chat**; specs `docs/silverpine_hunt_spec.md`, `docs/silverpine_hunt_v2_spec.md` |
+| Mossglade Pond | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/mossglade_pond_spec.md` (owner decisions open) |
+| Lantern Bazaar Canals | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/lantern_bazaar_canals_spec.md` |
+| Highland Loch Castle | island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/highland_loch_castle_spec.md` |
+| Sunken Reef Atoll | island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/sunken_reef_atoll_spec.md` |
+| Clockwork Skyyard | steampunk sky Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/clockwork_skyyard_spec.md` |
+| Cherry Terrace Gardens / Cherry Gardens | spring ground Babel | v1.0 (rebuilt as Cherry Gardens) | parser-validated / server-loaded | **zip from its chat**; specs `docs/cherry_terrace_gardens_spec.md`, `docs/cherry_gardens_spec.md` |
+| Remoria ([recreate] of remus) | ground Babel | v1.0 | server-loaded | **zip from its chat**; report `docs/remus_recreate_report.md` |
+| Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/bloomhop_kingdom_spec.md` |
+| Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
-chat. Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo.
+chat. Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).
 
 ## 10. Not in the repo (by design)
 
 * **Reference maps** (`refs/`, ~36 community `.vxl` files) and the **Babel map rotation guide v1.8 PDF** (aloha.pk).
   They are other people's work: use them locally, but don't push them to a public repo. Our distilled notes are in `docs/`.
 * Local config (`opencode.jsonc`) and update bundles (`_updates/`).
+
+## 11. Working in Claude Code (since 2026-11-09)
+
+* Work happens in `D:\Ace of Spades\Aos_Map` on the owner's Windows PC (DRAGONSPIRE). Use Python 3.11 in a venv with
+  `requirements.txt` + `piqueserver==1.4.2`. Shell commands in docs are written bash-style; on Windows use
+  `python` from the venv and adjust `cp`/paths.
+* Put reference maps in `refs/` (git-ignored). Read them with `aosmap.vxl.read_vxl`.
+* **Importing a map from a chat zip:** unzip into `_updates/<map>/` (git-ignored), then move the generator into
+  `scenes/<map>/` and the outputs into `maps/<map>_vN/`, run its check script, and update §9's "where the source
+  lives" column. Large build artefacts (`mat.npy`, `*.npy`) stay git-ignored.
+* **Recording new decisions:** when the owner states a new preference or rule, append it to
+  `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
+  That file replaces the claude.ai Project memory.
+* Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
+* Commit per map version; don't push `refs/` or the rotation-guide PDF.
