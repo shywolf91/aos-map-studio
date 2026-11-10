@@ -120,7 +120,11 @@ def check(out, info, cv=None, cvG=None):
 
 
 if __name__ == '__main__':
-    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    if '--gate' in sys.argv:                            # exposure experiment only; default = the release gatehouse
+        SPEC['gatehouse']['variant'] = sys.argv[sys.argv.index('--gate') + 1]
+    if '--flank-cover' in sys.argv:
+        SPEC['gatehouse']['flank_cover'] = True
+    args = [a for a in sys.argv[1:] if not a.startswith('--') and a != SPEC['gatehouse']['variant']]
     out = args[0]
     seed = args[1] if len(args) > 1 else None
     cv, info, cvG = build_map(out, seed, graybox_only='--graybox' in sys.argv)

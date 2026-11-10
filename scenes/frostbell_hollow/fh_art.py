@@ -376,10 +376,11 @@ def gatehouse_art(cv, S, glow):
     yA, yB = gh['y']
     s0 = gh['statue_y'][0]
     bid = _ids(cv, 'building', 'roof')
-    sl = (slice(x0, x1 + 1), slice(yA, yB + 1), slice(20, 51))
+    xa = x0 if gh.get('variant', 'full') == 'full' else 143            # variant towers reach x 143
+    sl = (slice(xa, x1 + 1), slice(yA, yB + 1), slice(20, 51))
     m = cv.solid[sl] & np.isin(cv.mat[sl], bid)
     xs, ys, zs = np.nonzero(m)
-    X, Yv, Z = xs + x0, ys + yA, zs + 20
+    X, Yv, Z = xs + xa, ys + yA, zs + 20
     c = np.empty((len(X), 3))
     c[:] = (204, 194, 170)                                                  # cream gallery
     pier = (Z >= gh['passage_air'][0]) & (Z <= 49)

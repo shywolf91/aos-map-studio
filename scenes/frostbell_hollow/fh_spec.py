@@ -93,7 +93,9 @@ SPEC = {
     'woodpiles': [(66, 69, 210, 211), (106, 109, 308, 309), (56, 59, 196, 197)],
     'gatehouse': {'x': (146, 151), 'y': (220, 292), 'tower_y': (220, 231), 'floor_z': 50,
                   'passage_air': (41, 49), 'gallery_floor': 40, 'gallery_air': (30, 39), 'roof': (28, 29),
-                  'piers': [(240, 243), (254, 258), (269, 272)], 'statue_y': (213, 216)},
+                  'piers': [(240, 243), (254, 258), (269, 272)], 'statue_y': (213, 216),
+                  # experiment switch (fh_main.py --gate NAME): full (release) | band | arch | twin | low | none
+                  'variant': 'full', 'flank_cover': False},
     'front_huts': [{'box': (166, 174, 232, 239), 'open': 'S'}, {'box': (181, 189, 273, 280), 'open': 'N'}],
     # scattered low front props (x, y, kind): never in rows; heights <= 5 (lanterns 6)
     'front_props': [(157, 263, 'sled'), (191, 249, 'sled'), (161, 271, 'firewood'), (177, 245, 'hay'),

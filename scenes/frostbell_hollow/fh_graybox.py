@@ -670,6 +670,122 @@ def build_gatehouse(cv, S=SPEC):
                      ['gatehouse gallery', x0 + 2, 245, gf], ['gatehouse stair landing', x0 + 2, yA + 9, g - 5]]
 
 
+# ---------------------------------------------------------------- gatehouse variants (exposure experiment)
+
+def _statues(cv, S):
+    gh = S['gatehouse']
+    x0, x1 = gh['x']
+    g = gh['floor_z']
+    s0, s1 = gh['statue_y']
+    T = C['soldier']
+    for (a, b) in ((s0, s1), (512 - s1, 512 - s0)):
+        cv.box(x0 + 1, x1 - 1, a, b, g - 3, g - 1, C['stone'], 'prop')
+        cv.box(x0 + 1, x1 - 1, a, b, 36, g - 4, T, 'prop')
+        cv.box(x0 + 2, x1 - 2, a + 1, b - 1, 33, 35, C['figure'], 'prop')
+        cv.box(x0 + 2, x1 - 2, a + 1, b - 1, 29, 32, (60, 56, 70), 'prop')
+
+
+def _stair_tower(cv, ta, tb, south, name, closed_inner=False):
+    """Gate tower x 143-151 (extends 3 west of the gate, still outside the spawn margin x <= 142), rows ta..tb
+    given in north orientation (south=True mirrors them to 512 - y). Two flights along x: floor 50 -> landing 45
+    -> tower room floor 40; room z 30-39, roof z 28-29; west door. Returns the room rows."""
+    def Y(a, b):
+        return (a, b) if not south else (512 - b, 512 - a)
+    X0, X1, g = 143, 151, 50
+    W, T = C['stone'], C['soldier']
+    ya, yb = Y(ta, tb)
+    cv.carve(X0, X1, ya, yb, 28, g - 1)
+    cv.box(X0, X1, ya, yb, 41, g - 1, T, 'building')                  # shell below the room
+    cv.carve(X0 + 1, X1 - 1, *Y(ta + 1, tb - 1), 41, g - 1)
+    cv.box(X0, X1, ya, yb, 40, 40, C['floor'], 'building')             # room floor
+    cv.box(X0, X1, ya, yb, 30, 39, W, 'building')                      # room walls
+    cv.carve(X0 + 1, X1 - 1, *Y(ta + 1, tb - (0 if not closed_inner else 1)), 30, 39)
+    cv.box(X0, X1, ya, yb, 28, 29, C['roof'], 'roof')
+    structures.door(cv, X0, X0, *Y(ta + 1, ta + 2), g)
+    a1, a2 = Y(ta + 1, ta + 2)
+    straight_stair(cv, X0 + 2, a1, a2, g, 5, 1, C['stair'])
+    cv.box(X1 - 1, X1 - 1, *Y(ta + 1, tb - 1), g - 5, g - 1, C['stair'], 'stair')
+    b1, b2 = Y(tb - 2, tb - 1)
+    straight_stair(cv, X1 - 2, b1, b2, g - 5, 5, -1, C['stair'])
+    for yy in range(ya + 2, yb - 1, 4):                                 # arrow slits on the west face
+        cv.carve(X0, X0, yy, yy, 33, 35)
+    my = (ya + yb) // 2
+    cv.interiors += [[f'{name} tower floor', X0 + 1, Y(ta + 1, ta + 2)[0], g],
+                     [f'{name} tower landing', X1 - 1, my, g - 5], [f'{name} tower room', X0 + 3, my, 40]]
+
+
+def build_gate_variant(cv, S, v):
+    """Shortened / lowered gatehouses for the exposure experiment. Passages z 41-49, piers <= 5, >= 60 % of the
+    front band open, toy-soldier statues kept; a gallery only where stairs reach it."""
+    gh = S['gatehouse']
+    x0, x1 = gh['x']
+    g = gh['floor_z']
+    W, T = C['stone'], C['soldier']
+    if v in ('low', 'none'):
+        build_gatehouse(cv, S)
+        cv.interiors = [i for i in cv.interiors if not i[0].startswith('gatehouse')]
+        if v == 'none':
+            cv.carve(x0, x1, gh['y'][0], gh['y'][1], 0, g - 1)
+            return
+        # low: keep the towers and the gallery floor (z 40); the band above is a crenellated parapet z 36-39
+        cv.carve(x0, x1, gh['y'][0], gh['y'][1], 0, 35)
+        for y in range(gh['y'][0], gh['y'][1] + 1, 3):
+            cv.carve(x0, x0, y, y, 36, 37)
+            cv.carve(x1, x1, y, y, 36, 37)
+        cv.interiors += [['gatehouse north tower', x0 + 3, gh['y'][0] + 6, g],
+                         ['gatehouse south tower', x0 + 3, 512 - gh['y'][0] - 6, g],
+                         ['gatehouse parapet walk', x0 + 2, 245, gh['gallery_floor']]]
+        return
+    _statues(cv, S)
+    if v == 'band':
+        for south in (False, True):
+            _stair_tower(cv, 228, 235, south, 'gate S' if south else 'gate N')
+        # gallery x 146-151 between the towers (rows 236-276), open into both tower rooms
+        cv.carve(x0, x1, 236, 276, 28, g - 1)
+        cv.box(x0, x1, 236, 276, 28, 29, C['roof'], 'roof')
+        cv.box(x0, x1, 236, 276, 40, 40, C['floor'], 'building')
+        cv.box(x0, x0, 236, 276, 30, 39, W, 'building')
+        cv.box(x1, x1, 236, 276, 30, 39, W, 'building')
+        cv.carve(x0 + 1, x1 - 1, 235, 277, 30, 39)
+        for (p0, p1) in ((245, 247), (254, 258), (265, 267)):
+            cv.box(x0, x1, p0, p1, 41, g - 1, T, 'building')
+        cv.interiors.append(['gate gallery', x0 + 2, 250, 40])
+    elif v == 'arch':
+        # single central gate y 240-272: three piers, a solid masonry lintel z 28-40 (no room, so no stairs)
+        cv.carve(x0, x1, 240, 272, 28, g - 1)
+        cv.box(x0, x1, 240, 272, 28, 40, W, 'building')
+        cv.box(x0, x1, 240, 272, 28, 28, C['roof'], 'roof')
+        for (p0, p1) in ((240, 243), (254, 258), (269, 272)):
+            cv.box(x0, x1, p0, p1, 41, g - 1, T, 'building')
+    elif v in ('twin', 'twin_bridge'):
+        for south in (False, True):          # 10 long, 5 rows inside the front band (pier <= 5)
+            _stair_tower(cv, 227, 236, south, 'twin S' if south else 'twin N', closed_inner=(v == 'twin'))
+        if v == 'twin_bridge':
+            # light bridge between the tower rooms: deck z 40, crenellated parapets z 36-39, open sky above
+            cv.box(x0, x1, 237, 275, 40, 40, C['floor'], 'building')
+            cv.box(x0, x0, 237, 275, 36, 39, W, 'building')
+            cv.box(x1, x1, 237, 275, 36, 39, W, 'building')
+            for y in range(237, 276, 3):
+                cv.carve(x0, x0, y, y, 36, 37)
+                cv.carve(x1, x1, y, y, 36, 37)
+            for (p0, p1) in ((254, 258),):
+                cv.box(x0, x1, p0, p1, 41, g - 1, T, 'building')
+            cv.interiors.append(['twin bridge deck', x0 + 2, 250, 40])
+    else:
+        raise ValueError(v)
+
+
+def build_flank_cover(cv, S):
+    """'+ flank cover' experiment: tall rock spires right beside the gate ends and rock crags NE/SE of the spawn
+    square - all outside the front band (y 232-280 for x 152-199) and outside the spawn square + margin."""
+    full_len = S['gatehouse'].get('variant', 'full') in ('full', 'low')   # full-length towers occupy y 220-292
+    xs0, xs1 = (136, 142) if full_len else (144, 150)
+    for (a, b) in ((218, 225), (287, 294)):
+        cv.box(xs0, xs1, a, b, 14, 49, C['rock'], 'rock')
+    for (a, b) in ((216, 226), (286, 296)):
+        cv.box(124, 132, a, b, 16, 48, C['rock'], 'rock')
+
+
 def hut(cv, x0, x1, y0, y1, open_side, name, g=50):
     """Open one-room hut on the front: 5 tall (roof z g-5), walls on three sides with side doors."""
     rz = g - 5
@@ -1213,7 +1329,12 @@ def build_west(S=SPEC, veg_seed=None):
     build_chapel_roof(cv, S)
     build_post_office(cv, S)
     build_village(cv, S)
-    build_gatehouse(cv, S)
+    if S['gatehouse'].get('variant', 'full') == 'full':
+        build_gatehouse(cv, S)                          # the released gatehouse, unchanged
+    else:
+        build_gate_variant(cv, S, S['gatehouse']['variant'])
+    if S['gatehouse'].get('flank_cover'):
+        build_flank_cover(cv, S)
     build_front(cv, S)
     market_boxes = build_market(cv, S)
     build_axis(cv, S)
