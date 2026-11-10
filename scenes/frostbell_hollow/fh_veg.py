@@ -232,9 +232,15 @@ def replace_stand_ins(cv, pines, rng, seed, glow, festive=None):
     m[256:] = False
     # ring pines (on the rock zone, ground z <= 46) keep their stand-in cone exactly and are painted as dark tiered
     # pines; valley trees are rebuilt (walk-under canopies were creating ledge pockets on the ring terraces)
+    # The same applies to valley pines on a slope (the ground under the canopy rises > 1 above the trunk's ground):
+    # a fixed walk-under clearance would sit too low uphill and close pockets.
+    def keep_cone(x, y):
+        g = int(cv.H[x, y])
+        return g <= 46 or g - int(cv.H[max(0, x - 7):x + 8, max(0, y - 7):y + 8].min()) > 1
+
     ringkeep = np.zeros_like(m)
     for (x, y, r, h0) in pines:
-        if cv.H[x, y] <= 46:
+        if keep_cone(x, y):
             ringkeep[x - r - 2:x + r + 3, y - r - 2:y + r + 3] = True
     ringkeep &= m
     rm = m & ~ringkeep
@@ -245,7 +251,7 @@ def replace_stand_ins(cv, pines, rng, seed, glow, festive=None):
     for (x, y, r, h0) in pines:
         g = int(cv.H[x, y])
         fam = CONIFER_FAMILIES[int(grove_field[x, y] * 3.999)]
-        if g <= 46:
+        if keep_cone(x, y):
             paint_cone(cv, rng, x, y, r, g, fam, ringkeep)
             report['ring_pines_painted'] += 1
             continue

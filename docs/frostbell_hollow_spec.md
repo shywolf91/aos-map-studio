@@ -1,6 +1,8 @@
 # Frostbell Hollow — spec (v1.0)
 
-**Status: specified** (2026-11-10). Nothing is generated yet. This file is updated at each rung of the status ladder.
+**Status: server-loaded** (2026-11-10). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
+Not client-inspected and not playtested. The renders in `maps/frostbell_hollow_v1/renders/` are numpy previews,
+not client captures.
 
 Christmas Eve alpine village at twilight. Stock Babel (piqueserver 1.4.2 `babel_script`), ground Babel, full
 512 × 512, no assist structures. Branch `map/frostbell-hollow`, generator `scenes/frostbell_hollow/`, built with
@@ -116,6 +118,78 @@ the axis so that neither team is closer to them.
 share, tunnel exclusion under the tower corridor, interiors for every room, floor and tunnel, both flanks
 walkable end to end with similar route length (within 10 %).
 
-## Validation, limits, regenerate
+## As built (v1.0) `[RUN 2026-11-10]`
 
-To be filled in after the build.
+Release build: vegetation seed **4015401698** (OS-drawn, saved in `build.json`), layout seed 20261110.
+`.vxl` 2,851,828 bytes, SHA-256 `d5efd6fb15b999386dd5a290461ae1762a3877e0abc4fce85e35bdf0f5d1eab0`.
+`.txt` 2,491,178 bytes (45,114 `glow_stored_colors` entries; parses in about 0.4 s).
+
+### Deviations from the layout above
+
+* Post office at x 96–122 (not 100–126), a T shape with a parcel wing, to keep an 8-wide lane.
+* Gatehouse spans y 220–292 (not 222–290) so a two-flight stair fits in each end tower.
+* Covered bridge has earth abutments at z 52 (y 398–413, 451–461); the sledding hill runs y 462–500.
+* Creek meanders 430 ± 9, 7–13 wide, banks 24 wide; the mill is placed from the creek line.
+* Market: organic plaza with six lanes and 17 stalls per side (spec said 4), smallest gap 7.
+* Villages: 4 houses (3 with wings), a barn, 3 sheds, a well, woodpiles, open fence segments.
+* Mountain ring is 27–56 deep with spurs and coves. Highest solid voxel is z 7.
+* Tag: the NE corner is mountain, so the tag is painted on flat ground in the NE quarter (x 356–454, y 105–115).
+* Ice-sculpture garden blocks are carved as bell, fir, obelisk, seal and cairn; harp and angel are on feature pads.
+* About 22 % of windows are filled with glowing glass and are not see-through.
+* Not built: chimney smoke, reeds, rail bends.
+* Tree and grove positions come from the vegetation seed. Terrain, buildings, market, front props, feature pads,
+  outcrops and the giant spruce are fixed by the layout seed.
+
+### Validation
+
+| check | result |
+|---|---|
+| own reader, re-encode | identical |
+| pyspades 1.4.2 `generate()` | identical; 0 / 20,000 sampled mismatches |
+| floating components | 0 unintended; 5 expected (sleigh x 228–279, y 48–66, z 8–9, and 4 clouds), sky rules met (≥ 126 from the platform, ≥ 15 air below, none over a spawn) |
+| mirror (`x512`) | 0 solid and 0 material mismatches outside the declared boxes (train, tag, pads, sky) |
+| platform volume, z ≤ 2 margin | clear; nothing solid at z ≤ 6 |
+| ground under platform ends | flat z 50 both ends, no water |
+| spawn squares | tops z 48/49, 0 water columns, 0 roof columns, margins prop-free |
+| spawn exposure (calibrated) | blue 2.92 viewers per spot, 72.6 % hidden; red 2.65, 72.6 % hidden (targets ≤ 10, ≥ 15 %) |
+| front openness | worst north–south section 81.6 % free; tallest prop 6 (4 lantern posts), others ≤ 5 |
+| gatehouse | 73.5 % open across the front band, widest pier 5 |
+| build gap | 46 blocks, both teams; platform not reachable on foot |
+| anchors | flat, not raised, prop-free |
+| routes | enemy spawn 236 steps for both teams; safe descent to the tower zone 30 / 31 |
+| flanks | north 456, south 458 steps (0.4 % apart), same for both teams |
+| trap cells | 0 |
+| interiors | 172 rooms, floors, tunnels and chambers, all reachable with a way out |
+| underground | 5,100 cells, 100 % reachable from each spawn, 100 % walk-out; 0 tunnel air under the tower corridor |
+| largest featureless flat patch | 22 (limit 24) |
+| periphery reachable | 87.2 % (tree tops count as unreachable columns) |
+| graybox vs art collision | 0 unallowed standable-cell changes |
+| colours | near-white surface 0.24 %; min floor luma 40.5; top-surface median luma about 90; glow sources warm, none red |
+| seeds | 6 test seeds and the release seed all pass 26 / 26 with 0 traps and 0 floating |
+| reproducibility | same vegetation seed gives the same SHA-256 in two fresh processes |
+| `.txt` | `check_txt` ok; author `shywolf91 + AI`; no spawn hooks; glow keys are `(x, y, z)` tuples |
+| live server (piqueserver 1.4.2, babel) | loaded; platform 3,200 cells at z 1; intel (256, 256, 1); 400 spawns per team inside the stock squares at z 48/49; fog and extensions read |
+| tests | `pytest`: 22 passed |
+
+Route, trap and interior results come from a graph model, not from play. The colour figures were measured at
+seed 12345 before tree placement became seed-driven.
+
+### Known limits and open points
+
+* Not seen in any client: fog, `heavens_color`, the glow look and FPS are unverified.
+* `glow_*` and `heavens_color` are read by the owner's server setup only. Stock 1.4.2 shows the baked light.
+  How a glow-aware server handles 45k entries is untested.
+* `water_damage` needs `piqueserver.scripts.map_extensions` in the script list (it is 0 here).
+* The sky pieces float by request. Breaking a player block attached to one drops it for the round.
+* The gatehouse is a 72-long building with four 9-wide passages. It is what hides the spawns. Shortening it
+  would raise spawn exposure. `[OPEN]` owner decision.
+* The mirrored west twin of the tag strip is a flat empty strip.
+
+### Regenerate
+
+```bash
+python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow 4015401698   # omit the seed for a new random build
+python scenes/frostbell_hollow/fh_render.py out/frostbell_hollow
+python -m aosmap.kit.probe out/frostbell_hollow --mode babel
+python scenes/frostbell_hollow/fh_main.py out/fh_graybox --graybox           # gameplay geometry only
+```

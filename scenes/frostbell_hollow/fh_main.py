@@ -6,7 +6,8 @@ graybox (fh_graybox, fixed layout seed) -> orphan report -> [graybox copy: mirro
 -> export (.vxl, .txt with glow + heavens_color, build.json, mat.npy, terrain_H.npy, graybox_solid.npy) -> run_all +
 fh_checks (incl. the graybox-vs-art collision diff) -> validation.json.
 
-Same veg_seed -> same SHA-256 in a fresh process. --graybox skips the art (the gameplay reference build).
+Same veg_seed -> same SHA-256 in a fresh process. veg_seed places the pine stand-ins (graybox) and drives every
+vegetation/decoration look (art). --graybox skips the art (the gameplay reference build).
 """
 from __future__ import annotations
 
@@ -31,7 +32,8 @@ from fh_spec import SPEC  # noqa: E402
 
 def build_map(out, veg_seed=None, graybox_only=False):
     t0 = time.time()
-    cv, rep = fh_graybox.build_west(SPEC)
+    seed = noise.os_seed() if veg_seed is None else int(veg_seed)     # one OS seed per build, saved in build.json
+    cv, rep = fh_graybox.build_west(SPEC, seed)
     floating_before = symmetry.floating_components(cv.solid)
     orphans = symmetry.remove_orphans(cv)
     cvG = copy.deepcopy(cv)
@@ -46,11 +48,10 @@ def build_map(out, veg_seed=None, graybox_only=False):
     boxes = [train_box]
     if graybox_only:
         final = cvG
-        info_extra.update({'veg_seed': None, 'feature_pads': rep['scatter']['feature_pads']})
+        info_extra.update({'veg_seed': seed, 'feature_pads': rep['scatter']['feature_pads']})
         version, desc = SPEC['version'], 'Babel: Christmas Eve alpine village - graybox (not a release).'
     else:
         import fh_art
-        seed = noise.os_seed() if veg_seed is None else int(veg_seed)
         rng = np.random.default_rng(seed)
         art = fh_art.art_west(cv, rep, SPEC, rng, seed)
         art_float_before = symmetry.floating_components(cv.solid)

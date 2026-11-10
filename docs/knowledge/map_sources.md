@@ -9,6 +9,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 
 | Map | Chat | Imported into repo? |
 |---|---|---|
+| Frostbell Hollow | built in Claude Code (2026-11-10), branch `map/frostbell-hollow` | yes (`scenes/frostbell_hollow/`, `maps/frostbell_hollow_v1/`) |
 | Under the Tree | https://claude.ai/chat/ff19af2e-ee83-4f97-97d0-85bb07c8aa0a | no |
 | Bloomhop Kingdom | https://claude.ai/chat/e3627c2c-c20d-40a9-a155-9d3577299f47 | no |
 | Remoria (remus recreate) | https://claude.ai/chat/8232c577-1ac0-4c00-8961-b76793fb7799 | no |

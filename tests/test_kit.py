@@ -119,3 +119,13 @@ def test_mirror_excludes_accept_a_list_of_cosmetic_boxes():
     assert legacy == [(250, 270, 80, 86)] and len(both) == 2
     assert symmetry.mirror_mismatch(cv.solid, None, 'x512', legacy)['solid'] > 0
     assert symmetry.mirror_mismatch(cv.solid, None, 'x512', both)['solid'] == 0
+
+
+def test_glow_extension_keys_are_xyz_tuples(tmp_path):
+    ext = build.glow_extensions({(5, 6, 7): (10, 20, 30)}, {'babel': True})
+    assert ext['glow_enabled'] is True and ext['glow_stored_colors'] == {(5, 6, 7): (10, 20, 30)}
+    f = tmp_path / 'g.txt'
+    f.write_text(build.map_txt('G', 'Babel: glow', (170, 168, 190), ext))
+    ns = {}
+    exec(f.read_text(), ns)
+    assert ns['extensions']['glow_stored_colors'] == {(5, 6, 7): (10, 20, 30)}

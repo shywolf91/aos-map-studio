@@ -965,19 +965,23 @@ def _try_small(cv, rng, x, y, kind):
     return None
 
 
-def scatter(cv, geo, S=SPEC):
-    """Deterministic (layout seed) clutter: pine groves, rock outcrops and feature pads on the fields, small props
-    and feature pads on the plaza, woodpiles / crates / single pines in the villages. Jittered grids, so nothing
-    lines up in rows; every piece keeps >= 3 voxels from anything already standing."""
+def scatter(cv, geo, S=SPEC, veg_seed=None):
+    """Clutter on jittered grids (nothing lines up in rows; every piece keeps >= 3 voxels from anything standing).
+    Fixed by the LAYOUT seed: rock outcrops and feature pads on the fields, plaza props and pads, village props.
+    Placed by the per-build VEG seed (owner rule: vegetation placement is non-deterministic, seed saved): every pine
+    stand-in - field groves (centres, member count, member positions), lone pines, village pines and ring pines.
+    The fixed pass runs first, so trees only fill the space the fixed pieces leave."""
     sc = S['scatter']
     seed = S['layout_seed']
     rng = noise.rng('scatter', seed)
+    vseed = seed if veg_seed is None else int(veg_seed)
+    vrng = noise.rng('veg_scatter', vseed)
     pads, pines, rocks, small = [], [], [], 0
     vil = _box(*[S['village'][k] for k in ('x', 'y')])
     plaza = geo['plaza'] & ~geo['lanes']
 
-    def grid(spacing, jitter, tag):
-        r = noise.rng(tag, seed)
+    def grid(spacing, jitter, tag, sd=seed):
+        r = noise.rng(tag, sd)
         for gx in range(6, 252, spacing):
             for gy in range(6, 506, spacing):
                 yield (gx + int(r.integers(-jitter, jitter + 1)), gy + int(r.integers(-jitter, jitter + 1)))
@@ -990,16 +994,7 @@ def scatter(cv, geo, S=SPEC):
             continue
         t = rng.random()
         if t < 0.5:
-            n = int(rng.integers(*sc['grove_n'])) + 1
-            R = sc['grove_radius']
-            got = 0
-            for _ in range(n * 4):
-                p = _try_pine(cv, rng, x + int(rng.integers(-R, R + 1)), y + int(rng.integers(-R, R + 1)))
-                if p:
-                    pines.append(p)
-                    got += 1
-                    if got >= n:
-                        break
+            pass                                        # grove slot: trees come from the veg pass below
         elif t < 0.75:
             o = _try_outcrop(cv, rng, x, y)
             if o:
@@ -1007,9 +1002,6 @@ def scatter(cv, geo, S=SPEC):
         elif t < 0.9:
             _try_pad(cv, rng, x, y, pads)
         else:
-            p = _try_pine(cv, rng, x, y)
-            if p:
-                pines.append(p)
             o = _try_outcrop(cv, rng, x + 8, y + 3)
             if o:
                 rocks.append(o)
@@ -1023,20 +1015,6 @@ def scatter(cv, geo, S=SPEC):
             _try_pad(cv, rng, x, y, pads, ['ice sculpture', 'snowman', 'present pile', 'lantern ring'])
         elif _try_small(cv, rng, x, y, k):
             small += 1
-    # dark pines on the mountain ring: stand-ins on foothills, terraces and gentle faces (art replaces them)
-    ring_n = 0
-    for (x, y) in grid(13, 5, 'grid_ring'):
-        if not (3 <= x <= 248 and 3 <= y <= 508) or not (16 <= cv.H[x, y] <= 46) or vil[x, y]:
-            continue
-        loc = cv.H[x - 1:x + 2, y - 1:y + 2]
-        if loc.max() - loc.min() > 3 or rng.random() < 0.25:
-            continue
-        r = int(rng.integers(2, 4))
-        h = min(int(rng.integers(9, 15)), int(cv.H[x, y]) - 8)          # tip stays at z >= 8
-        if h >= 6 and free_for_prop(cv, x - r - 2, x + r + 2, y - r - 2, y + r + 2):
-            pine(cv, x, y, r, h)
-            pines.append((x, y, r, h))
-            ring_n += 1
     # village clutter (spawn margin is kept clear by its keep flag)
     vk = ['woodpile', 'crates', 'pine', 'rock', 'pad', 'barrels']
     for (x, y) in grid(sc['village_spacing'], sc['village_jitter'], 'grid_village'):
@@ -1044,9 +1022,7 @@ def scatter(cv, geo, S=SPEC):
             continue
         k = vk[int(rng.integers(len(vk)))]
         if k == 'pine':
-            p = _try_pine(cv, rng, x, y)
-            if p:
-                pines.append(p)
+            pass                                        # village pines come from the veg pass below
         elif k == 'rock':
             o = _try_outcrop(cv, rng, x, y)
             if o:
@@ -1055,8 +1031,93 @@ def scatter(cv, geo, S=SPEC):
             _try_pad(cv, rng, x, y, pads, ['snowman', 'snowman family', 'sled stack'])
         elif _try_small(cv, rng, x, y, k):
             small += 1
+    # ---------------------------------------------------------------- veg pass (per-build OS seed)
+    R = sc['grove_radius']
+    for (x, y) in grid(sc['field_spacing'], sc['field_jitter'] + 3, 'grid_field_veg', vseed):
+        if not (0 <= x <= 250 and 0 <= y <= 511) or plaza[x, y] or geo['lanes'][x, y] or vil[x, y]:
+            continue
+        if not (44 <= cv.H[x, y] <= 60):
+            continue
+        t = vrng.random()
+        if t < 0.55:                                    # a grove: centre jittered, 3-6 members
+            n = int(vrng.integers(*sc['grove_n'])) + 1
+            got = 0
+            for _ in range(n * 4):
+                p = _try_pine(cv, vrng, x + int(vrng.integers(-R, R + 1)), y + int(vrng.integers(-R, R + 1)))
+                if p:
+                    pines.append(p)
+                    got += 1
+                    if got >= n:
+                        break
+        elif t < 0.68:                                  # a lone tree in a clearing
+            p = _try_pine(cv, vrng, x, y)
+            if p:
+                pines.append(p)
+    for (x, y) in grid(sc['village_spacing'], sc['village_jitter'], 'grid_village_veg', vseed):
+        if not (0 <= x <= 248 and 0 <= y <= 511) or not vil[x, y] or vrng.random() > 0.2:
+            continue
+        p = _try_pine(cv, vrng, x, y)
+        if p:
+            pines.append(p)
+    # dark pines on the mountain ring: stand-ins on foothills, terraces and gentle faces (art paints them)
+    ring_n = 0
+    for (x, y) in grid(13, 5, 'grid_ring', vseed):
+        if not (3 <= x <= 248 and 3 <= y <= 508) or not (16 <= cv.H[x, y] <= 46) or vil[x, y]:
+            continue
+        loc = cv.H[x - 1:x + 2, y - 1:y + 2]
+        if loc.max() - loc.min() > 3 or vrng.random() < 0.25:
+            continue
+        r = int(vrng.integers(2, 4))
+        h = min(int(vrng.integers(9, 15)), int(cv.H[x, y]) - 8)         # tip stays at z >= 8
+        if h >= 6 and free_for_prop(cv, x - r - 2, x + r + 2, y - r - 2, y + r + 2):
+            pine(cv, x, y, r, h)
+            pines.append((x, y, r, h))
+            ring_n += 1
     return {'pines': len(pines), 'ring_pines': ring_n, 'outcrops': len(rocks), 'small_props': small, 'feature_pads': pads,
-            'pine_list': pines}
+            'pine_list': pines, 'veg_seed': vseed}
+
+
+def clear_pine_traps(cv, pines, S=SPEC, rounds=3):
+    """Seeded pines can close a pocket against a terrace step or a wall. Run the kit's trap model (same rules as
+    babel_checks: safe graph from both spawns, walk back to the anchor set, terrain band +-3) on a mirrored copy and
+    delete every pine stand-in within reach of a trap cell; repeat until none is left. Returns pines removed."""
+    from aosmap.kit.babel_checks import Nav
+    from aosmap.kit.params import BABEL_DEFAULT as P
+    vid = cv.material('veg')
+    removed = 0
+    for _ in range(rounds):
+        solid = cv.solid.copy()
+        solid[257:] = cv.solid[255:0:-1]
+        solid[256] = cv.solid[255]
+        Hm = cv.H.astype(int).copy()
+        Hm[257:] = cv.H[255:0:-1]
+        Hm[256] = cv.H[255]
+        nav = Nav(solid)
+        h = P['spawn_half']
+        src = np.concatenate([nav.nodes_in(b[0] - h, b[0] + h, b[1] - h, b[1] + h, 0, 62) for b in P['bases']])
+        fwd = np.isfinite(nav.dist_from(src))
+        (x0, x1), (y0, y1) = P['platform_x'], P['platform_y']
+        anc = nav.nodes_in(min(b[0] for b in P['bases']) - h, max(b[0] for b in P['bases']) + h, y0 - 40, y1 + 40,
+                           0, 62)[::5]
+        back = np.isfinite(nav.dist_from(anc, reverse=True))
+        p = nav.xyz
+        landish = np.abs(p[:, 2] - Hm[p[:, 0], p[:, 1]]) <= 3
+        tp = p[landish & fwd & ~back]
+        if not len(tp):
+            break
+        tx = np.minimum(tp[:, 0], 512 - tp[:, 0])
+        ty = tp[:, 1]
+        drop = [q for q in pines if np.any((np.abs(tx - q[0]) <= q[2] + 4) & (np.abs(ty - q[1]) <= q[2] + 4))]
+        if not drop:
+            break
+        for (x, y, r, hh) in drop:
+            sl = (slice(x - r - 2, x + r + 3), slice(y - r - 2, y + r + 3))
+            m = cv.mat[sl] == vid
+            cv.solid[sl][m] = False
+            cv.mat[sl][m] = 0
+            pines.remove((x, y, r, hh))
+            removed += 1
+    return removed
 
 
 def fill_nooks(cv, rounds=10):
@@ -1090,15 +1151,23 @@ def break_flats(cv, S=SPEC, target=22, rounds=40):
     kinds = ['pad', 'lantern', 'crates', 'bench', 'barrels']
     pads = []
     for _ in range(rounds):
-        ok = fh_checks.featureless_ok_mask(cv.solid, cv.H, S)
-        ok[256:] = False                                       # west half (the east is the mirror)
-        best, where, tops = fh_checks.largest_flat_squares(cv.H, ok, min_report=target + 1, n_report=12)
+        # measure the map as it will be after the mirror (patches across the axis count at full width), then
+        # place features on the west part of each patch
+        okw = fh_checks.featureless_ok_mask(cv.solid, cv.H, S)
+        ok = okw.copy()
+        ok[257:] = okw[255:0:-1]
+        ok[256] = okw[255]
+        Hm = cv.H.copy()
+        Hm[257:] = cv.H[255:0:-1]
+        Hm[256] = cv.H[255]
+        best, where, tops = fh_checks.largest_flat_squares(Hm, ok, min_report=target + 1, n_report=12)
         if best <= target:
             break
         done = 0
         for v, x, y in tops:
             cx, cy = x - v // 2, y - v // 2
-            cand = sorted(((px, py) for px in range(x - v + 2, x, 2) for py in range(y - v + 2, y, 2)),
+            xa, xb = x - v + 2, min(x, 248)
+            cand = sorted(((px, py) for px in range(xa, xb, 2) for py in range(y - v + 2, y, 2)),
                           key=lambda p: (p[0] - cx) ** 2 + (p[1] - cy) ** 2)
             for _try, (px, py) in enumerate(cand):
                 k = kinds[(_try + int(rng.integers(len(kinds)))) % len(kinds)]
@@ -1134,8 +1203,8 @@ def break_flats(cv, S=SPEC, target=22, rounds=40):
 
 # =============================================================================================== top level
 
-def build_west(S=SPEC):
-    """Everything except the mirror and the train. Returns (canvas, report)."""
+def build_west(S=SPEC, veg_seed=None):
+    """Everything except the mirror and the train. veg_seed places the pine stand-ins. Returns (canvas, report)."""
     cv = Canvas(S['name'])
     H, region, geo = terrain(S)
     paint_terrain(cv, H, region)
@@ -1151,8 +1220,9 @@ def build_west(S=SPEC):
     build_mill(cv, geo, S)
     rail = build_railway(cv, S)
     build_underground(cv, S)
-    sc = scatter(cv, geo, S)
-    sc['nooks_filled'] = fill_nooks(cv)
+    sc = scatter(cv, geo, S, veg_seed)
+    sc['nooks_filled'] = fill_nooks(cv)                 # after the seeded scatter: 0 traps for any seed
+    sc['trap_pines_removed'] = clear_pine_traps(cv, sc['pine_list'], S)
     bf = break_flats(cv, S)
     sc['feature_pads'] = sc['feature_pads'] + bf['feature_pads']
     sc['break_flats'] = {'placed': len(bf['placed']), 'largest_side_after_west': bf['largest_side_after']}

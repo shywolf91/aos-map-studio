@@ -91,7 +91,9 @@ def glow_extensions(stored, extensions=None):
     """Add the owner's glow-block keys to an extensions dict (knowledge base §11.4)."""
     ext = dict(extensions or {})
     ext['glow_enabled'] = True
-    ext['glow_stored_colors'] = {f'{x},{y},{z}': tuple(int(v) for v in c) for (x, y, z), c in stored.items()}
+    # keys are (x, y, z) tuples, as in hallweebalohabeta and every earlier map (knowledge base §11.4)
+    ext['glow_stored_colors'] = {(int(x), int(y), int(z)): tuple(int(v) for v in c)
+                                 for (x, y, z), c in stored.items()}
     return ext
 
 
