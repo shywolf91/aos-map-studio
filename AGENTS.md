@@ -108,8 +108,14 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 * **Balanced spawns.** Both spawns should be mainly similar; usually the team's half is mirrored `x' = 512 − x`.
   * They may differ in structure.
   * **The fronts (spawn → tower zone) must be open** and give neither team an advantage.
-* **Don't default to structures or screens between spawn and tower zone.** Many players dislike them.
-  They're fine occasionally, but they must not become every map's pattern.
+* **Dress the front, never block it** (2026-11-10, tester feedback; replaces "don't default to structures or
+  screens between spawn and tower zone"). The spawn → tower-zone strip is the most played part of the map, so it
+  must not be bare flat ground. Scatter small, low, theme-fitting details across it: vehicles, bushes, one-storey
+  one-room houses, haystacks, rocks, or slightly larger items, but nothing tall.
+  * Players must move through it without obstruction: no wall, screen or structure that stops movement from
+    spawn to the tower zone, and the space must still read as open.
+  * A slight tower-building advantage from these objects is fine as long as both sides are symmetric.
+  * It should look neither unnaturally empty next to the rest of the map nor like an out-of-place anomaly.
 * **Don't default to a raised tower zone.** Players like building towers from the ground.
 * **Solid ground directly under both ends of the script platform** (stock x 206–211 / 300–305, y 240–271),
   so towers can anchor on each side.
