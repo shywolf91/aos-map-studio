@@ -24,3 +24,7 @@ maps/**/mat.npy
 refs/
 *.pdf
 opencode.jsonc
+
+# Claude Code: per-session worktrees and personal settings
+.claude/worktrees/
+.claude/settings.local.json

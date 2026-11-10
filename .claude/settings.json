@@ -1,0 +1,50 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(\"D:/Ace of Spades/Aos_Map/venv/Scripts/python\":*)",
+      "Bash(\"D:/Ace of Spades/Aos_Map/venv/Scripts/python.exe\":*)",
+      "Bash(venv/Scripts/python:*)",
+      "Bash(venv/Scripts/python.exe:*)",
+      "Bash(python -m pytest:*)",
+      "Bash(piqueserver -d server_test/*)",
+      "Bash(venv/Scripts/piqueserver -d server_test/*)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git branch:*)",
+      "Bash(git push -u origin map/*)",
+      "Bash(git push origin map/*)",
+      "Bash(git push -u origin tooling/*)",
+      "Bash(git push origin tooling/*)",
+      "Bash(git push -u origin docs/*)",
+      "Bash(git push origin docs/*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr status:*)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push *--force*)",
+      "Bash(git push * -f*)",
+      "Bash(git push origin main*)",
+      "Bash(git push -u origin main*)",
+      "Bash(git push origin HEAD:main*)",
+      "Bash(git push origin *:main*)"
+    ],
+    "ask": [
+      "Bash(git push)",
+      "Bash(gh pr merge:*)",
+      "Bash(git reset --hard*)",
+      "Bash(git stash drop*)",
+      "Bash(git branch -D*)"
+    ]
+  }
+}
