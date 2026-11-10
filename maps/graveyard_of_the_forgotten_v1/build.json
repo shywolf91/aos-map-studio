@@ -1,0 +1,44 @@
+{
+ "name": "Graveyard of the Forgotten",
+ "version": "1.0",
+ "seed": 1313,
+ "sha256": "6a03ba923b7fe34a59cd73a4f644fa6a6bd3aabea36899978bb35a8966022d86",
+ "bytes": 3001564,
+ "build_s": 4.2,
+ "tag_rect": [
+  14,
+  168,
+  496,
+  502
+ ],
+ "cleanup": {
+  "removed_components": 254,
+  "removed_voxels": 1370,
+  "big_floating_left": []
+ },
+ "cosmetic_bboxes": [
+  [
+   240,
+   274,
+   46,
+   80,
+   1,
+   46
+  ],
+  [
+   236,
+   277,
+   403,
+   464,
+   21,
+   52
+  ]
+ ],
+ "graves_west_plots": 302,
+ "trees_west": 190,
+ "fog": [
+  164,
+  170,
+  162
+ ]
+}

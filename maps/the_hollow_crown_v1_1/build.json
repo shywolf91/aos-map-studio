@@ -1,0 +1,741 @@
+{
+ "sha256": "d2566086456956239f411b36da989f6b41715ff0f589f6675240b48309d651c4",
+ "bytes": 3331172,
+ "build_s": 4.5,
+ "tag_rect": [
+  14,
+  110,
+  494,
+  501
+ ],
+ "graves": 155,
+ "houses": 18,
+ "trees": 212,
+ "interiors": [
+  [
+   "NW tower room (W)",
+   172,
+   153,
+   42
+  ],
+  [
+   "NW tower room (E)",
+   340,
+   153,
+   42
+  ],
+  [
+   "SW tower room (W)",
+   172,
+   359,
+   42
+  ],
+  [
+   "SW tower room (E)",
+   340,
+   359,
+   42
+  ],
+  [
+   "gate drum room (W)",
+   165,
+   230,
+   42
+  ],
+  [
+   "gate drum room (E)",
+   347,
+   230,
+   42
+  ],
+  [
+   "gate drum room (W)",
+   165,
+   282,
+   42
+  ],
+  [
+   "gate drum room (E)",
+   347,
+   282,
+   42
+  ],
+  [
+   "great hall (W)",
+   214,
+   184,
+   42
+  ],
+  [
+   "great hall (E)",
+   298,
+   184,
+   42
+  ],
+  [
+   "apartments ground floor (W)",
+   215,
+   335,
+   42
+  ],
+  [
+   "apartments ground floor (E)",
+   297,
+   335,
+   42
+  ],
+  [
+   "apartments first floor (W)",
+   215,
+   335,
+   32
+  ],
+  [
+   "apartments first floor (E)",
+   297,
+   335,
+   32
+  ],
+  [
+   "apartments second floor (W)",
+   215,
+   335,
+   22
+  ],
+  [
+   "apartments second floor (E)",
+   297,
+   335,
+   22
+  ],
+  [
+   "barracks ground floor (W)",
+   182,
+   172,
+   42
+  ],
+  [
+   "barracks ground floor (E)",
+   330,
+   172,
+   42
+  ],
+  [
+   "barracks upper floor (W)",
+   180,
+   170,
+   33
+  ],
+  [
+   "barracks upper floor (E)",
+   332,
+   170,
+   33
+  ],
+  [
+   "castle chapel (W)",
+   190,
+   342,
+   42
+  ],
+  [
+   "castle chapel (E)",
+   322,
+   342,
+   42
+  ],
+  [
+   "hill chapel nave (W)",
+   255,
+   47,
+   34
+  ],
+  [
+   "hill chapel nave (E)",
+   257,
+   47,
+   34
+  ],
+  [
+   "bell tower (W)",
+   254,
+   20,
+   34
+  ],
+  [
+   "bell tower (E)",
+   258,
+   20,
+   34
+  ],
+  [
+   "mausoleum (W)",
+   150,
+   76,
+   39
+  ],
+  [
+   "mausoleum (E)",
+   362,
+   76,
+   39
+  ],
+  [
+   "mausoleum (W)",
+   212,
+   66,
+   36
+  ],
+  [
+   "mausoleum (E)",
+   300,
+   66,
+   36
+  ],
+  [
+   "mausoleum (W)",
+   146,
+   118,
+   41
+  ],
+  [
+   "mausoleum (E)",
+   366,
+   118,
+   41
+  ],
+  [
+   "mausoleum (W)",
+   226,
+   118,
+   41
+  ],
+  [
+   "mausoleum (E)",
+   286,
+   118,
+   41
+  ],
+  [
+   "mausoleum (W)",
+   178,
+   52,
+   42
+  ],
+  [
+   "mausoleum (E)",
+   334,
+   52,
+   42
+  ],
+  [
+   "mausoleum (W)",
+   232,
+   90,
+   37
+  ],
+  [
+   "mausoleum (E)",
+   280,
+   90,
+   37
+  ],
+  [
+   "crypt vault (W)",
+   169,
+   104,
+   45
+  ],
+  [
+   "crypt vault (E)",
+   343,
+   104,
+   45
+  ],
+  [
+   "crypt vault (W)",
+   239,
+   116,
+   47
+  ],
+  [
+   "crypt vault (E)",
+   273,
+   116,
+   47
+  ],
+  [
+   "house ground floor (W)",
+   129,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   383,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   129,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   383,
+   413,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   143,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   369,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   143,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   369,
+   413,
+   37
+  ],
+  [
+   "house top floor (W)",
+   143,
+   409,
+   32
+  ],
+  [
+   "house top floor (E)",
+   369,
+   409,
+   32
+  ],
+  [
+   "house ground floor (W)",
+   156,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   356,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   156,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   356,
+   413,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   185,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   327,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   185,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   327,
+   413,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   198,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   314,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   198,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   314,
+   413,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   213,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   299,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   213,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   299,
+   413,
+   37
+  ],
+  [
+   "house top floor (W)",
+   213,
+   408,
+   32
+  ],
+  [
+   "house top floor (E)",
+   299,
+   408,
+   32
+  ],
+  [
+   "house ground floor (W)",
+   227,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   285,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   227,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   285,
+   413,
+   37
+  ],
+  [
+   "house top floor (W)",
+   227,
+   407,
+   32
+  ],
+  [
+   "house top floor (E)",
+   285,
+   407,
+   32
+  ],
+  [
+   "house ground floor (W)",
+   241,
+   413,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   271,
+   413,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   241,
+   413,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   271,
+   413,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   128,
+   430,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   384,
+   430,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   128,
+   430,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   384,
+   430,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   143,
+   430,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   369,
+   430,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   143,
+   430,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   369,
+   430,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   156,
+   430,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   356,
+   430,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   156,
+   430,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   356,
+   430,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   185,
+   430,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   327,
+   430,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   185,
+   430,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   327,
+   430,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   199,
+   430,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   313,
+   430,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   199,
+   430,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   313,
+   430,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   213,
+   430,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   299,
+   430,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   213,
+   430,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   299,
+   430,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   245,
+   390,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   267,
+   390,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   245,
+   390,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   267,
+   390,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   222,
+   456,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   290,
+   456,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   222,
+   456,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   290,
+   456,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   183,
+   451,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   329,
+   451,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   183,
+   451,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   329,
+   451,
+   37
+  ],
+  [
+   "house ground floor (W)",
+   201,
+   451,
+   42
+  ],
+  [
+   "house ground floor (E)",
+   311,
+   451,
+   42
+  ],
+  [
+   "house upper floor (W)",
+   201,
+   451,
+   37
+  ],
+  [
+   "house upper floor (E)",
+   311,
+   451,
+   37
+  ]
+ ],
+ "cleanup": {
+  "removed_components": 266,
+  "removed_voxels": 367,
+  "components_over_40": []
+ }
+}

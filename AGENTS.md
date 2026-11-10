@@ -138,7 +138,9 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   * **Keep z ≤ 2 empty above it.**
   * Servers may change these constants, so treat them as parameters (`BABEL_DEFAULT`).
 * Bases are at (118,256) and (394,256). Spawns are random within ±20 at the **topmost solid voxel**, so squares x 98–138 / 374–414, y 236–276 must be clear, flat land.
-* One intel at (256,256), on the platform. Carry it to **your own** base; cap_limit is 1.
+* One intel at (256,256), on the platform. Carry it to **your own** base.
+  * `babel_script` sets `map_info.cap_limit = 1`, but `server.set_map` reads `max_score` *before* that runs, so the
+    live score limit is the config `cap_limit` (default 10; bots saw 10 in StateData, 2026-10-19). Admins set it.
   * A drop off the platform returns it; the carrier is killed after 150 s.
 * Build ban: you can't build while standing in the enemy's tower corridor (blue x 301–384, red x 128–211, y 240–272).
   * Ending your anchor ground at x 211 / 301 means an enemy standing on it can't build.
@@ -158,7 +160,7 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
    * Some briefs say "do not build yet". Then stop at concepts.
 4. Write a spatial spec: bounds, elevations, landmarks, routes, spawns, objectives, anchors, descents.
    Put the numbers in a `SPEC` dict in the generator as the single source of truth.
-5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure.
+5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure, building interiors (every room/floor reachable; see `scenes/hollow_crown/hc_check.py` → `interiors`).
 6. Art pass in a separate module, then re-run every check.
 7. Export `.vxl` + `.txt`. Cross-check with pyspades, load on a live piqueserver in the mode, render previews.
 8. Write `docs/<map>_spec.md` with status, layout table, validation table, known limits and regenerate commands.
@@ -214,8 +216,8 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Witchwood Isles | Halloween island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/witchwood_isles_spec.md` |
 | Backyard Babel | Grounded-style backyard Babel | v5.0 | server-loaded | **zip from its chat**; spec `docs/backyard_babel_spec.md` (v2 spec kept) |
 | The Wicker King's Harvest | Halloween island Babel | v1.0 / v1.1 (sky) | server-loaded | `scenes/wicker_kings_harvest/` |
-| Graveyard of the Forgotten — The Bone Cathedral | Halloween ground Babel | v1.0 | client-inspected (BetterSpades) | **zip from its chat**; spec `docs/graveyard_of_the_forgotten_spec.md` |
-| The Hollow Crown | Halloween ground Babel | v1.1 | server-loaded + bots | **zip from its chat**; spec `docs/hollow_crown_spec.md` |
+| Graveyard of the Forgotten — The Bone Cathedral | Halloween ground Babel | v1.0 | client-inspected (BetterSpades screenshots) | `scenes/graveyard_forgotten/`, `docs/graveyard_of_the_forgotten_spec.md` |
+| The Hollow Crown | Halloween ground Babel | v1.1 (v1.0 kept) | server-loaded + bots | `scenes/hollow_crown/`, `docs/hollow_crown_spec.md` |
 | Death Swamp | Push (first) | v1.0 | server-loaded + bots | **zip from its chat**; spec `docs/death_swamp_spec.md` |
 | Haunted Fairground | Halloween island Babel (Ruins layout) | v1.3 | server-loaded | **zip from its chat**; spec `docs/haunted_fairground_isles_v1.md` |
 | Ferrari's Revenge (Skull River) | Babel | v3 | parser-validated | **zip from its chat**; spec `docs/skull_river_spec.md` |

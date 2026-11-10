@@ -1,0 +1,15 @@
+name = "hc babel test"
+port = 32941
+game_mode = "piqueserver.game_modes.babel"
+rotation = ["the_hollow_crown"]
+scripts = ["piqueserver.scripts.rollback", "piqueserver.scripts.protect",
+           "piqueserver.scripts.map_extensions", "piqueserver.scripts.votekick",
+           "piqueserver.scripts.trusted", "piqueserver.scripts.ratio",
+           "piqueserver.scripts.blockinfo", "piqueserver.scripts.squad", "piqueserver.scripts.afk",
+           "piqueserver.scripts.babel_script", "hc_probe"]
+[team1]
+name = "Blue"
+color = [0, 0, 255]
+[team2]
+name = "Red"
+color = [255, 0, 0]
