@@ -224,7 +224,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Royal Parade Halloween | community-map edit (Bradley & Mile) | v1.1 | parser-validated; viewed on alohacraft | **zip from its chat**; spec `docs/royal_parade_halloween_spec.md` |
 | 1river2night v2.2 | night recolour + glow | v2.2 | parser-validated | **zip from its chat**; spec `docs/1river2night_v2_spec.md` |
 | Bikini Atoll (Detonation) | Push glow edit (IAmYourFriend) | v1.2 | parser-validated | **zip from its chat**; spec `docs/bikini_atoll_detonation_spec.md` |
-| Silverpine Hunt | Halloween snow Babel | v1.x → v2.2 (+sky) | server-loaded | **zip from its chat**; specs `docs/silverpine_hunt_spec.md`, `docs/silverpine_hunt_v2_spec.md` |
+| Silverpine Hunt | Halloween snow Babel | v1.x → v2.2 (+sky) | server-loaded | v2.2: `scenes/silverpine_hunt_v2/`, `maps/silverpine_hunt_v2_2*/`, `server_test/sph_babel/` (v1 still zip-only); specs `docs/silverpine_hunt_spec.md`, `docs/silverpine_hunt_v2_spec.md` |
 | Mossglade Pond | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/mossglade_pond_spec.md` (owner decisions open) |
 | Lantern Bazaar Canals | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/lantern_bazaar_canals_spec.md` |
 | Highland Loch Castle | island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/highland_loch_castle_spec.md` |
