@@ -30,7 +30,7 @@ Every check in AGENTS.md §5 step 5 and knowledge base §15:
 |---|---|
 | `reader`, `pyspades` | own reader, re-encode identical, pyspades `generate()` identical or 0/20k mismatches |
 | `floating_components`, `sky_layer` | 0 unintended; intentional pieces listed and checked against the sky placement rules |
-| `mirror` | solid + material mismatch outside the tag / sky boxes (`x512` or `x511`) |
+| `mirror` | solid + material mismatch outside the tag / sky boxes and the cosmetic boxes (`cosmetic_asymmetric_bbox`, or a list `cosmetic_asymmetric_boxes`) (`x512` or `x511`) |
 | `platform_volume_voxels`, `platform_margin_voxels`, `ground_under_platform_ends` | platform cells empty, solid ground under both ends |
 | `spawn_squares` | top-z histogram, flat share, water columns, **roof columns**, mirror-equal share |
 | `routes` | own platform end, enemy spawn (safe and any-drop graphs), custom targets, reachable share |

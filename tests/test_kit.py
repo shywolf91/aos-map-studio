@@ -105,3 +105,17 @@ def test_exposure_presets_agree_on_open_flat_map():
     cv = flat()
     e = babel_checks.spawn_exposure(cv.solid, (118, 256))
     assert e['hidden_pct'] == 0.0 and e['n_spots'] == 441 and e['n_viewers'] == 65
+
+
+def test_mirror_excludes_accept_a_list_of_cosmetic_boxes():
+    cv = flat()
+    cv.box(40, 60, 30, 50, 30, 49, (10, 20, 30))
+    symmetry.mirror_canvas(cv, 'x512')
+    cv.box(250, 270, 80, 86, 44, 49, (9, 9, 9))          # train across the axis (after the mirror)
+    cv.box(470, 490, 20, 26, 46, 49, (9, 9, 9))          # tag in a corner
+    legacy = babel_checks.cosmetic_excludes({'cosmetic_asymmetric_bbox': [250, 270, 80, 86]})
+    both = babel_checks.cosmetic_excludes({'cosmetic_asymmetric_bbox': [250, 270, 80, 86],
+                                           'cosmetic_asymmetric_boxes': [[250, 270, 80, 86], [470, 490, 20, 26]]})
+    assert legacy == [(250, 270, 80, 86)] and len(both) == 2
+    assert symmetry.mirror_mismatch(cv.solid, None, 'x512', legacy)['solid'] > 0
+    assert symmetry.mirror_mismatch(cv.solid, None, 'x512', both)['solid'] == 0

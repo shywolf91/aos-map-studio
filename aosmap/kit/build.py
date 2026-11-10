@@ -64,7 +64,8 @@ def sha256(data: bytes) -> str:
 
 def export(cv, out_dir, file_name, txt, build_info=None, save_arrays=True):
     """Write <file_name>.vxl, .txt and build.json into out_dir. txt: kwargs for map_txt().
-    build_info: seeds, counts, cleanup reports, tag_rect, cosmetic_asymmetric_bbox ... (merged into build.json).
+    build_info: seeds, counts, cleanup reports, tag_rect, cosmetic_asymmetric_bbox or a list
+    cosmetic_asymmetric_boxes ... (merged into build.json).
     Returns the build.json dict."""
     os.makedirs(out_dir, exist_ok=True)
     data = cv.to_vxl()

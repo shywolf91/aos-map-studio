@@ -13,7 +13,7 @@ not a collision simulation, and never proof of playability.
         [--exposure calibrated|bloomhop] [--axis x512|x511] [--no-pyspades] [--targets targets.json]
 
 Inputs read from the map folder when present: the .vxl, build.json (sky_objects / kept_floating, interiors,
-cosmetic_asymmetric_bbox, tag_rect, check_targets), mat.npy, terrain_H.npy.
+cosmetic_asymmetric_bbox and/or cosmetic_asymmetric_boxes, tag_rect, check_targets), mat.npy, terrain_H.npy.
 """
 from __future__ import annotations
 
@@ -310,6 +310,20 @@ def anchor_checks(solid, nav=None, params=BABEL_DEFAULT, face=None, axis='x512')
     return res
 
 
+def cosmetic_excludes(build):
+    """Mirror-check exclusion boxes (x0, x1, y0, y1) from build.json: the single legacy 'cosmetic_asymmetric_bbox'
+    and/or a list 'cosmetic_asymmetric_boxes' (train, tag, snowmen, sky ...). Each box also excludes its mirror."""
+    excl = []
+    cb = (build or {}).get('cosmetic_asymmetric_bbox')
+    if cb:
+        excl.append(tuple(cb[:4]))
+    for b in (build or {}).get('cosmetic_asymmetric_boxes') or []:
+        t = tuple(b[:4])
+        if t not in excl:
+            excl.append(t)
+    return excl
+
+
 # =============================================================================================== routes etc.
 
 def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_names=None, terrain_H=None,
@@ -339,10 +353,7 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
         R['sky_layer'] = sky_rules(solid, expected_boxes, P)
 
     # mirror
-    excl = []
-    cb = build.get('cosmetic_asymmetric_bbox')
-    if cb:
-        excl.append(tuple(cb[:4]))
+    excl = cosmetic_excludes(build)
     for o in expected_boxes:
         excl.append((o['x'][0], o['x'][1], o['y'][0], o['y'][1]))
     mm = mirror_mismatch(solid, mat, axis, excl)
