@@ -258,3 +258,18 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
   That file replaces the claude.ai Project memory.
 * Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
 * Commit per map version; don't push `refs/` or the rotation-guide PDF.
+
+### Git workflow — keep GitHub up to date, one branch per map `[USER]` (2026-11-10)
+The owner wants every Claude session (claude.ai and Claude Code) to keep `https://github.com/shywolf91/Aos_Map`
+current at all times. This is standing permission to pull, branch, commit and push for map work.
+1. **Before any map work:** `git checkout main && git pull`. Never start from a stale tree.
+2. **One branch per map:** `git checkout -b map/<map-slug>` (e.g. `map/under-the-tree`). A new version of an
+   existing map gets its own branch too (`map/<map-slug>-v2`). Non-map work (toolchain, docs, setup) uses
+   `tooling/<topic>` or `docs/<topic>`.
+3. **Commit as you go** — at least after the graybox, after the art pass, and at release — and **push the branch
+   after each commit** (`git push -u origin map/<map-slug>`), so the work is never only on one machine.
+4. **When the map is released**, open a PR into `main`, then update the §9 catalogue, `docs/<map>_spec.md`,
+   `docs/knowledge/project_memory.md` and `docs/knowledge/map_sources.md` on the same branch.
+   Merge only when the owner says so.
+5. Large build artefacts (`*.npy`) and `refs/` stay git-ignored. If a file is over ~50 MB, ask before committing it.
+6. If a push fails (auth, rejected), say so plainly and leave the work committed locally; never force-push `main`.
