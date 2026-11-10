@@ -194,27 +194,59 @@ the building challenge.
 Verify platform generation, objectives, restricted zones, and capture rules
 in the actual script.
 
-### Tower of Babel: custom user variant
+### Babel with assist structures: custom user variant (reworked 2026-11-08)
 
-The user also wants:
-- A massive central tower.
-- Opposing ground-level bases.
-- Intel at the summit.
-- Ledges, stairs, ramps, balconies, and bridgeable gaps.
-- Multiple tiers with mid-tower fights.
-- A fast risky route and a slower safer route.
-- An interesting descent and return journey.
+This is normal Babel. The mode, script, platform ("heaven"), intel and capture
+rules are unchanged: stock `babel` + `babel_script`, script-built platform,
+one intel on the platform, carried back to your own base.
 
-The tower should have a strong identity:
-an ancient ziggurat, spiraling spire, overgrown ruin, gothic tower,
-sandstone monument, or another original concept.
+What changes is the map: it contains authored structures that players can
+use to reach the platform and intel easily, without building a tower in
+their tower zone. Examples: ruins, a tall tree, a cliff or crag, a belfry,
+a broken aqueduct, a wrecked ship's mast.
 
-Use rich but readable detail:
-arches, windows, ornaments, statues, banners, vegetation,
-and renderer-appropriate lighting accents.
+An assist structure either:
+- reaches the platform on foot (step or jump straight onto it), or
+- leaves only a short build (a few blocks) from its top to the platform.
 
-Treat this as a custom variant until a compatible script is identified.
-Do not present it as interchangeable with standard construction-focused Babel.
+Players still choose between the assist route and building their own tower.
+The towers stay a real option; the structure is a faster, riskier, contested
+alternative.
+
+Design requirements:
+- Equal access for both teams: mirrored pairs (one per side) or one central,
+  symmetric structure with equal routes from both spawns.
+- The assist route must be contestable: approachable, attackable from below
+  and from the platform, not a sealed private stairway.
+- The climb itself should be part of the fight: ledges, stairs, ramps,
+  broken floors and gaps on the way up.
+- Keep z 0–2 (plus a 1-voxel margin) empty over the platform footprint;
+  the structure may come up beside or under the platform, not into it.
+- Keep the tower corridors usable for normal building (open fronts, solid
+  support under both platform ends).
+- Check spawn exposure: a structure top near platform height is also a
+  camping perch over the spawns.
+- Check round length: a very short or zero build gap can make rounds end
+  too fast. Report the build gap from each structure top.
+- Decide destructibility per map: on destructible terrain, players can dig
+  out or cut the structure (counterplay, but also grief); on a protected map
+  it stays. Test whether cutting it changes the balance.
+- Still follow the house rules: real enterable structures, grounded
+  geometry, rich original detail.
+
+Existing references already work this way to some degree (measured gaps
+from central features: hallweebalohabeta ~4, alexandria-babel2 ~5 via its
+pyramid, babelpocalypse ~8, alpine ~8 via the central peak).
+
+Label maps of this variant clearly ("Babel, assist structures") and report
+which checks were relaxed: "platform not reachable without building" and
+the free-scaffolding check do not apply in their standard form.
+
+No script change is required as long as the platform, intel and base rules
+stay stock. Confirm that on the target server.
+
+(Earlier reading, superseded 2026-11-08: a massive central tower with the intel
+at its summit, stairs/ledges/return descent. That is **not** what the owner means.)
 
 ### Arena
 

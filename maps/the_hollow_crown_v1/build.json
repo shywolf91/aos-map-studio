@@ -1,0 +1,19 @@
+{
+ "sha256": "27bd986b0f1d7fd1471beca6e96f0a02522f9bb0b489f1a6e10735e761977a57",
+ "bytes": 3325160,
+ "build_s": 6.8,
+ "tag_rect": [
+  14,
+  110,
+  494,
+  501
+ ],
+ "graves": 155,
+ "houses": 18,
+ "trees": 212,
+ "cleanup": {
+  "removed_components": 215,
+  "removed_voxels": 321,
+  "components_over_40": []
+ }
+}
