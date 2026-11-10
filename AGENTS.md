@@ -234,7 +234,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
-chat. Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).
+chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).
 
 ## 10. Not in the repo (by design)
 
