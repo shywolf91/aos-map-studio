@@ -1,0 +1,239 @@
+{
+ "floating_components": 0,
+ "team_colour_hits": 0,
+ "mirror_mismatch_voxels": 0,
+ "routes": {
+  "blue": {
+   "spawn_node": 18644,
+   "cp_reachable_without_building": false,
+   "walkable_columns_from_spawn": 7531
+  },
+  "red": {
+   "spawn_node": 72103,
+   "cp_reachable_without_building": false,
+   "walkable_columns_from_spawn": 7531
+  },
+  "islands": {
+   "S": {
+    "landings": [
+     [
+      170,
+      462
+     ],
+     [
+      189,
+      417
+     ]
+    ],
+    "connected": true,
+    "walk_cost": [
+     0.0,
+     53.9
+    ]
+   },
+   "I2": {
+    "landings": [
+     [
+      189,
+      400
+     ],
+     [
+      189,
+      334
+     ]
+    ],
+    "connected": true,
+    "walk_cost": [
+     0.0,
+     70.2
+    ]
+   },
+   "I3": {
+    "landings": [
+     [
+      183,
+      318
+     ],
+     [
+      188,
+      243
+     ]
+    ],
+    "connected": true,
+    "walk_cost": [
+     0.0,
+     79.9
+    ]
+   },
+   "I4": {
+    "landings": [
+     [
+      189,
+      228
+     ],
+     [
+      187,
+      158
+     ]
+    ],
+    "connected": true,
+    "walk_cost": [
+     0.0,
+     74.3
+    ]
+   },
+   "N": {
+    "landings": [
+     [
+      187,
+      143
+     ],
+     [
+      184,
+      96
+     ]
+    ],
+    "connected": true,
+    "walk_cost": [
+     0.0,
+     51.7
+    ]
+   }
+  }
+ },
+ "gaps": {
+  "S->I2": {
+   "gap_water_voxels": 16.0,
+   "from": [
+    189,
+    417
+   ],
+   "to": [
+    189,
+    400
+   ]
+  },
+  "I2->I3": {
+   "gap_water_voxels": 16.08800749063506,
+   "from": [
+    189,
+    334
+   ],
+   "to": [
+    183,
+    318
+   ]
+  },
+  "I3->I4": {
+   "gap_water_voxels": 14.033296378372908,
+   "from": [
+    188,
+    243
+   ],
+   "to": [
+    189,
+    228
+   ]
+  },
+  "I4->N": {
+   "gap_water_voxels": 14.0,
+   "from": [
+    187,
+    158
+   ],
+   "to": [
+    187,
+    143
+   ]
+  },
+  "channel": {
+   "blue_lane_max_x": 233,
+   "water_width": 44
+  }
+ },
+ "findings": [
+  {
+   "level": "info",
+   "rule": "push_intel_settle",
+   "detail": "blue spawn column: intel will rest at z=55",
+   "where": [
+    170,
+    462,
+    55
+   ]
+  },
+  {
+   "level": "info",
+   "rule": "push_cp_settle",
+   "detail": "blue CP (tent) will rest at z=53",
+   "where": [
+    184,
+    96,
+    53
+   ]
+  },
+  {
+   "level": "info",
+   "rule": "push_intel_settle",
+   "detail": "green spawn column: intel will rest at z=55",
+   "where": [
+    341,
+    462,
+    55
+   ]
+  },
+  {
+   "level": "info",
+   "rule": "push_cp_settle",
+   "detail": "green CP (tent) will rest at z=53",
+   "where": [
+    327,
+    96,
+    53
+   ]
+  }
+ ],
+ "export": {
+  "bytes": 2382824,
+  "sha256": "5722dccf5b47adc5e69e8d8ce92b1b7c5508466beb80eb7b1faf84f6796e9fe5",
+  "reread_solid_identical": true
+ },
+ "distinct_colours": 6097,
+ "extensions": {
+  "push": true,
+  "push_spawn_range": 5,
+  "push_blue_spawn": [
+   170,
+   462,
+   55
+  ],
+  "push_blue_cp": [
+   184,
+   96,
+   53
+  ],
+  "push_green_spawn": [
+   341,
+   462,
+   55
+  ],
+  "push_green_cp": [
+   327,
+   96,
+   53
+  ],
+  "water_damage": 100,
+  "push_blue_build_area": [
+   96,
+   150,
+   240,
+   508
+  ],
+  "push_green_build_area": [
+   272,
+   150,
+   416,
+   508
+  ]
+ }
+}

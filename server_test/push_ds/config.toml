@@ -1,0 +1,24 @@
+name = "death swamp push test"
+master = false
+port = 32941
+ip_getter = ""
+max_players = 32
+game_mode = "piqueserver.game_modes.push"
+rotation = ["death_swamp"]
+default_time_limit = "2hours"
+scripts = ["piqueserver.scripts.rollback", "piqueserver.scripts.protect",
+           "piqueserver.scripts.map_extensions", "piqueserver.scripts.votekick",
+           "piqueserver.scripts.trusted", "piqueserver.scripts.ratio",
+           "piqueserver.scripts.blockinfo", "piqueserver.scripts.squad", "piqueserver.scripts.afk"]
+[team1]
+name = "Blue"
+color = [0, 0, 255]
+[team2]
+name = "Red"
+color = [255, 0, 0]
+[push]
+protect_map_blocks = true
+[status_server]
+enabled = false
+[logging]
+loglevel = "info"

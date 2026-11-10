@@ -1,0 +1,18 @@
+name = 'Death Swamp'
+version = '1.0'
+author = 'shywolf91'
+description = 'Push: carry the intel north through the drowned swamp. The water kills - bridge every gap.'
+fog = (178, 172, 192)
+extensions = {
+    'push': True,
+    'push_spawn_range': 5,
+    'push_blue_spawn': (170, 462, 55),
+    'push_blue_cp': (184, 96, 53),
+    'push_green_spawn': (341, 462, 55),
+    'push_green_cp': (327, 96, 53),
+    'water_damage': 100,
+    'push_blue_build_area': (96, 150, 240, 508),
+    'push_green_build_area': (272, 150, 416, 508),
+}
+# Push spawns/CPs are required by piqueserver game_modes/push.py (it raises without them);
+# the spawn/entity hooks are supplied by push.py itself, so none are defined here.

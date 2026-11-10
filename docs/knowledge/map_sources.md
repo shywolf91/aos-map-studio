@@ -4,8 +4,8 @@ These maps were built in claude.ai chat sandboxes. Their generator code, `.vxl`,
 files exist only as the download zip in each chat (near the end, on the file card). To bring one into the repo:
 download the zip, unzip it into `_updates\<map>\`, and follow AGENTS.md §11.
 
-Hollow Crown and Graveyard of the Forgotten are imported. Death Swamp was built through the device link too, but it
-was not found in the local repo on 2026-11-10, so use its chat zip.
+Hollow Crown and Graveyard of the Forgotten are imported. Death Swamp was built through the device link too; it
+was not found in the local repo on 2026-11-10, so it was imported from its chat zip.
 
 | Map | Chat | Imported into repo? |
 |---|---|---|
@@ -28,7 +28,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | Haunted Fairground | https://claude.ai/chat/bbb5f3c1-c1f6-4e6f-b285-e6dceca6d060 | no |
 | The Hollow Crown | https://claude.ai/chat/f54a547c-f0ca-469e-b95c-0ba602698c24 | yes (from local repo, 2026-11-10) |
 | Graveyard of the Forgotten | https://claude.ai/chat/6ffb9f97-8d25-4ae4-8cf4-2599d61fed9d | yes (branch map/graveyard-of-the-forgotten) |
-| Death Swamp | https://claude.ai/chat/a222852b-cff1-457c-af9f-b3320824beef | check local repo |
+| Death Swamp | https://claude.ai/chat/a222852b-cff1-457c-af9f-b3320824beef | yes (2026-11-10, branch map/death-swamp, from its chat zip) |
 | Witchwood Isles | https://claude.ai/chat/d8080a71-724e-4c50-9d48-8fbf3793a500 | no |
 | Brimstone Atoll | https://claude.ai/chat/28b196a0-727b-4116-82e5-6d73dced5d47 | no |
 | spinline | https://claude.ai/chat/94dfe246-f63e-4bee-8401-471d20daeb92 | no |
