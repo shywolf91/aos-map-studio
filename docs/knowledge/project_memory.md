@@ -87,3 +87,4 @@ Add new decisions at the bottom in the same style (`- [stated] … (date)`), and
 - [stated] asked for a Christmas themed Tower of Babel map (2026-11-09); chose concept "Under the Tree" (giant-scale living room: gift-box spawns, present stacks, toy train flank, tree and fireplace, no snow), assist-structure Babel, glow blocks and sky decor, warm evening mood
 - [stated] moved the project to Claude Code (2026-11-09), working in D:\Ace of Spades\Aos_Map on DRAGONSPIRE
 - [stated] standing rule (2026-11-10): Claude (claude.ai and Claude Code) keeps the GitHub repo shywolf91/Aos_Map updated always — pull before starting map work, push when done, and make a new branch per map (AGENTS.md §11 Git workflow)
+- [stated] standing rule (2026-11-10): when he states a new rule or preference, record it in docs/knowledge/project_memory.md in the same turn, on a branch, and push; report every map's status on the status ladder and never call a numpy preview a client capture
