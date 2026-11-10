@@ -1,0 +1,350 @@
+{
+ "map": "witchwood_isles",
+ "seed": 3131,
+ "sha256": "6b83ab224e3d5b5a7f05de68d836f87e30e9c879dde82e7f8ed903acc60b4c28",
+ "bytes": 2287240,
+ "own_reader": {
+  "solid_identical": true,
+  "stored_equals_surface": true,
+  "colours_identical_on_surface": true
+ },
+ "pyspades_1_4_2": {
+  "regenerate_identical": true,
+  "solid_mismatch_of_20000": 0,
+  "colour_mismatch_of_20000": 0
+ },
+ "floating_components": {
+  "count": 0,
+  "components_total": 1,
+  "list": []
+ },
+ "mirror": {
+  "solid_mismatch": 0,
+  "material_mismatch": 0
+ },
+ "platform_clearance": {
+  "authored_voxels_z0_2_over_platform_ring": 0
+ },
+ "anchor_ground_under_platform": {
+  "blue": {
+   "x": [
+    206,
+    211
+   ],
+   "y": [
+    240,
+    271
+   ],
+   "columns": 192,
+   "top_z": [
+    40
+   ],
+   "solid_to_bottom": true,
+   "inside_own_build_ban_corridor": true
+  },
+  "red": {
+   "x": [
+    301,
+    305
+   ],
+   "y": [
+    240,
+    271
+   ],
+   "columns": 160,
+   "top_z": [
+    40
+   ],
+   "solid_to_bottom": true,
+   "inside_own_build_ban_corridor": true
+  }
+ },
+ "spawn_squares": {
+  "blue": {
+   "floor_z": [
+    48
+   ],
+   "all_land": true,
+   "clearance_3": true,
+   "base_get_z": 48
+  },
+  "red": {
+   "floor_z": [
+    48
+   ],
+   "all_land": true,
+   "clearance_3": true,
+   "base_get_z": 48
+  }
+ },
+ "pilings": [
+  {
+   "team": "blue",
+   "centre": [
+    172,
+    242
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "red",
+   "centre": [
+    340,
+    242
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "blue",
+   "centre": [
+    177,
+    246
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "red",
+   "centre": [
+    335,
+    246
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "blue",
+   "centre": [
+    182,
+    242
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "red",
+   "centre": [
+    330,
+    242
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "blue",
+   "centre": [
+    172,
+    269
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "red",
+   "centre": [
+    340,
+    269
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "blue",
+   "centre": [
+    177,
+    265
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "red",
+   "centre": [
+    335,
+    265
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "blue",
+   "centre": [
+    182,
+    269
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  },
+  {
+   "team": "red",
+   "centre": [
+    330,
+    269
+   ],
+   "top_z": 57,
+   "open_sky_above": true,
+   "full_3x3_to_seabed": true,
+   "in_own_corridor": true
+  }
+ ],
+ "routes": {
+  "blue": {
+   "footbridge_only_spawn_to_central_floor_dry": 100.0,
+   "enemy_spawn_to_this_mound_top_steps": 221.0,
+   "stair_foot_cells": 6,
+   "stair_feet_x": [
+    196
+   ],
+   "spawn_nodes": 1681,
+   "spawn_to_mound_top_safe_dry_steps": 91.0,
+   "mound_top_to_spawn_safe_dry_steps_max": 108.0,
+   "mound_top_nodes": 512,
+   "mound_top_all_return_safe_dry": true,
+   "spawn_to_central_floor_safe_dry_steps": 97.0,
+   "central_floor_all_return_safe_dry": true,
+   "reachable_nodes_on_foot": 259399,
+   "trap_nodes": 0,
+   "trap_samples": [],
+   "land_nodes_reachable_safe_dry": 65878
+  },
+  "red": {
+   "footbridge_only_spawn_to_central_floor_dry": 100.0,
+   "enemy_spawn_to_this_mound_top_steps": 221.0,
+   "stair_foot_cells": 6,
+   "stair_feet_x": [
+    316
+   ],
+   "spawn_nodes": 1681,
+   "spawn_to_mound_top_safe_dry_steps": 91.0,
+   "mound_top_to_spawn_safe_dry_steps_max": 108.0,
+   "mound_top_nodes": 512,
+   "mound_top_all_return_safe_dry": true,
+   "spawn_to_central_floor_safe_dry_steps": 97.0,
+   "central_floor_all_return_safe_dry": true,
+   "reachable_nodes_on_foot": 259399,
+   "trap_nodes": 0,
+   "trap_samples": [],
+   "land_nodes_reachable_safe_dry": 65878
+  }
+ },
+ "build_gap": {
+  "blue": {
+   "min_gap": 38.2,
+   "at": [
+    211,
+    236,
+    39
+   ],
+   "material": "cover_wall",
+   "pilings_gap_range": [
+    60.9,
+    65.5
+   ]
+  },
+  "red": {
+   "min_gap": 38.2,
+   "at": [
+    301,
+    236,
+    39
+   ],
+   "material": "cover_wall",
+   "pilings_gap_range": [
+    61.3,
+    66.0
+   ]
+  }
+ },
+ "highest_reachable_near_platform": {
+  "z": 39,
+  "height_above_seabed": 24,
+  "distance_to_platform_top": 38
+ },
+ "unreachable_standable_surfaces_by_material": {
+  "piling": 108,
+  "trunk": 212,
+  "foliage_purple": 5566,
+  "pumpkin": 130,
+  "standing_stone": 116,
+  "timber": 24,
+  "slate": 1792,
+  "brick": 12,
+  "dry_stone": 172,
+  "lantern": 28,
+  "iron": 160,
+  "brew": 71,
+  "autumn": 1246,
+  "pine": 784,
+  "rope": 84,
+  "gravestone": 56,
+  "jack_face": 12,
+  "stem": 8,
+  "deadwood": 324,
+  "cloth": 192
+ },
+ "spawn_exposure_from_platform": {
+  "blue": {
+   "spots": 441,
+   "eyes": 130,
+   "exposed_pct": 24.0,
+   "hidden_pct": 76.0,
+   "viewers_per_spot_mean": 1.1,
+   "viewers_max": 8
+  },
+  "red": {
+   "spots": 441,
+   "eyes": 130,
+   "exposed_pct": 21.5,
+   "hidden_pct": 78.5,
+   "viewers_per_spot_mean": 1.0,
+   "viewers_max": 8
+  }
+ },
+ "ground_sightlines_into_blue_spawn": {
+  "red_mound_top": {
+   "eyes": 66,
+   "spots_seen_pct": 0.0,
+   "viewers_per_spot_mean": 0.0
+  },
+  "blue_mound_top_invaded": {
+   "eyes": 66,
+   "spots_seen_pct": 1.6,
+   "viewers_per_spot_mean": 0.02
+  },
+  "central_floor": {
+   "eyes": 135,
+   "spots_seen_pct": 0.0,
+   "viewers_per_spot_mean": 0.0
+  },
+  "blue_boardwalk": {
+   "eyes": 18,
+   "spots_seen_pct": 0.0,
+   "viewers_per_spot_mean": 0.0
+  }
+ },
+ "elapsed_s": 9.2
+}
