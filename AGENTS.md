@@ -160,9 +160,10 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
    * Some briefs say "do not build yet". Then stop at concepts.
 4. Write a spatial spec: bounds, elevations, landmarks, routes, spawns, objectives, anchors, descents.
    Put the numbers in a `SPEC` dict in the generator as the single source of truth.
-5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure, building interiors (every room/floor reachable; see `scenes/hollow_crown/hc_check.py` → `interiors`).
+5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure, building interiors (every room/floor reachable).
+   Build with **`aosmap.kit`** and run `python -m aosmap.kit.babel_checks <dir>`, which does all of these (`docs/kit.md`; template `scenes/kit_example/`).
 6. Art pass in a separate module, then re-run every check.
-7. Export `.vxl` + `.txt`. Cross-check with pyspades, load on a live piqueserver in the mode, render previews.
+7. Export `.vxl` + `.txt` (`aosmap.kit.build.export`). Cross-check with pyspades, load on a live piqueserver in the mode (`python -m aosmap.kit.probe <dir>`), render previews (`aosmap.kit.preview`).
 8. Write `docs/<map>_spec.md` with status, layout table, validation table, known limits and regenerate commands.
    Put the map, renders and `validation.json` in `maps/<map>_vN/`.
 9. Hand off honestly: what was tested, what wasn't, the next tests. Iterate on the owner's or testers' feedback.
@@ -257,6 +258,11 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
   `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
   That file replaces the claude.ai Project memory.
 * Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
+* **Slash commands** (`.claude/commands/`): `/new-map <brief>`, `/recreate <file.vxl>`, `/check-map <maps dir>`,
+  `/remember <rule>`, `/sync`. `.claude/settings.json` allowlists routine work; force-push and pushes to main are denied.
+* **Shared kit** (`aosmap/kit/`, `docs/kit.md`): new maps import codec, canvas, structures, symmetry, colour, veg,
+  tag, sky, checks, probe, export and previews from here instead of copying `*_core.py` / `*_check.py`. Old
+  generators stay as they are. `tools/kit_acceptance.py` proves the suite reproduces the legacy reports.
 * Commit per map version; don't push `refs/` or the rotation-guide PDF.
 
 ### Git workflow — keep GitHub up to date, one branch per map `[USER]` (2026-11-10)
