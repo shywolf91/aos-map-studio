@@ -9,6 +9,11 @@
 5. nothing solid at z <= 6; nothing at z <= 2 over the platform footprint + margin
 6. underground: every entrance connected to the network; network reachable from both spawns and walk-out
 7. (extra) spawn no-prop margin and anchors free of anything above the terrain
+8. largest featureless flat patch: the largest axis-aligned square of columns whose top voxel is the terrain
+   surface (no object, roof, canopy, prop or plant over it) and whose surface height is identical across the
+   square; spawn squares + margin, anchors and the under-platform strip are exempt. Target <= 24.
+9. (extra) market gaps: smallest gap (Chebyshev, in voxels) between stall footprints (incl. awnings / L wings)
+   and between stalls and the axis set pieces. Target >= 7.
 
 Graph model = aosmap.kit.babel_checks.Nav (3 air to stand, 1-voxel step with 4 climb room, drops <= 9).
 """
@@ -204,12 +209,85 @@ def underground(nav, solid, H, S=SPEC):
     return out
 
 
-def run(solid, H, S=SPEC, nav=None):
+def largest_flat_squares(H, ok, min_report=16, n_report=6, sep=24):
+    """Largest squares of same-height columns where ok is True (DP over the grid). Returns (best, corner, tops)."""
+    Hl = H.tolist()
+    okl = ok.tolist()
+    prev = [0] * 512
+    best, where = 0, None
+    cand = []
+    for x in range(512):
+        cur = [0] * 512
+        hx, hp, ox = Hl[x], Hl[x - 1] if x else None, okl[x]
+        for y in range(512):
+            if not ox[y]:
+                continue
+            v = 1
+            if x and y and hx[y - 1] == hx[y] and hp[y] == hx[y] and hp[y - 1] == hx[y]:
+                v = 1 + min(prev[y], cur[y - 1], prev[y - 1])
+            cur[y] = v
+            if v >= min_report:
+                cand.append((v, x, y))
+            if v > best:
+                best, where = v, (x - v + 1, y - v + 1)
+        prev = cur
+    cand.sort(reverse=True)
+    tops = []
+    for v, x, y in cand:
+        if all(max(abs(x - a), abs(y - b)) > sep for (_, a, b) in tops):
+            tops.append((v, x, y))
+        if len(tops) >= n_report:
+            break
+    return best, where, tops
+
+
+def featureless_ok_mask(solid, H, S=SPEC):
+    top = np.argmax(solid, axis=2)
+    ok = top >= H
+    for (x0, x1, y0, y1) in S['featureless']['exempt']:
+        ok[x0:x1 + 1, y0:y1 + 1] = False
+    return ok
+
+
+def featureless(solid, H, S=SPEC):
+    fe = S['featureless']
+    best, where, tops = largest_flat_squares(H, featureless_ok_mask(solid, H, S))
+    return {'largest_side': best, 'at_xy_min_corner': where, 'z': int(H[where]) if where else None,
+            'largest_patches': [{'side': v, 'x': [x - v + 1, x], 'y': [y - v + 1, y]} for v, x, y in tops],
+            'definition': 'largest square of same-height terrain-top columns with nothing over them, exempt zones '
+                          'removed', 'max_allowed': fe['max_side'], 'ok': best <= fe['max_side']}
+
+
+AXIS_BOXES = lambda S: [('tavern', S['tavern']['box'][0], 255, S['tavern']['box'][2], S['tavern']['box'][3]),
+                        ('spruce', 243, 255, 177, 203), ('carousel', 248, 255, 284, 300),
+                        ('rink', S['rink']['box'][0], 255, S['rink']['box'][2], S['rink']['box'][3]),
+                        ('workshop', S['workshop']['box'][0], 255, S['workshop']['box'][2], S['workshop']['box'][3])]
+
+
+def market_gaps(boxes, S=SPEC):
+    if not boxes:
+        return {'ok': None, 'note': 'no market boxes in build.json'}
+
+    def gap(a, b):
+        dx = max(a[1] - b[2] - 1, b[1] - a[2] - 1)
+        dy = max(a[3] - b[4] - 1, b[3] - a[4] - 1)
+        return max(dx, dy)
+    stalls = [tuple(b) for b in boxes]
+    rows = []
+    for i, a in enumerate(stalls):
+        for b in stalls[i + 1:] + AXIS_BOXES(S):
+            rows.append((gap(a, b), a[0], b[0]))
+    rows.sort()
+    return {'min_gap': rows[0][0], 'closest_pairs': [list(r) for r in rows[:5]], 'ok': rows[0][0] >= 7}
+
+
+def run(solid, H, S=SPEC, nav=None, build=None):
     nav = nav or Nav(solid)
     R = {'front': front_openness(solid, H, S), 'gatehouse': gatehouse_open(solid, H, S),
          'tunnel_exclusion': tunnel_exclusion(solid, H, S), 'flank_bands': flank_routes(nav, S),
          'sky_ceiling': sky_ceiling(solid, S), 'prop_free_zones': prop_free(solid, H, S),
-         'underground': underground(nav, solid, H, S)}
+         'underground': underground(nav, solid, H, S), 'featureless': featureless(solid, H, S),
+         'market_gaps': market_gaps((build or {}).get('market_boxes'), S)}
     return R
 
 
@@ -233,6 +311,11 @@ def summary(R):
         {'rule': 'underground connected, reachable from both spawns, walk-out', 'ok': u['ok'],
          'detail': {k: u[k] for k in ('network_cells', 'reachable_from_blue_pct', 'reachable_from_red_pct',
                                       'walk_out_to_a_spawn_pct')}},
+        {'rule': 'largest featureless flat patch <= 24 (exempt: spawn squares, anchors, under-platform)',
+         'ok': R['featureless']['ok'], 'detail': {k: R['featureless'][k] for k in ('largest_side', 'at_xy_min_corner',
+                                                                                   'largest_patches')}},
+        {'rule': 'market gaps >= 7 between stalls and set pieces', 'ok': bool(R['market_gaps']['ok']),
+         'detail': R['market_gaps']},
     ]
 
 
@@ -241,6 +324,7 @@ if __name__ == '__main__':
     data = open(glob.glob(os.path.join(d, '*.vxl'))[0], 'rb').read()
     solid, _, _ = codec.decode(data)
     H = np.load(os.path.join(d, 'terrain_H.npy')).astype(int)
-    R = run(solid, H)
+    b = json.load(open(os.path.join(d, 'build.json')))
+    R = run(solid, H, build=b)
     R['summary'] = summary(R)
     print(json.dumps(R, indent=1, default=str))

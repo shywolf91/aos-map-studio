@@ -45,7 +45,10 @@ def build_map(out):
                     'cosmetic_asymmetric_note': 'stopped train on the axis (locomotive at the east end)',
                     'floating_before_cleanup': len(floating_before), 'cleanup': orphans,
                     'floating_after_train': len(floating_after_train),
-                    'pines': rep['pines'], 'materials': cv.materials, 'deviations': SPEC['deviations'],
+                    'scatter': {k: v for k, v in rep['scatter'].items() if k != 'pine_list'},
+                    'feature_pads': rep['scatter']['feature_pads'],
+                    'market_boxes': rep['market_boxes'], 'mill': rep['mill'], 'rail_tunnel': rep['rail_tunnel'],
+                    'materials': cv.materials, 'deviations': SPEC['deviations'],
                     'build_seconds': round(time.time() - t0, 1)})
     return cv, info
 
@@ -61,7 +64,7 @@ def check(out, info, cv=None):
     if solid is None:
         from aosmap.kit import codec
         solid = codec.decode(data)[0]
-    F = fh_checks.run(solid, H, SPEC, Nav(solid))
+    F = fh_checks.run(solid, H, SPEC, Nav(solid), build=info)
     F['summary'] = fh_checks.summary(F)
     R['fh_checks'] = F
     R['txt'] = build.check_txt(os.path.join(out, SPEC['file'] + '.txt'))

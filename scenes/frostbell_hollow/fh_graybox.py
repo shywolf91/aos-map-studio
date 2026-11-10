@@ -1,8 +1,10 @@
-"""Frostbell Hollow graybox: gameplay geometry only (flat function colours per material, no art pass).
+"""Frostbell Hollow graybox v2: gameplay geometry only (flat function colours per material, no art pass).
 
-Order: terrain heights -> fill_terrain -> structures (west half + axis west halves) -> underground -> props and
-stand-in pines -> [fh_main: orphan report -> mirror x512 -> stopped train (the one asymmetric piece)].
-Every number comes from fh_spec.SPEC. Every room, floor, tunnel segment and chamber is recorded in cv.interiors.
+Order: terrain heights (relief, flats, creek, spur, ring) -> fill_terrain -> structures (west half + axis west
+halves) -> underground -> props, groves, outcrops, feature pads -> [fh_main: orphan report -> mirror x512 ->
+stopped train (the one asymmetric piece)]. Every number comes from fh_spec.SPEC; every random choice comes from
+aosmap.kit.noise (crc32 seeds, layout seed fixed). Every room, floor, tunnel segment and chamber is recorded in
+cv.interiors, at least 3 voxels inside the room where the room allows it.
 """
 from __future__ import annotations
 
@@ -11,6 +13,7 @@ import os
 import sys
 
 import numpy as np
+from scipy import ndimage as ndi
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
 from aosmap.kit import Canvas, noise, structures  # noqa: E402
@@ -22,119 +25,242 @@ from fh_spec import SPEC  # noqa: E402
 C = {
     'snow': (188, 192, 200), 'cobble': (132, 128, 124), 'rock': (104, 102, 110), 'ice': (150, 194, 208),
     'water': (60, 90, 120), 'dirt': (112, 96, 80), 'ballast': (98, 94, 92), 'mine_floor': (120, 104, 84),
+    'gravel': (146, 136, 120),
     'wall': (178, 162, 134), 'stone': (150, 146, 140), 'timber': (132, 98, 66), 'roof': (120, 70, 60),
     'floor': (122, 94, 68), 'stair': (154, 124, 92), 'rail': (86, 86, 94), 'prop': (178, 126, 66),
     'veg': (54, 98, 64), 'trunk': (98, 74, 54), 'furn': (102, 80, 58), 'metal': (112, 114, 124),
-    'soldier': (168, 70, 64), 'figure': (170, 150, 120), 'hay': (196, 170, 96),
+    'soldier': (168, 70, 64), 'figure': (170, 150, 120), 'hay': (196, 170, 96), 'pad': (204, 206, 210),
 }
-GROUND_KEYS = ['snow', 'cobble', 'rock', 'ice', 'water', 'ballast']   # region codes 0..5 for the top voxel
+GROUND_KEYS = ['snow', 'cobble', 'rock', 'ice', 'water', 'ballast', 'gravel']   # region codes 0..6 (top voxel)
+X, Y = np.meshgrid(np.arange(512), np.arange(512), indexing='ij')
+XW = np.minimum(X, 512 - X)
+
+
+def _box(xr, yr):
+    m = np.zeros((512, 512), bool)
+    m[max(0, xr[0]):xr[1] + 1, max(0, yr[0]):yr[1] + 1] = True
+    return m
+
+
+def _row(tag, seed, cell, octaves=2):
+    """1D smooth noise in [0, 1] over 512 samples (a row of a 2D fbm)."""
+    return noise.fbm2((512, 8), cell, octaves, tag, seed)[:, 0]
+
+
+# =============================================================================================== masks
+
+def plaza_mask(S=SPEC):
+    p = S['plaza']
+    val = np.full((512, 512), 9.0)
+    for (cx, cy, rx, ry) in p['ellipses']:
+        val = np.minimum(val, np.sqrt(((XW - cx) / rx) ** 2 + ((Y - cy) / ry) ** 2))
+    n = noise.fbm2((512, 512), 14, 2, 'plaza_edge', S['layout_seed'])
+    m = val + p['edge_noise'] * (n - 0.5) * 2 < 1.0
+    for (x0, x1, y0, y1) in p['rects']:
+        m |= _box((x0, x1), (y0, y1)) | _box((512 - x1, 512 - x0), (y0, y1))
+    return m
+
+
+def lanes_mask(S=SPEC):
+    n = noise.fbm2((512, 512), 8, 2, 'lane_edge', S['layout_seed'])
+    m = np.zeros((512, 512), bool)
+    for pts, w in S['lanes']:
+        for (ax, ay), (bx, by) in zip(pts, pts[1:]):
+            dx, dy = bx - ax, by - ay
+            L2 = float(dx * dx + dy * dy)
+            t = np.clip(((XW - ax) * dx + (Y - ay) * dy) / L2, 0, 1)
+            d = np.hypot(XW - (ax + t * dx), Y - (ay + t * dy))
+            m |= d <= w / 2.0 + (n - 0.5) * 1.6
+    return m
+
+
+def tunnel_mask(S=SPEC, grow=2):
+    m = np.zeros((512, 512), bool)
+    boxes = [b for _, b in S['tunnels']] + [b for _, b in S['chambers']] + [S['house_cellar'],
+                                                                           S['tavern']['cellar']]
+    for (x0, x1, y0, y1) in boxes:
+        m |= _box((x0 - grow, x1 + grow), (y0 - grow, y1 + grow))
+    return m                    # west half only: the east half is the mirror
+
+
+def creek_line(S=SPEC):
+    """Creek centre y_c(x) and water half width wh(x) (symmetric about x = 256, flat derivative on the axis)."""
+    cr = S['creek']
+    xs = np.arange(512)
+    u = 256 - np.minimum(xs, 512 - xs)
+    yc = cr['y_c'] + cr['amp'] * np.sin(math.pi * u / cr['period']) * (1 - np.exp(-(u / cr['axis_flat']) ** 2))
+    w0, a1, a2 = cr['wh']
+    wh = np.clip(w0 + a1 * np.sin(u / 13.0) + a2 * np.sin(u / 7.0 + 1.0), *cr['wh_clamp'])
+    xw = np.minimum(xs, 512 - xs)
+    for (ix, L, _W) in cr['islands']:
+        wh = wh + 2.5 * np.exp(-((xw - ix) / (L + 3.0)) ** 2)
+    return yc, wh
 
 
 # =============================================================================================== terrain
 
 def terrain(S=SPEC):
-    """Height map H[x, y] (floor z) and top-surface region codes. West half is authoritative (mirrored later)."""
+    """Height map H[x, y] (floor z), top-surface region codes and derived geometry (mill box, protected mask)."""
     seed = S['layout_seed']
     Z = S['z']
-    X, Y = np.meshgrid(np.arange(512), np.arange(512), indexing='ij')
-    Xw = np.minimum(X, 512 - X)
+    geo = {}
+    # ---------------------------------------------------------------- relief (knolls, drifts, hollows)
+    rl = S['relief']
+    r1 = noise.fbm2((512, 512), rl['cells'][0], 3, 'relief', seed)
+    r2 = noise.fbm2((512, 512), rl['cells'][1], 2, 'relief2', seed)
+    rel = (r1 - 0.5) * rl['amp'][0] + (r2 - 0.5) * rl['amp'][1]
 
-    # valley floor 50 with +-1 gentle noise
-    n = noise.fbm2((512, 512), 32, 3, 'valley', seed)
-    H = np.where(n > 0.64, Z['valley'] - 1, np.where(n < 0.36, Z['valley'] + 1, Z['valley'])).astype(int)
+    # ---------------------------------------------------------------- flat gameplay zones
+    plaza = plaza_mask(S)
+    lanes = lanes_mask(S)
+    vil = _box(*[S['village'][k] for k in ('x', 'y')])
+    rw = S['railway']
+    emb = _box(rw['x'], rw['embankment_y'])
+    sh = rw['shoulder']
+    shoulder = _box(rw['x'], (rw['embankment_y'][0] - sh, rw['embankment_y'][1] + sh)) & ~emb
+    ax0, ax1, ay0, ay1 = rw['station_apron']
+    apron = _box((ax0, ax1), (ay0, ay1))
+    f = S['front']
+    front = _box(f['x'], f['y'])
+    gh = S['gatehouse']
+    gate = _box((gh['x'][0] - 2, gh['x'][1] + 1), (gh['statue_y'][0] - 3, 512 - gh['statue_y'][0] + 3))
+    flats = plaza | lanes | vil | emb | shoulder | apron | front | gate
+    # relief fades in over 8 voxels away from the flats (no cliffs at their edges)
+    dist = ndi.distance_transform_edt(~flats)
+    rel_eff = np.clip(rel, *rl['clip']) * np.clip(dist / 8.0, 0, 1)
+    H = (Z['valley'] - np.rint(rel_eff)).astype(int)
     region = np.zeros((512, 512), np.int8)
 
-    def box(xr, yr):
-        m = np.zeros((512, 512), bool)
-        m[xr[0]:xr[1] + 1, yr[0]:yr[1] + 1] = True
-        return m
-
-    # village 48-49 (gentle mounds), spawn square inside it
-    vil = box(S['village']['x'], S['village']['y'])
     mound = noise.fbm2((512, 512), 12, 2, 'mounds', seed)
     H[vil] = np.where(mound[vil] > 0.6, Z['village_mound'], Z['village'])
-
-    # railway strip z 49 (embankment), station platform included
-    rw = S['railway']
-    rail = box(rw['x'], rw['y_strip'])
-    H[rail] = Z['rail']
-    region[box(rw['x'], rw['embankment_y'])] = 5
-
-    # flat cobbled market, front, anchors, under-platform, gatehouse floor (z 50)
-    mk = box(S['market_cobble']['x'], S['market_cobble']['y'])
-    H[mk] = Z['valley']
-    region[mk] = 1
-    for b in (S['front'], S['anchor'], S['under_platform']):
-        H[box(b['x'], b['y'])] = Z['valley']
-    region[box(S['front']['x'], S['front']['y'])] = 0
-    gh = S['gatehouse']
-    H[box((gh['x'][0] - 1, gh['x'][1]), (gh['statue_y'][0] - 2, 512 - gh['statue_y'][0] + 2))] = gh['floor_z']
-    region[box(gh['x'], gh['y'])] = 1
-    # nativity yard flat
-    H[box((240, 255), (104, 126))] = Z['valley']
-
+    H[emb | apron] = Z['rail']
+    sn = noise.fbm2((512, 512), 6, 2, 'shoulder', seed)
+    H[shoulder] = np.where(sn[shoulder] > 0.5, Z['rail'], Z['valley'])
+    region[emb] = 5
+    H[plaza | lanes] = Z['valley']
+    region[plaza | lanes] = 1
+    # front: gentle +-1 drifts away from its edges, flat at the gatehouse and the anchors
+    fin = _box((f['x'][0] + 4, f['x'][1] - 4), (f['y'][0] + 2, f['y'][1] - 2))
+    fc = rl['front_clip']
+    H[front] = Z['valley']
+    H[fin] = Z['valley'] - np.rint(np.clip(rel[fin] * 0.6, -fc, fc)).astype(int)
+    region[front] = 0
+    for hb in S['front_huts']:                       # huts stand on flat ground
+        x0, x1, y0, y1 = hb['box']
+        H[_box((x0 - 1, x1 + 1), (y0 - 1, y1 + 1))] = Z['valley']
+    H[gate] = gh['floor_z']
+    region[_box(gh['x'], gh['y'])] = 1
+    for b in (S['anchor'], S['under_platform']):
+        H[_box(b['x'], b['y'])] = Z['valley']
     # building pads (village 49) so floors are flat
-    pads = [S['post_office']['box']] + [h['box'] for h in S['houses']]
     ch = S['chapel']
-    pads += [(ch['tower'][0], ch['nave'][1], ch['nave'][2], ch['nave'][3])]
+    pads = [S['post_office']['box'], S['post_office']['wing'],
+            (ch['tower'][0], ch['nave'][1], ch['nave'][2], ch['nave'][3])]
+    for h in S['houses']:
+        pads += [p[0] for p in h['parts']]
     for (x0, x1, y0, y1) in pads:
-        H[box((x0 - 1, x1 + 1), (y0 - 1, y1 + 1))] = Z['village']
+        H[_box((x0 - 1, x1 + 1), (y0 - 1, y1 + 1))] = Z['village']
 
-    # creek valley (south flank): water 63, ice shelves 62, banks 61 -> 50
+    # ---------------------------------------------------------------- creek: meander, irregular shelves, islands
     cr = S['creek']
-    yc = cr['y_c'] + cr['wiggle'] * np.sin((256 - X) * math.pi / 120.0) ** 2
-    ady = np.abs(Y - yc)
-    bank = np.rint(Z['bank_low'] - (ady - cr['bank_from']) * (Z['bank_low'] - Z['valley']) / cr['bank_w'])
-    cz = np.where(ady <= cr['water_half'], Z['water'],
-                  np.where(ady <= cr['shelf_half'], Z['ice_shelf'],
-                           np.where(ady <= cr['bank_from'], Z['bank_low'], bank))).astype(int)
-    cm = ady <= cr['bank_from'] + cr['bank_w']
+    yc, wh = creek_line(S)
+    YC, WH = yc[X], wh[X]
+    ady = np.abs(Y - YC)
+    shn = noise.fbm2((512, 512), 6, 2, 'shelf', seed)
+    shelf = WH + cr['shelf'] + (shn - 0.5) * 2 * cr['shelf_noise']
+    shelf = np.maximum(shelf, WH + 0.6)
+    bank = np.rint(Z['bank_low'] - (ady - shelf - 1) * (Z['bank_low'] - Z['valley']) / cr['bank_w'])
+    cz = np.where(ady <= WH, Z['water'], np.where(ady <= shelf, Z['ice_shelf'],
+                                                   np.where(ady <= shelf + 1, Z['bank_low'], bank))).astype(int)
+    cm = ady <= shelf + 1 + cr['bank_w'] + 8
     H[cm] = np.maximum(H[cm], cz[cm])
-    region[cm & (cz == Z['ice_shelf'])] = 3
-    region[cm & (cz == Z['water'])] = 4
+    for (ix, L, W) in cr['islands']:
+        isl = (((XW - ix) / L) ** 2 + ((Y - YC) / W) ** 2 <= 1.0)
+        H[isl] = Z['ice_shelf']
+        region[isl] = 6
+    valley = cm & (cz > Z['valley'])
+    geo['creek_yc'] = yc
+    geo['creek_wh'] = wh
 
-    # mill pad + front terrace (z 52) on the north bank
+    # ---------------------------------------------------------------- water mill on the north bank
     ml = S['mill']
-    mx0, mx1, my0, my1 = ml['box']
-    H[box((mx0 - 2, mx1 + 2), (my0 - 4, my1))] = ml['floor']
+    mx0, mx1 = ml['x']
+    mxc = (mx0 + mx1) // 2
+    y1 = int(round(yc[mxc] - ml['gap_to_water']))
+    y0 = y1 - ml['depth']
+    floor = int(H[mxc, y0 - 3])
+    H[_box((mx0 - 2, mx1 + 2), (y0 - 4, y1))] = floor
+    geo['mill'] = {'box': (mx0, mx1, y0, y1), 'floor': floor, 'wheel_c': (mxc, floor + 4),
+                   'wheel_y': (y1 + 1, y1 + 3)}
 
-    # bridge abutments (z 52) and the sledding hill that ends on the south abutment
+    # ---------------------------------------------------------------- bridge abutments + sledding hill
     bd = S['bridge']
-    H[box((bd['x'][0], 255), (398, bd['y'][0] - 1))] = bd['deck_z']
-    H[box((bd['x'][0], 255), (bd['y'][1] + 1, 461))] = bd['deck_z']
-    sh = S['sled_hill']
-    shm = box(sh['x'], sh['y'])
-    sz = np.rint(sh['z_bottom'] - (Y - sh['y'][0]) * (sh['z_bottom'] - sh['z_top']) / (sh['y'][1] - sh['y'][0]))
+    H[_box((bd['x'][0], 255), (398, bd['y'][0] - 1))] = bd['deck_z']
+    H[_box((bd['x'][0], 255), (bd['y'][1] + 1, 461))] = bd['deck_z']
+    sl = S['sled_hill']
+    shm = _box(sl['x'], sl['y'])
+    sz = np.rint(sl['z_bottom'] - (Y - sl['y'][0]) * (sl['z_bottom'] - sl['z_top']) / (sl['y'][1] - sl['y'][0]))
     H[shm] = np.minimum(H[shm], sz[shm].astype(int))
 
-    # ridge spur across the railway (north flank), tunnel carved later
+    # ---------------------------------------------------------------- tapered ridge spur (north range -> track)
     sp = S['spur']
-    cxs = (sp['x'][0] + sp['x'][1]) / 2.0
-    dxs = np.abs(X + 0.5 - (cxs + 0.5))
-    hx = np.where(dxs <= sp['core_half'], sp['top_z'],
-                  sp['top_z'] + (dxs - sp['core_half']) * (Z['rail'] - sp['top_z']) / (13 - sp['core_half']))
-    t = np.clip((Y - sp['tip_from']) / float(sp['y'][1] - sp['tip_from']), 0, 1)
-    hs = hx + t * (Z['valley'] - hx)
-    spm = (dxs <= 13) & (Y >= sp['y'][0]) & (Y <= sp['y'][1])
+    ys = np.arange(512)
+    xc = sp['xc'] + sp['wiggle'] * np.sin(ys / 15.0)
+    hw = sp['hw'] + sp['hw_amp'] * (_row('spur_w', seed, 24) - 0.5) * 2
+    c0, c1 = sp['crest']
+    crest = c0 + (c1 - c0) * np.clip((ys - sp['y'][0]) / float(sp['y'][1] - sp['y'][0]), 0, 1) + \
+        3 * (_row('spur_c', seed, 16) - 0.5)
+    tt = np.clip((ys - sp['tip_from']) / float(sp['y'][1] - sp['tip_from']), 0, 1)
+    crest = crest + tt * (Z['rail'] - crest)
+    hw = hw * (1 - 0.45 * tt)
+    t = np.abs(XW + 0.5 - xc[Y] - 0.5) / hw[Y]
+    hs = crest[Y] + (Z['rail'] - crest[Y]) * (1 - np.clip(1 - t, 0, 1) ** 1.3)
+    spm = (t < 1) & (Y >= sp['y'][0]) & (Y <= sp['y'][1])
     H[spm] = np.minimum(H[spm], np.rint(hs[spm]).astype(int))
 
-    # mountain ring (higher terrain wins): d = distance to the map edge on the west half
-    d = np.minimum(np.minimum(Xw, Y), 511 - Y).astype(float)
-    dn = d + (noise.fbm2((512, 512), 24, 3, 'ringwarp', seed) - 0.5) * 10
+    # ---------------------------------------------------------------- mountain ring (noisy depth 28-60)
     rg = S['ring']
+    d = np.minimum(np.minimum(XW, Y), 511 - Y).astype(float)
+    wn = noise.fbm2((512, 512), rg['w_cell'], 2, 'ringw', seed)
+    W = rg['w'][0] + (rg['w'][1] - rg['w'][0]) * np.clip((wn - 0.3) / 0.4, 0, 1)
+    u = d / W
     pk = Z['ring_peak'][0] + (Z['ring_peak'][1] - Z['ring_peak'][0]) * noise.fbm2((512, 512), 16, 2, 'peaks', seed)
-    face_top = 42
-    ringH = np.where(dn <= rg['peak_band'], pk,
-                     np.where(dn <= rg['rock_to'],
-                              pk + (face_top - pk) * (dn - rg['peak_band']) / (rg['rock_to'] - rg['peak_band']),
-                              face_top + (Z['ring_foot'] - face_top) * (dn - rg['rock_to']) / (rg['foot'] - rg['rock_to'])))
+    ft = rg['face_top']
+    face = pk + (ft - pk) * (u - rg['peak_u']) / (rg['face_u'] - rg['peak_u'])
+    rug = (noise.fbm2((512, 512), 6, 2, 'rugged', seed) - 0.5) * 2 * rg['rugged']
+    face = face + rug * np.clip((u - rg['peak_u']) * 4, 0, 1)
+    ter = noise.fbm2((512, 512), 20, 2, 'terrace', seed) > 0.52
+    step = rg['terrace_step']
+    face = np.where(ter, np.floor(face / step) * step + 2, face)
+    foot = ft + (Z['ring_foot'] - ft) * (u - rg['face_u']) / (1 - rg['face_u'])
+    ringH = np.where(u <= rg['peak_u'], pk, np.where(u <= rg['face_u'], face, foot))
+    # the ring may close over the creek's and the railway's ends (valley head, buffer stop) but not elsewhere
+    # inside the village box only the building pads, the adit and x >= 60 are protected, so foothills reach in
+    padm = np.zeros((512, 512), bool)
+    for (x0, x1, y0, y1) in pads + [(48, 66, 202, 216)]:
+        padm |= _box((x0 - 2, x1 + 2), (y0 - 2, y1 + 2))
+    fl2 = (flats & ~vil) | (vil & (XW >= 60)) | padm
+    protect = (fl2 & (XW >= 52)) | padm | (valley & (XW >= 60)) | _box(S['anchor']['x'], S['anchor']['y'])
+    P = ndi.distance_transform_edt(~protect)
+    ringH = np.maximum(ringH, Z['ring_foot'] - rg['approach_slope'] * P)
     ringH = np.rint(ringH).astype(int)
-    rm = dn <= rg['foot']
+    rm = u <= 1.0
     H[rm] = np.minimum(H[rm], ringH[rm])
+
+    # ---------------------------------------------------------------- safety: tunnel roofs, ceiling, pits
+    tm = tunnel_mask(S)
+    H[tm] = np.minimum(H[tm], rl['over_tunnels_max_z'])
     H = np.maximum(H, Z['min_solid_z'] + 1)
+    for _ in range(30):                  # a column > 1 below all 4 neighbours is raised to the lowest one + 1
+        nb = np.stack([np.roll(H, 1, 0), np.roll(H, -1, 0), np.roll(H, 1, 1), np.roll(H, -1, 1)]).max(0)
+        pit = (H > nb + 1) & (H < 63)
+        if not pit.any():
+            break
+        H[pit] = nb[pit] + 1
     region[(H <= 45) & (region != 1)] = 2
-    region[H >= 62] = np.where(H[H >= 62] == 63, 4, 3)
-    return H.astype(int), region
+    region[(H >= 62) & (region != 6)] = np.where(H[(H >= 62) & (region != 6)] == 63, 4, 3)
+    geo['plaza'], geo['lanes'], geo['protect'] = plaza, lanes, protect
+    return H.astype(int), region, geo
 
 
 def paint_terrain(cv, H, region):
@@ -159,38 +285,61 @@ def post(cv, x, y, z_top, z_floor, c=C['timber'], mat='timber'):
     cv.box(x, x, y, y, z_top, z_floor - 1, c, mat)
 
 
-def ground_at(cv, x, y):
-    return int(cv.H[x, y])
+def gbox(cv, x0, x1, y0, y1, h, c, mat='prop'):
+    """Box standing on the terrain column by column: h voxels tall from each column's surface (z H-h..H-1)."""
+    for x in range(max(0, x0), min(511, x1) + 1):
+        for y in range(max(0, y0), min(511, y1) + 1):
+            g = int(cv.H[x, y])
+            cv.box(x, x, y, y, g - h, g - 1, c, mat)
 
 
-def stall(cv, x0, x1, y0, y1, name, front='S', g=50, counter=True):
-    """Market stall: 4 corner posts, back wall, roof at g-6 (5 voxels of headroom), counter with an entrance gap."""
-    rz = g - 6
-    for (x, y) in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
-        post(cv, x, y, rz + 1, g)
-    cv.box(x0, x1, y0, y1, rz, rz, C['roof'], 'roof')
-    by = y0 if front == 'S' else y1
-    fy = y1 if front == 'S' else y0
-    cv.box(x0, x1, by, by, rz + 1, g - 1, C['timber'], 'timber')            # back wall
-    if counter:
-        cx = (x0 + x1) // 2
-        cv.box(x0 + 1, cx - 2, fy, fy, g - 1, g - 1, C['furn'], 'furniture')
-        cv.box(cx + 2, x1 - 1, fy, fy, g - 1, g - 1, C['furn'], 'furniture')
-    cv.interiors.append([name, (x0 + x1) // 2, (y0 + y1) // 2, g])
+def gable(cv, x0, x1, y0, y1, roof_z, ridge='x', c=C['roof']):
+    """Stepped gable on a flat roof slab at roof_z: layers shrink across the ridge direction."""
+    k = 1
+    while True:
+        if ridge == 'x':
+            a, b = y0 + k, y1 - k
+            if a > b:
+                break
+            cv.box(x0, x1, a, b, roof_z - k, roof_z - k, c, 'roof')
+        else:
+            a, b = x0 + k, x1 - k
+            if a > b:
+                break
+            cv.box(a, b, y0, y1, roof_z - k, roof_z - k, c, 'roof')
+        k += 1
 
 
-def crate_stack(cv, x, y, g=50):
-    cv.box(x, x + 2, y, y + 2, g - 2, g - 1, C['prop'], 'prop')
-    cv.box(x, x + 1, y, y + 1, g - 3, g - 3, C['prop'], 'prop')
+def free_for_prop(cv, x0, x1, y0, y1, keep_mask=0xFF):
+    """No keep flag and nothing above the terrain in the box."""
+    x0, y0 = max(0, x0), max(0, y0)
+    x1, y1 = min(511, x1), min(511, y1)
+    if (cv.keep[x0:x1 + 1, y0:y1 + 1] & keep_mask).any():
+        return False
+    sub = cv.solid[x0:x1 + 1, y0:y1 + 1]
+    hh = cv.H[x0:x1 + 1, y0:y1 + 1]
+    zz = np.arange(64)[None, None, :]
+    return not (sub & (zz < hh[:, :, None])).any()
 
 
-def bench(cv, x, y, g=50, length=5, back=True):
-    cv.box(x, x + length - 1, y, y, g - 1, g - 1, C['furn'], 'prop')
-    if back:
-        cv.box(x, x + length - 1, y + 1, y + 1, g - 2, g - 1, C['furn'], 'prop')
+def crate_stack(cv, x, y):
+    gbox(cv, x, x + 2, y, y + 2, 2, C['prop'])
+    gbox(cv, x, x + 1, y, y + 1, 3, C['prop'])
 
 
-def lantern(cv, x, y, g=50, h=6):
+def bench(cv, x, y, along='x', length=5, back=True):
+    if along == 'x':
+        gbox(cv, x, x + length - 1, y, y, 1, C['furn'])
+        if back:
+            gbox(cv, x, x + length - 1, y + 1, y + 1, 2, C['furn'])
+    else:
+        gbox(cv, x, x, y, y + length - 1, 1, C['furn'])
+        if back:
+            gbox(cv, x + 1, x + 1, y, y + length - 1, 2, C['furn'])
+
+
+def lantern(cv, x, y, h=6):
+    g = int(cv.H[x, y])
     post(cv, x, y, g - h + 1, g, C['metal'], 'prop')
     cv.set(x, y, g - h, (210, 190, 120), 'prop')
 
@@ -207,19 +356,229 @@ def pine(cv, x, y, r, h, skirt=True):
                     cv.box(xx, xx, yy, yy, zb + 1, int(cv.H[xx, yy]) - 1, C['veg'], 'veg')
 
 
-def free_for_prop(cv, x0, x1, y0, y1):
-    """No keep flag and nothing above the terrain in the box."""
-    x0, y0 = max(0, x0), max(0, y0)
-    if cv.keep[x0:x1 + 1, y0:y1 + 1].any():
-        return False
-    for x in range(x0, x1 + 1):
-        for y in range(y0, y1 + 1):
-            if cv.solid[x, y, :cv.H[x, y]].any():
-                return False
-    return True
+def outcrop(cv, x, y, rx, ry, rz):
+    g = int(cv.H[x, y])
+    cv.ellipsoid(x + 0.5, y + 0.5, g, rx, ry, rz, C['rock'], 'rock')
+
+
+def feature_pad(cv, x, y, w, d, kind, pads):
+    """Low (1 voxel) snow pad reserved for an art-pass one-off (snowman, ice sculpture, sled, ...)."""
+    gbox(cv, x, x + w - 1, y, y + d - 1, 1, C['pad'], 'pad')
+    pads.append({'kind': kind, 'box': [x, x + w - 1, y, y + d - 1]})
 
 
 # =============================================================================================== village
+
+def build_post_office(cv, S=SPEC):
+    po = S['post_office']
+    x0, x1, y0, y1 = po['box']
+    g = S['z']['village']
+    structures.building(cv, x0, x1, y0, y1, g, storeys=1, storey_h=6, doors=('S',), wall=C['wall'],
+                        name='post office counter room', furnish=False)
+    gable(cv, x0, x1, y0, y1, g - 6, 'x')
+    # rear wing (T plan): parcel store, reached through the counter room
+    wx0, wx1, wy0, wy1 = po['wing']
+    structures.building(cv, wx0, wx1, wy0, wy1, g, storeys=1, storey_h=6, doors=('N',), wall=C['wall'],
+                        name='post office parcel wing', furnish=False)
+    gable(cv, wx0, wx1, wy0, wy1, g - 6, 'y')
+    structures.door(cv, wx0 + 4, wx0 + 6, y0, y0, g)
+    px = po['partition_x']
+    cy = (y0 + y1) // 2
+    cv.box(px, px, y0 + 1, y1 - 1, g - 5, g - 1, C['wall'], 'building')
+    structures.door(cv, px, px, cy - 1, cy + 1, g)
+    cv.interiors.append(['post office sorting room', (x0 + px) // 2, cy, g])
+    # counter with a gap, sorting shelves, mail sacks
+    cv.box(px + 1, px + 5, y1 - 8, y1 - 8, g - 1, g - 1, C['furn'], 'furniture')
+    cv.box(px + 9, x1 - 1, y1 - 8, y1 - 8, g - 1, g - 1, C['furn'], 'furniture')
+    cv.box(x0 + 1, x0 + 2, y0 + 2, y0 + 9, g - 3, g - 1, C['furn'], 'furniture')
+    cv.box(x0 + 4, x0 + 5, y1 - 4, y1 - 3, g - 1, g - 1, C['prop'], 'prop')
+    mx0, mx1, my0, my1 = po['mailbox']
+    gbox(cv, mx0, mx1, my0, my1, 4, C['soldier'])
+
+
+def build_village(cv, S=SPEC):
+    g = S['z']['village']
+    for h in S['houses']:
+        for i, (box, n, sh, doors, ridge) in enumerate(h['parts']):
+            x0, x1, y0, y1 = box
+            nm = h['name'] if i == 0 else f"{h['name']} wing"
+            structures.building(cv, x0, x1, y0, y1, g, storeys=n, storey_h=sh, doors=doors,
+                                door_w=h.get('door_w', 3), wall=C['wall'], roof=C['roof'], name=nm,
+                                furnish=(x1 - x0) >= 8)
+            gable(cv, x0, x1, y0, y1, g - n * sh, ridge)
+        if 'link' in h:
+            lx0, lx1, ly0, ly1 = h['link']
+            cv.carve(lx0, lx1, ly0, ly1, g - 4, g - 1)
+    for (x0, x1, y0, y1) in S['fences']:
+        gbox(cv, x0, x1, y0, y1, 2, C['timber'], 'fence')
+    wx0, wx1, wy0, wy1 = S['well']
+    gbox(cv, wx0, wx1, wy0, wy1, 2, C['stone'], 'prop')
+    cx, cy = (wx0 + wx1) // 2, (wy0 + wy1) // 2
+    cv.carve(cx, cx, cy, cy, int(cv.H[cx, cy]) - 2, int(cv.H[cx, cy]) - 1)
+    cv.set(cx, cy, int(cv.H[cx, cy]), C['water'], 'water')
+    for (x0, x1, y0, y1) in S['woodpiles']:
+        gbox(cv, x0, x1, y0, y1, 2, C['trunk'])
+
+
+def build_chapel_roof(cv, S=SPEC):
+    ch = S['chapel']
+    nx0, nx1, ny0, ny1 = ch['nave']
+    gable(cv, nx0 + 1, nx1, ny0, ny1, ch['nave_roof_z'], 'x')
+
+
+def build_front(cv, S=SPEC):
+    """Front (gatehouse -> anchor): low walk-through props only, two open huts at the band edges, two lanterns.
+    Props are scattered (SPEC['front_props']), never in rows."""
+    g = S['z']['valley']
+    for i, h in enumerate(S['front_huts']):
+        hut(cv, *h['box'], h['open'], f'front hut {i}', g)
+    for (x, y, kind) in S['front_props']:
+        if kind == 'sled':
+            gbox(cv, x, x + 3, y, y + 1, 1, C['prop'])
+        elif kind == 'firewood':
+            gbox(cv, x, x + 3, y, y + 1, 2, C['trunk'])
+        elif kind == 'hay':
+            gbox(cv, x, x + 2, y, y + 1, 2, C['hay'])
+        elif kind == 'cart':
+            gbox(cv, x, x + 4, y, y + 2, 2, C['timber'])
+        elif kind == 'rock':
+            outcrop(cv, x, y, 2, 1.6, 1.5)
+        elif kind == 'bush':
+            cv.ellipsoid(x + 0.5, y + 0.5, int(cv.H[x, y]) - 1, 2, 2, 2, C['veg'], 'veg')
+        elif kind == 'bench':
+            bench(cv, x, y, 'x' if (x + y) % 2 else 'y')
+        elif kind == 'lantern':
+            lantern(cv, x, y, 6)
+    # under the platform: props <= 2 tall
+    bench(cv, 220, 246)
+    bench(cv, 229, 263, 'y')
+    gbox(cv, 238, 239, 252, 253, 1, C['prop'])
+
+
+# =============================================================================================== market
+
+def stall(cv, x0, x1, y0, y1, name, front='S', kind='plain', g=50):
+    """Market stall: 4 corner posts, back wall, roof at g-6 (5 voxels of headroom), counter with an entrance gap.
+    kind 'awning': roof runs 2 further over the front; 'L': a side wing with its own roof and posts.
+    Returns the footprint box (incl. awning / wing) for the gap report."""
+    rz = g - 6
+    for (x, y) in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+        post(cv, x, y, rz + 1, g)
+    cv.box(x0, x1, y0, y1, rz, rz, C['roof'], 'roof')
+    cx, cy = (x0 + x1) // 2, (y0 + y1) // 2
+    if front in ('S', 'N'):
+        by, fy = (y0, y1) if front == 'S' else (y1, y0)
+        cv.box(x0, x1, by, by, rz + 1, g - 1, C['timber'], 'timber')
+        cv.box(x0 + 1, cx - 2, fy, fy, g - 1, g - 1, C['furn'], 'furniture')
+        cv.box(cx + 2, x1 - 1, fy, fy, g - 1, g - 1, C['furn'], 'furniture')
+    else:
+        bx, fx = (x0, x1) if front == 'E' else (x1, x0)
+        cv.box(bx, bx, y0, y1, rz + 1, g - 1, C['timber'], 'timber')
+        cv.box(fx, fx, y0 + 1, cy - 2, g - 1, g - 1, C['furn'], 'furniture')
+        cv.box(fx, fx, cy + 2, y1 - 1, g - 1, g - 1, C['furn'], 'furniture')
+    fb = [x0, x1, y0, y1]
+    if kind == 'awning':
+        if front == 'S':
+            cv.box(x0, x1, y1 + 1, y1 + 2, rz, rz, C['roof'], 'roof')
+            fb[3] += 2
+        elif front == 'N':
+            cv.box(x0, x1, y0 - 2, y0 - 1, rz, rz, C['roof'], 'roof')
+            fb[2] -= 2
+        elif front == 'E':
+            cv.box(x1 + 1, x1 + 2, y0, y1, rz, rz, C['roof'], 'roof')
+            fb[1] += 2
+        else:
+            cv.box(x0 - 2, x0 - 1, y0, y1, rz, rz, C['roof'], 'roof')
+            fb[0] -= 2
+    elif kind == 'L':
+        if front == 'S':
+            w = (x0, x0 + 3, y1 + 1, y1 + 5)
+        elif front == 'N':
+            w = (x0, x0 + 3, y0 - 5, y0 - 1)
+        elif front == 'E':
+            w = (x1 + 1, x1 + 5, y0, y0 + 3)
+        else:
+            w = (x0 - 5, x0 - 1, y0, y0 + 3)
+        a0, a1, b0, b1 = w
+        cv.box(a0, a1, b0, b1, rz, rz, C['roof'], 'roof')
+        for (x, y) in ((a0, b0), (a1, b0), (a0, b1), (a1, b1)):
+            if not cv.solid[x, y, g - 1]:
+                post(cv, x, y, rz + 1, g)
+        cv.box(a0 + 1, a1 - 1, b0 + 1, b1 - 1, g - 1, g - 1, C['prop'], 'prop')      # side table
+        fb = [min(fb[0], a0), max(fb[1], a1), min(fb[2], b0), max(fb[3], b1)]
+    cv.interiors.append([name, cx, cy, g])
+    return fb
+
+
+def build_market(cv, S=SPEC):
+    g = S['z']['valley']
+    boxes = []
+    for i, (x0, x1, y0, y1, front, kind) in enumerate(S['stalls']):
+        boxes.append(['stall %d' % i] + stall(cv, x0, x1, y0, y1, f'stall {i}', front, kind, g))
+    hn = S['hatch_stalls']['north']
+    boxes.append(['hatch stall N'] + stall(cv, *hn, 'hatch stall N', front='S', g=g))
+    hs = S['hatch_stalls']['south']
+    boxes.append(['hatch stall S'] + stall(cv, *hs, 'hatch stall S', front='N', g=g))
+    for (x, y, w, h) in S['sculptures']:
+        gbox(cv, x, x + w - 1, y, y + w - 1, h, C['ice'], 'ice')
+    return boxes
+
+
+def build_mill(cv, geo, S=SPEC):
+    ml = geo['mill']
+    x0, x1, y0, y1 = ml['box']
+    f = ml['floor']
+    structures.building(cv, x0, x1, y0, y1, f, storeys=2, storey_h=5, doors=('N', 'W', 'E'), wall=C['wall'],
+                        name='water mill')
+    gable(cv, x0, x1, y0, y1, f - 10, 'x')
+    wx, wz = ml['wheel_c']
+    r = S['mill']['wheel_r']
+    wy0, wy1 = ml['wheel_y']
+    for x in range(wx - r - 1, wx + r + 2):
+        for z in range(wz - r - 1, min(63, wz + r + 2)):
+            d = math.hypot(x + 0.5 - (wx + 0.5), z - wz)
+            ring = r - 1.3 <= d <= r + 0.2
+            spoke = d <= r and (abs(x - wx) < 1 or abs(z - wz) < 1)
+            if ring or spoke:
+                for y in range(wy0, wy1 + 1):
+                    if not cv.solid[x, y, z]:
+                        cv.set(x, y, z, C['timber'], 'prop')
+    cv.box(wx, wx, y1, wy1, wz, wz, C['metal'], 'prop')                                 # axle into the wall
+
+
+def build_railway(cv, S=SPEC):
+    rw = S['railway']
+    rz = rw['rail_z']
+    x_start = None
+    for x in range(rw['x'][0], 256):
+        if all(cv.H[x, y] == rz + 1 for y in rw['rails_y']):
+            if x_start is None:
+                x_start = x
+            for y in rw['rails_y']:
+                cv.set(x, y, rz, C['rail'], 'rail')
+    if x_start is not None:                                                             # buffer stop
+        cv.box(x_start, x_start + 1, rw['rails_y'][0], rw['rails_y'][1], rz - 1, rz, C['soldier'], 'prop')
+    # tunnel through the ridge spur (5 x 5) - rails run through it
+    sp = S['spur']
+    a0, a1 = sp['tunnel_air']
+    covered = []
+    for x in range(sp['tunnel_x'][0], sp['tunnel_x'][1] + 1):
+        for y in range(sp['tunnel_y'][0], sp['tunnel_y'][1] + 1):
+            cv.carve(x, x, y, y, a0, a1)
+            if not cv.solid[x, y, a1 + 1]:
+                cv.set(x, y, a1 + 1, C['ballast'], 'ballast')
+        for y in rw['rails_y']:
+            cv.set(x, y, rz, C['rail'], 'rail')
+        if cv.solid[x, sp['tunnel_y'][0] + 2, :a0].any():
+            covered.append(x)
+    cx = covered[len(covered) // 2] if covered else sum(sp['tunnel_x']) // 2
+    cv.interiors.append(['spur rail tunnel', cx, sum(sp['tunnel_y']) // 2, rz + 1])
+    for x in (covered[0], covered[-1]) if covered else ():                               # stone portals
+        for y in range(sp['tunnel_y'][0] - 1, sp['tunnel_y'][1] + 2):
+            if cv.solid[x, y, a0 - 1]:
+                cv.set(x, y, a0 - 1, C['stone'], 'building')
+    return {'covered_x': [covered[0], covered[-1]] if covered else None}
+
 
 def build_chapel(cv, S=SPEC):
     ch = S['chapel']
@@ -248,34 +607,6 @@ def build_chapel(cv, S=SPEC):
     cv.box(tx0 + 4, tx0 + 6, tcy - 1, tcy + 1, roof + 1, roof + 2, C['metal'], 'prop')      # bell
     # a door from the nave back out (west side of the tower is the mountain side)
     structures.door(cv, tx0, tx0, tcy - 1, tcy + 1, g)
-
-
-def build_post_office(cv, S=SPEC):
-    po = S['post_office']
-    x0, x1, y0, y1 = po['box']
-    g = S['z']['village']
-    structures.building(cv, x0, x1, y0, y1, g, storeys=1, storey_h=6, doors=('S', 'N'), wall=C['wall'],
-                        name='post office counter room', furnish=False)
-    px = po['partition_x']
-    cy = (y0 + y1) // 2
-    cv.box(px, px, y0 + 1, y1 - 1, g - 5, g - 1, C['wall'], 'building')
-    structures.door(cv, px, px, cy - 1, cy + 1, g)
-    cv.interiors.append(['post office sorting room', (x0 + px) // 2, cy, g])
-    # counter with a gap, sorting shelves, mail sacks
-    cv.box(px + 1, px + 5, y1 - 8, y1 - 8, g - 1, g - 1, C['furn'], 'furniture')
-    cv.box(px + 9, x1 - 1, y1 - 8, y1 - 8, g - 1, g - 1, C['furn'], 'furniture')
-    cv.box(x0 + 1, x0 + 2, y0 + 2, y0 + 9, g - 3, g - 1, C['furn'], 'furniture')
-    cv.box(x0 + 4, x0 + 5, y1 - 4, y1 - 3, g - 1, g - 1, C['prop'], 'prop')
-    mx0, mx1, my0, my1 = po['mailbox']
-    cv.box(mx0, mx1, my0, my1, g - 4, g - 1, C['soldier'], 'prop')
-
-
-def build_houses(cv, S=SPEC):
-    g = S['z']['village']
-    for h in S['houses']:
-        x0, x1, y0, y1 = h['box']
-        structures.building(cv, x0, x1, y0, y1, g, storeys=2, storey_h=5, doors=h['doors'], wall=C['wall'],
-                            roof=C['roof'], name=h['name'])
 
 
 def build_gatehouse(cv, S=SPEC):
@@ -326,7 +657,7 @@ def build_gatehouse(cv, S=SPEC):
     ys = np.arange(s0 - 1, 256)
     for a in (cv.solid, cv.rgb, cv.mat):
         a[x0:x1 + 1, 512 - ys] = a[x0:x1 + 1, ys]
-    cv.interiors += [['gatehouse north tower', x0 + 2, yA + 1, g], ['gatehouse south tower', x0 + 2, 512 - yA - 1, g],
+    cv.interiors += [['gatehouse north tower', x0 + 3, yA + 6, g], ['gatehouse south tower', x0 + 3, 512 - yA - 6, g],
                      ['gatehouse gallery', x0 + 2, 245, gf], ['gatehouse stair landing', x0 + 2, yA + 9, g - 5]]
 
 
@@ -347,60 +678,6 @@ def hut(cv, x0, x1, y0, y1, open_side, name, g=50):
     cv.interiors.append([name, (x0 + x1) // 2, cy, g])
 
 
-def build_front(cv, S=SPEC):
-    """Front (gatehouse -> anchor): low walk-through props only, two open huts at the band edges, two lanterns."""
-    g = S['z']['valley']
-    for i, h in enumerate(S['front_huts']):
-        hut(cv, *h['box'], h['open'], f'front hut {i}', g)
-    P = C['prop']
-    cv.box(156, 159, 262, 263, g - 1, g - 1, P, 'prop')                 # sled
-    cv.box(190, 193, 250, 251, g - 1, g - 1, P, 'prop')                 # sled
-    cv.box(160, 163, 270, 271, g - 2, g - 1, C['trunk'], 'prop')        # firewood
-    cv.box(176, 178, 246, 247, g - 2, g - 1, C['hay'], 'prop')          # hay bale
-    cv.box(192, 194, 264, 265, g - 2, g - 1, C['hay'], 'prop')          # hay bale
-    cv.box(170, 174, 256, 258, g - 2, g - 2, C['timber'], 'prop')       # hand cart bed
-    for (wx, wy) in ((171, 256), (173, 256), (171, 258), (173, 258)):
-        cv.set(wx, wy, g - 1, C['metal'], 'prop')                       # wheels
-    cv.ellipsoid(182.5, 241.5, g - 1, 2, 2, 1.5, C['rock'], 'prop')     # rocks
-    cv.ellipsoid(196.5, 270.5, g - 1, 1.5, 2, 1.5, C['rock'], 'prop')
-    cv.ellipsoid(158.5, 244.5, g - 1, 2, 2, 2, C['veg'], 'veg')         # low bushes
-    cv.ellipsoid(186.5, 258.5, g - 1, 2, 2, 2, C['veg'], 'veg')
-    bench(cv, 158, 249, g)
-    bench(cv, 180, 266, g)
-    lantern(cv, 154, 236, g, 6)
-    lantern(cv, 154, 276, g, 6)
-    # under the platform: props <= 2 tall
-    bench(cv, 220, 246, g)
-    bench(cv, 220, 265, g)
-    cv.box(236, 237, 252, 253, g - 1, g - 1, P, 'prop')
-
-
-# =============================================================================================== market
-
-def build_market(cv, S=SPEC):
-    g = S['z']['valley']
-    for i, b in enumerate(S['stalls_north']):
-        stall(cv, *b, f'stall N{i}', front='S' if b[2] > 190 else 'N', g=g)
-    for i, b in enumerate(S['stalls_south']):
-        stall(cv, *b, f'stall S{i}', front='N' if b[2] < 320 else 'S', g=g)
-    hn = S['hatch_stalls']['north']
-    stall(cv, *hn, 'hatch stall N', front='S', g=g)
-    hs = S['hatch_stalls']['south']
-    stall(cv, *hs, 'hatch stall S', front='N', g=g)
-    for (x, y) in ((214, 188), (178, 198), (228, 170), (178, 316), (216, 340), (228, 378), (186, 228)):
-        crate_stack(cv, x, y, g)
-    for (x, y) in ((168, 196), (204, 196), (168, 312), (204, 312), (186, 364), (222, 226), (222, 286)):
-        bench(cv, x, y, g)
-    for (x, y) in ((180, 140), (198, 170), (198, 200), (180, 222), (180, 290), (198, 318), (198, 344),
-                   (180, 372), (236, 200), (236, 312)):
-        lantern(cv, x, y, g, 6)
-    # ice-sculpture garden around the rink
-    for (x, y, w, h) in ((228, 312, 3, 4), (230, 324, 2, 5), (226, 336, 3, 3), (232, 346, 2, 4)):
-        cv.box(x, x + w - 1, y, y + w - 1, g - h, g - 1, C['ice'], 'ice')
-
-
-# =============================================================================================== axis set pieces
-
 def build_axis(cv, S=SPEC):
     g = S['z']['valley']
     # station + canopy over the platform
@@ -413,7 +690,7 @@ def build_axis(cv, S=SPEC):
     cv.box(x0, 255, cy0, cy1, f - 6, f - 6, C['roof'], 'roof')
     for px in (x0 + 2, x0 + 8):
         post(cv, px, cy1, f - 5, f, C['metal'], 'timber')
-    bench(cv, x0 + 3, cy0 + 1, f, back=False)
+    bench(cv, x0 + 3, cy0 + 1, 'x', back=False)
 
     # nativity stable (open to the south), figures, manger, star
     nx0, nx1, ny0, ny1 = S['nativity']['box']
@@ -425,7 +702,7 @@ def build_axis(cv, S=SPEC):
     cv.box(253, 255, ny0 + 4, ny0 + 5, g - 1, g - 1, C['hay'], 'prop')
     cv.box(nx0 + 1, nx0 + 3, ny0 + 1, ny0 + 2, g - 2, g - 1, C['figure'], 'prop')
     cv.box(254, 255, (ny0 + ny1) // 2, (ny0 + ny1) // 2, g - 9, g - 8, (210, 200, 140), 'prop')
-    cv.interiors.append(['nativity stable', 252, ny1 - 2, g])
+    cv.interiors.append(['nativity stable', 252, ny0 + 4, g])
 
     # tavern: two floors + cellar (cellar is dug in build_underground)
     tv = S['tavern']
@@ -506,59 +783,6 @@ def build_axis(cv, S=SPEC):
         cv.box(x, x + 1, y, y + 2, z - 1, z - 1, C['prop'], 'prop')
 
 
-def build_mill(cv, S=SPEC):
-    ml = S['mill']
-    x0, x1, y0, y1 = ml['box']
-    f = ml['floor']
-    structures.building(cv, x0, x1, y0, y1, f, storeys=2, storey_h=5, doors=('N', 'W', 'E'), wall=C['wall'],
-                        name='water mill')
-    wx, wz = ml['wheel_c']
-    r = ml['wheel_r']
-    wy0, wy1 = ml['wheel_y']
-    for x in range(wx - r - 1, wx + r + 2):
-        for z in range(wz - r - 1, wz + r + 2):
-            d = math.hypot(x + 0.5 - (wx + 0.5), z - wz)
-            ring = r - 1.3 <= d <= r + 0.2
-            spoke = d <= r and (abs(x - wx) < 1 or abs(z - wz) < 1)
-            if ring or spoke:
-                for y in range(wy0, wy1 + 1):
-                    if not cv.solid[x, y, z]:
-                        cv.set(x, y, z, C['timber'], 'prop')
-    cv.box(wx, wx, y1, wy1, wz, wz, C['metal'], 'prop')                                 # axle into the wall
-
-
-def build_railway(cv, S=SPEC):
-    rw = S['railway']
-    rz = rw['rail_z']
-    x_start = None
-    for x in range(rw['x'][0], 256):
-        if all(cv.H[x, y] == rz + 1 for y in rw['rails_y']):
-            if x_start is None:
-                x_start = x
-            for y in rw['rails_y']:
-                cv.set(x, y, rz, C['rail'], 'rail')
-    # buffer stop at the west end
-    if x_start is not None:
-        cv.box(x_start, x_start + 1, rw['rails_y'][0], rw['rails_y'][1], rz - 1, rz, C['soldier'], 'prop')
-    # tunnel through the ridge spur (5 x 5) - rails run through it
-    sp = S['spur']
-    a0, a1 = sp['tunnel_air']
-    for x in range(sp['x'][0], sp['x'][1] + 1):
-        for y in range(sp['tunnel_y'][0], sp['tunnel_y'][1] + 1):
-            cv.carve(x, x, y, y, a0, a1)
-            if not cv.solid[x, y, a1 + 1]:
-                cv.set(x, y, a1 + 1, C['ballast'], 'ballast')
-        for y in rw['rails_y']:
-            cv.set(x, y, rz, C['rail'], 'rail')
-    cv.interiors.append(['spur rail tunnel', (sp['x'][0] + sp['x'][1]) // 2, sum(sp['tunnel_y']) // 2 + 1,
-                         rz + 1])
-    # stone portals
-    for x in (sp['x'][0] + 3, sp['x'][1] - 3):
-        for y in range(sp['tunnel_y'][0] - 1, sp['tunnel_y'][1] + 2):
-            if cv.solid[x, y, a0 - 1]:
-                cv.set(x, y, a0 - 1, C['stone'], 'building')
-
-
 # =============================================================================================== underground
 
 def tunnel_floor_paint(cv, x0, x1, y0, y1, fz):
@@ -618,32 +842,264 @@ def build_underground(cv, S=SPEC):
     cv.interiors.append(['tavern cellar', cx0 + 4, cy0 + 8, fz])
 
 
-# =============================================================================================== pines + masks
+# =============================================================================================== masks + scatter
 
-def set_masks(cv, S=SPEC):
+KEEP_SPAWN, KEEP_ANCHOR, KEEP_FRONT, KEEP_UNDER, KEEP_LANE, KEEP_ENTRY, KEEP_MISC = 1, 2, 4, 8, 16, 32, 64
+
+
+def set_masks(cv, geo, S=SPEC):
     sp = S['spawn']
     (bx, by), h, m = sp['base'], sp['half'], sp['margin']
-    cv.no_prop(bx - h - m, bx + h + m, by - h - m, by + h + m, 1)
+    cv.no_prop(bx - h - m, bx + h + m, by - h - m, by + h + m, KEEP_SPAWN)
     a = S['anchor']
-    cv.no_prop(a['x'][0] - 2, a['x'][1] + 2, a['y'][0] - 2, a['y'][1] + 2, 2)
+    cv.no_prop(a['x'][0] - 2, a['x'][1] + 2, a['y'][0] - 2, a['y'][1] + 2, KEEP_ANCHOR)
     f = S['front']
-    cv.no_prop(f['x'][0], f['x'][1], f['y'][0], f['y'][1], 4)
+    cv.no_prop(f['x'][0], f['x'][1], f['y'][0], f['y'][1], KEEP_FRONT)
     u = S['under_platform']
-    cv.no_prop(u['x'][0], u['x'][1], u['y'][0], u['y'][1], 8)
+    cv.no_prop(u['x'][0], u['x'][1], u['y'][0], u['y'][1], KEEP_UNDER)
+    cv.keep[geo['lanes']] |= KEEP_LANE
+    hn, hs = S['hatch_stalls']['north'], S['hatch_stalls']['south']
+    for (x0, x1, y0, y1) in ((50, 64, 204, 214), (hn[0] - 1, hn[1] + 1, hn[2] - 3, hn[3] + 1),
+                             (hs[0] - 1, hs[1] + 1, hs[2] - 1, hs[3] + 3)):
+        cv.no_prop(x0, x1, y0, y1, KEEP_ENTRY)
+    gh = S['gatehouse']
+    rw = S['railway']
+    ml = geo['mill']['box']
+    for (x0, x1, y0, y1) in ((gh['x'][0] - 3, gh['x'][1] + 3, gh['statue_y'][0] - 4, 512 - gh['statue_y'][0] + 4),
+                             (244, 255, 396, 463), (242, 255, 462, 500), (rw['x'][0], 255, 75, 93),
+                             rw['station_apron'], (242, 255, 104, 124), (ml[0] - 2, ml[1] + 2, ml[2] - 6, ml[3] + 4)):
+        cv.no_prop(x0, x1, y0, y1, KEEP_MISC)
 
 
-def plant_pines(cv, S=SPEC):
-    placed, skipped = [], []
-    for (x, y, r, h) in S['pines']:
-        Hs = cv.H[x - r - 2:x + r + 3, y - r - 2:y + r + 3]
-        ok = free_for_prop(cv, x - r - 2, x + r + 2, y - r - 2, y + r + 2) and Hs.max() <= 61 and \
-            Hs.max() - Hs.min() <= 5
-        if ok:
-            pine(cv, x, y, r, h)
-            placed.append((x, y, r, h))
+PAD_KINDS = ['snowman', 'ice sculpture', 'sled stack', 'snow fort', 'lantern ring', 'snowman family']
+
+
+def _try_pine(cv, rng, x, y, margin=3):
+    r = int(rng.integers(2, 5))
+    h = int(rng.integers(9, 17))
+    if not (r + margin + 1 <= x <= 250 - r - margin and r + margin <= y <= 511 - r - margin):
+        return None
+    Hs = cv.H[x - r - 2:x + r + 3, y - r - 2:y + r + 3]
+    if Hs.max() > 61 or Hs.max() - Hs.min() > 5:
+        return None
+    if not free_for_prop(cv, x - r - margin, x + r + margin, y - r - margin, y + r + margin):
+        return None
+    pine(cv, x, y, r, h)
+    return (x, y, r, h)
+
+
+def _try_outcrop(cv, rng, x, y):
+    rx, ry, rz = float(rng.uniform(2, 5)), float(rng.uniform(2, 4.5)), float(rng.uniform(1.5, 3.5))
+    R = int(math.ceil(max(rx, ry)))
+    if not (R + 4 <= x <= 250 - R and R + 4 <= y <= 507 - R):
+        return None
+    Hs = cv.H[x - R:x + R + 1, y - R:y + R + 1]
+    if Hs.max() > 60 or Hs.max() - Hs.min() > 4:
+        return None
+    if not free_for_prop(cv, x - R - 3, x + R + 3, y - R - 3, y + R + 3):
+        return None
+    outcrop(cv, x, y, rx, ry, rz)
+    return (x, y, round(rx, 1), round(ry, 1), round(rz, 1))
+
+
+def _try_pad(cv, rng, x, y, pads, kinds=PAD_KINDS):
+    w, d = (5, 5) if rng.random() < 0.5 else ((7, 5) if rng.random() < 0.5 else (5, 7))
+    if x + w > 250:
+        return None
+    Hs = cv.H[x:x + w, y:y + d]
+    if Hs.max() > 60 or Hs.max() != Hs.min():
+        return None
+    if not free_for_prop(cv, x - 3, x + w + 2, y - 3, y + d + 2):
+        return None
+    feature_pad(cv, x, y, w, d, kinds[int(rng.integers(len(kinds)))], pads)
+    return True
+
+
+def _try_small(cv, rng, x, y, kind):
+    if x > 248:
+        return None
+    if kind == 'crates':
+        if free_for_prop(cv, x - 3, x + 5, y - 3, y + 5):
+            crate_stack(cv, x, y)
+            return True
+    elif kind == 'bench':
+        along = 'x' if rng.random() < 0.5 else 'y'
+        bw, bd = (5, 2) if along == 'x' else (2, 5)
+        if free_for_prop(cv, x - 3, x + bw + 2, y - 3, y + bd + 2):
+            bench(cv, x, y, along)
+            return True
+    elif kind == 'lantern':
+        if free_for_prop(cv, x - 3, x + 3, y - 3, y + 3):
+            lantern(cv, x, y, 6)
+            return True
+    elif kind == 'barrels':
+        if free_for_prop(cv, x - 3, x + 5, y - 3, y + 4):
+            gbox(cv, x, x + 1, y, y + 1, 3, C['trunk'])
+            gbox(cv, x + 2, x + 3, y, y + 1, 2, C['trunk'])
+            return True
+    elif kind == 'woodpile':
+        if free_for_prop(cv, x - 3, x + 6, y - 3, y + 4):
+            gbox(cv, x, x + 3, y, y + 1, 2, C['trunk'])
+            return True
+    return None
+
+
+def scatter(cv, geo, S=SPEC):
+    """Deterministic (layout seed) clutter: pine groves, rock outcrops and feature pads on the fields, small props
+    and feature pads on the plaza, woodpiles / crates / single pines in the villages. Jittered grids, so nothing
+    lines up in rows; every piece keeps >= 3 voxels from anything already standing."""
+    sc = S['scatter']
+    seed = S['layout_seed']
+    rng = noise.rng('scatter', seed)
+    pads, pines, rocks, small = [], [], [], 0
+    vil = _box(*[S['village'][k] for k in ('x', 'y')])
+    plaza = geo['plaza'] & ~geo['lanes']
+
+    def grid(spacing, jitter, tag):
+        r = noise.rng(tag, seed)
+        for gx in range(6, 252, spacing):
+            for gy in range(6, 506, spacing):
+                yield (gx + int(r.integers(-jitter, jitter + 1)), gy + int(r.integers(-jitter, jitter + 1)))
+
+    # fields (outside plaza, lanes and villages)
+    for (x, y) in grid(sc['field_spacing'], sc['field_jitter'], 'grid_field'):
+        if not (0 <= x <= 250 and 0 <= y <= 511) or plaza[x, y] or geo['lanes'][x, y] or vil[x, y]:
+            continue
+        if not (44 <= cv.H[x, y] <= 60):
+            continue
+        t = rng.random()
+        if t < 0.5:
+            n = int(rng.integers(*sc['grove_n'])) + 1
+            R = sc['grove_radius']
+            got = 0
+            for _ in range(n * 4):
+                p = _try_pine(cv, rng, x + int(rng.integers(-R, R + 1)), y + int(rng.integers(-R, R + 1)))
+                if p:
+                    pines.append(p)
+                    got += 1
+                    if got >= n:
+                        break
+        elif t < 0.75:
+            o = _try_outcrop(cv, rng, x, y)
+            if o:
+                rocks.append(o)
+        elif t < 0.9:
+            _try_pad(cv, rng, x, y, pads)
         else:
-            skipped.append((x, y, r, h))
-    return {'placed': placed, 'skipped': skipped}
+            p = _try_pine(cv, rng, x, y)
+            if p:
+                pines.append(p)
+            o = _try_outcrop(cv, rng, x + 8, y + 3)
+            if o:
+                rocks.append(o)
+    # plaza clutter
+    kinds = ['crates', 'bench', 'lantern', 'barrels', 'pad', 'crates', 'bench']
+    for (x, y) in grid(sc['plaza_spacing'], sc['plaza_jitter'], 'grid_plaza'):
+        if not (0 <= x <= 248 and 0 <= y <= 511) or not plaza[x, y]:
+            continue
+        k = kinds[int(rng.integers(len(kinds)))]
+        if k == 'pad':
+            _try_pad(cv, rng, x, y, pads, ['ice sculpture', 'snowman', 'present pile', 'lantern ring'])
+        elif _try_small(cv, rng, x, y, k):
+            small += 1
+    # village clutter (spawn margin is kept clear by its keep flag)
+    vk = ['woodpile', 'crates', 'pine', 'rock', 'pad', 'barrels']
+    for (x, y) in grid(sc['village_spacing'], sc['village_jitter'], 'grid_village'):
+        if not (0 <= x <= 248 and 0 <= y <= 511) or not vil[x, y]:
+            continue
+        k = vk[int(rng.integers(len(vk)))]
+        if k == 'pine':
+            p = _try_pine(cv, rng, x, y)
+            if p:
+                pines.append(p)
+        elif k == 'rock':
+            o = _try_outcrop(cv, rng, x, y)
+            if o:
+                rocks.append(o)
+        elif k == 'pad':
+            _try_pad(cv, rng, x, y, pads, ['snowman', 'snowman family', 'sled stack'])
+        elif _try_small(cv, rng, x, y, k):
+            small += 1
+    return {'pines': len(pines), 'outcrops': len(rocks), 'small_props': small, 'feature_pads': pads,
+            'pine_list': pines}
+
+
+def break_flats(cv, S=SPEC, target=22, rounds=40):
+    """Deterministic pass: while a featureless flat square larger than `target` exists (same metric as fh_checks),
+    put a small feature (pad, lantern, crates, bench) near its centre. Lanes may receive a pad or lantern at their
+    edge; spawn margins, anchors, under-platform, front, entrances and misc keep zones never do."""
+    import fh_checks
+    rng = noise.rng('break_flats', S['layout_seed'])
+    placed = []
+    mask = 0xFF & ~KEEP_LANE
+    kinds = ['pad', 'lantern', 'crates', 'bench', 'barrels']
+    pads = []
+    for _ in range(rounds):
+        ok = fh_checks.featureless_ok_mask(cv.solid, cv.H, S)
+        ok[256:] = False                                       # west half (the east is the mirror)
+        best, where, tops = fh_checks.largest_flat_squares(cv.H, ok, min_report=target + 1, n_report=12)
+        if best <= target:
+            break
+        done = 0
+        for v, x, y in tops:
+            cx, cy = x - v // 2, y - v // 2
+            for _try in range(12):
+                px, py = cx + int(rng.integers(-4, 5)), cy + int(rng.integers(-4, 5))
+                k = kinds[int(rng.integers(len(kinds)))]
+                if px > 247 or px < 4 or py < 4 or py > 506:
+                    continue
+                box = {'pad': (px - 3, px + 7, py - 3, py + 7), 'lantern': (px - 3, px + 3, py - 3, py + 3),
+                       'crates': (px - 3, px + 5, py - 3, py + 5), 'bench': (px - 3, px + 7, py - 3, py + 4),
+                       'barrels': (px - 3, px + 6, py - 3, py + 4)}[k]
+                if not free_for_prop(cv, *box, keep_mask=mask):
+                    continue
+                if k == 'pad':
+                    Hs = cv.H[px:px + 5, py:py + 5]
+                    if Hs.max() != Hs.min() or Hs.max() > 60:
+                        continue
+                    feature_pad(cv, px, py, 5, 5, ['snowman', 'ice sculpture', 'present pile'][int(rng.integers(3))],
+                                pads)
+                elif k == 'lantern':
+                    lantern(cv, px, py, 6)
+                elif k == 'crates':
+                    crate_stack(cv, px, py)
+                elif k == 'bench':
+                    bench(cv, px, py, 'x')
+                else:
+                    gbox(cv, px, px + 1, py, py + 1, 3, C['trunk'])
+                    gbox(cv, px + 2, px + 3, py, py + 1, 2, C['trunk'])
+                placed.append((k, px, py))
+                done += 1
+                break
+        if not done:
+            break
+    return {'placed': placed, 'feature_pads': pads, 'largest_side_after': int(best)}
+
+
+# =============================================================================================== top level
+
+def build_west(S=SPEC):
+    """Everything except the mirror and the train. Returns (canvas, report)."""
+    cv = Canvas(S['name'])
+    H, region, geo = terrain(S)
+    paint_terrain(cv, H, region)
+    set_masks(cv, geo, S)
+    build_chapel(cv, S)
+    build_chapel_roof(cv, S)
+    build_post_office(cv, S)
+    build_village(cv, S)
+    build_gatehouse(cv, S)
+    build_front(cv, S)
+    market_boxes = build_market(cv, S)
+    build_axis(cv, S)
+    build_mill(cv, geo, S)
+    rail = build_railway(cv, S)
+    build_underground(cv, S)
+    sc = scatter(cv, geo, S)
+    bf = break_flats(cv, S)
+    sc['feature_pads'] = sc['feature_pads'] + bf['feature_pads']
+    sc['break_flats'] = {'placed': len(bf['placed']), 'largest_side_after_west': bf['largest_side_after']}
+    return cv, {'scatter': sc, 'market_boxes': market_boxes, 'mill': geo['mill'], 'rail_tunnel': rail}
 
 
 # =============================================================================================== train (after mirror)
@@ -684,25 +1140,3 @@ def build_train(cv, S=SPEC):
     cv.box(c0 + 2, c0 + 3, y1 + 1, y1 + 1, cz + 1, cz + 1, C['timber'], 'train')
     cv.interiors.append(['locomotive cab', c0 + 3, (y0 + y1) // 2, cz])
     return [x0, x1, y0 - 1, y1 + 1]
-
-
-# =============================================================================================== top level
-
-def build_west(S=SPEC):
-    """Everything except the mirror and the train. Returns (canvas, report)."""
-    cv = Canvas(S['name'])
-    H, region = terrain(S)
-    paint_terrain(cv, H, region)
-    set_masks(cv, S)
-    build_chapel(cv, S)
-    build_post_office(cv, S)
-    build_houses(cv, S)
-    build_gatehouse(cv, S)
-    build_front(cv, S)
-    build_market(cv, S)
-    build_axis(cv, S)
-    build_mill(cv, S)
-    build_railway(cv, S)
-    build_underground(cv, S)
-    pines = plant_pines(cv, S)
-    return cv, {'pines': pines}
