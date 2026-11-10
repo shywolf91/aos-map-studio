@@ -152,6 +152,8 @@ SPEC = {
     'flank_bands': {'north': (46, 126), 'south': (386, 466), 'restrict_x': (152, 360), 'max_diff': 0.10},
     'front_check': {'x': (152, 199), 'y': (232, 280)},
     'gatehouse_check': {'y': (232, 280), 'min_open': 0.60, 'max_pier': 5},
+    # corner tag strip (NE quadrant, on the valley floor; the graybox keeps it flat and clear on both halves)
+    'tag': {'x0': 358, 'y0': 107, 'strip': (354, 456, 104, 117)},
     'featureless': {'max_side': 24, 'exempt': [(94, 142, 232, 280), (370, 418, 232, 280), (200, 311, 236, 276)]},
 
     'deviations': [

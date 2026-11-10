@@ -14,6 +14,16 @@
    square; spawn squares + margin, anchors and the under-platform strip are exempt. Target <= 24.
 9. (extra) market gaps: smallest gap (Chebyshev, in voxels) between stall footprints (incl. awnings / L wings)
    and between stalls and the axis set pieces. Target >= 7.
+10. art vs graybox collision ("art must not change gameplay geometry"): the standable-cell sets (3 air above a
+   solid voxel) of the graybox reference build and the art build are compared. Differences are allowed only for
+   (a) vegetation: columns where the graybox had a veg stand-in or the art has plant voxels (+1 voxel), with the
+       trunk on the stand-in column and the canopy >= 4 above the ground (fh_veg),
+   (b) trim: cells >= 4 above the ground in the 1-voxel ring around structures, or above the graybox top of a
+       structure column (roof snow, chimneys, eave bulbs),
+   (c) the reserved feature pads, (d) sky decor boxes, (e) the corner-tag strip,
+   (f) detailing inside a graybox prop's column envelope (art solids in that column are a subset of the graybox's).
+   Everything else is 'unallowed' and reported per zone (front, anchors, spawn squares, lanes, interiors, tunnels)
+   and at ground level. Pass = 0 unallowed cells.
 
 Graph model = aosmap.kit.babel_checks.Nav (3 air to stand, 1-voxel step with 4 climb room, drops <= 9).
 """
@@ -281,13 +291,109 @@ def market_gaps(boxes, S=SPEC):
     return {'min_gap': rows[0][0], 'closest_pairs': [list(r) for r in rows[:5]], 'ok': rows[0][0] >= 7}
 
 
-def run(solid, H, S=SPEC, nav=None, build=None):
+VEG_G = {'veg'}
+VEG_A = {'veg', 'leaf', 'bark', 'twig', 'icicle', 'ornament', 'robin', 'cone', 'iron', 'ribbon', 'nest', 'berry',
+         'birdhouse', 'squirrel', 'spruce', 'star', 'holly', 'moss', 'vine', 'fruit', 'blossom', 'deadwood',
+         'mushroom', 'drift'}
+PROPS = {'prop', 'ice', 'furniture', 'animal', 'letters', 'fence'}
+STRUCT = {'building', 'roof', 'timber', 'stair', 'train', 'rail'}
+
+
+def load_graybox(d):
+    gs = np.unpackbits(np.load(os.path.join(d, 'graybox_solid.npy')), axis=2)[:, :, :64].astype(bool)
+    gm = np.load(os.path.join(d, 'graybox_mat.npy'))
+    names = json.load(open(os.path.join(d, 'graybox_materials.json')))
+    return gs, gm, names
+
+
+def _ids(names, wanted):
+    return [v for k, v in names.items() if k in wanted]
+
+
+def collision_diff(solid_g, mat_g, names_g, solid_a, mat_a, names_a, H, build, S=SPEC):
+    from scipy import ndimage as ndi
+    from aosmap.kit.symmetry import standable
+    stg, sta = standable(solid_g), standable(solid_a)
+    stg[:, :, :3] = False
+    sta[:, :, :3] = False
+    diff = stg ^ sta
+    zz = np.arange(64)[None, None, :]
+    above = zz < H[:, :, None]
+    veg_g = (np.isin(mat_g, _ids(names_g, VEG_G)) & solid_g & above).any(2)
+    veg_a = (np.isin(mat_a, _ids(names_a, VEG_A)) & solid_a & above).any(2)
+    veg_cols = ndi.binary_dilation(veg_g | veg_a, iterations=1)
+    env = (np.isin(mat_g, _ids(names_g, PROPS)) & solid_g & above).any(2)
+    extra = (solid_a & above & ~solid_g).any(2)
+    env_ok = env & ~extra
+    st3 = np.isin(mat_g, _ids(names_g, STRUCT)) & solid_g & above
+    scol = st3.any(2)
+    gtop = np.argmax(solid_g, axis=2)
+    ring = ndi.binary_dilation(scol, iterations=1) & ~scol
+    trim = (ring[:, :, None] & (zz <= H[:, :, None] - 4)) | (scol[:, :, None] & (zz <= gtop[:, :, None]))
+    cats = {}
+    pads = np.zeros((512, 512), bool)
+    for p in build.get('pads_built') or []:
+        x0, x1, y0, y1 = p['pad']
+        pads[x0:x1 + 1, y0:y1 + 1] = True
+    sky = np.zeros((512, 512), bool)
+    for o in build.get('sky_objects') or []:
+        sky[o['x'][0]:o['x'][1] + 1, o['y'][0]:o['y'][1] + 1] = True
+    tagm = np.zeros((512, 512), bool)
+    if build.get('tag_rect'):
+        x0, x1, y0, y1 = build['tag_rect'][:4]
+        tagm[x0:x1 + 1, y0:y1 + 1] = True
+    left = diff.copy()
+    for nm, m in (('a_vegetation', veg_cols[:, :, None] & left), ('c_pads', pads[:, :, None] & left),
+                  ('d_sky', sky[:, :, None] & left), ('e_tag', tagm[:, :, None] & left),
+                  ('f_prop_envelope', env_ok[:, :, None] & left), ('b_trim', trim & left)):
+        cats[nm] = int(m.sum())
+        left &= ~m
+    zones = {}
+    sp = S['spawn']
+    h, mg = sp['half'], sp['margin']
+    z2 = {}
+    for nm, boxes in (('front', [tuple(S['front']['x']) + tuple(S['front']['y'])]),
+                      ('anchors', [tuple(S['anchor']['x']) + tuple(S['anchor']['y'])]),
+                      ('spawn squares', [(sp['base'][0] - h - mg, sp['base'][0] + h + mg,
+                                          sp['base'][1] - h - mg, sp['base'][1] + h + mg)])):
+        m = np.zeros((512, 512), bool)
+        for (x0, x1, y0, y1) in boxes:
+            m[x0:x1 + 1, y0:y1 + 1] = True
+            a, b = sorted((mirror_index(x0), mirror_index(x1)))
+            m[a:b + 1, y0:y1 + 1] = True
+        z2[nm] = m
+    try:
+        import fh_graybox
+        lm = fh_graybox.lanes_mask(S)
+        lm[257:] |= lm[255:0:-1]
+        z2['lanes'] = lm
+    except Exception:                                  # noqa: BLE001
+        pass
+    for nm, m in z2.items():
+        zones[nm] = int((left & m[:, :, None]).sum())
+    im = np.zeros(solid_a.shape, bool)
+    for (nm, x, y, z) in build.get('interiors') or []:
+        im[max(0, x - 3):x + 4, max(0, y - 3):y + 4, max(0, z - 1):z + 2] = True
+    zones['interiors'] = int((left & im).sum())
+    zones['tunnels'] = int((left & (zz >= 55) & (H[:, :, None] < 55)).sum())
+    ground = np.abs(zz - H[:, :, None]) <= 3
+    pts = np.argwhere(left)
+    return {'graybox_standable': int(stg.sum()), 'art_standable': int(sta.sum()), 'differing_cells': int(diff.sum()),
+            'allowed': cats, 'unallowed': int(left.sum()), 'unallowed_ground_level': int((left & ground).sum()),
+            'unallowed_by_zone': zones, 'unallowed_sample': pts[::max(1, len(pts) // 12)][:12].tolist(),
+            'ok': int(left.sum()) == 0}
+
+
+def run(solid, H, S=SPEC, nav=None, build=None, graybox=None, mat=None, materials=None):
     nav = nav or Nav(solid)
     R = {'front': front_openness(solid, H, S), 'gatehouse': gatehouse_open(solid, H, S),
          'tunnel_exclusion': tunnel_exclusion(solid, H, S), 'flank_bands': flank_routes(nav, S),
          'sky_ceiling': sky_ceiling(solid, S), 'prop_free_zones': prop_free(solid, H, S),
          'underground': underground(nav, solid, H, S), 'featureless': featureless(solid, H, S),
          'market_gaps': market_gaps((build or {}).get('market_boxes'), S)}
+    if graybox is not None and mat is not None and materials:
+        gs, gm, gn = graybox
+        R['collision_diff'] = collision_diff(gs, gm, gn, solid, mat, materials, H, build or {}, S)
     return R
 
 
@@ -316,7 +422,10 @@ def summary(R):
                                                                                    'largest_patches')}},
         {'rule': 'market gaps >= 7 between stalls and set pieces', 'ok': bool(R['market_gaps']['ok']),
          'detail': R['market_gaps']},
-    ]
+    ] + ([{'rule': 'art vs graybox collision: 0 unallowed standable-cell changes', 'ok': R['collision_diff']['ok'],
+           'detail': {k: R['collision_diff'][k] for k in ('differing_cells', 'allowed', 'unallowed',
+                                                          'unallowed_ground_level', 'unallowed_by_zone')}}]
+         if 'collision_diff' in R else [])
 
 
 if __name__ == '__main__':
@@ -325,6 +434,7 @@ if __name__ == '__main__':
     solid, _, _ = codec.decode(data)
     H = np.load(os.path.join(d, 'terrain_H.npy')).astype(int)
     b = json.load(open(os.path.join(d, 'build.json')))
-    R = run(solid, H, build=b)
+    gray = load_graybox(d) if b.get('stage') == 'art' else None
+    R = run(solid, H, build=b, graybox=gray, mat=np.load(os.path.join(d, 'mat.npy')), materials=b.get('materials'))
     R['summary'] = summary(R)
     print(json.dumps(R, indent=1, default=str))
