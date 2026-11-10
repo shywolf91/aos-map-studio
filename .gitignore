@@ -24,3 +24,9 @@ maps/**/mat.npy
 refs/
 *.pdf
 opencode.jsonc
+
+# locally compiled helpers (scenes/bloomhop_kingdom/vxlenc.c -> libvxlenc.so)
+*.so
+*.dll
+*.lib
+*.exp

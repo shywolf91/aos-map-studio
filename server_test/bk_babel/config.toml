@@ -1,0 +1,12 @@
+name = "bloomhop test"
+port = 32887
+game_mode = "piqueserver.game_modes.babel"
+rotation = ["bloomhop_kingdom"]
+scripts = ["piqueserver.scripts.babel_script", "piqueserver.scripts.map_extensions"]
+user_blocks_only = true
+[ssh]
+enabled = false
+[status_server]
+enabled = false
+[ban_publish]
+enabled = false

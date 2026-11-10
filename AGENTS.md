@@ -232,7 +232,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Clockwork Skyyard | steampunk sky Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/clockwork_skyyard_spec.md` |
 | Cherry Terrace Gardens / Cherry Gardens | spring ground Babel | v1.0 (rebuilt as Cherry Gardens) | parser-validated / server-loaded | **zip from its chat**; specs `docs/cherry_terrace_gardens_spec.md`, `docs/cherry_gardens_spec.md` |
 | Remoria ([recreate] of remus) | ground Babel | v1.0 | server-loaded | **zip from its chat**; report `docs/remus_recreate_report.md` |
-| Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/bloomhop_kingdom_spec.md` |
+| Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | `scenes/bloomhop_kingdom/` (compile `vxlenc.c` first), `maps/bloomhop_kingdom_v1/`, `server_test/bk_babel/`; spec `docs/bloomhop_kingdom_spec.md` |
 | Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
