@@ -295,7 +295,7 @@ VEG_G = {'veg'}
 VEG_A = {'veg', 'leaf', 'bark', 'twig', 'icicle', 'ornament', 'robin', 'cone', 'iron', 'ribbon', 'nest', 'berry',
          'birdhouse', 'squirrel', 'spruce', 'star', 'holly', 'moss', 'vine', 'fruit', 'blossom', 'deadwood',
          'mushroom', 'drift'}
-PROPS = {'prop', 'ice', 'furniture', 'animal', 'letters', 'fence'}
+PROPS = {'prop', 'ice', 'furniture', 'animal', 'letters', 'fence', 'statue', 'hedge'}
 STRUCT = {'building', 'roof', 'timber', 'stair', 'train', 'rail'}
 
 

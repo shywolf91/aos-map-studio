@@ -65,7 +65,7 @@ def build_map(out, veg_seed=None, graybox_only=False):
         ext.update({'heavens_color': SPEC['heavens_color']})
         ext = build.glow_extensions(stored, ext)
         final = cv
-        version = '1.0'
+        version = SPEC.get('release', SPEC['release_default'])
         desc = ('Babel: Christmas Eve in an alpine village at twilight. Build your tower from the flat anchor '
                 'ground under the platform; market, rink and giant spruce in the centre, railway and creek flanks, '
                 'mine tunnels below.')
@@ -120,11 +120,16 @@ def check(out, info, cv=None, cvG=None):
 
 
 if __name__ == '__main__':
-    if '--gate' in sys.argv:                            # exposure experiment only; default = the release gatehouse
+    release = SPEC['release_default']
+    if '--release' in sys.argv:
+        release = sys.argv[sys.argv.index('--release') + 1]
+    SPEC['release'] = release
+    SPEC['gatehouse']['variant'] = SPEC['releases'][release]['gate']
+    if '--gate' in sys.argv:                            # exposure experiment override
         SPEC['gatehouse']['variant'] = sys.argv[sys.argv.index('--gate') + 1]
     if '--flank-cover' in sys.argv:
         SPEC['gatehouse']['flank_cover'] = True
-    args = [a for a in sys.argv[1:] if not a.startswith('--') and a != SPEC['gatehouse']['variant']]
+    args = [a for a in sys.argv[1:] if not a.startswith('--') and a not in (SPEC['gatehouse']['variant'], release)]
     out = args[0]
     seed = args[1] if len(args) > 1 else None
     cv, info, cvG = build_map(out, seed, graybox_only='--graybox' in sys.argv)

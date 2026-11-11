@@ -95,7 +95,13 @@ SPEC = {
                   'passage_air': (41, 49), 'gallery_floor': 40, 'gallery_air': (30, 39), 'roof': (28, 29),
                   'piers': [(240, 243), (254, 258), (269, 272)], 'statue_y': (213, 216),
                   # experiment switch (fh_main.py --gate NAME): full (release) | band | arch | twin | low | none
-                  'variant': 'full', 'flank_cover': False},
+                  'variant': 'full', 'flank_cover': False,
+                  # v1.1 arch: four piers -> three passages (6 / 7 / 6), free-standing soldier statues beside it
+                  'arch': {'y': (240, 272), 'piers': [(240, 243), (250, 252), (260, 262), (269, 272)],
+                           'statue_y': (228, 231), 'merlon_z': (26, 27)}},
+    # releases (fh_main.py --release): the gate variant and the .txt version; v1.0 stays reproducible
+    'releases': {'1.0': {'gate': 'full'}, '1.1': {'gate': 'arch'}},
+    'release_default': '1.1',
     'front_huts': [{'box': (166, 174, 232, 239), 'open': 'S'}, {'box': (181, 189, 273, 280), 'open': 'N'}],
     # scattered low front props (x, y, kind): never in rows; heights <= 5 (lanterns 6)
     'front_props': [(157, 263, 'sled'), (191, 249, 'sled'), (161, 271, 'firewood'), (177, 245, 'hay'),

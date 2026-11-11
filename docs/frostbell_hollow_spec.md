@@ -1,7 +1,7 @@
-# Frostbell Hollow — spec (v1.0)
+# Frostbell Hollow — spec (v1.0 and v1.1)
 
-**Status: server-loaded** (2026-11-10). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
-Not client-inspected and not playtested. The renders in `maps/frostbell_hollow_v1/renders/` are numpy previews,
+**Status: server-loaded** (2026-11-10), v1.0 and v1.1. **v1.1 is the current version** (shorter arch gate). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
+Not client-inspected and not playtested. The renders in `maps/frostbell_hollow_v1*/renders/` are numpy previews,
 not client captures.
 
 Christmas Eve alpine village at twilight. Stock Babel (piqueserver 1.4.2 `babel_script`), ground Babel, full
@@ -181,15 +181,63 @@ seed 12345 before tree placement became seed-driven.
   How a glow-aware server handles 45k entries is untested.
 * `water_damage` needs `piqueserver.scripts.map_extensions` in the script list (it is 0 here).
 * The sky pieces float by request. Breaking a player block attached to one drops it for the round.
-* The gatehouse is a 72-long building with four 9-wide passages. It is what hides the spawns. Shortening it
-  would raise spawn exposure. `[OPEN]` owner decision.
+* v1.0's gatehouse is a 73-long building with four 9-wide passages. v1.1 replaces it with the 33-long arch
+  (section below).
 * The mirrored west twin of the tag strip is a flat empty strip.
+
+## v1.1: arch gate `[USER 2026-11-10]` `[RUN 2026-11-10]`
+
+The owner asked to shorten the gatehouse and measure the cost. Six variants were measured with the release seed:
+
+| variant | length | blue viewers / hidden | red viewers / hidden | targets met |
+|---|---|---|---|---|
+| full (v1.0) | 73 | 2.92 / 72.6 % | 2.65 / 72.6 % | yes |
+| band (front width only, stair towers in the band) | 57 | 2.92 / 72.6 % | 2.65 / 72.6 % | yes |
+| arch, unpolished (central gate) | 33 | 3.24 / 58.5 % | 2.98 / 58.5 % | yes |
+| low (full length, solid only z 36–40) | 73 | 8.29 / 14.3 % | 7.42 / 19.0 % | no (blue) |
+| twin towers with a light bridge | 59 | 8.30 / 14.3 % | 7.43 / 19.0 % | no (blue) |
+| twin towers, open between | 10 each | 10.20 / 0 % | 9.98 / 0 % | no |
+| none (statues only) | — | 10.21 / 0 % | 10.00 / 0 % | no |
+
+Findings `[RUN]`: only about 11 of the 65 platform-rim eye positions can see the spawn square. Their sightlines
+cross the gate line (x 146–151) between z 28 and z 40 and within y 236–276. So the solid band's **height** hides
+the spawns; length outside y 236–276 hides nothing; cover placed beside the front changed no number.
+
+The owner chose the arch. **v1.1 as built** (same vegetation seed 4015401698, so only the gate area differs):
+
+* Gate footprint x 146–151, y 240–272 (33 long). Four piers (y 240–243, 250–252, 260–262, 269–272), three
+  passages 6 / 7 / 6 wide at z 41–49. Players can also walk round both ends of the gate.
+* Solid masonry band z 28–40 with a crenellated top and a raised centre block (z 24–27). It is a gate, not a
+  building: no room, no doors or windows, no interior record. v1.0's walkable gallery is gone.
+* Toy soldiers stand free on plinths at y 227–231 and 281–285, outside the front band, each holding a drum.
+* The old end-tower ground has low hedge stubs, a sled, a lantern post and a snowman pad.
+* `.vxl` 2,851,612 bytes, SHA-256 `a85dfaeb2fa04db0bc2e835a4f5173482a359a132cd8e73a5715c1651a238f2a`.
+  `.txt` 2,533,055 bytes, `version = '1.1'`.
+
+| check | v1.0 | v1.1 |
+|---|---|---|
+| all checks | 26 / 26 | 26 / 26 |
+| spawn exposure blue (viewers / hidden) | 2.92 / 72.6 % | 1.78 / 58.5 % |
+| spawn exposure red (viewers / hidden) | 2.65 / 72.6 % | 1.56 / 58.5 % |
+| gate open share across the front band | 73.5 % | 71.4 % |
+| widest pier | 5 | 4 |
+| narrowest gate passage | 9 | 6 |
+| interiors checked, all reachable | 172 | 164 |
+| periphery reachable | 87.2 % | 86.8 % |
+| front min free, featureless patch, flanks, build gap, traps, floating | 81.6 %, 22, 456 / 458, 46, 0, 0 | same |
+| live server probe (piqueserver 1.4.2, babel) | loaded | loaded; platform 3,200 cells; 400 spawns per team in the stock squares |
+
+Three other seeds with release 1.1 also pass 26 / 26 with 0 traps and 0 floating. Mean viewers fell below the
+unpolished arch (3.24 → 1.78), probably because of the merlons and centre block; this was not isolated `[OPEN]`.
 
 ### Regenerate
 
 ```bash
-python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow 4015401698   # omit the seed for a new random build
-python scenes/frostbell_hollow/fh_render.py out/frostbell_hollow
-python -m aosmap.kit.probe out/frostbell_hollow --mode babel
-python scenes/frostbell_hollow/fh_main.py out/fh_graybox --graybox           # gameplay geometry only
+python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow_v1_1 4015401698                 # v1.1 (default release)
+python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow 4015401698 --release 1.0       # v1.0, byte-identical
+python scenes/frostbell_hollow/fh_main.py out/new_build                                       # new random vegetation seed
+python scenes/frostbell_hollow/fh_render.py out/frostbell_hollow_v1_1
+python -m aosmap.kit.probe out/frostbell_hollow_v1_1 --mode babel
+python scenes/frostbell_hollow/fh_main.py out/fh_exp 4015401698 --gate band                   # gate experiments
+python scenes/frostbell_hollow/fh_main.py out/fh_graybox --graybox                            # gameplay geometry only
 ```

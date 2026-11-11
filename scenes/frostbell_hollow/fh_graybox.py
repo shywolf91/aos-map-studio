@@ -736,7 +736,8 @@ def build_gate_variant(cv, S, v):
                          ['gatehouse south tower', x0 + 3, 512 - gh['y'][0] - 6, g],
                          ['gatehouse parapet walk', x0 + 2, 245, gh['gallery_floor']]]
         return
-    _statues(cv, S)
+    if v != 'arch':
+        _statues(cv, S)
     if v == 'band':
         for south in (False, True):
             _stair_tower(cv, 228, 235, south, 'gate S' if south else 'gate N')
@@ -751,12 +752,23 @@ def build_gate_variant(cv, S, v):
             cv.box(x0, x1, p0, p1, 41, g - 1, T, 'building')
         cv.interiors.append(['gate gallery', x0 + 2, 250, 40])
     elif v == 'arch':
-        # single central gate y 240-272: three piers, a solid masonry lintel z 28-40 (no room, so no stairs)
-        cv.carve(x0, x1, 240, 272, 28, g - 1)
-        cv.box(x0, x1, 240, 272, 28, 40, W, 'building')
-        cv.box(x0, x1, 240, 272, 28, 28, C['roof'], 'roof')
-        for (p0, p1) in ((240, 243), (254, 258), (269, 272)):
+        # v1.1: single central gate y 240-272, solid masonry lintel z 28-40 (a gate, not a building: no room, no
+        # interior record), crenellated top, four piers -> three passages, free-standing toy soldiers beside it
+        ar = gh['arch']
+        a0, a1 = ar['y']
+        cv.carve(x0, x1, a0, a1, 28, g - 1)
+        cv.box(x0, x1, a0, a1, 28, 40, W, 'building')
+        cv.box(x0, x1, a0, a1, 28, 28, C['roof'], 'roof')
+        m0, m1 = ar['merlon_z']
+        for y in range(a0, a1 + 1):
+            if ((abs(y - 256) + 1) // 2) % 2 == 0 or y in (a0, a1):
+                for xx in (x0, x1):
+                    cv.box(xx, xx, y, y, m0, m1, W, 'building')
+        cv.box(x0 + 1, x1 - 1, 254, 258, m0 - 2, m1, W, 'building')        # raised centre block for the wreath
+        for (p0, p1) in ar['piers']:
             cv.box(x0, x1, p0, p1, 41, g - 1, T, 'building')
+        _arch_statues(cv, S)
+        _arch_edge_dressing(cv, S)
     elif v in ('twin', 'twin_bridge'):
         for south in (False, True):          # 10 long, 5 rows inside the front band (pier <= 5)
             _stair_tower(cv, 227, 236, south, 'twin S' if south else 'twin N', closed_inner=(v == 'twin'))
@@ -773,6 +785,42 @@ def build_gate_variant(cv, S, v):
             cv.interiors.append(['twin bridge deck', x0 + 2, 250, 40])
     else:
         raise ValueError(v)
+
+
+def _arch_statues(cv, S):
+    """Two free-standing toy soldiers beside the arch (rows 228-231 and the y-mirror, outside the front band and the
+    passages): plinth, legs, coat, epaulettes, shako with plume, and a drum held in front (no weapon)."""
+    gh = S['gatehouse']
+    g = gh['floor_z']
+    s0, s1 = gh['arch']['statue_y']
+    for south in (False, True):
+        def Y(a, b):
+            return (a, b) if not south else (512 - b, 512 - a)
+        cv.box(146, 151, *Y(s0 - 1, s1), g - 2, g - 1, C['stone'], 'statue')            # plinth (2 high)
+        cv.box(148, 149, *Y(s0, s0 + 1), g - 7, g - 3, (52, 50, 58), 'statue')           # legs
+        cv.box(148, 149, *Y(s1 - 1, s1), g - 7, g - 3, (52, 50, 58), 'statue')
+        cv.box(147, 150, *Y(s0, s1), g - 14, g - 8, C['soldier'], 'statue')             # coat
+        cv.box(147, 150, *Y(s0 - 1, s0 - 1), g - 14, g - 10, C['soldier'], 'statue')    # sleeves
+        cv.box(147, 150, *Y(s1 + 1, s1 + 1), g - 14, g - 10, C['soldier'], 'statue')
+        cv.box(148, 149, *Y(s0 + 1, s1 - 1), g - 17, g - 15, C['figure'], 'statue')     # head
+        cv.box(148, 149, *Y(s0, s1), g - 22, g - 18, (48, 46, 54), 'statue')            # shako
+        cv.box(149, 149, *Y(s0 + 1, s0 + 1), g - 24, g - 23, (200, 196, 190), 'statue')  # plume
+        cv.box(151, 151, *Y(s0 + 1, s1 - 1), g - 10, g - 8, (196, 160, 80), 'statue')   # drum in front
+    return 2
+
+
+def _arch_edge_dressing(cv, S):
+    """Village-edge detail on the ground the old end towers used (outside the front band where possible): low
+    holly-hedge stubs, a sled, a lantern post and a snowman pad north of each statue (y-mirrored)."""
+    g = S['gatehouse']['floor_z']
+    for south in (False, True):
+        def Y(a, b):
+            return (a, b) if not south else (512 - b, 512 - a)
+        gbox(cv, 143, 144, *Y(219, 223), 2, (54, 98, 64), 'hedge')                      # hedge stub, 2 tall
+        gbox(cv, 143, 143, *Y(233, 237), 2, (54, 98, 64), 'hedge')                      # x 143: west of the gate
+        a, b = Y(224, 225)
+        gbox(cv, 150, 151, a, b, 1, C['prop'], 'prop')                                  # sled
+        lantern(cv, 145, Y(226, 226)[0], 6)
 
 
 def build_flank_cover(cv, S):
@@ -1342,6 +1390,8 @@ def build_west(S=SPEC, veg_seed=None):
     rail = build_railway(cv, S)
     build_underground(cv, S)
     sc = scatter(cv, geo, S, veg_seed)
+    if S['gatehouse'].get('variant') == 'arch':      # snowman pad on the old north-tower ground (mirrored south)
+        feature_pad(cv, 146, 214, 5, 5, 'snowman', sc['feature_pads'])
     sc['nooks_filled'] = fill_nooks(cv)                 # after the seeded scatter: 0 traps for any seed
     sc['trap_pines_removed'] = clear_pine_traps(cv, sc['pine_list'], S)
     bf = break_flats(cv, S)

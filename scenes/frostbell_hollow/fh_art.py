@@ -370,6 +370,108 @@ def chapel_art(cv, S, rng, glow):
     cv.rgb[sl][m] = (110, 78, 54)
 
 
+def arch_art(cv, S, glow):
+    """v1.1 arch: brick/drum banding on the piers, cream masonry lintel with gold trim, snow-capped merlons, a holly
+    wreath with a gold bell over the middle passage (both faces), garland swags with warm bulbs, lanterns under each
+    passage and on every pier, painted toy soldiers with a gold drum, holly hedges. Recolour only."""
+    from fh_graybox import C
+    gh = S['gatehouse']
+    x0, x1 = gh['x']
+    ar = gh['arch']
+    a0, a1 = ar['y']
+    g = gh['floor_z']
+    bid = _ids(cv, 'building', 'roof')
+    sl = (slice(x0, x1 + 1), slice(a0, a1 + 1), slice(20, g))
+    xs, ys, zs = np.nonzero(cv.solid[sl] & np.isin(cv.mat[sl], bid))
+    X, Yv, Z = xs + x0, ys + a0, zs + 20
+    c = np.empty((len(X), 3))
+    pier = Z >= 41
+    bond = (((Yv + (Z // 2) % 2 * 2) // 4) % 2 == 0)
+    c[:] = np.where(bond[:, None], np.array((206, 196, 172)), np.array((196, 186, 162)))       # cream masonry
+    c[pier] = np.where(bond[pier][:, None], np.array((156, 58, 50)), np.array((140, 50, 44)))  # red brick drums
+    c[pier & (Z % 3 == 0)] = (204, 190, 160)                                                     # cream drum hoops
+    c[(Z == 40) | (Z == 29) | (Z == 34)] = (196, 158, 80)                                        # gold trim courses
+    aa = ~cv.solid[X, Yv, np.maximum(Z - 1, 0)]
+    top = (Z <= 28) | ((Z <= 27))
+    c[top & aa] = SNOW_MID                                                                       # snow cap
+    c[(Z <= 27) & ~aa] = (200, 190, 168)
+    cv.rgb[X, Yv, Z] = np.clip(c, 0, 255).astype(np.uint8)
+    # wreath with a gold bell over the middle passage, on both faces
+    for xf in (x0, x1):
+        for (dy, dz) in ((-2, 0), (2, 0), (0, -2), (0, 2), (-1, -2), (1, -2), (-1, 2), (1, 2), (-2, -1), (-2, 1),
+                         (2, -1), (2, 1)):
+            if cv.solid[xf, 256 + dy, 32 + dz]:
+                cv.rgb[xf, 256 + dy, 32 + dz] = (46, 96, 58) if (dy + dz) % 2 else (60, 112, 66)
+        cv.rgb[xf, 256, 32] = (204, 166, 84)
+        cv.rgb[xf, 256, 31] = (204, 166, 84)
+        cv.rgb[xf, 255, 35] = (168, 46, 48)                                                      # bow
+        cv.rgb[xf, 256, 35] = (168, 46, 48)
+        # garland swags along both faces between the piers (sagging curve z 37-39), warm bulbs on the low points
+        for y in range(a0, a1 + 1):
+            k = (y - a0) % 8
+            z = 37 + (2 if 2 <= k <= 5 else (1 if k in (1, 6) else 0))
+            if cv.solid[xf, y, z]:
+                cv.rgb[xf, y, z] = (52, 104, 62)
+                if k == 4:
+                    glow.append((xf, y, z, WARM))
+        # lanterns on every pier face (z 44)
+        for (p0, p1) in ar['piers']:
+            py = (p0 + p1) // 2
+            glow.append((xf, py, 44, YELLOW if p1 - p0 < 3 else WARM))
+    # lanterns under each passage (on the soffit, z 40, centre line)
+    for (pa, pb) in ((244, 249), (253, 259), (263, 268)):
+        glow.append((148, (pa + pb) // 2, 40, WARM))
+    # toy soldiers: plinth stone, black trousers, red coat with white crossed belts, gold epaulettes and buttons,
+    # face, black shako with a gold plate and a white plume, gold drum with a red band
+    s0, s1 = ar['statue_y']
+    sid = cv.materials.get('statue')
+    for (s0, s1) in ((ar['statue_y'][0], ar['statue_y'][1]), (512 - ar['statue_y'][1], 512 - ar['statue_y'][0])):
+        ya, yb = s0 - 1, s1 + 1
+        for x in range(145, 153):
+            for y in range(ya, yb + 1):
+                for z in range(20, g):
+                    if not cv.solid[x, y, z] or cv.mat[x, y, z] != sid:
+                        continue
+                    c0 = tuple(int(v) for v in cv.rgb[x, y, z])
+                    if z >= g - 2:
+                        col = (150, 146, 140)
+                    elif c0 == (52, 50, 58):
+                        col = (40, 38, 46) if z > g - 5 else (52, 50, 58)
+                        if y in (s0, s1) and z <= g - 5:
+                            col = (150, 46, 44)                                                 # trouser stripe
+                    elif c0 == C['soldier']:
+                        col = (168, 50, 44)
+                        if y in (s0 - 1, s1 + 1) and z == g - 14:
+                            col = (210, 170, 80)                                                # epaulettes
+                        if x in (147, 150) and z - (g - 14) == abs(y - (s0 + s1) / 2.0) * 1.2 // 1:
+                            col = (214, 210, 200)                                               # crossed belts
+                        if x == 150 and y in (s0 + 1, s1 - 1) and z in (g - 12, g - 10):
+                            col = (210, 170, 80)                                                # buttons
+                    elif c0 == C['figure']:
+                        col = (212, 174, 146)
+                        if x == 149 and z == g - 16 and y in (s0 + 1, s1 - 1):
+                            col = (46, 44, 50)
+                    elif c0 == (48, 46, 54):
+                        col = (40, 38, 46)
+                        if x == 149 and z == g - 20:
+                            col = (210, 170, 80)                                                # shako plate
+                    elif c0 == (200, 196, 190):
+                        col = (204, 200, 196)
+                    elif c0 == (196, 160, 80):
+                        col = (150, 46, 44) if z == g - 9 else (204, 166, 84)                  # drum + band
+                    else:
+                        col = c0
+                    cv.rgb[x, y, z] = col
+    hid = cv.materials.get('hedge')
+    if hid is not None:
+        m = cv.mat == hid
+        xs, ys, zs = np.nonzero(m)
+        top_ = ~cv.solid[xs, ys, zs - 1]
+        cv.rgb[xs, ys, zs] = np.where(top_[:, None], np.array(SNOW_MID), np.array((44, 88, 56)))
+        k = ((xs + ys + zs) % 5 == 0) & ~top_
+        cv.rgb[xs[k], ys[k], zs[k]] = (170, 40, 44)
+
+
 def gatehouse_art(cv, S, glow):
     gh = S['gatehouse']
     x0, x1 = gh['x']
@@ -783,7 +885,10 @@ def art_west(cv, rep, S, rng, seed):
                               chimney=(ridge is not None), wreath=True)
     out['lit_windows'] = lit
     chapel_art(cv, S, rng, glow)
-    gatehouse_art(cv, S, glow)
+    if S['gatehouse'].get('variant') == 'arch':
+        arch_art(cv, S, glow)
+    else:
+        gatehouse_art(cv, S, glow)
     out['props'] = props_art(cv, S, rng, glow)
     out['stall_bulbs'] = market_art(cv, S, rep, rng, glow)
     hut_art(cv, S, glow)
