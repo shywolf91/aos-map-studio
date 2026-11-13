@@ -88,5 +88,8 @@ if __name__ == '__main__':
     json.dump(R, open(os.path.join(out, 'validation.json'), 'w'), indent=1, default=str)
     print(json.dumps({k: info[k] for k in ('sha256', 'veg_seed', 'vegetation', 'cleanup')}, indent=1, default=str))
     for row in R['summary']:
-        print(('PASS ' if row['ok'] else 'FAIL ') + row['rule'])
+        print(babel_checks.format_row(row))
+    if any(r.get('status') == 'fail' for r in R['summary']):
+        print('note: the kit example is a bare graybox (no front dressing, nothing under the platform, few props), '
+              'so failing "zone:" rows are expected here; a real map dresses these zones in its art pass.')
     print('txt:', build.check_txt(os.path.join(out, SPEC['file'] + '.txt')))

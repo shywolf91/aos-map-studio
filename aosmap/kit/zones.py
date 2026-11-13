@@ -774,3 +774,333 @@ def classify(zp):
     fit = all(zp['teams'][t]['spawn']['water_cols'] < 0.5 * 41 * 41 and
               zp['teams'][t]['spawn']['roof_cols'] < 0.5 * 41 * 41 for t in zp['teams'])
     return {'class': cls, 'assist': assist, 'stock_fit': fit}
+
+
+# =============================================================================================== adopted zone rules
+
+RULE_KEYS = ('front_dressing', 'spawn_cover', 'under_platform', 'centre_footprint')
+RULE_TITLES = {
+    'front_dressing': 'zone: front dressed, not blocked (4-15 low objects on 5-30 %, >= 90 % of them <= 10 tall, '
+                      'every 8-col section >= 50 % free)',
+    'spawn_cover': 'zone: spawn cover (enemy side within 20: >= 25 % cover >= 3 tall; rear 20-40: >= 30 % backdrop)',
+    'under_platform': 'zone: strip under the platform (15-45 % low objects, >= 25 air to the platform, '
+                      'anchor ends flat + prop-free)',
+    'centre_footprint': 'zone: centre anchored by room-sized pieces (median object footprint >= 25 cells)',
+}
+
+
+def merge_rules(overrides=None):
+    """params.ZONE_RULES with per-call overrides (nested dicts merged one level deep)."""
+    from .params import ZONE_RULES
+    out = {k: (dict(v) if isinstance(v, dict) else v) for k, v in ZONE_RULES.items()}
+    for k, v in (overrides or {}).items():
+        if isinstance(v, dict) and isinstance(out.get(k), dict):
+            out[k].update(v)
+        else:
+            out[k] = v
+    return out
+
+
+def object_field(solid, F, terrain_H=None, rules=None):
+    """Object mask without terrain relief -> (obj bool [x, y], obj_h int [x, y], ground_z int [x, y], method).
+
+    terrain_H given (the map's terrain top z per column, Canvas.H): ground = the higher of the terrain_H surface and
+      the opening baseline, so props stand out from the terrain while broad authored plateaus (anchors, buildings
+      wider than the window) stay ground. method 'terrain_H'.
+    no terrain_H: ground = opening baseline (window `baseline_window`); each 8-connected component of candidate
+      cells (>= object_min_h above ground, not water) is kept only if at least `relief_steep_share` of its boundary
+      steps (component cell -> outside 4-neighbour) are >= `relief_step` tall, or it holds a roof/deck column (an
+      overhang is never relief). Gentle ridges and mounds (1-voxel steps) are dropped. method 'estimated'."""
+    R = rules or merge_rules()
+    h = F['h'].astype(int)
+    water = F['water']
+    if R['baseline_window'] == BASELINE_WINDOW:
+        base = F['base'].astype(int)
+    else:
+        base = ndi.grey_opening(F['h'], size=(R['baseline_window'],) * 2, mode='nearest').astype(int)
+    if terrain_H is not None:
+        g_h = np.maximum(63 - np.asarray(terrain_H, int), base)
+        obj = ((h - g_h) >= R['object_min_h']) & ~water
+        method = 'terrain_H'
+    else:
+        g_h = base
+        cand = ((h - g_h) >= R['object_min_h']) & ~water
+        lab, n = ndi.label(cand, structure=np.ones((3, 3)))
+        steep = np.zeros(n + 1)
+        tot = np.zeros(n + 1)
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            lb = np.roll(np.roll(lab, -dx, 0), -dy, 1)
+            hb = np.roll(np.roll(h, -dx, 0), -dy, 1)
+            edge = (lab > 0) & (lb != lab)
+            if dx == 1:
+                edge[-1, :] = False
+            elif dx == -1:
+                edge[0, :] = False
+            elif dy == 1:
+                edge[:, -1] = False
+            else:
+                edge[:, 0] = False
+            tot += np.bincount(lab[edge], minlength=n + 1)
+            steep += np.bincount(lab[edge & ((h - hb) >= R['relief_step'])], minlength=n + 1)
+        keep = steep >= R['relief_steep_share'] * np.maximum(tot, 1)
+        if n:
+            over = np.asarray(ndi.maximum((F['roof'] | F['deck']).astype(int), lab, np.arange(1, n + 1))) > 0
+            keep[1:] |= over
+        keep[0] = False
+        obj = keep[lab] & cand
+        method = 'estimated'
+    obj_h = np.where(obj, h - g_h, 0)
+    return obj, obj_h, (63 - g_h).astype(int), method
+
+
+def _components(obj, min_cells):
+    lab, n = ndi.label(obj, structure=np.ones((3, 3)))
+    sizes = np.bincount(lab.ravel(), minlength=n + 1)
+    sizes[0] = 0
+    return lab, sizes, sizes >= min_cells
+
+
+def _land(F, x0, x1, y0, y1, floor=None):
+    t = F['top'][x0:x1 + 1, y0:y1 + 1]
+    land = t < 62
+    if floor is not None:
+        land &= t <= floor + 19
+    return land
+
+
+def _row(status, values, why, **extra):
+    d = {'status': status, 'values': values, 'why': why}
+    d.update(extra)
+    return d
+
+
+def _fmt_fail(name, v, lo=None, hi=None, unit=''):
+    if lo is not None and v < lo:
+        return f'{name} {v:g}{unit} < {lo:g} (short by {round(lo - v, 3):g})'
+    if hi is not None and v > hi:
+        return f'{name} {v:g}{unit} > {hi:g} (over by {round(v - hi, 3):g})'
+    return None
+
+
+def zone_rules(solid, params=BABEL_DEFAULT, overrides=None, terrain_H=None, front_exempt_boxes=None, skip=None,
+               F=None):
+    """The four adopted zone rules -> {'object_ground', 'thresholds', 'front_exempt_boxes', 'front_exempt',
+    <rule>: {'status', 'why', 'values' (per team where relevant), 'avg' (mirrored average)}}.
+    status: 'pass' | 'fail' | 'n.a.' (zone is not land) | 'skipped' (declared, reason printed).
+    front_exempt_boxes: [[x0, x1, y0, y1], ...] declared exemptions (e.g. an owner-requested gate): left out of the
+      front object count / share / height test, listed with their own stats, still counted in the free-share test.
+    skip: {rule_key: reason} or [[rule_key, reason], ...]. Definitions: docs/babel_zone_study.md §9 "Zone rules"."""
+    from .symmetry import standable
+    R = merge_rules(overrides)
+    if F is None:
+        F = fields(solid, R['baseline_window'])
+    obj, obj_h, ground_z, method = object_field(solid, F, terrain_H, R)
+    top = F['top'].astype(int)
+    water = F['water']
+    pz = params['platform_z']
+    (x0, x1), (y0, y1) = params['platform_x'], params['platform_y']
+    teams = team_geometry(params)
+    mc = R['min_object_cells']
+    skip = dict(skip or {})
+    exempt = np.zeros((MX, MY), bool)
+    boxes = [tuple(int(v) for v in b[:4]) for b in (front_exempt_boxes or [])]
+    for (a, b, c, d) in boxes:
+        exempt[a:b + 1, c:d + 1] = True
+    # walkable ground: a standable cell within +-1 of the ground surface (walking under an arch counts as free)
+    st = standable(solid)
+    gz = np.clip(ground_z, 0, 63)
+    xi, yi = np.indices((MX, MY))
+    walk = np.zeros((MX, MY), bool)
+    for dz in (-1, 0, 1):
+        walk |= st[xi, yi, np.clip(gz + dz, 0, 63)]
+    walk &= ~water
+    out = {'object_ground': method, 'thresholds': R, 'front_exempt_boxes': [list(b) for b in boxes]}
+
+    # ------------------------------------------------------------------ 1. front dressing
+    T = R['front']
+    obj_ne = obj & ~exempt
+    lab, sizes, big = _components(obj_ne, mc)
+    per, ex_stats = {}, []
+    for t in teams:
+        fx0, fx1 = t['front']
+        b0, b1 = t['band']
+        sq = t['square']
+        floor = int(np.median(top[sq[0]:sq[1] + 1, sq[2]:sq[3] + 1]))
+        land = _land(F, fx0, fx1, b0, b1, floor)
+        if land.mean() < R['applicable_land_min']:
+            per[t['name']] = {'applicable': False, 'land_share': round(float(land.mean()), 3)}
+            continue
+        ex = exempt[fx0:fx1 + 1, b0:b1 + 1]
+        lb = lab[fx0:fx1 + 1, b0:b1 + 1]
+        ids = np.unique(lb[lb > 0])
+        ids = ids[big[ids]]
+        oh = obj_h[fx0:fx1 + 1, b0:b1 + 1]
+        hts = np.array([int(oh[lb == i].max()) for i in ids]) if len(ids) else np.array([], int)
+        cells = np.isin(lb, ids) & (lb > 0)
+        share = float(cells.sum() / max((~ex).sum(), 1))
+        low_share = float((hts <= T['low_h']).mean()) if len(hts) else 1.0
+        free = walk[fx0:fx1 + 1, b0:b1 + 1]
+        ncol = fx1 - fx0 + 1
+        order = np.arange(ncol) if t['s'] > 0 else np.arange(ncol)[::-1]          # sections counted from the spawn
+        n_sec = max(ncol // T['section'], 1)                                     # remainder joins the last section
+        secs = []
+        for k in range(n_sec):
+            cs = order[k * T['section']:(k + 1) * T['section'] if k < n_sec - 1 else ncol]
+            secs.append((round(float(free[cs].mean()), 3), int(fx0 + cs.min()), int(fx0 + cs.max())))
+        worst = min(secs)
+        per[t['name']] = {'applicable': True, 'objects': int(len(ids)), 'object_share': round(share, 3),
+                          'object_heights': sorted(int(v) for v in hts), 'low_share': round(low_share, 3),
+                          'cell_height_p90': _pct(oh[cells], 90) if cells.any() else 0.0,
+                          'section_free_min': worst[0], 'worst_section_x': [worst[1], worst[2]],
+                          'section_free': [s[0] for s in secs], 'land_share': round(float(land.mean()), 3),
+                          'exempt_cols': int(ex.sum())}
+        for (a, b, c, d) in boxes:
+            ia, ib, ic, idd = max(a, fx0), min(b, fx1), max(c, b0), min(d, b1)
+            if ia > ib or ic > idd:
+                continue
+            ex_stats.append({'team': t['name'], 'box': [a, b, c, d], 'in_front': [ia, ib, ic, idd],
+                             'object_share': round(float(obj[ia:ib + 1, ic:idd + 1].mean()), 3),
+                             'height_max': int(obj_h[ia:ib + 1, ic:idd + 1].max()),
+                             'open_share': round(float(walk[ia:ib + 1, ic:idd + 1].mean()), 3)})
+    out['front_exempt'] = ex_stats
+    out['front_dressing'] = _judge_front(per, T)
+
+    # ------------------------------------------------------------------ 2. spawn cover
+    T = R['spawn_cover']
+    X, Y = np.meshgrid(np.arange(MX), np.arange(MY), indexing='ij')
+    per = {}
+    for t in teams:
+        sx0, sx1, sy0, sy1 = t['square']
+        bx, by = t['base']
+        half = sx1 - bx
+        sq_land = _land(F, sx0, sx1, sy0, sy1)
+        if sq_land.mean() < R['applicable_land_min']:
+            per[t['name']] = {'applicable': False, 'land_share': round(float(sq_land.mean()), 3)}
+            continue
+        floor = int(np.median(top[sx0:sx1 + 1, sy0:sy1 + 1]))
+        d = np.maximum(np.maximum(np.maximum(sx0 - X, X - sx1), np.maximum(sy0 - Y, Y - sy1)), 0)
+        sxx = t['s'] * (X - bx)
+        lat = np.abs(Y - by)
+        enemy = (sxx > half) & ((sxx - half) >= (lat - half))
+        rear = (-sxx > half) & ((-sxx - half) >= (lat - half))
+        cover = (floor - top) >= T['cover_h']
+        e_all = enemy & (d > 0) & (d <= T['enemy_r'])
+        r_all = rear & (d > T['rear_r'][0]) & (d <= T['rear_r'][1])
+        per[t['name']] = {'applicable': True, 'floor_z': floor,
+                          'enemy_0_20': round(float(cover[e_all].mean()), 3),
+                          'enemy_0_8': round(float(cover[enemy & (d > 0) & (d <= 8)].mean()), 3),
+                          'enemy_8_20': round(float(cover[enemy & (d > 8) & (d <= 20)].mean()), 3),
+                          'rear_20_40': round(float(cover[r_all].mean()), 3) if r_all.any() else 0.0,
+                          'enemy_0_20_land_only': round(float(cover[e_all & ~water].mean()), 3)
+                          if (e_all & ~water).any() else 0.0}
+    out['spawn_cover'] = _judge_cover(per, T)
+
+    # ------------------------------------------------------------------ 3. under the platform
+    T = R['under_platform']
+    sx_0, sx_1 = x0 + 6, x1 - 5
+    strip_land = _land(F, sx_0, sx_1, y0, y1)
+    v = {'strip': [sx_0, sx_1, y0, y1], 'strip_land_share': round(float(strip_land.mean()), 3)}
+    parts = []
+    strip_ok = strip_land.mean() >= R['applicable_land_min']
+    if strip_ok:
+        so = obj[sx_0:sx_1 + 1, y0:y1 + 1]
+        stt = top[sx_0:sx_1 + 1, y0:y1 + 1]
+        v['object_share'] = round(float(so.mean()), 3)
+        v['object_height_max'] = int(obj_h[sx_0:sx_1 + 1, y0:y1 + 1].max())
+        v['min_air_objects'] = int(stt[so].min() - pz - 1) if so.any() else None
+        v['min_air_all'] = int(stt.min() - pz - 1)
+        parts.append(_fmt_fail('strip object share', v['object_share'], *T['share']))
+        parts.append(_fmt_fail('min air between strip tops and the platform', v['min_air_all'], T['min_air']))
+    anch, any_anchor = {}, False
+    for t in teams:
+        ea, eb = t['end']
+        a_land = _land(F, ea, eb, y0, y1)
+        if a_land.mean() < R['applicable_land_min']:
+            anch[t['name']] = {'applicable': False, 'land_share': round(float(a_land.mean()), 3)}
+            continue
+        any_anchor = True
+        at = top[ea:eb + 1, y0:y1 + 1]
+        props = int((obj | F['roof'] | F['deck'])[ea:eb + 1, y0:y1 + 1].sum())
+        anch[t['name']] = {'applicable': True, 'x': [ea, eb], 'top_z_range': int(at.max() - at.min()),
+                           'prop_cols': props}
+        parts.append(_fmt_fail(f'{t["name"]} anchor top-z range', int(at.max() - at.min()), None,
+                               T['anchor_flat_range']))
+        parts.append(_fmt_fail(f'{t["name"]} anchor prop columns', props, None, 0))
+    v['anchors'] = anch
+    fails = [p for p in parts if p]
+    if not strip_ok and not any_anchor:
+        out['under_platform'] = _row('n.a.', v, 'strip and anchor ends are not land (land share < %.2f)'
+                                     % R['applicable_land_min'])
+    else:
+        why = '; '.join(fails) if fails else 'ok'
+        if not strip_ok:
+            why += ' (strip part n.a.: strip land share %.2f)' % v['strip_land_share']
+        out['under_platform'] = _row('fail' if fails else 'pass', v, why)
+
+    # ------------------------------------------------------------------ 4. centre footprint
+    T = R['centre']
+    cx0, cx1, cy0, cy1 = T['box']
+    cl = _land(F, cx0, cx1, cy0, cy1)
+    if cl.mean() < R['applicable_land_min']:
+        out['centre_footprint'] = _row('n.a.', {'land_share': round(float(cl.mean()), 3)},
+                                       'central zone land share %.2f < %.2f' % (cl.mean(), R['applicable_land_min']))
+    else:
+        lab, sizes, big = _components(obj, mc)
+        ids = np.unique(lab[cx0:cx1 + 1, cy0:cy1 + 1])
+        ids = ids[(ids > 0) & big[ids]]
+        fp = sizes[ids]
+        med = float(np.median(fp)) if len(fp) else 0.0
+        v = {'objects': int(len(fp)), 'footprint_p50': round(med, 1),
+             'footprint_p25': _pct(fp, 25) if len(fp) else 0, 'footprint_p75': _pct(fp, 75) if len(fp) else 0,
+             'objects_ge_25_cells': int((fp >= 25).sum()), 'land_share': round(float(cl.mean()), 3)}
+        f = 'no objects in the central zone' if not len(fp) else \
+            _fmt_fail('median object footprint', med, T['footprint_p50_min'], unit=' cells')
+        out['centre_footprint'] = _row('fail' if f else 'pass', v, f or 'ok')
+
+    for k, reason in skip.items():
+        if k in out:
+            out[k] = _row('skipped', out[k].get('values'), f'skipped: {reason}',
+                          measured_status=out[k]['status'], measured_why=out[k]['why'])
+    return out
+
+
+def _avg_num(per, key):
+    vals = [p[key] for p in per.values() if p.get('applicable') and isinstance(p.get(key), (int, float))]
+    return round(float(np.mean(vals)), 3) if vals else None
+
+
+def _judge_front(per, T):
+    app = {k: p for k, p in per.items() if p.get('applicable')}
+    if not app:
+        return _row('n.a.', per, 'front band is not land for either team (water / sky / bridge front)')
+    fails = []
+    for k, p in app.items():
+        for f in (_fmt_fail(f'{k} objects', p['objects'], *T['objects']),
+                  _fmt_fail(f'{k} object share', p['object_share'], *T['share']),
+                  _fmt_fail(f'{k} share of objects <= {T["low_h"]} tall', p['low_share'], T['low_share_min']),
+                  _fmt_fail(f'{k} free share of the 8-col section x {p["worst_section_x"][0]}-'
+                            f'{p["worst_section_x"][1]}', p['section_free_min'], T['section_free_min'])):
+            if f:
+                fails.append(f)
+    na = [k for k, p in per.items() if not p.get('applicable')]
+    avg = {key: _avg_num(per, key) for key in ('objects', 'object_share', 'low_share', 'cell_height_p90',
+                                               'section_free_min')}
+    why = '; '.join(fails) if fails else 'ok'
+    if na:
+        why += f' ({", ".join(na)}: n.a., front not land)'
+    return _row('fail' if fails else 'pass', per, why, avg=avg)
+
+
+def _judge_cover(per, T):
+    app = {k: p for k, p in per.items() if p.get('applicable')}
+    if not app:
+        return _row('n.a.', per, 'spawn squares are not land')
+    fails = []
+    for k, p in app.items():
+        for f in (_fmt_fail(f'{k} enemy-side cover within {T["enemy_r"]}', p['enemy_0_20'], T['enemy_min']),
+                  _fmt_fail(f'{k} rear backdrop {T["rear_r"][0]}-{T["rear_r"][1]}', p['rear_20_40'],
+                            T['rear_min'])):
+            if f:
+                fails.append(f)
+    avg = {key: _avg_num(per, key) for key in ('enemy_0_20', 'enemy_0_8', 'enemy_8_20', 'rear_20_40')}
+    return _row('fail' if fails else 'pass', per, '; '.join(fails) if fails else 'ok', avg=avg)

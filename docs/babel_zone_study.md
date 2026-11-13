@@ -384,6 +384,84 @@ proposals for the reviewer/owner, not rules. Kit checks would read `R['zone_prof
 * "Spawn camping from the platform" rules vs "open fronts" (already noted in AGENTS.md): items 7–8 add front cover,
   which helps both.
 
+### Zone rules: the adopted items as kit checks (2026-11-13)
+
+The owner adopted items 7, 2, 11 and 12 as standing rules (AGENTS.md §4). `babel_checks.run_all` checks them in
+`R['zone_rules']` (`aosmap.kit.zones.zone_rules`) and adds four pass/fail rows to `summary()`. Thresholds are in
+`params.ZONE_RULES` and can be overridden per call. Every rule is measured per team; the mirrored average is in `avg`.
+
+**Objects.** When the map supplies `terrain_H`, ground = the higher of the terrain_H surface and the 25-window
+opening baseline (`object_ground: 'terrain_H'`). Otherwise ground = the opening baseline, and each 8-connected
+candidate component (≥ 2 above ground, not water) is kept only if ≥ 50 % of its boundary steps are ≥ 2 tall, or it has
+an overhang (`'estimated'`). Gentle terrain with 1-voxel steps is relief, not an object. An object is a component of
+≥ 4 cells. **Not applicable**: a zone whose land share is < 0.5 (front: not water and ≤ 19 below the spawn floor).
+A declared `zone_rules_skip` / `build['zone_rules_skip']` prints `SKIP` with its reason.
+
+| rule | metric keys (`R['zone_rules'][rule]['values'][team]`) | pass when (every applicable team) | exemption |
+|---|---|---|---|
+| `front_dressing` | `objects`, `object_share`, `object_heights`, `low_share`, `section_free_min` (+ `worst_section_x`) | 4 ≤ objects ≤ 15; 0.05 ≤ share ≤ 0.30; low_share (share of objects whose max height above ground ≤ 10) ≥ 0.90; every 8-column section ≥ 0.50 walkable | `build['front_exempt_boxes']`: those columns are left out of objects/share/heights, reported in `front_exempt` (object share, max height, open share), and still counted in the section test |
+| `spawn_cover` | `enemy_0_20` (+ `enemy_0_8`, `enemy_8_20`, `rear_20_40`, `enemy_0_20_land_only`) | enemy_0_20 ≥ 0.25 and rear_20_40 ≥ 0.30 | — |
+| `under_platform` | `object_share`, `min_air_all` (+ `min_air_objects`, `object_height_max`), `anchors[team].top_z_range`, `prop_cols` | 0.15 ≤ share ≤ 0.45; min_air_all ≥ 25; both anchors range ≤ 1 and prop_cols = 0 | — |
+| `centre_footprint` | `footprint_p50` (+ `objects`, p25/p75, `objects_ge_25_cells`) | footprint_p50 ≥ 25 cells | — |
+
+Definitions, and how ambiguous wording was resolved:
+* **Front band**: x 139–211 / 300–373, y 236–276. It includes the anchor columns, which `under_platform` separately
+  requires to be prop-free. An object counts if it touches the band. Its share is its cells inside the band divided by
+  the band's non-exempt cells.
+* **"90 % of them no taller than 10"** is read per object: the max height above ground of each object in the band.
+  The share of objects ≤ 10 must be ≥ 0.90, so with fewer than 10 objects a single taller one fails.
+  The per-cell p90 is also reported (`cell_height_p90`) but does not decide the rule.
+* **"Every 8-column north–south section ≥ 50 % free"**: the band is cut into 8-column slices counted from the spawn
+  edge; the last 9 columns form one slice, so there is no 1-column remainder. A cell is free when it has a standable cell within ±1 of the ground
+  surface and is not water. Walking under an arch counts as free; a prop top does not.
+* **Spawn cover** follows the AGENTS.md wording: **one combined share** over the enemy-facing ground 1–20 voxels
+  (Chebyshev) outside the square. The study's per-ring rows (0–8, 8–20) are reported but do not decide the rule.
+  * Enemy side is the wedge beyond the square's enemy-facing edge where forward distance ≥ lateral overhang; the
+    rear is the mirrored wedge at 21–40.
+  * Cover means the column top rises ≥ 3 above the spawn floor (the median top z of the square).
+  * The denominator is all cells, water included. `enemy_0_20_land_only` is reported for island spawns.
+* **Under the platform**: "≥ 25 voxels of air between their tops and the platform" is checked over **every**
+  strip column, not only objects (the intent is that nothing becomes free scaffolding). Air = top z − platform z − 1.
+  * "Low" has no separate height cap; the air rule bounds it.
+  * The anchor ends are the 6 columns under each platform end, x 206–211 / 300–305, y 240–271. "Flat" means top-z
+    range ≤ 1. "Prop-free" means no object, roof or deck column.
+  * If the strip is not land but the anchors are, only the anchors are judged and the reason says the strip part
+    was n.a.
+* **Centre**: the footprint is the whole size of each object (≥ 4 cells, 8-connected) that touches x 150–362,
+  y 130–382, even where it extends outside the zone. Zero objects is a fail.
+
+**Baseline [RUN 2026-11-13]**: the files from this study, unchanged. "est." = estimated ground, since none of the
+`maps/` folders ship `terrain_H.npy`. Frostbell uses its gatehouse exemption, `[[146,151,220,292],[361,366,220,292]]`.
+Values are the mirrored average unless the teams differ.
+
+| map | front dressing | spawn cover | under the platform | centre footprint |
+|---|---|---|---|---|
+| Silverpine Hunt v2.2 | FAIL: 2 objects (< 4), share 0.03, 0/2 ≤ 10 tall (20, 23); sections ≥ 0.98 | PASS: 0.34 / rear 0.42 | FAIL: share 0.021 < 0.15; air 39; anchors ok | FAIL: 19 |
+| Wicker King's Harvest v1.1 | FAIL: 2 objects, share 0.12, 0/2 ≤ 10 (16, 16); sections ≥ 0.93 | PASS: 0.42 / 0.72 | FAIL: share 0.014; air 36; anchors ok | FAIL: 15.5 |
+| Frostbell Hollow v1.1 (est., gate exempt) | FAIL: 10 objects, share 0.046 < 0.05 (short by 0.004), 10/10 ≤ 10; sections ≥ 0.71; gate: max 26 tall, open 0.66 | FAIL: 0.207 (short 0.043) / 0.293 (short 0.007) | FAIL: share 0.007; air 46; anchors ok | FAIL: 21 |
+| Frostbell Hollow v1.1 (rebuilt, terrain_H, gate exempt) | PASS: 12 objects, share 0.051, 12/12 ≤ 10, sections ≥ 0.78 | FAIL: same | FAIL: same | FAIL: 21 |
+| The Hollow Crown v1.1 | FAIL: 5 objects, share 0.16, 2/5 ≤ 10 (13, 13, 37) | FAIL: 0.026 / 0.258 | FAIL: share 0; air 40 | PASS: 25.0 |
+| Graveyard of the Forgotten v1.0 | FAIL: 1 object (26 tall), share 0.05 | FAIL: 0.291 ok / rear 0.175 | FAIL: air 14 < 25 (share 0.36 ok) | FAIL: 7 |
+| Bloomhop Kingdom v1.0 | FAIL: 3 objects, share 0.306 > 0.30, 0/3 ≤ 10, worst section 0.19 (blue) / 0.31 (red) | PASS: 0.54 / 0.63 | FAIL: share 0.519 > 0.45; air 38 | PASS: 60 |
+| Witchwood Isles v1.0 | FAIL: 9 objects, share 0.56, 6/9 ≤ 10, a section 0.0 | FAIL: 0.576 ok / rear 0.21 | FAIL: share 0.08; anchors: blue 192 prop cols, red range 16 + 160 prop cols | N/A: central land 0.25 |
+| Haunted Fairground v1.3 | FAIL: 2 objects, share 0.34, 1/2 ≤ 10, section 0.40 | FAIL: 0.004 / 0.26 | FAIL: air 11; anchors range 7, 1 prop col (share 0.29 ok) | PASS: 98 |
+| Drowned Cathedral v2 | FAIL: 2 objects (13, 21), share 0.09 | FAIL: 0.18 / 0.147 | FAIL: share 0.64; air 16; anchors range 35, 38–39 prop cols | FAIL: 15 |
+| Hollowfen Vale v1 | FAIL: 1 object, share 0.001 | FAIL: 0.007 / rear 0.43 ok | FAIL: share 0.028; air 48 | PASS: 110 |
+| Hollowfen (art v1) | FAIL: 8 objects, share 0.29, 7/8 ≤ 10 (one 49) | FAIL: 0.272 ok / rear 0.094 | FAIL: anchors range 3, 23 prop cols (share 0.23, air 35 ok) | FAIL: 15 |
+| Kestrel Spires (art v3) | N/A: front land 0.44 (sky decks) | FAIL: 0.186 / 0.075 | PASS (strip n.a., land 0.36; anchors range 0/1, no props) | PASS: 43.5 |
+| roadisland (community) | FAIL: blue 3 objects (red 4), share 0.20, all ≤ 10, sections ≥ 0.61 | FAIL: 0.07–0.12 / 0.04–0.10 | FAIL: share 0.491 > 0.45; air 28; anchors range 6, 40–41 prop cols | PASS: 82 |
+| greencoast (community) | FAIL: blue share 0.039 < 0.05; red 18 objects > 15; all ≤ 10 | FAIL: 0.004–0.154 / 0.08–0.24 | FAIL: share 0.117; anchors range 8–9, 23–24 prop cols | FAIL: 13 |
+
+Of our 12 maps, as the `maps/` files stand:
+* front: 0 pass, 1 n.a. Frostbell passes only with its own `terrain_H`, because the estimated ground gives 0.046.
+* spawn cover: 3 pass (SH, WKH, Bloomhop).
+* under the platform: 1 pass (Kestrel, strip part n.a.).
+* centre: 5 pass (HC, Bloomhop, HF, HV, Kestrel), 1 n.a.
+
+The two community front exemplars fail 3 of 4 rules each. Their fronts miss narrowly: roadisland blue has 3
+objects, greencoast blue has share 0.039. Both have props on the anchor ends. So these thresholds are stricter in
+combination than the community maps that suggested them. Saved in `out/zone_study/zone_rules_baseline.json`.
+
 ## 10. What was not done or verified
 * No playtest and no client inspection. The proposals are measurement-based only.
 * The guide labels cover 25 main-set maps. The good/problem tests are underpowered and uncorrected.

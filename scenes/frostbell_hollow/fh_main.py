@@ -30,6 +30,15 @@ import fh_graybox  # noqa: E402
 from fh_spec import SPEC  # noqa: E402
 
 
+def front_exempt_boxes(S=SPEC):
+    """The owner-requested gatehouses (both sides) as declared front exemptions for the zone rules
+    (babel_checks zone_rules: left out of the front object count/share/height test, still in the free-share test).
+    Only build.json carries them; the .vxl/.txt are unchanged."""
+    gx, gy = S['gatehouse']['x'], S['gatehouse']['y']
+    east = sorted(symmetry.mirror_index(x, S['axis']) for x in gx)
+    return [[gx[0], gx[1], gy[0], gy[1]], [east[0], east[1], gy[0], gy[1]]]
+
+
 def build_map(out, veg_seed=None, graybox_only=False):
     t0 = time.time()
     seed = noise.os_seed() if veg_seed is None else int(veg_seed)     # one OS seed per build, saved in build.json
@@ -77,6 +86,7 @@ def build_map(out, veg_seed=None, graybox_only=False):
                            'tag_margin': post['tag_margin'], 'finish': fin,
                            'feature_pads': rep['scatter']['feature_pads'],
                            'colour_stats': color.colour_stats(cv.solid, cv.rgb)})
+    info_extra['front_exempt_boxes'] = front_exempt_boxes(SPEC)
     info_extra['cosmetic_asymmetric_bbox'] = train_box
     info_extra['cosmetic_asymmetric_boxes'] = boxes
     info_extra['materials'] = final.materials
@@ -139,6 +149,10 @@ if __name__ == '__main__':
     if '--no-checks' not in sys.argv:
         R = check(out, info, cv, cvG)
         for row in R['summary'] + R['fh_checks']['summary']:
-            print(('PASS ' if row['ok'] else 'FAIL ') + row['rule'] + '  ' + json.dumps(row['detail'], default=str)[:300])
+            if row.get('status'):
+                print(babel_checks.format_row(row))
+            else:
+                print(('PASS ' if row['ok'] else 'FAIL ') + row['rule'] + '  ' +
+                      json.dumps(row['detail'], default=str)[:300])
         print('txt:', R['txt'])
         print('check seconds', R.get('check_seconds'))

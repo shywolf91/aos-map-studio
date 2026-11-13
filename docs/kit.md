@@ -44,6 +44,17 @@ Every check in AGENTS.md §5 step 5 and knowledge base §15:
 | `periphery` | share of ground columns reachable without building **(new, report only)** |
 | `zone_profile` | report-only (no pass/fail): every `aosmap.kit.zones` metric for both teams + mirrored average, centre, routes, map class; compare against the community distributions in `docs/babel_zone_study.md` **(new)** |
 | `spawn_exposure` | viewers per spot and hidden share against the ≤ 10 / ≥ 15 % targets; presets `calibrated` (= `aosmap.sightline`, the calibrated model) and `bloomhop` |
+| `zone_rules` → `front_dressing` | **pass/fail** (owner rule 2026-11-13): per team, 4–15 front objects on 5–30 % of the front band, ≥ 90 % of them ≤ 10 tall, every 8-column section ≥ 50 % walkable ground. `build['front_exempt_boxes']` (owner-requested gates) are left out of count/share/height, listed in `front_exempt`, still in the free-share test **(new)** |
+| `zone_rules` → `spawn_cover` | **pass/fail**: per team, ≥ 25 % of the enemy-facing ground within 20 of the spawn square rises ≥ 3 above the spawn floor; ≥ 30 % of the rear ground 20–40 behind it does (0–8 / 8–20 rings reported) **(new)** |
+| `zone_rules` → `under_platform` | **pass/fail**: strip x 212–300, y 240–271 has 15–45 % object columns and ≥ 25 air between every strip top and the platform; both anchor ends (6 columns under each platform end) top-z range ≤ 1 and 0 object/roof/deck columns **(new)** |
+| `zone_rules` → `centre_footprint` | **pass/fail**: median footprint of the objects (≥ 4 cells) touching the central zone x 150–362, y 130–382 ≥ 25 cells **(new)** |
+
+Zone rules: thresholds in `params.ZONE_RULES` (override per call: `run_all(zone_rules={'front': {'objects': (3, 15)}})`).
+A zone that is not land (land share < 0.5: water front, sky deck, void strip) is `N/A` with the reason; a declared
+`run_all(zone_rules_skip={'rule': 'reason'})` or `build['zone_rules_skip']` is `SKIP` with the reason. Both count as
+`ok` in `summary()` but print their status. Objects use `terrain_H` when the map supplies it, otherwise an estimated
+ground with gentle relief filtered out; the output says which (`object_ground`). Each FAIL prints the number that
+failed and by how much (`babel_checks.format_row`). Definitions: `docs/babel_zone_study.md` §9 "Zone rules".
 
 Route checks are a graph model (3 air to stand, 1-voxel step with 4 voxels of climb room, drops ≤ 9 safe,
 ≤ 19 survivable), not a collision simulation. `rules='hc'` is the 4-neighbour model of the gf/hc/wkh/sph checkers;

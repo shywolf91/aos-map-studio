@@ -331,7 +331,7 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
             end_z=(0, 62), trap_anchor=None, trap_stride=5, ground_band=3, trap_z=None,
             tower_zone=None, assist=None, flank_min=130, flank_max=210, centre_half_x=80,
             anchor_face=None, build_gap_margin=24, build_gap_graph='safe', exits=None, timing=True,
-            zone_profile=True):
+            zone_profile=True, zone_rules=True, zone_rules_skip=None):
     """Run every check on one map. Returns a JSON-able dict. See the module docstring for the model."""
     t0 = time.time()
     build = build or {}
@@ -510,6 +510,14 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
         zp = zones.zone_profile(solid, P, nav=nav if rules == 'hc' else None)
         zp['class'] = zones.classify(zp)
         R['zone_profile'] = zp
+    if zone_rules:
+        # adopted zone rules (AGENTS.md §4, 2026-11-13); thresholds in params.ZONE_RULES, overridable with a dict.
+        # Declared exemptions: build['front_exempt_boxes']; declared skips: zone_rules_skip or build['zone_rules_skip']
+        from . import zones
+        R['zone_rules'] = zones.zone_rules(
+            solid, P, overrides=zone_rules if isinstance(zone_rules, dict) else None, terrain_H=terrain_H,
+            front_exempt_boxes=build.get('front_exempt_boxes'),
+            skip=zone_rules_skip if zone_rules_skip is not None else build.get('zone_rules_skip'))
     if timing:
         R['check_seconds'] = round(time.time() - t0, 1)
     return R
@@ -549,7 +557,27 @@ def summary(R):
     for t, e in R['spawn_exposure'].items():
         add(f'spawn exposure {t} (<= 10 viewers, >= 15 % hidden)', e['targets_met'],
             {'mean': e['viewers_per_spot_mean'], 'hidden_pct': e['hidden_pct']})
+    if 'zone_rules' in R:
+        from .zones import RULE_KEYS, RULE_TITLES
+        Z = R['zone_rules']
+        for k in RULE_KEYS:
+            z = Z[k]
+            # 'n.a.' and 'skipped' rows are not failures (ok=True) but keep their status for printing
+            rows.append({'rule': RULE_TITLES[k], 'ok': z['status'] != 'fail', 'status': z['status'],
+                         'detail': {'why': z['why'], 'avg': z.get('avg'), 'values': z['values'],
+                                    'object_ground': Z['object_ground'],
+                                    **({'front_exempt': Z['front_exempt']} if k == 'front_dressing' else {})}})
     return rows
+
+
+def format_row(row):
+    """One printable line per summary row; zone rows carry a status (PASS / FAIL / N/A / SKIP) and, unless they
+    pass, the reason on a second line (which number failed and by how much)."""
+    st = row.get('status')
+    if st is None:
+        return ('PASS ' if row['ok'] else 'FAIL ') + row['rule']
+    tag = {'pass': 'PASS ', 'fail': 'FAIL ', 'n.a.': 'N/A  ', 'skipped': 'SKIP '}[st]
+    return tag + row['rule'] + ('' if st == 'pass' else '\n      ' + row['detail']['why'])
 
 
 def _load_dir(d):
@@ -583,7 +611,7 @@ def main(argv=None):
         with open(a.out, 'w') as f:
             json.dump(R, f, indent=1, default=str)
     for row in R['summary']:
-        print(('PASS ' if row['ok'] else 'FAIL ') + row['rule'])
+        print(format_row(row))
     return R
 
 

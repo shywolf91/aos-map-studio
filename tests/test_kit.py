@@ -204,3 +204,122 @@ def test_zones_roof_versus_deck_columns():
     assert F['roof'][10:20, 10:20].all() and not F['deck'][10:20, 10:20].any()
     assert not F['roof'][30:40, 10:20].any() and not F['deck'][30:40, 10:20].any()
     assert F['deck'][50:60, 10:20].all() and not F['roof'][50:60, 10:20].any()
+
+
+# ------------------------------------------------------------------------------------- zone rules (adopted 2026-11-13)
+
+def _zr(cv, **kw):
+    from aosmap.kit import zones
+    return zones.zone_rules(cv.solid, **kw)
+
+
+def _mirrored(cv):
+    symmetry.mirror_canvas(cv, 'x512')
+    return cv
+
+
+def _props(cv, z0=46, first_z0=None, xs=range(145, 195, 10)):
+    for i, x in enumerate(xs):
+        y = 240 + 12 * (i % 3)
+        cv.box(x, x + 5, y, y + 5, first_z0 if (i == 0 and first_z0) else z0, 49, (120, 90, 60))
+    return cv
+
+
+def test_zone_rule_front_dressing_pass_and_fail():
+    r = _zr(_mirrored(_props(flat())))['front_dressing']               # 5 low props, 6 x 6, 4 tall
+    assert r['status'] == 'pass', r['why']
+    assert r['values']['blue']['objects'] == 5 and r['values']['red']['objects'] == 5
+    assert 0.05 <= r['avg']['object_share'] <= 0.30 and r['avg']['low_share'] == 1.0
+    r = _zr(_mirrored(_props(flat(), first_z0=30)))['front_dressing']   # one prop 20 tall
+    assert r['status'] == 'fail' and 'share of objects <= 10 tall 0.8 < 0.9 (short by 0.1)' in r['why']
+    bare = _zr(_mirrored(flat()))['front_dressing']
+    assert bare['status'] == 'fail' and 'blue objects 0 < 4 (short by 4)' in bare['why']
+
+
+def test_zone_rule_front_gate_exemption_and_free_share():
+    def gate_map(arch):
+        cv = _props(flat(), xs=range(160, 200, 10))                    # 4 low props
+        cv.box(148, 153, 230, 282, 34, 49, (90, 90, 90))               # gate wall, 16 tall, across the band
+        cv.carve(148, 153, 256 - arch, 256 + arch, 46, 49)             # walk-through arch
+        return _mirrored(cv)
+    box = [[148, 153, 230, 282], [359, 364, 230, 282]]
+    wide = gate_map(16)
+    assert _zr(wide)['front_dressing']['status'] == 'fail'           # the gate counts: a 16-tall object
+    r = _zr(wide, front_exempt_boxes=box)
+    assert r['front_dressing']['status'] == 'pass', r['front_dressing']['why']
+    ex = r['front_exempt']
+    assert len(ex) == 2 and ex[0]['height_max'] >= 14 and 0.5 < ex[0]['open_share'] < 1
+    narrow = _zr(gate_map(1), front_exempt_boxes=box)['front_dressing']   # 3-wide arch still blocks the front
+    assert narrow['status'] == 'fail' and 'free share of the 8-col section' in narrow['why']
+
+
+def test_zone_rule_spawn_cover_pass_and_fail():
+    cv = flat()
+    cv.box(139, 158, 236, 276, 47, 49, (80, 120, 60))                 # enemy-side cover, 3 tall, within 20
+    cv.box(58, 77, 190, 322, 44, 49, (60, 90, 50))                    # rear backdrop 20-40 behind
+    r = _zr(_mirrored(cv))['spawn_cover']
+    assert r['status'] == 'pass', r['why']
+    v = r['values']['blue']
+    assert v['enemy_0_20'] >= 0.25 and v['rear_20_40'] >= 0.30 and v['enemy_0_8'] >= 0.8
+    r = _zr(_mirrored(flat()))['spawn_cover']
+    assert r['status'] == 'fail' and 'blue enemy-side cover within 20 0 < 0.25 (short by 0.25)' in r['why']
+    assert 'rear backdrop 20-40 0 < 0.3' in r['why']
+
+
+def test_zone_rule_under_platform_and_centre():
+    cv = flat()
+    for x in (214, 230, 246):                                         # low props in the strip (mirrored)
+        cv.box(x, x + 5, 242, 269, 47, 49, (110, 100, 90))
+    for x in range(160, 250, 20):                                     # room-sized pieces in the central zone
+        for y in (150, 340):
+            cv.box(x, x + 7, y, y + 7, 44, 49, (120, 110, 100))
+    r = _zr(_mirrored(cv))
+    up, ce = r['under_platform'], r['centre_footprint']
+    assert up['status'] == 'pass', up['why']
+    assert 0.15 <= up['values']['object_share'] <= 0.45 and up['values']['min_air_all'] == 45
+    assert ce['status'] == 'pass' and ce['values']['footprint_p50'] >= 25
+    cv.box(250, 255, 250, 255, 12, 49, (1, 1, 1))                     # a pillar: 10 air below the platform
+    cv.box(205, 207, 250, 252, 44, 49, (1, 1, 1))                     # a prop on the blue anchor end
+    r = _zr(cv)['under_platform']
+    assert r['status'] == 'fail'
+    assert 'min air between strip tops and the platform 10 < 25 (short by 15)' in r['why']
+    assert 'blue anchor top-z range 6 > 1 (over by 5)' in r['why'] and 'blue anchor prop columns' in r['why']
+    small = flat()
+    for x in range(160, 250, 10):
+        small.box(x, x + 2, 200, 202, 46, 49, (1, 1, 1))              # 3 x 3 props only
+    ce = _zr(_mirrored(small))['centre_footprint']
+    assert ce['status'] == 'fail' and 'median object footprint 9 cells < 25 (short by 16)' in ce['why']
+
+
+def test_zone_rules_relief_not_objects_and_terrain_H():
+    from aosmap.kit import zones
+    cv = Canvas('t')
+    H = np.full((512, 512), 50)
+    for i in range(6):                                                # gentle ridge, 1-voxel steps, 12 wide
+        H[150:200, 250 - 6 + i] = 50 - (i + 1) // 2
+        H[150:200, 262 - i] = 50 - (i + 1) // 2
+    H[150:200, 250:257] = 47                                          # 3 high, 19 wide, 1-voxel steps
+    cv.fill_terrain(H, (100, 140, 80))
+    obj, _, _, method = zones.object_field(cv.solid, zones.fields(cv.solid))
+    assert method == 'estimated' and not obj[150:200, 240:266].any()
+    cv.box(170, 175, 300, 305, 44, 49, (1, 1, 1))
+    obj2, oh, _, m2 = zones.object_field(cv.solid, zones.fields(cv.solid), terrain_H=cv.H)
+    assert m2 == 'terrain_H' and obj2[170:176, 300:306].all() and int(oh.max()) == 6 and obj2.sum() == 36
+
+
+def test_zone_rules_not_applicable_skip_and_summary_rows():
+    H = np.full((512, 512), 50)
+    H[:, 236:277] = 63                                                # the whole y band is sea: fronts, strip, ends
+    H[150:363, 130:383] = 63                                          # and the central zone
+    cv = Canvas('w')
+    cv.fill_terrain(H, (90, 120, 160))
+    r = _zr(cv, skip={'spawn_cover': 'owner: custom spawns on this server'})
+    assert r['front_dressing']['status'] == 'n.a.' and 'not land' in r['front_dressing']['why']
+    assert r['under_platform']['status'] == 'n.a.' and r['centre_footprint']['status'] == 'n.a.'
+    assert r['spawn_cover']['status'] == 'skipped' and 'custom spawns' in r['spawn_cover']['why']
+    R = babel_checks.run_all(flat().to_vxl(), pyspades=False, zone_profile=False,
+                             build={'front_exempt_boxes': [[150, 155, 230, 282]]})
+    rows = [row for row in babel_checks.summary(R) if row.get('status')]
+    assert len(rows) == 4 and R['zone_rules']['front_exempt_boxes'] == [[150, 155, 230, 282]]
+    fr = [row for row in rows if row['rule'].startswith('zone: front')][0]
+    assert fr['status'] == 'fail' and not fr['ok'] and 'objects 0 < 4' in babel_checks.format_row(fr)
