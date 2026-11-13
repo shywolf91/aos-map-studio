@@ -682,6 +682,9 @@ aosmap/meta.py      map_txt() / check_map_txt()
 aosmap/render.py    top_down, isometric (4 views), contact_sheet
 aosmap/pixelfont.py 5×7 font for painted name tags
 aosmap/pipeline.py  export → parser checks → real-piqueserver runtime checks → renders
+aosmap/kit/         (2026-11-10) shared kit for new maps: codec, noise, canvas, structures, symmetry, color, veg,
+                    tag, sky, babel_checks (full suite + summary), probe (live server), build (export, .txt rules),
+                    preview. Merges the per-map copies; reproduces the HC / Silverpine / Bloomhop reports (docs/kit.md)
 tools/              art_metrics.py (FIRST ARG IS THE OUTPUT JSON), fp_view.py (numpy first-person raymarcher),
                     compare_refs, movement_sim, fetch_map_from_server, bot_protect_test, babel_live_check.py,
                     aosweb_capture.cjs, betterspades_capture.sh (+ camfile patch)

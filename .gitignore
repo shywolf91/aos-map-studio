@@ -24,3 +24,10 @@ maps/**/mat.npy
 refs/
 *.pdf
 opencode.jsonc
+
+# Claude Code: per-session worktrees and personal settings
+.claude/worktrees/
+.claude/settings.local.json
+
+# community map collection (aloha.pk maps repo; not ours to publish)
+map_collection/
