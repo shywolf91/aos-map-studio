@@ -22,7 +22,7 @@ Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project
 4. `docs/vxl_and_runtime_reference.md` is the source-verified technical reference, with file and function citations.
 5. `docs/babel_rotation_guide_notes.md` covers Babel spawn-camping rules and the calibrated spawn-exposure targets.
    * `docs/babel_zone_study.md` (2026-11-13) measures spawn, tower zone and centre on 158 community Babel maps and
-     on ours. Its §9 targets are **proposals**, not owner rules, until the owner approves them.
+     on ours. Four of its §9 targets were adopted on 2026-11-13 and are in §4; the rest are still **proposals**.
 6. `docs/project_brief/` holds the original project brief, the role instructions and the per-mode design prompts.
 7. Read the spec of the newest map closest to your task (§9):
    * `docs/under_the_tree_spec.md` and `docs/bloomhop_kingdom_spec.md` are the newest Babel examples (2026-11-09).
@@ -65,7 +65,7 @@ Never import mechanics from the Jagex/Steam Ace of Spades. It is a different gam
 
 ## 4. Owner's standing rules `[USER]`
 
-These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026-11-09 (dated log:
+These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026-11-13 (dated log:
 `docs/knowledge/project_memory.md`). Follow them unless a brief says otherwise.
 
 ### Process
@@ -118,7 +118,16 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
     spawn to the tower zone, and the space must still read as open.
   * A slight tower-building advantage from these objects is fine as long as both sides are symmetric.
   * It should look neither unnaturally empty next to the rest of the map nor like an out-of-place anomaly.
+  * **In numbers** (2026-11-13, from `docs/babel_zone_study.md`): 4–15 low objects covering 5–30 % of the front;
+    90 % of them no taller than 10 voxels; every 8-column north–south section at least 50 % free.
+    A gate the owner asked for is reported separately and does not count against the height target.
 * **Don't default to a raised tower zone.** Players like building towers from the ground.
+* **Don't leave the strip under the platform bare** (2026-11-13). Low objects cover 15–45 % of the strip
+  (x 212–300, y 240–271), with at least 25 voxels of air between their tops and the platform, so nothing becomes
+  free scaffolding. The anchor ground under both platform ends stays flat and prop-free.
+* **Anchor the centre with room-sized pieces** (2026-11-13). Alongside the small one-off props, the central zone
+  has a few larger objects, so the typical (median) object footprint is 25 cells or more. Our earlier centres were
+  made of many 7–21 cell props; community maps sit around 40.
 * **Solid ground directly under both ends of the script platform** (stock x 206–211 / 300–305, y 240–271),
   so towers can anchor on each side.
 * **No stairs on the enemy-facing side** of a team's tower-anchor ground. They make it too easy to climb up to that team's tower.
@@ -126,6 +135,10 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   * Feedback on Drowned Cathedral v1: it was too tall and hard to get down.
 * **Spawn camping from the platform** is the classic way Babel maps fail.
   * Cover spawns with trees, walls, buildings or terrain, but not inside the stock ±20 square, because players spawn on the topmost voxel.
+  * **Cover placement** (2026-11-13): at least 25 % of the ground on the enemy-facing side within 20 voxels of the
+    spawn square carries cover 3 or more voxels tall, and at least 30 % of the ground 20–40 voxels behind the
+    square is a backdrop (trees, buildings, terrain). Both benchmarks (Silverpine Hunt, Wicker King) have this.
+    It never overrides "dress the front, never block it": if the two can't both be met, report the trade-off.
   * No roof spawns, no steep or low spawns right under the platform, no sealable single-exit spawns.
   * Targets: ≤ ~10 platform viewers per spawn spot, ≥ 15 % of spots hidden.
   * Measure with `aosmap/sightline.py`. Calibration and the rotation-guide rules are in `docs/babel_rotation_guide_notes.md`.

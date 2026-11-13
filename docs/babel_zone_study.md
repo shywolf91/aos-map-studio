@@ -297,6 +297,9 @@ None pass the front criteria.
 
 ## 9. Proposed guidance
 
+> **Owner decision `[USER 2026-11-13]`:** items **7, 2, 11 and 12** are adopted as standing rules (AGENTS.md §4).
+> The other items remain proposals. The kit still reports all of them without pass or fail.
+
 Each item gives a target, its evidence, its relation to an existing rule and a possible kit check. These are
 proposals for the reviewer/owner, not rules. Kit checks would read `R['zone_profile']`.
 
