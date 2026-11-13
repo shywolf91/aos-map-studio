@@ -1,6 +1,7 @@
-# Frostbell Hollow — spec (v1.0 and v1.1)
+# Frostbell Hollow — spec (v1.0, v1.1 and v1.2)
 
-**Status: server-loaded** (2026-11-10), v1.0 and v1.1. **v1.1 is the current version** (shorter arch gate). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
+**Status: server-loaded** (v1.0 and v1.1 on 2026-11-10, v1.2 on 2026-11-13). **v1.2 is the current version**
+(arch gate, plus the four zone rules adopted on 2026-11-13). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
 Not client-inspected and not playtested. The renders in `maps/frostbell_hollow_v1*/renders/` are numpy previews,
 not client captures.
 
@@ -230,14 +231,65 @@ The owner chose the arch. **v1.1 as built** (same vegetation seed 4015401698, so
 Three other seeds with release 1.1 also pass 26 / 26 with 0 traps and 0 floating. Mean viewers fell below the
 unpolished arch (3.24 → 1.78), probably because of the merlons and centre block; this was not isolated `[OPEN]`.
 
+## v1.2: zone rules `[USER 2026-11-13]` `[RUN 2026-11-13]`
+
+The owner adopted four zone rules from `docs/babel_zone_study.md` (AGENTS.md §4) and asked for v1.2 as the first
+map built to them. Same vegetation seed 4015401698 and arch gate as v1.1. All new geometry is fixed by the layout
+seed. `.vxl` 2,894,668 bytes, SHA-256 `81557f06c9de5aba2d4333cb964b91bcfc49fc0cc637b53b8a51927fbdc8e219`.
+`.txt` 2,671,367 bytes, `version = '1.2'`.
+
+What was added:
+
+* **Under the platform** (x 218–293, y 240–271): an open bandstand on the axis (roof z 43, 7 tall), two hearth
+  courts (2-tall seat walls round a brazier), a trestle-table set, a fir tub, two hay-bale edges. x 200–217 and
+  its mirror stay clear. This overrides the brief's "flat ground under the platform" `[USER]`.
+* **Spawn cover:** 5-tall brick buttresses in front of each arch pier (x 143–145, aligned with the piers), 4-tall
+  holly hedge walls at x 152–158, y 228–231 and mirror (just outside the front band), log stacks, a small fir at
+  each lane end, and six firs behind the village square (x 60–74) as a backdrop.
+* **Centre and front:** fewer, larger composed pieces (sled with load, cart, bench-and-planter groups, bigger
+  rocks). No feature pads inside x 178–255, y 212–299: a present pile there was climbable and cut the build gap.
+
+| check | v1.1 | v1.2 |
+|---|---|---|
+| all checks (26 + 4 zone rows) | 27 / 30 (3 zone rows fail) | 30 / 30 |
+| zone: front dressing | pass: 12 objects, 5.1 % covered | pass: 12 objects, 8.8 % covered, heights 2–5, worst 8-column section 78 % free |
+| zone: spawn cover (enemy side within 20 / rear 20–40) | fail: 20.7 % / 29.3 % | pass: 30.6 % / 43.9 % |
+| zone: under the platform | fail: 0.7 % covered | pass: 20.6 % covered, tallest 7, 41 air, anchors flat and prop-free |
+| zone: centre median object footprint | fail: 21 cells | pass: 32 cells |
+| spawn exposure blue / red (viewers, hidden) | 1.78, 58.5 % / 1.56, 58.5 % | same |
+| build gap; platform reachable on foot | 46; no | 46; no |
+| front min free per section (own check, ≥ 70 %) | 81.6 % | 73.5 % |
+| gate open share; widest pier | 71.4 %; 4 | same |
+| central crossing width | 176 | 156 |
+| central sightline mean | 57.7 | 53.5 |
+| flanks north / south | 456 / 458 | 460 / 462 |
+| periphery reachable | 86.8 % | 85.4 % |
+| traps; unintended floating; interiors | 0; 0; 164 of 164 | same |
+| graybox vs art collision | 0 unallowed | 0 unallowed |
+| live server probe (piqueserver 1.4.2, babel) | loaded | loaded; platform 3,200 cells; 400 spawns per team in the stock squares |
+
+Three other seeds pass 30 / 30 (enemy-side cover 0.298–0.311, rear 0.504–0.543, centre median 28–35).
+
+Notes on the rules, from building to them `[RUN]`:
+
+* **Gate exemption widened:** the buttresses count as part of the gate, so the exempt box starts at x 143 in v1.2.
+  Without that the front would count four more objects.
+* **Gaps under the platform are 4–6, not 7–10.** The strip is 32 deep; 15 % coverage needs large pieces.
+* **Under-platform rule:** it allows pieces up to about 23 tall; the build-gap check is what keeps them low.
+  A domed bush and a present pile each cut the build gap until they were changed. `[OPEN]` suggestion: lower the
+  minimum to about 10 % and add "no taller than 5, not climbable".
+* **Spawn cover rule:** on a map with an open front the only place for enemy-side cover is beside the gate ends.
+  It did not change platform exposure. It measures enclosure, not protection from the platform. `[OPEN]`
+
 ### Regenerate
 
 ```bash
-python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow_v1_1 4015401698                 # v1.1 (default release)
+python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow_v1_2 4015401698                 # v1.2 (default release)
+python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow_v1_1 4015401698 --release 1.1  # v1.1, byte-identical
 python scenes/frostbell_hollow/fh_main.py out/frostbell_hollow 4015401698 --release 1.0       # v1.0, byte-identical
 python scenes/frostbell_hollow/fh_main.py out/new_build                                       # new random vegetation seed
-python scenes/frostbell_hollow/fh_render.py out/frostbell_hollow_v1_1
-python -m aosmap.kit.probe out/frostbell_hollow_v1_1 --mode babel
+python scenes/frostbell_hollow/fh_render.py out/frostbell_hollow_v1_2
+python -m aosmap.kit.probe out/frostbell_hollow_v1_2 --mode babel
 python scenes/frostbell_hollow/fh_main.py out/fh_exp 4015401698 --gate band                   # gate experiments
 python scenes/frostbell_hollow/fh_main.py out/fh_graybox --graybox                            # gameplay geometry only
 ```

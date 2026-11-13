@@ -441,6 +441,9 @@ def build_front(cv, S=SPEC):
     g = S['z']['valley']
     for i, h in enumerate(S['front_huts']):
         hut(cv, *h['box'], h['open'], f'front hut {i}', g)
+    if S.get('zones'):
+        _front_v12(cv, S)
+        return
     for (x, y, kind) in S['front_props']:
         if kind == 'sled':
             gbox(cv, x, x + 3, y, y + 1, 1, C['prop'])
@@ -462,6 +465,32 @@ def build_front(cv, S=SPEC):
     bench(cv, 220, 246)
     bench(cv, 229, 263, 'y')
     gbox(cv, 238, 239, 252, 253, 1, C['prop'])
+
+
+def _front_v12(cv, S):
+    """v1.2 front: the same scattered layout with fewer, larger low pieces (<= 5 tall; the zone rule wants 5-30 %
+    object share with 4-15 objects). The old under-platform benches are replaced by the v1.2 market pieces."""
+    for (x, y, kind) in S['front_props_v12']:
+        if kind == 'sled':                                    # sled loaded with sacks: 5 x 3, 2 tall
+            gbox(cv, x, x + 4, y, y + 2, 2, C['prop'])
+        elif kind == 'firewood':
+            gbox(cv, x, x + 4, y, y + 2, 2, C['trunk'])
+        elif kind == 'hay':
+            gbox(cv, x, x + 4, y, y + 2, 2, C['hay'])
+            gbox(cv, x + 1, x + 3, y + 1, y + 1, 3, C['hay'])
+        elif kind == 'cart':
+            gbox(cv, x, x + 5, y, y + 3, 2, C['timber'])
+            gbox(cv, x + 1, x + 2, y + 1, y + 2, 3, C['prop'])
+        elif kind == 'rock':
+            outcrop(cv, x, y, 3, 2.5, 2)
+        elif kind == 'bush':                                  # clipped holly drum: steep sides, not a step-up
+            g0 = int(cv.H[x, y])
+            cv.cylinder(x + 0.5, y + 0.5, 2.8, g0 - 3, g0 - 1, C['veg'], 'veg')
+        elif kind == 'bench':                                 # bench + planter group
+            bench(cv, x, y, 'x')
+            gbox(cv, x + 5, x + 7, y - 1, y + 1, 2, C['stone'], 'prop')
+        elif kind == 'lantern':
+            lantern(cv, x, y, 6)
 
 
 # =============================================================================================== market
@@ -823,6 +852,66 @@ def _arch_edge_dressing(cv, S):
         lantern(cv, 145, Y(226, 226)[0], 6)
 
 
+def build_zone_pieces(cv, S):
+    """v1.2 (2026-11-13 zone rules), all layout-fixed:
+    - under the platform: a low open bandstand on the axis, two hearth courts (U-shaped seat walls round a brazier),
+      a trestle-table set, a fir tub and hay-bale edges; all <= 5 tall except the bandstand roof (7); x <= 217 clear;
+    - spawn cover on the enemy side: buttresses in front of the arch piers (5 tall, part of the gate), hedge walls
+      and log stacks beside the gate ends, two small firs north/south of the market lanes;
+    - rear backdrop: six firs behind the village square (positions pinned; look still from the veg seed).
+    Returns the pinned stand-in pines [(x, y, r, h)]."""
+    V = S['v12']
+    g = S['z']['valley']
+    # ---------------------------------------------------------------- under the platform
+    gz = V['gazebo']
+    cx, cy = gz['c']
+    rz = gz['roof_z']
+    cv.cylinder(cx, cy + 0.5, gz['r'] - 1, g - 1, g - 1, C['timber'], 'gazebo')        # floor, 1 high
+    cv.cylinder(cx, cy + 0.5, gz['r'], rz, rz, C['roof'], 'gazebo')                    # roof (7 above the ground)
+    cv.cylinder(cx, cy + 0.5, gz['r'], rz + 1, rz + 1, C['roof'], 'gazebo', hollow=gz['r'] - 1)   # valance
+    for k in range(8):
+        a = (k + 0.5) * math.pi / 4
+        px = int(math.floor(cx + (gz['r'] - 1.2) * math.cos(a)))
+        py = int(math.floor(cy + 0.5 + (gz['r'] - 1.2) * math.sin(a)))
+        if px <= 255:
+            post(cv, px, py, rz + 1, g - 1, C['metal'], 'gazebo')
+    for (x0, x1, y0, y1) in V['hearths']:
+        open_e = True
+        cv.box(x0, x0, y0, y1, g - 2, g - 1, C['stone'], 'hearth')                     # back wall (west)
+        cv.box(x0, x1, y0, y0, g - 2, g - 1, C['stone'], 'hearth')                     # side walls
+        cv.box(x0, x1, y1, y1, g - 2, g - 1, C['stone'], 'hearth')
+        my = (y0 + y1) // 2
+        cv.box(x0 + 1, x0 + 3, my, my, g - 2, g - 1, C['stone'], 'hearth')            # hearth stone to the brazier
+        cv.box(x0 + 4, x0 + 5, my - 1 if (y1 - y0) % 2 else my, my, g - 2, g - 1, C['metal'], 'brazier')
+    tx0, tx1, ty0, ty1 = V['trestle']
+    cv.box(tx0, tx1, ty0, ty0 + 1, g - 2, g - 1, C['furn'], 'trestle')
+    cv.box(tx0, tx1, ty1 - 1, ty1, g - 2, g - 1, C['furn'], 'trestle')
+    cv.box(tx0, tx0 + 1, ty0 + 2, ty1 - 2, g - 2, g - 1, C['furn'], 'trestle')            # serving counter
+    px0, px1, py0, py1 = V['planter']
+    cv.box(px0, px1, py0, py1, g - 2, g - 1, C['stone'], 'planter')
+    cv.cone((px0 + px1 + 1) / 2, (py0 + py1 + 1) / 2, 2.2, g - 3, g - 5, C['veg'], 'planter_fir')
+    for (x0, x1, y0, y1) in V['hay']:
+        cv.box(x0, x1, y0, y1, g - 2, g - 1, C['hay'], 'hay')
+    # ---------------------------------------------------------------- enemy-side spawn cover
+    gh = S['gatehouse']
+    bx0, bx1 = V['buttress_x']
+    for (p0, p1) in gh['arch']['piers']:
+        cv.box(bx0, bx1, p0, p1, g - 5, g - 1, C['soldier'], 'buttress')
+    for south in (False, True):
+        def Y(a, b):
+            return (a, b) if not south else (512 - b, 512 - a)
+        for (x0, x1, y0, y1) in V['cover_hedges']:
+            gbox(cv, x0, x1, *Y(y0, y1), 4, (54, 98, 64), 'hedge')
+        for (x0, x1, y0, y1) in V['cover_logs']:
+            gbox(cv, x0, x1, *Y(y0, y1), 3, C['trunk'], 'prop')
+    pinned = []
+    for (x, y, r, h) in V['cover_firs'] + V['backdrop_firs']:
+        for yy in ((y,) if (x, y, r, h) in V['backdrop_firs'] else (y, 512 - y)):
+            pine(cv, x, yy, r, h)
+            pinned.append((x, yy, r, h))
+    return pinned
+
+
 def build_flank_cover(cv, S):
     """'+ flank cover' experiment: tall rock spires right beside the gate ends and rock crags NE/SE of the spawn
     square - all outside the front band (y 232-280 for x 152-199) and outside the spawn square + margin."""
@@ -1087,9 +1176,19 @@ def _try_outcrop(cv, rng, x, y):
     return (x, y, round(rx, 1), round(ry, 1), round(rz, 1))
 
 
+_NO_PAD_BOX = None                                   # v1.2: (x0, x1, y0, y1) where no pad may go (set per build)
+
+
+def _in_no_pad(x0, x1, y0, y1):
+    if _NO_PAD_BOX is None:
+        return False
+    a, b, c, d = _NO_PAD_BOX
+    return not (x1 < a or x0 > b or y1 < c or y0 > d)
+
+
 def _try_pad(cv, rng, x, y, pads, kinds=PAD_KINDS):
     w, d = (5, 5) if rng.random() < 0.5 else ((7, 5) if rng.random() < 0.5 else (5, 7))
-    if x + w > 250:
+    if x + w > 250 or _in_no_pad(x, x + w - 1, y, y + d - 1):
         return None
     Hs = cv.H[x:x + w, y:y + d]
     if Hs.max() > 60 or Hs.max() != Hs.min():
@@ -1342,6 +1441,8 @@ def break_flats(cv, S=SPEC, target=22, rounds=40):
                        'barrels': (px - 3, px + 6, py - 3, py + 4)}[k]
                 if not free_for_prop(cv, *box, keep_mask=mask):
                     continue
+                if k == 'pad' and _in_no_pad(px, px + 4, py, py + 4):
+                    continue
                 if k == 'pad':
                     Hs = cv.H[px:px + 5, py:py + 5]
                     if Hs.max() != Hs.min() or Hs.max() > 60:
@@ -1369,6 +1470,8 @@ def break_flats(cv, S=SPEC, target=22, rounds=40):
 
 def build_west(S=SPEC, veg_seed=None):
     """Everything except the mirror and the train. veg_seed places the pine stand-ins. Returns (canvas, report)."""
+    global _NO_PAD_BOX
+    _NO_PAD_BOX = S['v12_no_pad_box'] if S.get('zones') else None
     cv = Canvas(S['name'])
     H, region, geo = terrain(S)
     paint_terrain(cv, H, region)
@@ -1383,6 +1486,7 @@ def build_west(S=SPEC, veg_seed=None):
         build_gate_variant(cv, S, S['gatehouse']['variant'])
     if S['gatehouse'].get('flank_cover'):
         build_flank_cover(cv, S)
+    pinned = build_zone_pieces(cv, S) if S.get('zones') else []
     build_front(cv, S)
     market_boxes = build_market(cv, S)
     build_axis(cv, S)
@@ -1394,6 +1498,8 @@ def build_west(S=SPEC, veg_seed=None):
         feature_pad(cv, 146, 214, 5, 5, 'snowman', sc['feature_pads'])
     sc['nooks_filled'] = fill_nooks(cv)                 # after the seeded scatter: 0 traps for any seed
     sc['trap_pines_removed'] = clear_pine_traps(cv, sc['pine_list'], S)
+    sc['pine_list'] += pinned                          # layout-pinned cover firs (never removed by the trap pass)
+    sc['pinned_firs'] = len(pinned)
     bf = break_flats(cv, S)
     sc['feature_pads'] = sc['feature_pads'] + bf['feature_pads']
     sc['break_flats'] = {'placed': len(bf['placed']), 'largest_side_after_west': bf['largest_side_after']}

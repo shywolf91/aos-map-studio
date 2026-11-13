@@ -35,6 +35,8 @@ def front_exempt_boxes(S=SPEC):
     (babel_checks zone_rules: left out of the front object count/share/height test, still in the free-share test).
     Only build.json carries them; the .vxl/.txt are unchanged."""
     gx, gy = S['gatehouse']['x'], S['gatehouse']['y']
+    if S.get('zones') and S['gatehouse'].get('variant') == 'arch':
+        gx = (S['v12']['buttress_x'][0], gx[1])             # v1.2: the pier buttresses are part of the gate
     east = sorted(symmetry.mirror_index(x, S['axis']) for x in gx)
     return [[gx[0], gx[1], gy[0], gy[1]], [east[0], east[1], gy[0], gy[1]]]
 
@@ -135,6 +137,7 @@ if __name__ == '__main__':
         release = sys.argv[sys.argv.index('--release') + 1]
     SPEC['release'] = release
     SPEC['gatehouse']['variant'] = SPEC['releases'][release]['gate']
+    SPEC['zones'] = bool(SPEC['releases'][release].get('zones'))
     if '--gate' in sys.argv:                            # exposure experiment override
         SPEC['gatehouse']['variant'] = sys.argv[sys.argv.index('--gate') + 1]
     if '--flank-cover' in sys.argv:

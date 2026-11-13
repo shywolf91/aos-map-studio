@@ -100,14 +100,40 @@ SPEC = {
                   'arch': {'y': (240, 272), 'piers': [(240, 243), (250, 252), (260, 262), (269, 272)],
                            'statue_y': (228, 231), 'merlon_z': (26, 27)}},
     # releases (fh_main.py --release): the gate variant and the .txt version; v1.0 stays reproducible
-    'releases': {'1.0': {'gate': 'full'}, '1.1': {'gate': 'arch'}},
-    'release_default': '1.1',
+    'releases': {'1.0': {'gate': 'full'}, '1.1': {'gate': 'arch'}, '1.2': {'gate': 'arch', 'zones': True}},
+    'release_default': '1.2',
+    'zones': False,                       # set by the release: v1.2 adds the 2026-11-13 zone-rule pieces
+    # ---------------------------------------------------------------- v1.2 zone pieces (west half; layout-fixed)
+    'v12': {
+        # under the platform (strip x 212-300, y 240-271; x 200-217 kept clear for tower anchors)
+        'gazebo': {'c': (256, 256), 'r': 7.5, 'roof_z': 43},
+        'hearths': [(228, 236, 240, 246), (228, 236, 265, 271)],       # U-shaped seat walls round a brazier
+        'trestle': (218, 223, 250, 261),                                # two long tables joined by a counter
+        'planter': (229, 234, 253, 258),                                # fir tub
+        'hay': [(240, 247, 240, 243), (240, 247, 268, 271)],            # hay-bale edges
+        # spawn cover on the enemy side (outside the front band and the spawn square + margin)
+        'buttress_x': (143, 145),                                       # in front of the arch piers, 5 tall
+        'cover_hedges': [(152, 158, 228, 231)],                         # 4 tall (y-mirrored)
+        'cover_logs': [(143, 145, 228, 231)],                           # 3 tall (y-mirrored)
+        'cover_firs': [(155, 216, 2, 10)],                              # (x, y, r, h) (y-mirrored)
+        # rear backdrop 20-40 behind the square: firs pinned to the layout (species/details still seeded)
+        'backdrop_firs': [(64, 222, 3, 13), (73, 230, 3, 12), (62, 236, 3, 13), (64, 276, 3, 12),
+                          (74, 282, 3, 13), (60, 288, 3, 12)],
+    },
     'front_huts': [{'box': (166, 174, 232, 239), 'open': 'S'}, {'box': (181, 189, 273, 280), 'open': 'N'}],
     # scattered low front props (x, y, kind): never in rows; heights <= 5 (lanterns 6)
     'front_props': [(157, 263, 'sled'), (191, 249, 'sled'), (161, 271, 'firewood'), (177, 245, 'hay'),
                     (193, 265, 'hay'), (170, 255, 'cart'), (183, 240, 'rock'), (196, 271, 'rock'),
                     (159, 243, 'bush'), (186, 259, 'bush'), (163, 252, 'bench'), (178, 267, 'bench'),
                     (154, 236, 'lantern'), (155, 277, 'lantern'), (168, 274, 'rock'), (189, 233, 'firewood')],
+
+    # v1.2 front dressing (zone rule: 5-30 % object share): fewer, larger low pieces; same scattered layout
+    'front_props_v12': [(157, 263, 'sled'), (161, 271, 'firewood'), (177, 245, 'hay'), (193, 265, 'hay'),
+                        (170, 255, 'cart'), (183, 240, 'rock'), (196, 247, 'rock'), (159, 243, 'bush'),
+                        (186, 259, 'bush'), (163, 252, 'bench'), (178, 267, 'bench'), (154, 236, 'lantern'),
+                        (155, 277, 'lantern'), (189, 233, 'firewood')],
+    # v1.2: no feature pads (snowmen / present piles are climbable) inside the build-gap box near the platform
+    'v12_no_pad_box': (178, 255, 212, 299),
 
     # ---------------------------------------------------------------- market stalls (west half), clusters and arcs
     # (x0, x1, y0, y1, front, kind) kind: plain | awning | L

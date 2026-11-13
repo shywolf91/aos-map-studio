@@ -370,6 +370,102 @@ def chapel_art(cv, S, rng, glow):
     cv.rgb[sl][m] = (110, 78, 54)
 
 
+def v12_art(cv, S, rng, glow):
+    """v1.2 zone pieces: the bandstand (sector-painted roof with a gold rim, brass posts, plank floor, eight lanterns),
+    hearth courts (stone seat walls, snow caps, glowing braziers), trestle tables with a cloth runner, the fir tub,
+    hay bales, the gate buttresses (red brick drums, cream caps, a lantern each). Recolour only."""
+    V = S['v12']
+    g = S['z']['valley']
+    n = 0
+
+    def vox(mname):
+        mid = cv.materials.get(mname)
+        if mid is None:
+            return np.zeros(0, int), np.zeros(0, int), np.zeros(0, int)
+        m = cv.mat == mid
+        m[256:] = False
+        return np.nonzero(m)
+
+    # bandstand
+    X, Y, Z = vox('gazebo')
+    cx, cy = V['gazebo']['c']
+    cy += 0.5
+    th = np.arctan2(Y + 0.5 - cy, X + 0.5 - cx)
+    r = np.hypot(X + 0.5 - cx, Y + 0.5 - cy)
+    sect = ((th + np.pi) / (np.pi / 8)).astype(int) % 2
+    c = np.empty((len(X), 3))
+    rz = V['gazebo']['roof_z']
+    roof = Z <= rz + 1
+    aa = ~cv.solid[X, Y, np.maximum(Z - 1, 0)]
+    c[:] = np.where(sect[:, None] == 0, np.array((150, 58, 50)), np.array((206, 190, 150)))
+    c[roof & (r > V['gazebo']['r'] - 1.1)] = (196, 158, 80)                         # gold rim / valance
+    c[roof & aa & (r < V['gazebo']['r'] - 1.5)] = SNOW_MID                          # snow on the roof
+    floor = Z == g - 1
+    c[floor] = np.where(((X + Y) % 2 == 0)[floor][:, None], np.array((132, 100, 70)), np.array((120, 90, 64)))
+    post = ~roof & ~floor
+    c[post] = (196, 160, 80)                                                        # brass posts
+    cv.rgb[X, Y, Z] = np.clip(c, 0, 255).astype(np.uint8)
+    for k in range(8):                                                               # lanterns on the valance
+        a = (k + 0.5) * math.pi / 4
+        px = int(math.floor(cx + (V['gazebo']['r'] - 0.6) * math.cos(a)))
+        py = int(math.floor(cy + (V['gazebo']['r'] - 0.6) * math.sin(a)))
+        if px <= 255 and cv.solid[px, py, rz + 1]:
+            glow.append((px, py, rz + 1, WARM))
+            n += 1
+    # hearth courts + braziers
+    X, Y, Z = vox('hearth')
+    aa = ~cv.solid[X, Y, Z - 1]
+    c = np.where((((X + Y + Z) % 3) == 0)[:, None], np.array((138, 132, 126)), np.array((156, 150, 142)))
+    c = np.where(aa[:, None], np.array(SNOW_MID), c)
+    cv.rgb[X, Y, Z] = c.astype(np.uint8)
+    X, Y, Z = vox('brazier')
+    cv.rgb[X, Y, Z] = (58, 54, 56)
+    for (x, y, z) in zip(X, Y, Z):
+        if not cv.solid[x, y, z - 1]:
+            glow.append((int(x), int(y), int(z), WARM if (x + y) % 2 else YELLOW))
+            n += 1
+    # trestles: timber with a white cloth runner on the table tops
+    X, Y, Z = vox('trestle')
+    aa = ~cv.solid[X, Y, Z - 1]
+    c = np.where(((X + Y) % 2 == 0)[:, None], np.array((120, 88, 62)), np.array((108, 78, 56)))
+    tx0, tx1, ty0, ty1 = V['trestle']
+    runner = aa & ((Y == ty0) | (Y == ty1)) & (X > tx0 + 1)
+    c[runner] = (206, 198, 180)
+    cv.rgb[X, Y, Z] = c.astype(np.uint8)
+    # fir tub
+    X, Y, Z = vox('planter')
+    cv.rgb[X, Y, Z] = np.where(((X + Y) % 2 == 0)[:, None], np.array((150, 146, 140)), np.array((136, 132, 128)))
+    X, Y, Z = vox('planter_fir')
+    aa = ~cv.solid[X, Y, Z - 1]
+    c = np.where((Z % 2 == 0)[:, None], np.array((44, 86, 58)), np.array((56, 100, 64)))
+    c = np.where((aa & (noise.hash3(X, Y, Z, 41) < 0.5))[:, None], np.array(SNOW_MID), c)
+    cv.rgb[X, Y, Z] = c.astype(np.uint8)
+    if len(Z):
+        k = int(np.argmin(Z))
+        glow.append((int(X[k]), int(Y[k]), int(Z[k]), YELLOW))                    # star on the tub fir
+        n += 1
+    # hay bales
+    X, Y, Z = vox('hay')
+    aa = ~cv.solid[X, Y, Z - 1]
+    c = np.array((196, 168, 96)) * (0.9 + 0.12 * noise.hash3(X, Y, Z, 7))[:, None]
+    c[aa & (noise.hash3(X, Y, Z, 8) < 0.6)] = SNOW_MID
+    cv.rgb[X, Y, Z] = np.clip(c, 0, 255).astype(np.uint8)
+    # gate buttresses: red brick drums, cream hoops and cap, one lantern on the spawn-side face
+    X, Y, Z = vox('buttress')
+    c = np.where((((Y + (Z // 2) % 2 * 2) // 4) % 2 == 0)[:, None], np.array((156, 58, 50)), np.array((140, 50, 44)))
+    c[Z % 3 == 0] = (204, 190, 160)
+    aa = ~cv.solid[X, Y, Z - 1]
+    c[aa] = SNOW_MID
+    cv.rgb[X, Y, Z] = c.astype(np.uint8)
+    for (p0, p1) in S['gatehouse']['arch']['piers']:
+        y = (p0 + p1) // 2
+        x = V['buttress_x'][0]
+        if cv.solid[x, y, g - 3]:
+            glow.append((x, y, g - 3, WARM))
+            n += 1
+    return {'glow_added': n}
+
+
 def arch_art(cv, S, glow):
     """v1.1 arch: brick/drum banding on the piers, cream masonry lintel with gold trim, snow-capped merlons, a holly
     wreath with a gold bell over the middle passage (both faces), garland swags with warm bulbs, lanterns under each
@@ -889,13 +985,18 @@ def art_west(cv, rep, S, rng, seed):
         arch_art(cv, S, glow)
     else:
         gatehouse_art(cv, S, glow)
+    if S.get('zones'):
+        out['v12'] = v12_art(cv, S, rng, glow)
     out['props'] = props_art(cv, S, rng, glow)
     out['stall_bulbs'] = market_art(cv, S, rep, rng, glow)
     hut_art(cv, S, glow)
     axis_art(cv, S, rng, glow)
     out['mine_lamps'] = underground_art(cv, S, rng, glow)
     # vegetation (holly bushes keep their voxels; spruce one-off; real trees on every stand-in column)
-    bushes = [(x - 3, x + 3, y - 3, y + 3) for (x, y, k) in S['front_props'] if k == 'bush']
+    if S.get('zones'):
+        bushes = [(x - 4, x + 4, y - 4, y + 4) for (x, y, k) in S['front_props_v12'] if k == 'bush']
+    else:
+        bushes = [(x - 3, x + 3, y - 3, y + 3) for (x, y, k) in S['front_props'] if k == 'bush']
     out['holly_voxels'] = fh_veg.holly_recolour(cv, rng, bushes)
     out['spruce'] = fh_veg.giant_spruce(cv, rng, S, glow)
     pines = rep['scatter']['pine_list']

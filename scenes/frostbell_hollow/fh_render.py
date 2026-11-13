@@ -29,6 +29,8 @@ SHOTS = preview.STANDARD_SHOTS + [
     ('eye_mill_creek', dict(cam=(118, 432, 12), look=(150, 410, 10), fov=70, size=(1400, 800))),
     ('eye_tunnel_chamber', dict(cam=(98.5, 160.5, 5.6), look=(112, 173, 5), fov=80, size=(1200, 700))),
     ('eye_carousel', dict(cam=(228, 280, 21), look=(256, 292, 15), fov=70, size=(1400, 800))),
+    ('eye_under_platform_strip', dict(cam=(214, 244, 20), look=(256, 262, 14), fov=72, size=(1400, 800))),
+    ('eye_blue_spawn_back_west', dict(cam=(132, 256, 20), look=(60, 256, 22), fov=72, size=(1400, 800))),
 ]
 
 

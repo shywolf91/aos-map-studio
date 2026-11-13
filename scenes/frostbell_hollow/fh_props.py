@@ -335,6 +335,9 @@ def build_pads(cv, rng, pads):
     for p in pads:
         x0, x1, y0, y1 = p['box']
         pz = int(cv.H[(x0 + x1) // 2, (y0 + y1) // 2]) - 1           # pad top (pads are 1 voxel on flat ground)
+        pid_ = cv.materials.get('pad')
+        while pid_ is not None and cv.mat[(x0 + x1) // 2, (y0 + y1) // 2, pz - 1] == pid_:
+            pz -= 1                                                      # v1.2 pads are 2 voxels
         before = cv.solid[x0 - 1:x1 + 2, y0 - 1:y1 + 2, :pz + 1].copy()
         kind = p['kind']
         face = (1, 0) if x0 < 256 else (-1, 0)
