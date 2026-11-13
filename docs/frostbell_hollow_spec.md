@@ -276,8 +276,8 @@ Notes on the rules, from building to them `[RUN]`:
   Without that the front would count four more objects.
 * **Gaps under the platform are 4–6, not 7–10.** The strip is 32 deep; 15 % coverage needs large pieces.
 * **Under-platform rule:** it allows pieces up to about 23 tall; the build-gap check is what keeps them low.
-  A domed bush and a present pile each cut the build gap until they were changed. `[OPEN]` suggestion: lower the
-  minimum to about 10 % and add "no taller than 5, not climbable".
+  A domed bush and a present pile each cut the build gap until they were changed. A suggestion to lower the
+  minimum to about 10 % with a 5-tall cap was declined: the rule stays as adopted `[USER 2026-11-13]`.
 * **Spawn cover rule:** on a map with an open front the only place for enemy-side cover is beside the gate ends.
   It did not change platform exposure. It measures enclosure, not protection from the platform. `[OPEN]`
 
