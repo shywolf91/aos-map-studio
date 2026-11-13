@@ -21,6 +21,8 @@ Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project
    workflow, checklist, portfolio, reference measurements. `aos_map.md` is the older (10-13) version of it.
 4. `docs/vxl_and_runtime_reference.md` is the source-verified technical reference, with file and function citations.
 5. `docs/babel_rotation_guide_notes.md` covers Babel spawn-camping rules and the calibrated spawn-exposure targets.
+   * `docs/babel_zone_study.md` (2026-11-13) measures spawn, tower zone and centre on 158 community Babel maps and
+     on ours. Its §9 targets are **proposals**, not owner rules, until the owner approves them.
 6. `docs/project_brief/` holds the original project brief, the role instructions and the per-mode design prompts.
 7. Read the spec of the newest map closest to your task (§9):
    * `docs/under_the_tree_spec.md` and `docs/bloomhop_kingdom_spec.md` are the newest Babel examples (2026-11-09).

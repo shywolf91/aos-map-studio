@@ -18,6 +18,7 @@ byte-identical).
 | `tag` | `paint_tag`: map name only, on the ground in a corner, levels only the strip under it | `gf/hc_color.paint_tag`, `wkh/sph_main.paint_tag`, Bloomhop `corner_tag`, Haunted Fairground `corner_tag`, `ww_font` |
 | `sky` | `moon`, `cloud`, `bird`, `bat`, `stamp`; `place()` searches for a clear spot that meets the rules (≥ 60 from the platform, not over a spawn square, ≥ 8 air below) and records it | `wkh_sky`, `sph_sky`, Bloomhop `sky_decor` |
 | `babel_checks` | the full suite → `validation.json` + `summary()` pass/fail table; CLI `python -m aosmap.kit.babel_checks <dir>` | `hc/wkh/sph/gf_check` (Nav, exposure, floating, sky rules, mirror, platform, spawn squares, routes, traps, interiors, build gap), Bloomhop `check.py` (8-neighbour rules, its exposure, anchor step), `aosmap.validate.check_babel`, `aosmap.sightline` |
+| `zones` | report-only zone profile (spawn, tower zone / front, centre metrics; fast span-header decoder; LOS, free rays, max-flow crossing width, symmetry type, map class) - definitions in `docs/babel_zone_study.md` | new (2026-11-13, Babel zone study) |
 | `probe` | live piqueserver 1.4.2 probe in a temp config dir (platform cells, extensions, fog, intel, 400 spawns per team); CLI `python -m aosmap.kit.probe <dir>` | `server_test/*/scripts/{hc,gf,sph}_probe.py`, `ww_probe.py`, `aosmap.pipeline` |
 | `build` | `export` (`.vxl` + `.txt` + `build.json` + `mat.npy`/`terrain_H.npy`), `map_txt`, `check_txt` (owner rules), `glow_extensions`, `determinism_check` | every `*_main.py`, `aosmap/meta.py` |
 | `preview` | `topdown`, perspective `view` with fog, `render_dir`; every image is stamped "numpy preview - not a client capture" | `hc/wkh/sph_render.py`, Bloomhop `render.py` |
@@ -41,6 +42,7 @@ Every check in AGENTS.md §5 step 5 and knowledge base §15:
 | `build_gap`, `assist_structures` | highest reachable point near the platform; per-structure gap for assist Babel **(new)** |
 | `anchors` | enemy-face step and graph walk-on rows; fails only for a raised anchor that can be walked onto **(new)** |
 | `periphery` | share of ground columns reachable without building **(new, report only)** |
+| `zone_profile` | report-only (no pass/fail): every `aosmap.kit.zones` metric for both teams + mirrored average, centre, routes, map class; compare against the community distributions in `docs/babel_zone_study.md` **(new)** |
 | `spawn_exposure` | viewers per spot and hidden share against the ≤ 10 / ≥ 15 % targets; presets `calibrated` (= `aosmap.sightline`, the calibrated model) and `bloomhop` |
 
 Route checks are a graph model (3 air to stand, 1-voxel step with 4 voxels of climb room, drops ≤ 9 safe,

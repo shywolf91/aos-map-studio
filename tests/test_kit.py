@@ -129,3 +129,78 @@ def test_glow_extension_keys_are_xyz_tuples(tmp_path):
     ns = {}
     exec(f.read_text(), ns)
     assert ns['extensions']['glow_stored_colors'] == {(5, 6, 7): (10, 20, 30)}
+
+
+# ------------------------------------------------------------------------------------------- zones (zone profile)
+
+@pytest.fixture(scope='module')
+def walled_blue():
+    """Flat z 50 map. Blue spawn walled in (6 high, 5 outside the square) with one 3-wide gate on the enemy side;
+    red spawn open. Not mirrored on purpose (each team is measured separately)."""
+    from aosmap.kit import zones
+    cv = flat()
+    x0, x1, y0, y1 = 98 - 5, 138 + 5, 236 - 5, 276 + 5
+    for (a, b, c, d) in ((x0, x1, y0, y0), (x0, x1, y1, y1), (x0, x0, y0, y1), (x1, x1, y0, y1)):
+        cv.box(a, b, c, d, 44, 49, (90, 90, 90))
+    cv.carve(x1, x1, 255, 257, 44, 49)
+    data = cv.to_vxl()
+    solid, topc = zones.decode_solid_fast(data)
+    return cv, data, solid, zones.zone_profile(solid)
+
+
+def test_zones_fast_decoder_matches_strict_reader(walled_blue):
+    cv, data, solid, _ = walled_blue
+    s2, c2, _ = codec.decode(data)
+    assert (solid == s2).all() and (solid == cv.solid | (np.arange(64) == 63)).all()
+
+
+def test_zones_spawn_exits_and_enclosure(walled_blue):
+    zp = walled_blue[3]
+    b, r = zp['teams']['blue']['spawn'], zp['teams']['red']['spawn']
+    assert b['exit_min_cut'] == 3 and b['sealable'] is True
+    assert r['exit_min_cut'] > 100 and r['sealable'] is False
+    assert b['floor_z'] == 50 and b['near_mode_share'] == 1.0 and b['roof_cols'] == 0 and b['water_cols'] == 0
+    assert b['enclosure']['r0_8_enemy_cover3'] > 0 and r['enclosure']['r0_8_enemy_cover3'] == 0
+    assert b['platform_viewers_mean'] < r['platform_viewers_mean']
+
+
+def test_zones_front_centre_and_map_on_flat_ground(walled_blue):
+    zp = walled_blue[3]
+    f = zp['teams']['red']['front']
+    assert f['build_gap_blocks'] == 50 - 2 and not f['platform_reachable_on_foot']
+    assert f['object_share'] == 0 and f['flat_share'] == 1.0 and f['water_share'] == 0
+    assert zp['centre']['strip']['min_gap_to_platform'] == 48
+    assert zp['routes']['flank_exists'] and zp['routes']['map_crossing_width'] > 400
+    assert zp['map']['land_share'] == 1.0
+    from aosmap.kit import zones
+    c = zones.classify(zp)
+    assert c == {'class': 'ground', 'assist': False, 'stock_fit': True}
+
+
+def test_zones_rays_and_symmetry():
+    from aosmap.kit import zones
+    cv = flat()
+    cv.box(110, 110, 0, 511, 40, 49, (1, 1, 1))                     # wall 10 east of x 100
+    op = zones._opaque(cv.solid, babel_checks.BABEL_DEFAULT)
+    L = zones.free_rays(op, [(100.5, 100.5, 47.6)], dirs=4)
+    assert 9 <= L[0, 0] <= 10 and 99.5 <= L[0, 2] <= 101              # east blocked; west runs to the map edge
+    assert zones.symmetry_type(cv.solid)['type'] not in ('x512', 'x511')
+    cv2 = flat()
+    cv2.box(100, 140, 40, 60, 40, 49, (1, 1, 1))
+    cv2.box(100, 140, 451, 471, 40, 49, (1, 1, 1))               # y' = 511 - y mirror only
+    assert zones.symmetry_type(cv2.solid)['best'] == 'y511'
+    vis = zones.los_any(op, [(100.5, 100.5, 47.6)], [(120.5, 100.5, 47.8), (90.5, 100.5, 47.8)])
+    assert vis.tolist() == [0, 1]
+
+
+def test_zones_roof_versus_deck_columns():
+    from aosmap.kit import zones
+    cv = flat()
+    cv.box(10, 19, 10, 19, 44, 44, (5, 5, 5))           # roof 5 above dry ground: room under it
+    cv.box(30, 39, 10, 19, 49, 49, (5, 5, 5))           # 1-voxel slab lying on the ground: no gap
+    cv.carve(50, 59, 10, 19, 20, 62)                     # pit to the sea floor ...
+    cv.box(50, 59, 10, 19, 20, 20, (5, 5, 5))           # ... bridged by a deck 42 above it
+    F = zones.fields(cv.solid)
+    assert F['roof'][10:20, 10:20].all() and not F['deck'][10:20, 10:20].any()
+    assert not F['roof'][30:40, 10:20].any() and not F['deck'][30:40, 10:20].any()
+    assert F['deck'][50:60, 10:20].all() and not F['roof'][50:60, 10:20].any()

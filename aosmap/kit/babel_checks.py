@@ -4,7 +4,7 @@ Merged from the identical cores of gf/hc/wkh/sph_check.py (Nav graph, exposure, 
 platform, spawn squares, routes, traps, interiors, build gap), Bloomhop check.py (8-neighbour BFS rules,
 its exposure model, anchor front step), aosmap.validate.check_babel and aosmap.sightline. New here (no map had
 them as checks): safe descent, flank routes, enemy-face access to the tower anchors, per-structure assist gaps,
-periphery reachability.
+periphery reachability. 'zone_profile' (report-only) adds the aosmap.kit.zones metrics (docs/babel_zone_study.md).
 
 Route checks are a GRAPH MODEL (3 air voxels to stand, 1-voxel step up, drops <= 9 counted safe, <= 19 survivable),
 not a collision simulation, and never proof of playability.
@@ -330,7 +330,8 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
             axis='x512', exposure_preset='calibrated', rules='hc', pyspades=True, targets=None,
             end_z=(0, 62), trap_anchor=None, trap_stride=5, ground_band=3, trap_z=None,
             tower_zone=None, assist=None, flank_min=130, flank_max=210, centre_half_x=80,
-            anchor_face=None, build_gap_margin=24, build_gap_graph='safe', exits=None, timing=True):
+            anchor_face=None, build_gap_margin=24, build_gap_graph='safe', exits=None, timing=True,
+            zone_profile=True):
     """Run every check on one map. Returns a JSON-able dict. See the module docstring for the model."""
     t0 = time.time()
     build = build or {}
@@ -503,6 +504,12 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
 
     R['anchors'] = anchor_checks(solid, nav, P, anchor_face, axis)
     R['spawn_exposure'] = {name: spawn_exposure(solid, b, P, exposure_preset) for name, b in zip(names, P['bases'])}
+    if zone_profile:
+        # report-only zone metrics (aosmap.kit.zones, docs/babel_zone_study.md); no pass/fail yet
+        from . import zones
+        zp = zones.zone_profile(solid, P, nav=nav if rules == 'hc' else None)
+        zp['class'] = zones.classify(zp)
+        R['zone_profile'] = zp
     if timing:
         R['check_seconds'] = round(time.time() - t0, 1)
     return R
