@@ -1,6 +1,8 @@
-# Elderveil — spec (v1.0)
+# Elderveil — spec (v1.0 and v1.1)
 
-**Status: specified** (2026-11-13). Nothing is generated yet.
+**Status: server-loaded** (2026-11-14), v1.0 and v1.1. **v1.1 is the current version** (second art round). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
+Not client-inspected and not playtested. The renders in `maps/elderveil_v1*/renders/` are numpy previews, not
+client captures.
 
 An original dark-fantasy map: a forest valley swallowed by the pale-stone ruins of a vanished elder people, on a misty
 morning. Monster-hunter camps have moved into the old outposts. **Babel, assist structures** (light): stock
@@ -95,6 +97,13 @@ axis. z = 0 is the sky; a floor z is the solid voxel a player stands on.
 * **Vegetation:** the art centrepiece. Old-growth groves (giant oaks, beeches, firs), ferns, ivy on ruins, hanging
   roots, wildflower patches; three random details per plant, OS seed per build.
 
+## Owner decision on spawn exposure `[USER 2026-11-13]`
+
+The graybox measured about 10 platform viewers per spawn spot and 0 % of spots hidden (targets: at most about 10,
+at least 15 % hidden). A ruined gateway arch across the front would give 44 % hidden (solid band z 34–40) or 83 %
+(z 28–34). The owner chose to **leave the front open**. The spawn-exposure check is waived for this map and is
+reported as waived, with its numbers, not as a pass.
+
 ## Rules that apply
 
 All AGENTS.md §4 rules, including the four 2026-11-13 zone rules (front dressing, spawn cover, under the platform,
@@ -103,6 +112,125 @@ over the platform footprint empty, tower corridors usable, spawn exposure re-mea
 Relaxed checks for this variant: "platform not reachable without building" stays a pass (the spires still need a
 build); the build gap is reported per structure.
 
-## Validation, limits, regenerate
+## As built (v1.0) `[RUN 2026-11-14]`
 
-To be filled in after the build.
+Release build: vegetation seed **2243074186** (OS-drawn, saved in `build.json`).
+`.vxl` 3,189,784 bytes, SHA-256 `de354987685297fd39ded48a9bb59f0b84503a0e059d151d48de1bb129ae8d62`.
+`.txt` 736,833 bytes. Label: **Babel, assist structures**.
+
+### Deviations from the layout above
+
+* Spire footprint x 180–201, y 208–229. Top floor z 12.
+* Gate tower: octagonal, 3 storeys, arched gateway through its base, at y 222–235 beside the front band.
+  Hall: L-shaped with an apse and a collapsed corner. Bastion at y 277–290: an enterable broken tower base.
+* Front: a fallen lintel block (5 tall) added; the roofless shrine sits just north of the band (y 226–234).
+* Under the platform: an elder head (radius 7.5) and three 7 × 7 plinths with column stubs; no root humps.
+* Aqueduct: gentle double bend (y 88 ± 6), three collapsed gaps per side with rubble stairs, a fallen span.
+* Six minor ruin sites per side: collapsed colonnade, toppled obelisk, stair to nowhere, roofless chapel,
+  hunters' lookout, monster-nest cave in a new crag at (36, 372).
+* Rune circle at y 398 (not 410); footbridge spans y 410–462; twin waterfalls flank the bridge (x 240–247 and mirror).
+* Heart-tree: twisting trunk with a walk-in hollow, seven roots of four kinds, forked limbs with separate crowns.
+* Sky: four floating ruin islets and crows (13 expected floating pieces). Tag "Elderveil" at z 7–8 over the
+  north-west crest on one stalk (tethered, not floating).
+
+### Validation
+
+| check | result |
+|---|---|
+| own reader, re-encode; pyspades 1.4.2 `generate()` | identical; identical |
+| floating components | 0 unintended; 13 expected sky pieces, sky rules met (≥ 145 from the platform, ≥ 9 air below, none over a spawn) |
+| mirror (`x512`) | 0 solid and 0 material mismatches outside the declared boxes |
+| platform volume and margin; ceiling | clear; nothing solid at z ≤ 6 (top solid z 7) |
+| ground under platform ends; anchors | flat z 50, no water; prop-free, no enemy-side stairs |
+| spawn squares | tops z 48/49, 0 roof columns, 0 water columns, margins prop-free |
+| **spawn exposure** | **WAIVED** `[USER 2026-11-13]`: blue 10.25 viewers per spot, 0 % hidden; red 10.0, 0 % |
+| build gap | 48 from the anchor ground; 42 from the highest point near the platform (queen statue, z 44); **10 from each spire top** |
+| platform reachable on foot | no |
+| spire tops | 21 voxels horizontally from the platform edge, 11 below it; 144 steps from own spawn, 280 from the enemy spawn; safe way down |
+| spire perch (report) | each spire top sees 92.5 % of its own side's spawn spots (8.4 eye positions per spot), 0 % of the other side |
+| zone: front dressing | pass: 7 objects, 10.6 % covered, all ≤ 5 tall, worst 8-column section 74.7 % free |
+| zone: spawn cover | pass: 28 % enemy side within 20, 61 % rear backdrop |
+| zone: under the platform | pass: 15.4 % covered, ≥ 42 air, anchors flat and clear |
+| zone: centre median object footprint | pass: 47 cells |
+| traps; interiors; high floors | 0; 84 of 84 reachable with a way out; 32 high floors with a safe way down |
+| front open (own check); featureless patch | worst column 73.2 % free; 21 (limit 24) |
+| flanks north / south | 574 / 540 steps (5.9 % apart), same for both teams |
+| periphery reachable; central crossing width | 82.0 %; 250 |
+| graybox vs art collision | 0 unallowed reachable-cell changes (plants are the allowed category) |
+| colours | top-surface median luma 85.9; min floor luma 40.6; near-white tops 0.09 %; 86 glow sources, none red |
+| seeds | 3 other seeds pass every check with 0 traps and 0 unintended floating; spire gap 10 on each |
+| reproducibility | same vegetation seed gives the same SHA-256 in two fresh processes |
+| live server (piqueserver 1.4.2, babel) | loaded; platform 3,200 cells; 400 spawns per team inside the stock squares at z 48/49; fog and extensions read |
+| tests | `pytest`: 34 passed |
+
+Route, trap and interior results come from a graph model, not from play.
+
+### Known limits and open points
+
+* **Spawn exposure is waived, not met.** Every spawn spot is visible from the platform rim. Expect spawn camping
+  once a team holds the platform.
+* **The spires overlook their own side's spawn** (92.5 % of spots). An enemy who climbs a spire can camp from it.
+* **Art below the Wicker King / Silverpine standard:** the fallen queen statue still reads largely as a pale slab at
+  eye level; the elder head is small and simple; cliff faces have no sculpted buttresses or vines; trees are simpler
+  than Silverpine's.
+* Not seen in any client: fog, glow, mist tint, waterfall and FPS are unverified.
+* `glow_*` keys are read by the owner's server setup only. Stock 1.4.2 shows the baked light.
+* The sky pieces float by request. Breaking a player block attached to one drops it for the round. The tag hangs
+  on one stalk; cutting the stalk drops the plate.
+* Round length with a 10-block spire gap is untested; it may end rounds quickly (knowledge base §8.8).
+
+## v1.1: second art round `[USER 2026-11-14]` `[RUN 2026-11-14]`
+
+The owner asked for another art round on the weak pieces. Same vegetation seed 2243074186 as v1.0; all new
+geometry and art is gated on release 1.1. `.vxl` 3,155,476 bytes, SHA-256
+`4e9c485398b4c178cb3ead1b6e355675adb6621f2518e8cda2781fdc695ad8ae`. `.txt` 742,071 bytes, `version = '1.1'`.
+
+What changed:
+
+* **Fallen queen:** rebuilt from rounded masses: head about 10 across with chin, nose ridge, brow and hollow eyes;
+  separate crown points, one snapped off; a neck break; shoulders, chest, waist, hips and a robe skirt; both knees
+  drawn up as walk-under arches (the axis mirror makes both legs bent); open palm-up hands; drapery ridges; a broken
+  staff. It is no longer walkable on top.
+* **Elder head under the platform:** brow ridge, eye sockets, nose, cheek, lips, an ear, a crown band, a broken crown
+  piece and a severed hand. The three column stubs moved 2 west to keep 7-voxel gaps.
+* **Cliffs:** buttress ribs and gullies, 4 pinnacles, 4 rock-fall fans, 3 rubble chutes, variable strata bands,
+  ledge ferns, vines by the falls.
+* **Trees:** crowns with holes, sun and shade tones, new-growth tips, twigs under oak lobes, root flares on firs;
+  a few logs, stumps and saplings on the forest floor.
+* **Small things:** foam at the plunge pools, bank stones, leaf drifts, 9 warm lantern posts beside the paths,
+  two crows perched on ruins (attached, not floating).
+
+| check | v1.0 | v1.1 |
+|---|---|---|
+| checks | 29 pass + 2 waived | 29 pass + 2 waived |
+| spawn exposure (waived) | 10.25 / 10.0 viewers, 0 % hidden | same |
+| highest walkable point near the platform; build gap | z 44; 42 (top of the queen statue) | z 47; 45 |
+| anchor/strip gap; spire gap; spire perch | 48; 10; 92.5 % | same |
+| zone: spawn cover (enemy / rear) | 28.2 % / 62.4 % | 28.5 % / 62.3 % |
+| zone: under the platform (covered / min air) | 15.4 % / 42 | 17.3 % / 41 |
+| zone: centre median footprint | 47.5 | 43 |
+| zone: front dressing | 7 objects, 10.6 %, worst section 74.7 % free | same |
+| interiors; high floors | 84 of 84; 32 | 82 of 82; 26 |
+| featureless patch; flanks; periphery; crossing width | 20; 574 / 538; 81.3 %; 236 | 23; 574 / 538; 81.7 %; 231 |
+| traps; unintended floating; collision diff | 0; 0; 0 unallowed | same |
+| colours | median luma 85.9, min floor 40.6, 92 glow sources | 85.8, 40.6, 102 glow sources |
+| live server probe | loaded | loaded; platform 3,200 cells; spawns inside the stock squares |
+
+Three other seeds pass every check. `--release 1.0` rebuilds v1.0 byte-identical (.vxl and .txt).
+The v1.0 column was re-measured with the current code and seed; two values differ slightly from the v1.0 table above.
+
+Still below the Wicker King / Silverpine standard `[RUN, numpy previews]`: at eye level the queen is a cluster of
+pale rounded lumps (face and hands read only from above); the elder head's features are a voxel or two deep; the
+forest floor has few logs and stumps; cliffs still read as banded terraces from a distance; crowns are still
+blobbier than Silverpine's.
+
+### Regenerate
+
+```bash
+python scenes/elderveil/ev_main.py out/elderveil_v1_1 2243074186                 # v1.1 (default release)
+python scenes/elderveil/ev_main.py out/elderveil 2243074186 --release 1.0       # v1.0, byte-identical
+python scenes/elderveil/ev_main.py out/new_build                                # new random vegetation seed
+python scenes/elderveil/ev_render.py out/elderveil_v1_1
+python -m aosmap.kit.probe out/elderveil_v1_1 --mode babel
+python scenes/elderveil/ev_main.py out/ev_graybox --graybox                      # gameplay geometry only
+```

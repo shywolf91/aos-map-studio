@@ -257,6 +257,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/bloomhop_kingdom_spec.md` |
 | Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
 | Frostbell Hollow | Christmas alpine-village ground Babel | v1.2 (v1.0, v1.1 kept) | server-loaded | `scenes/frostbell_hollow/` (built with `aosmap.kit`), `docs/frostbell_hollow_spec.md` |
+| Elderveil | dark-fantasy ruins ground Babel, assist structures | v1.1 (v1.0 kept) | server-loaded (spawn exposure waived by owner) | `scenes/elderveil/` (built with `aosmap.kit`), `docs/elderveil_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
 chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).
