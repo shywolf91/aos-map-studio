@@ -30,9 +30,9 @@ import ev_veg
 WARM, CYAN, GREEN, WHITE = (255, 175, 95), (95, 255, 255), (95, 255, 95), (255, 255, 255)
 GLOW_PALETTE = {WARM, CYAN, GREEN, WHITE}
 
-ELDER = [(198, 192, 178), (186, 182, 172), (206, 198, 184), (178, 176, 168), (192, 186, 172), (200, 196, 186)]
-MOSS = [(86, 116, 62), (102, 132, 70), (76, 106, 58)]
-IVY = [(52, 96, 48), (66, 112, 54), (84, 128, 60), (58, 88, 46)]
+ELDER = [(178, 178, 172), (166, 166, 162), (186, 184, 178), (158, 160, 156), (172, 170, 164), (182, 180, 174)]
+MOSS = [(80, 96, 70), (94, 108, 78), (70, 86, 64)]
+IVY = [(42, 70, 46), (52, 80, 50), (64, 92, 58), (48, 66, 44)]
 GOLD = (198, 164, 76)
 STONE_MATS = ('ruin', 'building', 'spire', 'statue', 'aqueduct', 'bridge', 'crest_wall', 'rune', 'stair', 'rubble')
 WOOD_MATS = ('timber', 'furniture', 'prop', 'fire')
@@ -88,25 +88,47 @@ def terrain_art(cv, S, seed):
     paths = path_mask(S, seed) & (is_['ground'] | is_['dirt'])
     tops = np.zeros((512, 512, 3))
     # forest floor: moss greens, leaf litter where shaded, sunlit clearings warmer
-    grass_lo, grass_hi = np.array((70, 104, 56)), np.array((128, 146, 70))
+    grass_lo, grass_hi = np.array((48, 64, 48)), np.array((94, 106, 66))
     t = np.clip(0.45 + (n1 - 0.5) * 1.4 + (n3 - 0.5) * 0.6, 0, 1)
     gr = grass_lo * (1 - t[..., None]) + grass_hi * t[..., None]
-    litter = np.array((112, 92, 62)) * (0.9 + 0.2 * n2[..., None])
-    lt = np.clip((n2 - 0.45) * 2.5, 0, 1) * under
+    litter = np.array((82, 68, 52)) * (0.9 + 0.2 * n2[..., None])
+    lt = np.clip((n2 - 0.3) * 2.5, 0, 1) * under
     gr = gr * (1 - lt[..., None]) + litter * lt[..., None]
     moss = (n2 > 0.68) & ~under
-    gr[moss] = np.array((96, 132, 66)) * (0.95 + 0.1 * n1[moss, None])
+    gr[moss] = np.array((76, 94, 66)) * (0.95 + 0.1 * n1[moss, None])
+    gr[under] *= 0.8                                                          # shadowed floor under dense canopy
+    dens = noise.fbm2((512, 512), 30, 2, 'forest_density', seed)
+    sun = (dens < 0.4) & ~under & (n3 > 0.55)                                 # a few sunlit gold-green clearings
+    gr[sun] = gr[sun] * 0.8 + np.array((128, 128, 72)) * 0.2
     tops[:] = gr
     # worn paths: packed earth with a lighter centre and leaf edges
     pd = ndi.distance_transform_edt(paths)
-    pc = np.array((124, 104, 78)) * (0.94 + 0.12 * n2[..., None])
+    pc = np.array((96, 80, 64)) * (0.94 + 0.12 * n2[..., None])
     pc = np.where((pd >= 2)[..., None], pc * 1.06, pc)
     tops[paths] = pc[paths]
     # outpost courtyard: trodden dirt, straw, darker round the fires
-    dc = np.array((128, 108, 82)) * (0.92 + 0.14 * n2[..., None])
-    straw = (n2 > 0.74) & (noise.hash3(X, Y, 3, 8) < 0.6)
-    dc[straw] = np.array((152, 136, 96))
-    tops[is_['dirt']] = dc[is_['dirt']]
+    dc = np.array((100, 86, 70)) * (0.92 + 0.14 * n2[..., None])
+    court = is_['dirt']
+    edge = ndi.distance_transform_edt(court)
+    pave = (n3 > 0.6) & (n1 > 0.5)                                            # worn paving remnants
+    ps = np.array(ELDER, float)[(noise.hash3(X // 3, Y // 2, 0, 19) * 6).astype(int) % 6] * 0.82
+    dc[pave] = np.where(((X + Y // 2) % 3 == 0)[pave][:, None], ps[pave] * 0.92, ps[pave])
+    tuft = (edge <= 5) & (n2 > 0.48) & (noise.hash3(X, Y, 4, 8) < 0.7)       # grass creeping in from the walls
+    dc[tuft] = np.array((70, 84, 56)) * (0.9 + 0.2 * n1[tuft, None])
+    pud = (n1 < 0.22) & ~pave                                                 # damp, puddle-dark patches
+    dc[pud] = np.array((68, 64, 60))
+    rut = ((X == 86) | (X == 90)) & (Y >= 200) & (Y <= 285)                  # cart ruts
+    dc[rut] = dc[rut] * 0.78
+    for (fx, fy) in S['campfires']:                                           # ash rings
+        r = np.hypot(X - fx, Y - fy)
+        ash = (r <= 4.2) & (r >= 1.5)
+        dc[ash] = dc[ash] * 0.55 + np.array((84, 80, 76)) * 0.45
+    near_tent = np.zeros((512, 512), bool)
+    for (tx0, tx1, ty0, ty1, _o) in S['tents']:                              # straw round the tents
+        near_tent[tx0 - 2:tx1 + 3, ty0 - 2:ty1 + 3] = True
+    straw = near_tent & (n2 > 0.45)
+    dc[straw] = np.array((150, 134, 92)) * (0.9 + 0.15 * n1[straw, None])
+    tops[court] = dc[court]
     # paving: ashlar slabs (3 x 2) with soft tone variation, moss in some joints
     sx, sy = (X + (Y // 2 % 2) * 1) // 3, Y // 2
     hs = noise.hash3(sx, sy, 0, 13)
@@ -125,12 +147,14 @@ def terrain_art(cv, S, seed):
     tops[gone] = np.array((110, 100, 80)) * (0.9 + 0.2 * n2[gone, None])
     # rock: warped strata, moss on gentle tops, scree tones at the foot
     warp = (noise.fbm2((512, 512), 24, 2, 'strata', seed) - 0.5) * 8
-    STR = np.array([(116, 112, 108), (128, 122, 114), (106, 104, 104), (138, 132, 122), (120, 114, 110)])
+    STR = np.array([(100, 100, 102), (112, 110, 106), (92, 92, 96), (120, 118, 112), (104, 102, 102)])
     rk = STR[((H + warp).astype(int) // 3) % len(STR)].astype(float)
     rtop = is_['rock']
     gentle = rtop & (slope <= 1.0) & (n1 > 0.42)
     tops[rtop] = rk[rtop]
-    tops[gentle] = (np.array((92, 120, 64)) * (0.9 + 0.2 * n2[..., None]))[gentle]
+    tops[gentle] = (np.array((74, 92, 64)) * (0.9 + 0.2 * n2[..., None]))[gentle]
+    scree = (rtop | is_['ground']) & (H >= 43) & (H <= 48) & (slope >= 0.5) & (noise.hash3(X, Y, 6, 2) < 0.35)
+    tops[scree] = np.array((132, 130, 126)) * (0.88 + 0.2 * noise.hash3(X, Y, 7, 2)[scree, None])
     # water: depth gradient, foam at the falls; gravel bars on shelves
     wat = is_['water'] | is_['waterfall']
     deep = np.clip(ndi.distance_transform_edt(is_['water']) / 6.0, 0, 1)
@@ -141,7 +165,11 @@ def terrain_art(cv, S, seed):
     grav = np.array((140, 132, 116)) * (0.88 + 0.2 * noise.hash3(X, Y, 2, 6)[..., None])
     tops[is_['shelf']] = grav[is_['shelf']]
     tops[is_['cave']] = np.array((96, 82, 66))
-    tops[is_['pad']] = (np.array((96, 128, 66)) * (0.9 + 0.15 * n2[..., None]))[is_['pad']]
+    tops[is_['pad']] = (np.array((80, 98, 64)) * (0.9 + 0.15 * n2[..., None]))[is_['pad']]
+    # mist: pale lilac-grey in the stream valley and the low hollows (the fog hue, not a new colour)
+    wd = ndi.distance_transform_edt(~(is_['water'] | is_['waterfall']))
+    mw = 0.32 * np.clip(1 - wd / 18.0, 0, 1) + 0.16 * np.clip((H - 50) / 8.0, 0, 1)
+    tops = tops * (1 - mw[..., None]) + np.array((150, 148, 160)) * mw[..., None]
     # apply: top voxel, then earth / strata below
     zz = np.arange(64)[None, None, :]
     ter = (zz >= H[:, :, None]) & cv.solid & isin(cv, cv.mat, 'ground', 'paving', 'rock', 'shelf', 'water', 'dirt',
@@ -153,9 +181,11 @@ def terrain_art(cv, S, seed):
     out[top0] = tops[xs[top0], ys[top0]]
     sub = ~top0
     strata = STR[((zs + warp[xs, ys]).astype(int) // 3) % len(STR)].astype(float)
-    earth = np.array((110, 90, 70)) * (0.9 + 0.12 * n2[xs, ys])[:, None]
+    earth = np.array((84, 70, 58)) * (0.9 + 0.12 * n2[xs, ys])[:, None]
     deepc = (d > 2) | (H[xs, ys] <= 46)
     out[sub] = np.where(deepc[sub][:, None], strata[sub], earth[sub])
+    crack = sub & (noise.hash3(xs, ys, 0, 55) < 0.035) & deepc                 # vertical cracks in the cliff faces
+    out[crack] *= 0.74
     cv.rgb[xs, ys, zs] = np.clip(out, 0, 255).astype(np.uint8)
     # wet rock round the falls: darken and cool the rock near the cascade
     wf = S['waterfall']
@@ -218,15 +248,18 @@ def stone_art(cv, S, seed):
     side = air(1, 0, 0) | air(-1, 0, 0) | north | air(0, 1, 0)
     mossp = np.clip(1.0 - ag / 4.0, 0, 1) * 0.8 + north * 0.25 + upf * 0.3 + (nf - 0.5) * 0.9
     mossp -= 0.3 * np.isin(mats, ids(cv, 'spire', 'stair'))              # the spire stays pale: moss only low
-    mossy = mossp > 0.62
+    mossw = np.clip((mossp - 0.5) / 0.35, 0, 1) * (0.6 + 0.4 * noise.hash3(xs, ys, zs, 10))   # noise-broken edge
+    mossy = mossw > 0.5
     mc = np.array(MOSS, float)[(noise.hash3(xs, ys, zs, 9) * 3).astype(int) % 3]
-    base[mossy] = mc[mossy]
+    base = base * (1 - mossw[:, None]) + mc * mossw[:, None]
     # ivy sheets on wall faces (2D noise across the face), 1-14 above the ground
     ivn = noise.fbm2((512, 64), 5, 2, 'ivy', seed)
     u = np.where(north | air(0, 1, 0), xs, ys)
-    ivy = side & (ag >= 1) & (ag <= 14) & (ivn[u % 512, zs] > 0.64) & ~statue
+    ivw = np.clip((ivn[u % 512, zs] - 0.6) / 0.1, 0, 1) * side * ((ag >= 1) & (ag <= 14)) * ~statue
+    ivw = ivw * (noise.hash3(xs, ys, zs, 12) < 0.85)
+    ivy = ivw > 0.5
     ic = np.array(IVY, float)[(noise.hash3(xs, ys, zs, 11) * 4).astype(int) % 4]
-    base[ivy] = ic[ivy]
+    base = base * (1 - ivw[:, None]) + ic * ivw[:, None]
     crack = (noise.hash3(xs, ys, zs, 17) < 0.025) & ~mossy & ~ivy
     base[crack] *= 0.78
     streak = noise.fbm2((512, 512), 3, 1, 'grime', seed)[xs, ys] > 0.7
@@ -257,6 +290,18 @@ def carved_bands(cv, S, glow):
         if cv.solid[x, y, z] and cv.mat[x, y, z] == sid and z % 24 == (sp['top'] + 3) % 24:
             cv.rgb[x, y, z] = CYAN
             glow.append((x, y, z, CYAN))
+    zr = (sp['top'] + sp['ground']) // 2 + 1                                 # cracked rune ring on the spire
+    k = 0
+    for x in range(int(cx) - 8, int(cx) + 9):
+        for y in range(int(cy) - 8, int(cy) + 9):
+            if cv.solid[x, y, zr] and cv.mat[x, y, zr] == sid and \
+                    math.hypot(x + 0.5 - cx, y + 0.5 - cy) > sp['r_wall'][1] - 1.0:
+                if noise.hash3(x, y, zr, 77) > 0.3:
+                    cv.rgb[x, y, zr] = (150, 170, 172)
+                    k += 1
+                    if k in (5, 23):
+                        cv.rgb[x, y, zr] = CYAN
+                        glow.append((x, y, zr, CYAN))
     lb = S['library']['box']
     bid = cv.materials['building']
     z = 50 - S['library']['storey_h']
@@ -396,9 +441,13 @@ def art_post(cv, rep, S, rng, info):
     return boxes
 
 
-def finish(cv, target_median=98.0, tint=(1.03, 1.01, 0.95)):
+def finish(cv, target_median=86.0, tint=(0.97, 1.0, 1.03)):
     """Baked light + AO, misty-morning grade (pale gold), brightness rules, glow bake, palette nudge."""
     surf = color.lighting(cv)
+    m0 = cv.solid & ~cv.nolight                                                # desaturate 14 %: old and misty
+    c0 = cv.rgb[m0].astype(np.float32)
+    l0 = (0.299 * c0[:, 0] + 0.587 * c0[:, 1] + 0.114 * c0[:, 2])[:, None]
+    cv.rgb[m0] = np.clip(l0 + 0.86 * (c0 - l0), 0, 255).astype(np.uint8)
     top = np.argmax(cv.solid, axis=2)
     X, Y = np.meshgrid(np.arange(512), np.arange(512), indexing='ij')
     L = color.luma(cv.rgb[X, Y, top].astype(float) * np.array(tint))

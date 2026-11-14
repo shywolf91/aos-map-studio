@@ -25,6 +25,8 @@ SHOTS = {
     'under_platform': dict(cam=(214, 257, 15.4), look=(256, 256, 13), fov=72),
     'heart_tree': dict(cam=(212, 302, 20), look=(256, 340, 28), fov=72),
     'aqueduct': dict(cam=(140, 122, 20), look=(100, 88, 21), fov=72),
+    'heart_tree_under_root': dict(cam=(244, 336, 12.6), look=(256, 340, 26), fov=80),
+    'queen_head': dict(cam=(245, 182, 24), look=(256, 190, 20), fov=64),
     'mushrooms_waterfall': dict(cam=(196, 408, 18), look=(243, 470, 24), fov=72),
     'islet': dict(cam=(54, 176, 42), look=(78, 150, 45), fov=60),
     'sky_tag': dict(cam=(36, 50, 68), look=(36, 16, 56), fov=60),

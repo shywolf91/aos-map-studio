@@ -40,7 +40,8 @@ SPEC = {
              'bumps': [('N', 118, 14, 24), ('N', 40, 14, -8), ('W', 150, 12, 26), ('W', 360, 16, 18),
                        ('S', 150, 14, 14), ('S', 70, 12, -8), ('S', 256, 26, 14), ('N', 220, 16, -8),
                        ('N', 180, 8, 14), ('W', 205, 10, -8), ('W', 420, 12, -6), ('S', 205, 9, 10)],
-             'crest_wall': {'band_u': (0.05, 0.14), 'h': (2, 4), 'cell': 9, 'keep': 0.50}},
+             'terrace_jitter': 5.0,
+             'crest_wall': {'band_u': (0.085, 0.125), 'h': (3, 4), 'cell': 16, 'keep': 0.40}},
 
     # ---------------------------------------------------------------- ruined outpost (spawn camp), west half
     'outpost': {
@@ -91,7 +92,7 @@ SPEC = {
 
     # ---------------------------------------------------------------- under the platform (x 218-255, y 240-271)
     'under': {
-        'head': {'c': (256, 256), 'r': 7.5, 'h': 3},             # fallen elder head: 3-tall steep base + features
+        'head': {'c': (256, 256), 'r': (7.0, 8.0, 5.0), 'tilt': 1.5},   # half-buried tilted elder head
         'stubs': [(224, 245), (224, 266), (238, 255)],          # 7x7 plinths (2 tall) + column stub; >= 7 apart
         'mosaic': (218, 255, 240, 271),
     },
@@ -112,17 +113,21 @@ SPEC = {
               # arcades: (centre angle deg, half arc deg, radius along the plaza ellipse factor)
               'arcades': [(180, 16, 0.84), (232, 10, 0.84)]},
     # fallen elder-queen statue lying N-S across the plaza's south edge (axis object)
-    'queen': {'x': (249, 263), 'head_c': (256, 192), 'head_r': 5.5, 'torso_y': (197, 214), 'torso_z': (44, 46),
-              'hips_y': (215, 223), 'legs_y': (226, 233), 'ramp_x': (241, 248), 'ramp_y': (216, 219)},
+    'queen': {'x': (249, 263), 'head_c': (256, 189), 'head_r': 5.0, 'neck_y': (195, 197), 'torso_y': (198, 214),
+              'torso_z': (44, 46), 'arm': (239, 204), 'hips_y': (215, 223), 'legs_y': (226, 234),
+              'ramp_x': (241, 248), 'ramp_y': (216, 219)},
 
     # ---------------------------------------------------------------- elder library (north, axis)
     'library': {'box': (238, 274, 106, 132), 'storeys': 2, 'storey_h': 6, 'wing': (226, 238, 110, 126)},
 
     # ---------------------------------------------------------------- root amphitheatre + heart-tree (south centre)
     'amphi': {'c': (256, 340), 'r': (44, 32), 'levels': [(0.36, 53), (0.52, 52), (0.70, 51)], 'edge_noise': 0.08,
-              'tree': {'trunk_r': 5.0, 'trunk_top': 20, 'canopy': (17, 15, 8), 'canopy_z': 20},
-              'roots': [(200, 30), (235, 33), (160, 31), (125, 29)],    # (direction deg, reach); west half
-              'root_z0': 36},
+              'tree': {'trunk_top': 27, 'base_r': 8.5, 'mid_r': 7.0, 'upper_r': 6.0, 'twist': 1.3},
+              # roots (direction deg, reach, kind, thickness), west half + axis: 7 roots after the mirror
+              'roots': [(200, 30, 'arch', 1.9), (148, 22, 'ground', 1.5), (238, 25, 'arch_low', 1.5),
+                        (90, 20, 'ground', 1.7)],
+              # main limbs (direction deg, rise, length, crown mass r); each forks twice -> 4 crown masses
+              'limbs': [(160, 4, 12, 3.6), (215, 6, 11, 3.3), (268, 3, 10, 3.8)]},
 
     # ---------------------------------------------------------------- north flank: aqueduct
     'aqueduct': {'y_c': 88, 'bend': 6.0, 'bend_period': 110.0, 'half_w': 3, 'x0': 44, 'deck_z': 39, 'deck_t': 2,
@@ -147,8 +152,9 @@ SPEC = {
               'crag': {'c': (36, 372), 'r': (16, 20), 'top': 24},
               'cave': {'y': 372, 'search_x': (30, 80), 'len': 8}},
     'rune_circle': {'c': (256, 398), 'r': 8.0, 'stones_deg': [150, 190, 230, 110], 'stone_h': (5, 7)},
-    'mushrooms': [(84, 404, 6, 18), (118, 466, 5, 14), (152, 400, 7, 20), (190, 470, 5, 13), (214, 402, 6, 16),
-                  (66, 458, 5, 15)],                                # (x, y, cap r, height)
+    # giant mushrooms in two clusters in the hollow (x, y, cap r, height, lean x, lean y)
+    'mushrooms': [(96, 462, 6, 17, 1, 0), (104, 457, 4, 11, 0, -1), (112, 466, 5, 14, -1, 1),
+                  (160, 394, 7, 20, 0, 1), (170, 390, 4, 10, 1, 0), (150, 398, 5, 13, -1, 0)],
 
     # ---------------------------------------------------------------- scatter (layout seed) + veg (veg seed)
     'scatter': {'field_spacing': 22, 'field_jitter': 7, 'forest_cell': 30, 'grove_density': (0.53, 0.9),

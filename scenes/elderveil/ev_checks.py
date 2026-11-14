@@ -176,7 +176,7 @@ def featureless(solid, H, S=SPEC):
 VEG = {'veg', 'canopy', 'trunk', 'fern'}
 PLANTS = {'leaf', 'bark', 'moss', 'twig', 'fungus', 'flower', 'fern', 'bramble', 'reed', 'deadwood', 'lichen',
           'nest', 'berry', 'shroom'}
-NATURAL = VEG | PLANTS | {'mound', 'rock', 'pad', 'rubble', 'mushroom', 'sky', 'tag'}
+NATURAL = VEG | PLANTS | {'mound', 'rock', 'pad', 'rubble', 'mushroom', 'sky', 'tag', 'root'}
 
 
 def central_gaps(solid, H, mat, names, S=SPEC):

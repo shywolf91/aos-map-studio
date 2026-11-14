@@ -24,10 +24,10 @@ PLANT_MATS = ('leaf', 'bark', 'moss', 'twig', 'fungus', 'flower', 'fern', 'bramb
 KEEP_BLOCK = 1 | 2 | 4 | 8                       # spawn, anchor, front, under-platform
 
 SPECIES_PAL = {
-    'oak': [((58, 92, 44), (128, 150, 66)), ((52, 86, 48), (112, 142, 70)), ((64, 98, 42), (146, 156, 74))],
-    'beech': [((60, 104, 52), (150, 168, 84)), ((70, 110, 50), (164, 170, 90))],
-    'fir': [((30, 62, 50), (62, 102, 72)), ((34, 66, 58), (70, 108, 84)), ((28, 58, 46), (56, 92, 62))],
-    'birch': [((96, 132, 60), (176, 182, 98)), ((110, 140, 64), (188, 186, 104))],
+    'oak': [((46, 60, 40), (112, 116, 68)), ((44, 60, 44), (102, 110, 66)), ((50, 64, 40), (120, 120, 72))],
+    'beech': [((44, 66, 52), (108, 122, 80)), ((50, 72, 50), (116, 126, 82))],
+    'fir': [((24, 44, 46), (50, 78, 74)), ((26, 48, 52), (56, 84, 80)), ((22, 42, 40), (46, 72, 62))],
+    'birch': [((76, 92, 62), (136, 140, 96)), ((82, 96, 66), (142, 142, 100))],
 }
 BARK = {'oak': (88, 70, 54), 'beech': (132, 128, 120), 'fir': (78, 60, 48), 'birch': (196, 190, 176),
         'snag': (150, 146, 140)}
@@ -111,8 +111,8 @@ def _blob(P, rng, cx, cy, cz, rx, rz, fa, fb, zmin_floor, mat='leaf', fill=1.0):
                     if fill < 1.0 and rng.random() > fill:
                         continue
                     t = (cz + rz - Z) / (2 * rz)                     # 0 bottom .. 1 top
-                    c = _grad(fa, fb, t + (rng.random() - 0.5) * 0.18)
-                    P.put(X, Y, Z, shade(c, 0.92 + 0.12 * t), mat)
+                    c = _grad(fa, fb, max(t, 0.0) ** 1.3 + (rng.random() - 0.5) * 0.14)
+                    P.put(X, Y, Z, shade(c, 0.78 + 0.28 * t), mat)        # shadowed underside, lit top
 
 
 def _limb(P, a, b, c, mat='bark'):
@@ -153,7 +153,7 @@ def _details(P, rng, kind, x, y, g, h, w, crown, bark, fa, fb, glow):
         elif d == 'golden_leaves' and crown:
             for i in rng.choice(len(crown), size=min(14, len(crown)), replace=False):
                 px, py, pz = crown[int(i)]
-                P.v[(px, py, pz)] = ((206, 178, 82) if rng.random() < 0.6 else (190, 150, 70), 'leaf')
+                P.v[(px, py, pz)] = ((168, 150, 84) if rng.random() < 0.6 else (150, 124, 70), 'leaf')
         elif d == 'hollow':
             k = min(h - 2, 4)
             for dz, c in ((0, (44, 36, 30)), (1, (52, 42, 34))):
@@ -218,17 +218,23 @@ def oak(cv, rng, x, y, g, h, glow):
     crown = []
     top = (x + w // 2, y + w // 2, g - 1 - th)
     n = int(rng.integers(3, 6))
-    for i in range(n):
-        a = rng.random() * 6.283
+    a0 = rng.random() * 6.283
+    for i in range(n):                                   # limbs, each forking into two lobes at different heights
+        a = a0 + i * 6.283 / n + rng.uniform(-0.4, 0.4)
         L = 3 + rng.random() * (2 + h * 0.15)
         ex, ey = top[0] + L * math.cos(a), top[1] + L * math.sin(a)
         ez = top[2] - 2 - rng.random() * h * 0.25
         _limb(P, top, (int(ex), int(ey), int(ez)), shade(bark, 0.95))
-        r = 3.0 + rng.random() * 2.2 + h * 0.06
-        before = set(P.v)
-        _blob(P, rng, ex + 0.5, ey + 0.5, ez - r * 0.3, r, r * 0.62, fa, fb, g - 5)
-        crown += [k for k in P.v if k not in before]
-    r = 3.5 + h * 0.08
+        for da in (-0.5, 0.5):
+            L2 = 2 + rng.random() * 3
+            fx, fy = ex + L2 * math.cos(a + da), ey + L2 * math.sin(a + da)
+            fz = ez - 1 - rng.random() * 3
+            _limb(P, (int(ex), int(ey), int(ez)), (int(fx), int(fy), int(fz)), shade(bark, 0.92))
+            r = 2.2 + rng.random() * 1.6 + h * 0.04
+            before = set(P.v)
+            _blob(P, rng, fx + 0.5, fy + 0.5, fz - r * 0.3, r, r * 0.6, fa, fb, g - 5)
+            crown += [k for k in P.v if k not in before]
+    r = 2.8 + h * 0.06
     before = set(P.v)
     _blob(P, rng, top[0] + 0.5, top[1] + 0.5, top[2] - h * 0.3, r, r * 0.7, fa, fb, g - 5)
     crown += [k for k in P.v if k not in before]
@@ -268,6 +274,7 @@ def fir(cv, rng, x, y, g, h, glow):
     fa, fb = _hue(rng, fa, 6), _hue(rng, fb, 6)
     _trunk(P, x, y, g, h, w, bark, rng)
     clear = 4
+    tier = 1.0
     R0 = 0.24 * h + 1.6
     period = int(rng.integers(3, 5))
     ph = rng.random() * 6.283
@@ -277,6 +284,9 @@ def fir(cv, rng, x, y, g, h, glow):
         f = (k - clear) / max(h - clear, 1)
         phase = ((k - clear) % period) / period
         r = R0 * (1 - f) ** 1.1 * (1 - 0.35 * phase) + 0.5
+        if phase == 0:
+            tier = rng.uniform(0.75, 1.15) if rng.random() > 0.18 else 0.45     # irregular tiers, some gaps
+        r *= tier if k > clear else 1.0
         z = g - 1 - k
         ri = int(r) + 2
         for X in range(x - ri, x + ri + w):
@@ -332,8 +342,11 @@ def snag(cv, rng, x, y, g, h, glow):
         z = g - 1 - int(h * (0.45 + 0.5 * rng.random()))
         a = rng.random() * 6.283
         L = 2 + rng.random() * 4
-        _limb(P, (x, y, z), (int(x + L * math.cos(a)), int(y + L * math.sin(a)), int(z - L * 0.6)),
-              shade(bark, 0.9), 'deadwood')
+        e = (int(x + L * math.cos(a)), int(y + L * math.sin(a)), int(z - L * 0.6))
+        _limb(P, (x, y, z), e, shade(bark, 0.9), 'deadwood')
+        for da in (-0.6, 0.6):                                                  # forked bare tips
+            _limb(P, e, (int(e[0] + 2 * math.cos(a + da)), int(e[1] + 2 * math.sin(a + da)), e[2] - 2),
+                  shade(bark, 0.85), 'deadwood')
     P.put(x + 1, y, g - h, shade(bark, 0.7), 'deadwood')                        # splintered top
     det = _details(P, rng, 'snag', x, y, g, h, w, [], bark, bark, bark, glow)
     return P, det
@@ -395,10 +408,10 @@ def understory(cv, rng, seed, plaza_mask=None):
     h = noise.hash3(X, Y, 0, 77)
     fern = ok & (dens > 0.5) & (n2 > 0.55) & (h < 0.55)
     bram = ok & (dens > 0.56) & (n2 < 0.3) & (h < 0.5)
-    flow = ok & (dens < 0.45) & (n2 > 0.66) & (h < 0.2)
-    for m, mat, cols in ((fern, 'fern', [(58, 108, 54), (76, 128, 62), (96, 140, 70)]),
-                         (bram, 'bramble', [(62, 76, 46), (74, 84, 50), (70, 52, 70)]),
-                         (flow, 'flower', [(136, 104, 150), (196, 192, 174), (184, 170, 96), (120, 116, 158)])):
+    flow = ok & (dens < 0.42) & (n2 > 0.7) & (h < 0.07)
+    for m, mat, cols in ((fern, 'fern', [(46, 76, 52), (58, 90, 58), (72, 100, 64)]),
+                         (bram, 'bramble', [(52, 62, 42), (62, 68, 46), (64, 50, 62)]),
+                         (flow, 'flower', [(128, 104, 136), (176, 172, 160), (162, 150, 92), (112, 112, 140)])):
         xs, ys = np.nonzero(m)
         for x, y in zip(xs, ys):
             c = cols[int(noise.hash3(x // 3, y // 3, 1, 5) * len(cols)) % len(cols)] if mat == 'flower' else \
@@ -445,68 +458,141 @@ def reeds_and_lilies(cv, rng, seed):
 
 
 def heart_tree(cv, rng, S, glow):
-    """The amphitheatre's ancient heart-tree: bark with deep vertical fluting, a dark hollow high on the trunk,
-    roots recoloured as old bark with moss on top, a layered crown (gold-green on top, deep green underneath)
-    with extra tiers and hanging roots/moss, three rune-lit knots."""
+    """Art for the heart-tree (graybox geometry: trunk, hollow, roots, forked limbs, separate crown masses).
+    Bark: deep fluting, damp-dark at the foot, lichen-grey higher up, grey-green moss on tops and north faces.
+    Crowns: each mass shaded from a blue-green underside to a muted olive-gold top. Added (all >= 4 above the
+    ground or inside the hollow, plant materials): moss curtains under the crowns, vines from the limbs, three dead
+    silver branches, bracket fungi, a nest at a fork, a hanging lantern (warm), rune-lit knots (cyan)."""
     a = S['amphi']
     cx, cy = a['c'][0] + 0.5, a['c'][1] + 0.5
-    tid, cid, rid = cv.materials.get('trunk'), cv.materials.get('canopy'), cv.materials.get('root')
-    for m_id, kind in ((tid, 'trunk'), (rid, 'root')):
-        xs, ys, zs = np.nonzero(cv.mat == m_id)
-        sel = xs <= 255
-        xs, ys, zs = xs[sel], ys[sel], zs[sel]
-        ang = np.arctan2(ys + 0.5 - cy, xs + 0.5 - cx)
-        flute = (np.sin(ang * 14) > 0.3)
-        base = np.array((86, 66, 50), float) if kind == 'trunk' else np.array((96, 74, 54), float)
-        c = base * np.where(flute, 0.86, 1.04)[:, None]
-        mossy = ~cv.solid[xs, ys, np.maximum(zs - 1, 0)] & (noise.hash3(xs, ys, zs, 21) < 0.6)
-        c[mossy] = np.array((92, 122, 62)) * (0.9 + 0.2 * noise.hash3(xs[mossy], ys[mossy], zs[mossy], 3))[:, None]
-        cv.rgb[xs, ys, zs] = np.clip(c, 0, 255).astype(np.uint8)          # materials kept (trunk / root)
-    xs, ys, zs = np.nonzero(cv.mat == cid)
-    sel = xs <= 255
-    xs, ys, zs = xs[sel], ys[sel], zs[sel]
-    zt, zb = zs.min(), zs.max()
-    t = (zb - zs) / max(zb - zt, 1)
-    n = noise.fbm2((512, 512), 5, 2, 'heart_crown', 1)[xs, ys]
-    lo, hi = np.array((40, 82, 44), float), np.array((176, 170, 78), float)
-    c = lo[None] * (1 - t[:, None]) + hi[None] * t[:, None]
-    c *= (0.9 + 0.2 * n)[:, None]
-    cv.rgb[xs, ys, zs] = np.clip(c, 0, 212).astype(np.uint8)
-    # crown tiers on top (unreachable, >= 30 above the arena)
-    P = Plant(cv, int(cx), int(cy), int(cv.H[255, a['c'][1]]))
-    for (ox, oy, r) in ((-6, -4, 6.0), (-9, 5, 5.0), (-3, 8, 5.5), (-12, -1, 4.5)):
-        _blob(P, rng, cx + ox, cy + oy, zt + 1, r, r * 0.5, (70, 110, 52), (190, 178, 84), zt + 4)
-    seed = [k for k in P.v if cv.solid[k[0], k[1], k[2] + 1] or cv.solid[k[0], k[1], k[2] + 2]]
-    P.commit(seed[:200] or [(int(cx), int(cy), zt)])
-    # hanging roots and moss from the crown underside (stop >= 6 above the ground)
-    hung = 0
-    for x in range(int(cx) - 17, 256):
-        for y in range(int(cy) - 15, int(cy) + 16):
-            col = cv.solid[x, y, :]
-            if not col[zb] or noise.hash3(x, y, 0, 31) > 0.12:
-                continue
-            g = int(cv.H[x, y])
-            for k in range(1, int(noise.hash3(x, y, 1, 31) * 7) + 2):
-                z = zb + k
-                if z >= g - 6 or cv.solid[x, y, z]:
-                    break
-                cv.set(x, y, z, (112, 136, 84) if k % 2 else (98, 84, 64), 'moss')
-                hung += 1
-    # hollow: a dark knot-hole high on the trunk (unreachable), rune-lit knots
     ga = int(cv.H[255, a['c'][1]])
-    for (ang, z, gl) in ((200, ga - 12, False), (160, ga - 22, True), (230, ga - 28, True), (185, ga - 16, True)):
-        px = int(math.floor(cx + 4.6 * math.cos(math.radians(ang))))
-        py = int(math.floor(cy + 4.6 * math.sin(math.radians(ang))))
-        if gl:
-            if cv.solid[px, py, z]:
-                cv.rgb[px, py, z] = (95, 255, 255)
-                glow.append((px, py, z, (95, 255, 255)))
-        else:
-            for dz in range(0, 4):
-                for d in (0, 1):
-                    if cv.solid[px, py + d, z - dz]:
-                        cv.rgb[px, py + d, z - dz] = (34, 28, 24)
-    return {'hanging_voxels': hung}
+    tid, cid, rid = cv.materials.get('trunk'), cv.materials.get('canopy'), cv.materials.get('root')
+    box = (slice(int(cx) - 40, 256), slice(int(cy) - 40, int(cy) + 41))
+    ox, oy = box[0].start, box[1].start
+    out = {}
+    for m_id, kind in ((tid, 'trunk'), (rid, 'root')):
+        xs, ys, zs = np.nonzero(cv.mat[box] == m_id)
+        xs, ys = xs + ox, ys + oy
+        ang = np.arctan2(ys + 0.5 - cy, xs + 0.5 - cx)
+        flute = np.sin(ang * 16 + zs * 0.15) > 0.25
+        hgt = np.clip((ga - zs) / 26.0, 0, 1)
+        dark, lit = np.array((58, 46, 38), float), np.array((112, 102, 88), float)
+        c = dark[None] * (1 - hgt[:, None]) + lit[None] * hgt[:, None]
+        c *= np.where(flute, 0.82, 1.0)[:, None]
+        lich = noise.hash3(xs, ys, zs, 61) < 0.06
+        c[lich] = (150, 152, 140)
+        up = ~cv.solid[xs, ys, np.maximum(zs - 1, 0)]
+        north = ~cv.solid[xs, np.maximum(ys - 1, 0), zs]
+        mossy = (up | (north & (noise.hash3(xs // 2, ys // 2, zs // 2, 3) < 0.5))) & \
+            (noise.fbm2((512, 512), 4, 2, 'heart_moss', 7)[xs, ys] > 0.42)
+        c[mossy] = np.array((82, 98, 68)) * (0.85 + 0.25 * noise.hash3(xs[mossy], ys[mossy], zs[mossy], 4))[:, None]
+        cv.rgb[xs, ys, zs] = np.clip(c, 0, 212).astype(np.uint8)
+    # crown masses: underside blue-green, sides deep green, sunlit tops muted olive-gold
+    xs, ys, zs = np.nonzero(cv.mat[box] == cid)
+    xs, ys = xs + ox, ys + oy
+    below = ~cv.solid[xs, ys, np.minimum(zs + 1, 63)]
+    above = ~cv.solid[xs, ys, np.maximum(zs - 1, 0)]
+    n = noise.fbm2((512, 512), 4, 2, 'heart_crown', 3)[xs, ys]
+    c = np.array((50, 76, 56), float)[None] * (0.85 + 0.3 * n[:, None])
+    c[below] = np.array((32, 54, 52)) * (0.9 + 0.2 * n[below, None])
+    c[above] = np.array((118, 122, 72)) * (0.88 + 0.24 * n[above, None])
+    gold = above & (noise.hash3(xs, ys, zs, 71) < 0.07)
+    c[gold] = (168, 150, 84)
+    cv.rgb[xs, ys, zs] = np.clip(c, 0, 212).astype(np.uint8)
+    # moss curtains under the crowns (clustered), >= 4 above the ground
+    cur = noise.fbm2((512, 512), 3, 2, 'heart_curtain', 5)
+    hung = 0
+    for (x, y, z) in zip(xs[below], ys[below], zs[below]):
+        if cur[x, y] < 0.52 or noise.hash3(x, y, z, 81) > 0.55:
+            continue
+        g = int(cv.H[x, y])
+        L = 2 + int(noise.hash3(x, y, 0, 82) * 8)
+        for k in range(1, L + 1):
+            zz = z + k
+            if zz >= g - 4 or cv.solid[x, y, zz]:
+                break
+            cv.set(x, y, zz, (112, 124, 98) if (k + x) % 3 else (90, 104, 82), 'moss')
+            hung += 1
+    out['moss_curtain_voxels'] = hung
+    # vines from the limbs (limb voxels above the trunk top, open underneath)
+    T = a['tree']
+    vines = 0
+    xs, ys, zs = np.nonzero(cv.mat[box] == tid)
+    xs, ys = xs + ox, ys + oy
+    sel = (zs < T['trunk_top']) & ~cv.solid[xs, ys, np.minimum(zs + 1, 63)]
+    for (x, y, z) in zip(xs[sel], ys[sel], zs[sel]):
+        if noise.hash3(x, y, z, 91) < 0.18:
+            g = int(cv.H[x, y])
+            for k in range(1, 2 + int(noise.hash3(x, y, z, 92) * 5)):
+                if z + k >= g - 4 or cv.solid[x, y, z + k]:
+                    break
+                cv.set(x, y, z + k, (54, 80, 50), 'moss')
+                vines += 1
+    out['vine_voxels'] = vines
+    # dead silver branches high on the trunk
+    for (deg, z, L) in ((150, T['trunk_top'] + 6, 6), (205, T['trunk_top'] + 11, 5), (120, T['trunk_top'] + 2, 5)):
+        ca, sa = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+        x0, y0 = cx + 5.4 * ca, cy + 5.4 * sa
+        prev = None
+        for i in range(L + 1):
+            p = (int(math.floor(x0 + i * ca)), int(math.floor(y0 + i * sa)), z - i // 2)
+            if p[0] <= 255 and not cv.solid[p]:
+                cv.set(*p, (172, 170, 164), 'deadwood')
+            if prev and prev[2] != p[2] and prev[0] <= 255 and not cv.solid[prev[0], prev[1], p[2]]:
+                cv.set(prev[0], prev[1], p[2], (172, 170, 164), 'deadwood')
+            prev = p
+    # bracket fungi on the trunk (4-14 above the floor), rune knots, the hollow
+    fun = rk = 0
+    for z in range(ga - 15, ga - 4):
+        for k in range(36):
+            th = k * math.pi / 18
+            x, y = int(math.floor(cx + 8.0 * math.cos(th))), int(math.floor(cy + 8.0 * math.sin(th)))
+            if x > 255:
+                continue
+            for r in range(8, 3, -1):
+                px, py = int(math.floor(cx + r * math.cos(th))), int(math.floor(cy + r * math.sin(th)))
+                if cv.solid[px, py, z] and cv.mat[px, py, z] == tid:
+                    qx, qy = int(math.floor(cx + (r + 1) * math.cos(th))), int(math.floor(cy + (r + 1) * math.sin(th)))
+                    h = noise.hash3(qx, qy, z, 101)
+                    if h < 0.035 and qx <= 255 and not cv.solid[qx, qy, z]:
+                        cv.set(qx, qy, z, (192, 168, 120), 'fungus')
+                        fun += 1
+                    elif (k, z) in ((17, ga - 9), (22, ga - 13), (27, ga - 11)):          # rune-lit knots
+                        cv.rgb[px, py, z] = (95, 255, 255)
+                        glow.append((px, py, z, (95, 255, 255)))
+                        rk += 1
+                    break
+    out['bracket_fungi'], out['rune_knots'] = fun, rk
+    hy = int(cy - 2.0)
+    for x in range(int(cx) - 5, 256):
+        for y in range(hy - 5, hy + 5):
+            for z in range(ga - 6, ga + 1):
+                if cv.solid[x, y, z] and cv.mat[x, y, z] == tid and math.hypot(x + 0.5 - cx, y + 0.5 - hy + 0.0) < 5:
+                    cv.rgb[x, y, z] = (40, 32, 28)
+    if cv.solid[251, hy, ga - 3]:
+        cv.rgb[251, hy, ga - 3] = (95, 255, 255)
+        glow.append((251, hy, ga - 3, (95, 255, 255)))
+    # a nest at the highest fork and a hanging lantern under a limb (warm)
+    xs, ys, zs = np.nonzero(cv.mat[box] == tid)
+    xs, ys = xs + ox, ys + oy
+    sel = zs < T['trunk_top'] - 2
+    if sel.any():
+        i = int(np.argmin(zs[sel]))
+        x, y, z = int(xs[sel][i]), int(ys[sel][i]), int(zs[sel][i])
+        if z - 1 >= 9 and not cv.solid[x, y, z - 1]:
+            cv.set(x, y, z - 1, (118, 92, 64), 'twig')
+        under = sel & ~cv.solid[xs, ys, np.minimum(zs + 1, 63)] & (xs < cx - 8)
+        if under.any():
+            j = int(np.argmax(zs[under]))
+            x, y, z = int(xs[under][j]), int(ys[under][j]), int(zs[under][j])
+            g = int(cv.H[x, y])
+            if z + 4 < g - 5:
+                for k in (1, 2):
+                    cv.set(x, y, z + k, (60, 56, 52), 'deadwood')
+                cv.set(x, y, z + 3, (255, 175, 95), 'deadwood')
+                glow.append((x, y, z + 3, (255, 175, 95)))
+                out['lantern'] = [x, y, z + 3]
+    return out
 
 
 SHROOM_SPECIES = [('amber cap', (196, 132, 70), (212, 196, 160)), ('violet bell', (128, 88, 150), (180, 150, 196)),
@@ -518,12 +604,12 @@ def giant_mushrooms(cv, rng, S, glow):
     the underside; two get a few soft green glow points under the cap."""
     mid = cv.materials.get('mushroom')
     out = []
-    for i, (x, y, r, h) in enumerate(S['mushrooms']):
+    for i, (x, y, r, h, tx, ty) in enumerate(S['mushrooms']):
         name, cap, rim = SHROOM_SPECIES[i % len(SHROOM_SPECIES)]
         g = int(cv.H[x, y])
         ztop = g - h
-        cx, cy = x + 0.5, y + 0.5
-        for X in range(x - r - 2, x + r + 3):
+        cx, cy = x + 0.5 + tx, y + 0.5 + ty
+        for X in range(x - r - 3, x + r + 4):
             for Y in range(y - r - 2, y + r + 3):
                 for Z in range(ztop - 4, g):
                     if not (0 <= X < 256) or not cv.solid[X, Y, Z] or cv.mat[X, Y, Z] != mid:
@@ -543,7 +629,7 @@ def giant_mushrooms(cv, rng, S, glow):
                             if noise.hash3(X, Y, Z, 41 + i) < 0.08:
                                 c = (210, 204, 186)                                   # cap spots
                             cv.rgb[X, Y, Z] = clamp8(c)
-        if i in (2, 4):
+        if i in (3,):
             k = 0
             for X in range(x - r, x + r + 1):
                 for Y in range(y - r, y + r + 1):

@@ -112,13 +112,13 @@ def stream_line(S=SPEC):
 
 # =============================================================================================== terrain
 
-def _ring_profile(d, W, pk, rug, ter, R, Z):
+def _ring_profile(d, W, pk, rug, ter, R, Z, tj=0.0):
     u = d / W
     ft = R['face_top']
     face = pk + (ft - pk) * (u - R['peak_u']) / (R['face_u'] - R['peak_u'])
     face = face + rug * np.clip((u - R['peak_u']) * 4, 0, 1)
     step = R['terrace_step']
-    face = np.where(ter, np.floor(face / step) * step + 2, face)
+    face = np.where(ter, np.floor((face + tj) / step) * step + 2, face)          # jittered: not a stair
     foot = ft + (Z['ring_foot'] - ft) * (u - R['face_u']) / (1 - R['face_u'])
     h = np.where(u <= R['peak_u'], pk, np.where(u <= R['face_u'], face, foot))
     return np.where(u <= 1.0, h, 99.0), u
@@ -252,6 +252,7 @@ def terrain(S=SPEC):
     pk = Z['ring_peak'][0] + (Z['ring_peak'][1] - Z['ring_peak'][0]) * noise.fbm2((512, 512), 16, 2, 'peaks', seed)
     rug = (noise.fbm2((512, 512), 6, 2, 'rugged', seed) - 0.5) * 2 * R['rugged']
     ter = noise.fbm2((512, 512), 20, 2, 'terrace', seed) > 0.52
+    tj = (noise.fbm2((512, 512), 9, 2, 'terrace_jitter', seed) - 0.5) * R.get('terrace_jitter', 0.0)
     ringH = np.full((512, 512), 99.0)
     ring_u = np.full((512, 512), 9.0)
     for edge, d, along in (('N', Y.astype(float), XW), ('S', (511 - Y).astype(float), XW), ('W', XW.astype(float), Y)):
@@ -259,7 +260,7 @@ def terrain(S=SPEC):
         for (e, c0, hw, ex) in R['bumps']:
             if e == edge:
                 W = W + ex * np.exp(-((along - c0) / hw) ** 2)
-        h, u = _ring_profile(d, W, pk, rug, ter, R, Z)
+        h, u = _ring_profile(d, W, pk, rug, ter, R, Z, tj)
         ringH = np.minimum(ringH, h)
         ring_u = np.minimum(ring_u, u)
     for arr in (ringH, ring_u):
@@ -735,25 +736,54 @@ def build_front(cv, S=SPEC):
 # =============================================================================================== under the platform
 
 def build_under(cv, S=SPEC):
-    """Low ruins in the strip: a fallen elder head on the axis (3-tall steep base: not climbable), column stubs on
-    2-tall plinths, two root humps (2 tall). The broken mosaic floor is region 6 (paint only)."""
+    """Low ruins in the strip: a fallen elder head half-buried and tilted (brow, eye sockets, nose, lips, a crown
+    fragment against its crown; every edge >= 2 tall: not climbable), column stubs on 2-tall plinths. The mosaic
+    floor is region 6 (paint only)."""
     U = S['under']
     g = 50
     hd = U['head']
-    cx, cy = hd['c']
-    h = hd['h']
-    cv.cylinder(cx + 0.5, cy + 0.5, hd['r'], g - h, g - 1, C['ruin'], 'statue')
-    cv.box(253, 255, cy - 3, cy + 3, g - h - 1, g - h - 1, C['ruin'], 'statue')          # nose ridge
-    cv.box(250, 252, cy - 4, cy - 3, g - h - 1, g - h - 1, C['ruin'], 'statue')          # brows
-    cv.box(250, 252, cy + 3, cy + 4, g - h - 1, g - h - 1, C['ruin'], 'statue')
+    cx, cy = hd['c'][0] + 0.5, hd['c'][1] + 0.5
+    rx, ry, rz = hd['r']
+    W = C['ruin']
+    for x in range(int(cx - rx) - 1, 256):
+        for y in range(int(cy - ry) - 1, int(cy + ry) + 2):
+            u = ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2
+            if u > 1:
+                continue
+            tilt = hd['tilt'] * (y + 0.5 - cy) / ry                        # face tilted toward the north
+            hgt = int(round(rz * math.sqrt(1 - u) - tilt))
+            if hgt >= 2:
+                cv.box(x, x, y, y, g - hgt, g - 1, W, 'statue')
+    def top(x, y):                                  # features only on the head itself (never a 1-tall stub)
+        t = int(np.argmax(cv.solid[x, y]))
+        return t if t <= g - 3 else -99
+    ny = int(cy) - 2                                                    # face features on the upper surface
+    for y in range(ny - 1, ny + 4):
+        t = top(255, y)
+        if t > 0:
+            cv.set(255, y, t - 1, W, 'statue')                              # nose
+    for x in (251, 252):
+        t = top(x, ny - 2)
+        if t > 0:
+            cv.carve(x, x, ny - 2, ny - 2, t, t)                             # eye sockets
+    for x in range(250, 254):
+        t = top(x, ny - 4)
+        if t > 0:
+            cv.set(x, ny - 4, t - 1, W, 'statue')                           # brow
+    for x in range(253, 256):
+        t = top(x, ny + 5)
+        if t > 0:
+            cv.carve(x, x, ny + 5, ny + 5, t, t)                             # lips (a groove)
+    for x in range(int(cx) - 5, 256):                                   # crown fragment on the crown side, 2 tall
+        y = int(cy - ry) - 1
+        if x % 3:
+            gbox(cv, x, x, y, y, 2, W, 'statue')
     for (x, y) in U['stubs']:
         cv.box(x - 3, x + 3, y - 3, y + 3, g - 2, g - 1, C['stone'], 'ruin')
-        cv.carve(x - 3, x - 3, y - 3, y - 3, g - 2, g - 1)                                 # chipped corners
+        cv.carve(x - 3, x - 3, y - 3, y - 3, g - 2, g - 1)
         cv.carve(x + 3, x + 3, y + 3, y + 3, g - 2, g - 1)
         cv.cylinder(x + 0.5, y + 0.5, 2.1, g - 5, g - 3, C['ruin'], 'ruin')
 
-
-# =============================================================================================== assist spire
 
 def build_spire(cv, S=SPEC):
     """Ruined round elder spire (west; the east one is the mirror). Wall ring r 4.5-6.5 from the ground (z 50) up to
@@ -932,27 +962,58 @@ def build_plaza(cv, S=SPEC):
 
 
 def build_queen(cv, S=SPEC):
-    """Fallen elder-queen statue lying N-S across the plaza's south edge: head on the plaza floor, torso slab over
-    the steps (walk under it: >= 3 air), hips on the valley floor, legs broken off at the knees. A rubble stair on
-    each side (the east one by mirror) climbs onto the hips: walk over hips, torso and up onto the head."""
+    """Fallen elder-queen: a reclining broken figure in four pieces lying N-S across the plaza's south edge.
+    head (crown points, brow, eye sockets, nose, lips; face to the sky) | neck break with rubble | torso with
+    shoulders resting on rubble supports, robe folds as long grooves (never ridges: the walk-over top stays z 44),
+    the arms broken off and lying apart on the plaza | hips + thighs (walk-over from the rubble stair) | lower legs
+    and upturned feet broken off at the knees. Walk under the torso (>= 3 air), walk over hips and torso."""
     q = S['queen']
     hx, hy = q['head_c']
     gh = int(cv.H[255, hy])
-    cv.ellipsoid(256.5, hy + 0.5, gh - q['head_r'], q['head_r'], q['head_r'], q['head_r'], C['ruin'], 'statue')
+    R = q['head_r']
+    W = C['ruin']
+    cv.ellipsoid(256.5, hy + 0.5, gh - R + 0.5, R, R + 0.5, R, W, 'statue')
+    hz = gh - int(2 * R)                                                # head top z
+    for x in range(250, 256):                                           # crown points on the north rim
+        if x % 2 == 0:
+            t = int(np.argmax(cv.solid[x, hy - 3]))
+            cv.box(x, x, hy - 3, hy - 3, hz - 2, t, W, 'statue')
+    cv.box(255, 255, hy, hy + 3, hz - 1, hz - 1, W, 'statue')           # nose ridge
+    cv.carve(253, 253, hy - 1, hy - 1, hz, hz)                          # eye sockets
+    cv.carve(253, 253, hy, hy, hz, hz)
+    cv.box(251, 254, hy - 2, hy - 2, hz - 1, hz - 1, W, 'statue')       # brow
+    # neck break: rubble only (1 tall)
+    n0, n1 = q['neck_y']
+    for (x, y) in ((251, n0), (253, n0 + 1), (255, n1)):
+        cv.set(x, y, int(cv.H[x, y]) - 1, W, 'rubble')
+    # torso: shoulders on rubble supports at the north end, slab over the steps, folds as grooves
     t0, t1 = q['torso_y']
     za, zb = q['torso_z']
-    cv.box(q['x'][0], 255, t0, t1, za, zb, C['ruin'], 'statue')
-    cv.box(q['x'][0] + 1, 255, t0 + 2, t0 + 6, za - 1, za - 1, C['ruin'], 'statue')          # folded arms
+    cv.box(q['x'][0], 255, t0, t1, za, zb, W, 'statue')
+    cv.box(q['x'][0] - 2, 255, t0, t0 + 4, za, zb, W, 'statue')        # shoulders (wider)
+    for x in (q['x'][0] - 2, q['x'][0] - 1):
+        for y in range(t0, t0 + 3):
+            cv.box(x, x, y, y, zb + 1, int(cv.H[x, y]) - 1, C['ruin'], 'rubble')   # rubble support
+    for x in range(q['x'][0] + 1, 256, 3):
+        cv.carve(x, x, t0 + 6, t1, za, za)                              # robe folds (grooves)
+    # arms broken off, lying apart on the plaza floor west of the torso (hand with fingers), 2 tall
+    ax0, ay0 = q['arm']
+    gbox(cv, ax0, ax0 + 7, ay0, ay0 + 2, 2, W, 'statue')
+    for k in range(4):
+        gbox(cv, ax0 - 1, ax0 - 1, ay0 - 1 + k, ay0 - 1 + k, 2, W, 'statue')     # fingers
+    # hips + thighs (walk-over), lower legs and feet broken at the knees
     h0, h1 = q['hips_y']
-    cv.box(q['x'][0] + 1, 255, h0, h1, za, 49, C['ruin'], 'statue')
-    cv.carve(q['x'][0] + 1, q['x'][0] + 1, h1, h1, za, za + 1)                               # rounded corner
+    cv.box(q['x'][0] + 1, 255, h0, h1, za, 49, W, 'statue')
+    cv.carve(q['x'][0] + 1, q['x'][0] + 1, h1, h1, za, za + 1)
     l0, l1 = q['legs_y']
-    cv.box(q['x'][0] + 2, 255, l0, l1, za + 2, 49, C['ruin'], 'statue')
+    cv.box(q['x'][0] + 2, 255, l0, l1, za + 2, 49, W, 'statue')
+    cv.carve(254, 255, l0, l1 - 3, za + 2, za + 2)                      # the cleft between the legs
+    cv.box(q['x'][0] + 2, 254, l1 - 2, l1, za, za + 1, W, 'statue')    # upturned feet (unreachable)
     rx0, rx1 = q['ramp_x']
     ry0, ry1 = q['ramp_y']
-    straight_stair(cv, rx0 + 3, ry0, ry1, 50, 50 - za, 1, C['stair'], mat='stair')     # top step meets the hips
-    cv.interiors += [['queen walk-under', 252, (t0 + t1) // 2, int(cv.H[252, (t0 + t1) // 2])],
-                     ['queen back', 252, (t0 + t1) // 2, za], ['queen hips', 252, (h0 + h1) // 2, za]]
+    straight_stair(cv, rx0 + 3, ry0, ry1, 50, 50 - za, 1, C['stair'], mat='stair')
+    cv.interiors += [['queen walk-under', 252, (t0 + t1) // 2 + 2, int(cv.H[252, (t0 + t1) // 2 + 2])],
+                     ['queen back', 252, (t0 + t1) // 2 + 2, za], ['queen hips', 252, (h0 + h1) // 2, za]]
 
 
 def build_library(cv, S=SPEC):
@@ -983,36 +1044,118 @@ def build_library(cv, S=SPEC):
     cv.interiors += [['library alcove', x0 + 9, y1 - 4, up]]
 
 
+def _tube(cv, pts, r0, r1, c, mat):
+    """Thick tapered tube through a list of points (spheres every half voxel; face-connected)."""
+    n = len(pts)
+    for i in range(n - 1):
+        (ax, ay, az), (bx, by, bz) = pts[i], pts[i + 1]
+        L = max(1, int(math.hypot(math.hypot(bx - ax, by - ay), bz - az) * 2))
+        for k in range(L + 1):
+            t = k / L
+            u = (i + t) / max(n - 1, 1)
+            r = r0 + (r1 - r0) * u
+            cv.ellipsoid(ax + (bx - ax) * t, ay + (by - ay) * t, az + (bz - az) * t, r, r, r, c, mat)
+
+
 def build_amphi(cv, S=SPEC):
-    """Heart-tree stand-in (trunk + canopy, well clear of the platform) over the root amphitheatre (terraces are
-    terrain). Four roots per side arch from the trunk over the seats (walk under) and plunge into the ground as a
-    steep knee (top >= 6 above the ground: not walkable onto)."""
+    """The heart-tree: an ancient tree over the root amphitheatre (terraces are terrain).
+    - trunk: three stacked girths (a 3-tall flared base, a 7-tall lower bole, the twisting upper bole), lobed and
+      twisting, with a walk-in hollow at the floor opening north (recorded);
+    - roots: four kinds (high arch you walk under, low arch, two ground roots) at different angles, lengths and
+      thicknesses; arches end in a steep knee (top >= 5 above the ground), ground roots stay >= 2 tall (no step);
+    - limbs: three main limbs + an axis leader, each forking twice, carrying separate crown masses at different
+      heights with sky between them (all >= 26 above the arena, well clear of the platform)."""
     a = S['amphi']
-    cx, cy = a['c']
-    fx, fy = cx + 0.5, cy + 0.5
-    t = a['tree']
-    ga = int(cv.H[255, cy])
-    cv.cylinder(fx, fy, t['trunk_r'], t['trunk_top'], ga - 1, C['trunk'], 'trunk')
-    rx, ry, rz = t['canopy']
-    cv.ellipsoid(fx, fy, t['canopy_z'], rx, ry, rz, C['veg'], 'canopy')
-    for (deg, reach) in a['roots']:
+    T = a['tree']
+    cx, cy = a['c'][0] + 0.5, a['c'][1] + 0.5
+    g = int(cv.H[255, a['c'][1]])
+    top = T['trunk_top']
+    TR, CN, RT = C['trunk'], C['veg'], C['root']
+    for z in range(top, g):
+        h = g - 1 - z
+        r = T['base_r'] if h <= 2 else (T['mid_r'] if h <= 9 else T['upper_r'] - (h - 10) * 0.035)
+        oy = T['twist'] * math.sin(h / 6.0)
+        for x in range(int(cx) - 12, 256):
+            for y in range(int(cy) - 12, int(cy) + 13):
+                dx, dy = x + 0.5 - cx, y + 0.5 - (cy + oy)
+                th = math.atan2(dy, dx)
+                rr = r * (1 + 0.12 * math.sin(3 * th + h / 5.0) + 0.06 * math.sin(7 * th + 1.3))
+                if dx * dx + dy * dy <= rr * rr:
+                    cv.set(x, y, z, TR, 'trunk')
+    # walk-in hollow at the floor: a room r 3.4 north of the centre, a 4-wide 4-tall doorway to the north
+    hy = cy - 2.0
+    for x in range(int(cx) - 5, 256):
+        for y in range(int(hy) - 5, int(hy) + 5):
+            if math.hypot(x + 0.5 - cx, y + 0.5 - hy) <= 3.4:
+                cv.carve(x, x, y, y, g - 5, g - 1)
+    cv.carve(254, 255, int(cy) - 12, int(hy), g - 4, g - 1)
+    cv.interiors.append(['heart-tree hollow', 255, int(hy), g])
+    # roots and limbs use the kit ellipsoid (integer cell coordinates): centre on 256.0 so the axis pieces survive
+    # the mirror (column 255 is copied to 256)
+    cx, cy = cx - 0.5, cy - 0.5
+    for (deg, reach, kind, t) in a['roots']:
         ca, sa = math.cos(math.radians(deg)), math.sin(math.radians(deg))
-        rp = reach * 0.8
-        px, py = fx + rp * ca, fy + rp * sa
-        gp = int(cv.H[int(px), int(py)])
-        z0, z1 = a['root_z0'], gp - 6.5
-        n = int(rp * 3)
-        for i in range(n + 1):
-            u = i / n
-            rho = 4.0 + (rp - 4.0) * u
-            z = z0 + (z1 - z0) * u * u
-            cv.ellipsoid(fx + rho * ca, fy + rho * sa, z, 1.7, 1.7, 1.7, C['root'], 'root')
-        ix, iy = int(math.floor(px)), int(math.floor(py))
-        cv.box(ix - 1, ix + 1, iy - 1, iy + 1, int(z1) - 1, gp - 1, C['root'], 'root')       # knee into the ground
-    cv.interiors.append(['amphitheatre arena', 246, cy, int(cv.H[246, cy])])
+        ex, ey = cx + reach * ca, cy + reach * sa
+        ge = int(cv.H[min(255, int(ex)), int(ey)])
+        if kind in ('arch', 'arch_low'):
+            z0 = g - (16 if kind == 'arch' else 10)
+            zk = ge - 5
+            pts = []
+            for i in range(13):
+                u = i / 12
+                rho = 6.0 + (reach - 6.0) * u
+                z = z0 + (zk - z0) * u ** 1.6 - (2.5 if kind == 'arch' else 1.0) * math.sin(math.pi * u)
+                pts.append((cx + rho * ca, cy + rho * sa, z))
+            _tube(cv, pts, t, t * 0.7, RT, 'root')
+            ix, iy = int(math.floor(ex)), int(math.floor(ey))
+            cv.box(ix - 1, min(255, ix + 1), iy - 1, iy + 1, int(zk) - 1, ge - 1, RT, 'root')    # knee
+        else:
+            pts = []
+            for i in range(11):
+                u = i / 10
+                rho = 6.5 + (reach - 6.5) * u
+                px, py = cx + rho * ca + 1.5 * math.sin(u * 5) * -sa, cy + rho * sa + 1.5 * math.sin(u * 5) * ca
+                gz = int(cv.H[min(255, int(px)), int(py)])
+                pts.append((px, py, gz - t + 0.3))
+            _tube(cv, pts, t, max(1.0, t * 0.75), RT, 'root')
+            for (px, py, pz) in pts:                                          # keep >= 2 tall (never a step)
+                for x in range(int(px) - 2, int(px) + 3):
+                    for y in range(int(py) - 2, int(py) + 3):
+                        if 0 <= x <= 255:
+                            gz = int(cv.H[x, y])
+                            if cv.solid[x, y, gz - 1] and not cv.solid[x, y, gz - 2] and \
+                                    cv.mat[x, y, gz - 1] == cv.material('root'):
+                                cv.set(x, y, gz - 2, RT, 'root')
+    # limbs forking twice, separate crown masses
+    rng = noise.rng('heart_limbs', S['layout_seed'])
+    trunk_top = (cx, cy, top + 2)
+    for (deg, rise, length, mass_r) in a['limbs']:
+        ca, sa = math.cos(math.radians(deg)), math.sin(math.radians(deg))
+        if deg in (90, 270):
+            ca = 0.0
+        f1 = (cx + length * ca, cy + length * sa, top - rise)
+        _tube(cv, [trunk_top, f1], 2.2, 1.6, TR, 'trunk')
+        for d2 in (-28, 28):
+            a2 = math.radians(deg + d2)
+            c2, s2 = math.cos(a2), math.sin(a2)
+            f2 = (f1[0] + 0.6 * length * c2, f1[1] + 0.6 * length * s2, f1[2] - rise * 0.5)
+            _tube(cv, [f1, f2], 1.5, 1.1, TR, 'trunk')
+            for d3 in (-22, 22):
+                a3 = math.radians(deg + d2 + d3)
+                f3 = (f2[0] + 0.4 * length * math.cos(a3), f2[1] + 0.4 * length * math.sin(a3),
+                      f2[2] - 1 - rng.random() * 3)
+                _tube(cv, [f2, f3], 1.0, 0.8, TR, 'trunk')
+                r = mass_r * (0.8 + 0.4 * rng.random())
+                cv.ellipsoid(f3[0], f3[1], f3[2] - 1.0, r, r * 0.9, r * 0.55, CN, 'canopy')
+    for (x, y, z, rr) in [(cx, cy, top - 12, 5.5)]:                         # leader crown on the axis
+        _tube(cv, [trunk_top, (cx, cy, top - 8)], 2.0, 1.4, TR, 'trunk')
+        cv.ellipsoid(x, y, z, rr, rr, rr * 0.6, CN, 'canopy')
+    # clamp: nothing above z 9, nothing over x 256 (mirror) - the leader is written on the axis
+    m = cv.mat[:, :, :9] == cv.material('canopy')
+    cv.solid[:, :, :9][m] = False
+    cv.mat[:, :, :9][m] = 0
+    cv.interiors.append(['amphitheatre arena', 246, a['c'][1], int(cv.H[246, a['c'][1]])])
 
-
-# =============================================================================================== flanks
 
 def aqueduct_line(S=SPEC):
     """Aqueduct centre y for every column (gentle double bend, symmetric about the axis)."""
@@ -1336,36 +1479,40 @@ def build_rune_circle(cv, S=SPEC):
 
 
 def build_mushrooms(cv, S=SPEC):
+    """Giant mushrooms in clusters in the hollow, varied height and tilt (stem leans by up to 2 over its height;
+    cap bottom >= 5 above the ground)."""
     out = []
-    for (x, y, r, h) in S['mushrooms']:
+    for (x, y, r, h, tx, ty) in S['mushrooms']:
         g = int(cv.H[x, y])
         if g > 52:
             continue
-        sr = 1.4 + 0.12 * r
-        cv.cylinder(x + 0.5, y + 0.5, sr, g - h, g - 1, C['stem'], 'mushroom')
-        cv.ellipsoid(x + 0.5, y + 0.5, g - h, r, r * 0.9, 2.6, C['mushroom'], 'mushroom')
+        sr = 1.3 + 0.12 * r
+        for k in range(h):
+            f = k / max(h - 1, 1)
+            cv.cylinder(x + 0.5 + tx * f, y + 0.5 + ty * f, sr * (1.15 - 0.2 * f), g - 1 - k, g - 1 - k, C['stem'],
+                        'mushroom')
+        cv.ellipsoid(x + 0.5 + tx, y + 0.5 + ty, g - h, r, r * 0.9, 2.4 + 0.15 * r, C['mushroom'], 'mushroom')
         out.append((x, y, r, h))
     return out
 
 
 def build_crest_walls(cv, geo, S=SPEC):
-    """Broken elder walls on the cliff crests: short runs 2-4 tall in a band just behind the crest line (z >= 7)."""
+    """Broken elder walls along the cliff crest: a continuous 2-thick wall line following the crest contour,
+    3 tall with crenel stubs (+1 on alternate pairs), cut by collapsed sections (low-frequency noise)."""
     cw = S['ring']['crest_wall']
     u = geo['ring_u']
-    n = noise.fbm2((512, 512), cw['cell'], 2, 'crest_wall', S['layout_seed'])
-    hn = noise.fbm2((512, 512), 3, 1, 'crest_h', S['layout_seed'])
-    m = (u >= cw['band_u'][0]) & (u <= cw['band_u'][1]) & (n > cw['keep']) & (X <= 255)
+    line = (u >= cw['band_u'][0]) & (u <= cw['band_u'][1]) & (X <= 255)
+    seg = noise.fbm2((512, 512), cw['cell'], 2, 'crest_wall', S['layout_seed']) > cw['keep']
     k = 0
-    for x, y in zip(*np.nonzero(m)):
+    for x, y in zip(*np.nonzero(line & seg)):
         g = int(cv.H[x, y])
-        h = min(cw['h'][0] + int(round((cw['h'][1] - cw['h'][0]) * hn[x, y])), g - S['z']['min_solid_z'])
+        h = cw['h'][0] + (1 if ((x + y) // 2) % 2 == 0 else 0)
+        h = min(h, g - S['z']['min_solid_z'])
         if h >= 2:
             cv.box(x, x, y, y, g - h, g - 1, C['ruin'], 'crest_wall')
             k += 1
     return k
 
-
-# =============================================================================================== masks + vegetation
 
 def set_masks(cv, geo, S=SPEC):
     sp = S['spawn']
@@ -1389,7 +1536,7 @@ def set_masks(cv, geo, S=SPEC):
                               S['bastion']['box'][3] + 2)):
         cv.no_prop(x0 - 3, x1 + 3, y0 - 3, y1 + 3, KEEP_MISC)
     cv.keep[(np.abs(Y - aqueduct_line(S)[X]) <= S['aqueduct']['half_w'] + 5) & (X <= 255)] |= KEEP_MISC
-    for (x, y, r, hh) in S['mushrooms']:
+    for (x, y, r, hh, _tx, _ty) in S['mushrooms']:
         cv.no_prop(x - r - 3, x + r + 3, y - r - 3, y + r + 3, KEEP_MISC)
 
 
