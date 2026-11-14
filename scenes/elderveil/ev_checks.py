@@ -174,7 +174,9 @@ def featureless(solid, H, S=SPEC):
 
 
 VEG = {'veg', 'canopy', 'trunk', 'fern'}
-NATURAL = VEG | {'mound', 'rock', 'pad', 'rubble', 'mushroom'}
+PLANTS = {'leaf', 'bark', 'moss', 'twig', 'fungus', 'flower', 'fern', 'bramble', 'reed', 'deadwood', 'lichen',
+          'nest', 'berry', 'shroom'}
+NATURAL = VEG | PLANTS | {'mound', 'rock', 'pad', 'rubble', 'mushroom', 'sky', 'tag'}
 
 
 def central_gaps(solid, H, mat, names, S=SPEC):
@@ -337,7 +339,67 @@ def high_descent(nav, d_back, build, d_spawn):
             'ok': all(r['reachable'] and r['safe_back_down'] for r in rows)}
 
 
-def run(solid, H, S=SPEC, nav=None, build=None, mat=None, materials=None):
+def load_graybox(d):
+    gs = np.unpackbits(np.load(os.path.join(d, 'graybox_solid.npy')), axis=2)[:, :, :64].astype(bool)
+    gm = np.load(os.path.join(d, 'graybox_mat.npy'))
+    names = json.load(open(os.path.join(d, 'graybox_materials.json')))
+    return gs, gm, names
+
+
+def _reach(solid, nav=None):
+    nav = nav or Nav(solid)
+    d = [nav.dist_from(_spawn_nodes(nav, b)) for b in P['bases']]
+    ok = np.isfinite(d[0]) | np.isfinite(d[1])
+    R = np.zeros(solid.shape, bool)
+    q = nav.xyz[ok]
+    R[q[:, 0], q[:, 1], q[:, 2]] = True
+    return R
+
+
+def collision_diff(solid_g, mat_g, names_g, solid_a, mat_a, names_a, build, nav_a=None):
+    """Art must not change gameplay geometry. Plants are the allowed category (graybox stand-ins are replaced by
+    real trees and ground plants): both builds are compared with every plant voxel stripped (graybox: veg, canopy,
+    trunk, fern; art: the ev_veg plant materials + canopy, trunk, fern), and the standable cells reachable on foot
+    from either spawn (safe graph) must be identical outside the feature pads, the sky boxes and the tag box
+    (pass = 0 unallowed). The raw difference with the plants in place is reported as plant-caused."""
+    def ids(names, wanted):
+        return [v for k, v in names.items() if k in wanted]
+    Rg, Ra = _reach(solid_g), _reach(solid_a, nav_a)
+    raw = int((Rg ^ Ra).sum())
+    sg = solid_g & ~np.isin(mat_g, ids(names_g, VEG))
+    sa = solid_a & ~np.isin(mat_a, ids(names_a, (PLANTS | VEG) - (set(names_g) - VEG)))     # graybox materials stay (cave nest)
+    def grounded(sol):                                 # pieces that only rested on plants fall away
+        lab, n = ndi.label(sol, structure=ndi.generate_binary_structure(3, 1))
+        keep = np.zeros(n + 1, bool)
+        keep[np.unique(lab[:, :, 62:][sol[:, :, 62:]])] = True
+        keep[0] = False
+        return keep[lab]
+    diff = _reach(grounded(sg)) ^ _reach(grounded(sa))
+    plant = (np.isin(mat_a, ids(names_a, PLANTS | {'canopy'})) & solid_a).any(2) |         (np.isin(mat_g, ids(names_g, VEG)) & solid_g).any(2)
+    allow = ndi.binary_dilation(plant, iterations=1)
+    cats = {'plant_columns_after_strip': int((diff & allow[:, :, None]).sum()), 'plant_caused_raw': raw}
+    left = diff.copy()
+    other = np.zeros((512, 512), bool)
+    for p in build.get('feature_pads') or []:
+        x0, x1, y0, y1 = p['box']
+        other[x0:x1 + 1, y0:y1 + 1] = True
+        a, b = sorted((mirror_index(x0), mirror_index(x1)))
+        other[a:b + 1, y0:y1 + 1] = True
+    for o in build.get('sky_objects') or []:
+        other[o['x'][0]:o['x'][1] + 1, o['y'][0]:o['y'][1] + 1] = True
+    if build.get('tag_rect'):
+        x0, x1, y0, y1 = build['tag_rect'][:4]
+        other[x0:x1 + 1, y0:y1 + 1] = True
+    cats['pads_sky_tag'] = int((left & other[:, :, None]).sum())
+    left &= ~other[:, :, None]
+    pts = np.argwhere(left)
+    return {'graybox_reachable': int(Rg.sum()), 'art_reachable': int(Ra.sum()), 'differing_cells': int(diff.sum()),
+            'definition': 'plants stripped from both builds; reachable standable cells compared',
+            'allowed': cats, 'unallowed': int(left.sum()), 'unallowed_sample': pts[::max(1, len(pts) // 12)][:12].tolist(),
+            'ok': int(left.sum()) == 0}
+
+
+def run(solid, H, S=SPEC, nav=None, build=None, mat=None, materials=None, graybox=None):
     nav = nav or Nav(solid)
     build = build or {}
     d_spawn = {t: nav.dist_from(_spawn_nodes(nav, b)) for t, b in zip(P['team_names'], P['bases'])}
@@ -353,6 +415,9 @@ def run(solid, H, S=SPEC, nav=None, build=None, mat=None, materials=None):
          'spires': spires(nav, solid, S, d_spawn, d_back), 'normal_build_gap': normal_build_gap(nav, d_spawn, S),
          'spire_perch': spire_perch(solid, nav, d_spawn, S),
          'high_descent': high_descent(nav, d_back, build, d_spawn)}
+    if graybox is not None and mat is not None and materials:
+        gs, gm, gn = graybox
+        R['collision_diff'] = collision_diff(gs, gm, gn, solid, mat, materials, build, nav)
     return R
 
 
@@ -383,7 +448,10 @@ def summary(R):
          'detail': {'high_floors': R['high_descent']['high_floors'], 'failures': R['high_descent']['failures'][:5]}},
         {'rule': 'normal tower build gap (spires left out) - report', 'ok': True, 'detail': R['normal_build_gap']},
         {'rule': 'spire-top perch view of the spawns - report', 'ok': True, 'detail': R['spire_perch']},
-    ]
+    ] + ([{'rule': 'art vs graybox collision: 0 unallowed changes to the reachable standable cells',
+           'ok': R['collision_diff']['ok'],
+           'detail': {k: R['collision_diff'][k] for k in ('differing_cells', 'allowed', 'unallowed',
+                                                          'unallowed_sample')}}] if 'collision_diff' in R else [])
 
 
 if __name__ == '__main__':

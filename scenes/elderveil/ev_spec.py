@@ -57,11 +57,15 @@ SPEC = {
     # south end: the stump of a collapsed bastion (broken ring wall 6-9 tall, filled with rubble 4-6 tall)
     'gate_tower': {'box': (143, 156, 222, 235), 'storeys': 3, 'storey_h': 6},
     'bastion': {'box': (143, 156, 277, 290), 'h': (6, 9), 'fill_h': (4, 6)},
-    'hall': {'main': (60, 81, 236, 270), 'wing': (66, 77, 222, 236), 'storeys': 2, 'storey_h': 6},
+    'hall': {'main': (60, 81, 236, 270), 'wing': (66, 77, 222, 236), 'apse': (70.5, 270.0, 6.0), 'storeys': 2,
+             'storey_h': 6},
     'tents': [(62, 72, 200, 207, 'S'), (102, 112, 198, 205, 'S'), (124, 133, 205, 215, 'W'),
               (64, 74, 300, 307, 'N'), (98, 108, 304, 311, 'N'), (124, 133, 295, 305, 'W')],
     'racks': [(86, 92, 210, 210), (86, 92, 302, 302), (140, 140, 300, 306)],
     'cart': (82, 87, 286, 289),
+    'camp_extras': {'lean_to': (108, 117, 214, 220), 'notice': (95, 222), 'well': (116, 290),
+                    'drying_rack': (96, 102, 296), 'crates': [(78, 295), (118, 226)], 'barrels': [(82, 300), (130, 290)],
+                    'alchemy': (112, 116, 298), 'wall_stubs': [((96, 226), (104, 226)), ((104, 284), (110, 286))]},
     'campfires': [(88, 218), (90, 292)],
     # rear backdrop: trees pinned to the layout seed (x, y, canopy r, height)
     'rear_trees': [(64, 216, 5, 12), (56, 284, 5, 12), (84, 232, 4, 11), (86, 276, 4, 11)],
@@ -121,16 +125,27 @@ SPEC = {
               'root_z0': 36},
 
     # ---------------------------------------------------------------- north flank: aqueduct
-    'aqueduct': {'y': (85, 91), 'x0': 44, 'deck_z': 39, 'deck_t': 2, 'soffit': 41, 'pier_w': 3, 'pier_dx': 16,
-                 'pier_x0': 52, 'parapet_h': 2,
-                 'collapses': [(98, 124), (178, 204)]},           # gaps in the deck (rubble ramps inside)
+    'aqueduct': {'y_c': 88, 'bend': 6.0, 'bend_period': 110.0, 'half_w': 3, 'x0': 44, 'deck_z': 39, 'deck_t': 2,
+                 'soffit': 41, 'arch_depth': (3, 4, 6), 'pier_w': 3, 'pier_dx': 16, 'pier_x0': 52, 'parapet_h': 2,
+                 'collapses': [(96, 122), (152, 178), (208, 234)],   # gaps in the deck (rubble stairs inside)
+                 'fallen_in': 1, 'tall_pier_in': 2, 'tall_pier_top': 30},
 
     # ---------------------------------------------------------------- south flank: stream, pool, bridge, mushrooms
     'stream': {'y_c': 428, 'amp': 7.0, 'period': 70.0, 'axis_flat': 24.0, 'wh': (4.5, 1.2, 0.8),
                'wh_clamp': (3.5, 6.0), 'shelf': 2.0, 'shelf_noise': 1.5, 'bank_w': 16,
                'pool': {'c': (256, 436), 'wh': 9.0, 'L': 20.0}},
     'bridge': {'x': (253, 259), 'deck_z': 50, 'parapet_x': (253, 259)},
-    'waterfall': {'x': (252, 260)},
+    # twin stepped falls flanking the bridge (x 240-247 and mirror): lip where the slope reaches z 24, treads 4 rows,
+    # channel 3 below the slope, plunge pool 6 rows
+    'waterfall': {'x': (240, 247), 'lip_z': 24, 'tread': 4, 'depth': 3, 'plunge': 6},
+    # minor ruin sites in the fields (west; east by mirror), each unique
+    'sites': {'colonnade': {'box': (98, 140, 148, 154), 'step': 7},
+              'obelisk': {'base': (148, 110), 'shaft': ((152, 112), (169, 124)), 'tip': (171, 126)},
+              'stair': {'x': 165, 'y': (167, 169), 'rise': 9},
+              'chapel': {'nave': (94, 115, 344, 355), 'apse': (115.5, 349.5, 5.5)},
+              'lookout': {'deck': (150, 156, 362, 368), 'h': 10},
+              'crag': {'c': (36, 372), 'r': (16, 20), 'top': 24},
+              'cave': {'y': 372, 'search_x': (30, 80), 'len': 8}},
     'rune_circle': {'c': (256, 398), 'r': 8.0, 'stones_deg': [150, 190, 230, 110], 'stone_h': (5, 7)},
     'mushrooms': [(84, 404, 6, 18), (118, 466, 5, 14), (152, 400, 7, 20), (190, 470, 5, 13), (214, 402, 6, 16),
                   (66, 458, 5, 15)],                                # (x, y, cap r, height)
@@ -145,6 +160,23 @@ SPEC = {
     # composite pieces counted as one structure in the gap check (parts deliberately 2-3 apart: the queen's legs
     # broken off at the knees, the moonwell rim arcs round the pillar plinth)
     'central_gap': {'min': 7, 'composites': [(248, 264, 161, 180), (240, 272, 184, 236)]},
+
+    # ---------------------------------------------------------------- art pass
+    'art': {
+        # worn dirt paths between landmarks (west half + axis; recolour only)
+        'paths': [[(102, 188), (118, 162), (150, 150), (196, 170)], [(100, 326), (108, 345), (92, 350)],
+                  [(110, 330), (140, 360), (139, 365)], [(140, 256), (200, 256)], [(156, 236), (178, 226), (190, 230)],
+                  [(156, 300), (200, 320), (214, 338)], [(214, 360), (236, 398), (256, 404)],
+                  [(100, 326), (70, 372), (58, 372)], [(150, 120), (200, 104), (226, 118)]],
+        'tag_xy': (10, 12),                     # sky tag plate origin (NW corner, over the cliff crest)
+    },
+    'release': {'version': '1.0', 'description': 'Babel, assist structures: overgrown elder ruins in a misty forest '
+                                                 'valley at dawn. Two ruined spires shorten the climb but still need a '
+                                                 'build; hunters camp in the old outposts.'},
+
+    # declared waivers (babel_checks summary row key -> reason)
+    'waivers': {'spawn_exposure_blue': 'owner 2026-11-13: leave the front open',
+                'spawn_exposure_red': 'owner 2026-11-13: leave the front open'},
 
     'deviations': [
         'spire footprint x 180-201, y 208-229 (spec about 178-200 / 206-228): centre (190.5, 218.5), stair radius 9.5',

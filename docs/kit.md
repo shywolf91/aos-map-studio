@@ -49,6 +49,8 @@ Every check in AGENTS.md §5 step 5 and knowledge base §15:
 | `zone_rules` → `under_platform` | **pass/fail**: strip x 212–300, y 240–271 has 15–45 % object columns and ≥ 25 air between every strip top and the platform; both anchor ends (6 columns under each platform end) top-z range ≤ 1 and 0 object/roof/deck columns **(new)** |
 | `zone_rules` → `centre_footprint` | **pass/fail**: median footprint of the objects (≥ 4 cells) touching the central zone x 150–362, y 130–382 ≥ 25 cells **(new)** |
 
+Waivers: `build['waivers'] = {'<row key>': '<reason>'}` (or `run_all(waivers=)`) prints a named summary row as `WAIVED` with its measured numbers and the reason (status 'waived', counts as ok); only named rows, an unknown key is an error (`babel_checks.row_keys()`).
+
 Zone rules: thresholds in `params.ZONE_RULES` (override per call: `run_all(zone_rules={'front': {'objects': (3, 15)}})`).
 A zone that is not land (land share < 0.5: water front, sky deck, void strip) is `N/A` with the reason; a declared
 `run_all(zone_rules_skip={'rule': 'reason'})` or `build['zone_rules_skip']` is `SKIP` with the reason. Both count as

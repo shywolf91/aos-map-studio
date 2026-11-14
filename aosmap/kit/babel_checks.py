@@ -331,13 +331,20 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
             end_z=(0, 62), trap_anchor=None, trap_stride=5, ground_band=3, trap_z=None,
             tower_zone=None, assist=None, flank_min=130, flank_max=210, centre_half_x=80,
             anchor_face=None, build_gap_margin=24, build_gap_graph='safe', exits=None, timing=True,
-            zone_profile=True, zone_rules=True, zone_rules_skip=None):
+            zone_profile=True, zone_rules=True, zone_rules_skip=None, waivers=None):
     """Run every check on one map. Returns a JSON-able dict. See the module docstring for the model."""
     t0 = time.time()
     build = build or {}
     P = params
+    wv = dict(build.get('waivers') or {})
+    wv.update(waivers or {})
+    bad = sorted(set(wv) - set(row_keys(P)))
+    if bad:
+        raise ValueError(f'waiver names unknown summary rows: {bad} (known: {row_keys(P)})')
     R = {'model': {'rules': rules, 'axis': axis, 'exposure': exposure_preset, 'max_drop_safe': FALL_SAFE_MAX,
                    'note': 'graph model, not a collision simulation'}}
+    if wv:
+        R['waivers'] = wv
     solid, color, colored = codec.decode(data)
     R['reader'] = reader_checks(data, solid, color, colored)
     if pyspades:
@@ -523,39 +530,51 @@ def run_all(data: bytes, *, params=BABEL_DEFAULT, build=None, mat=None, mat_name
     return R
 
 
+FIXED_ROW_KEYS = ('parser', 'pyspades', 'floating', 'mirror', 'platform_volume', 'platform_ends', 'spawn_squares',
+                  'safe_descent', 'enemy_spawn', 'traps', 'interiors', 'flank', 'platform_on_foot', 'anchor_face')
+
+
+def row_keys(params=BABEL_DEFAULT):
+    """Every summary row key (the names a declared waiver may use)."""
+    from .zones import RULE_KEYS
+    return list(FIXED_ROW_KEYS) + [f'spawn_exposure_{t}' for t in params['team_names']] + list(RULE_KEYS)
+
+
 def summary(R):
-    """One pass/fail line per rule (owner targets)."""
+    """One pass/fail line per rule (owner targets). Each row has a 'key'. A row named in R['waivers'] (declared in
+    build.json 'waivers' or run_all(waivers=)) gets status 'waived', keeps its measured detail plus the reason, and
+    counts as ok; only explicitly named rows are waived."""
     rows = []
 
-    def add(rule, ok, detail):
-        rows.append({'rule': rule, 'ok': bool(ok), 'detail': detail})
-    add('parser', R['reader']['reencode_identical'] and R['reader']['z63_solid'], R['reader'])
+    def add(key, rule, ok, detail):
+        rows.append({'rule': rule, 'ok': bool(ok), 'detail': detail, 'key': key})
+    add('parser', 'parser', R['reader']['reencode_identical'] and R['reader']['z63_solid'], R['reader'])
     if 'pyspades' in R:
-        add('pyspades', R['pyspades']['generate_identical'] or (R['pyspades']['solid_mismatch_20k'] == 0 and
+        add('pyspades', 'pyspades', R['pyspades']['generate_identical'] or (R['pyspades']['solid_mismatch_20k'] == 0 and
                                                                 R['pyspades']['colour_mismatch_20k'] == 0),
             R['pyspades'])
-    add('no unintended floating', R['floating_components']['count'] == 0, R['floating_components']['count'])
-    add('mirror', R['mirror']['solid_mismatch'] == 0, R['mirror']['solid_mismatch'])
-    add('platform volume clear', R['platform_volume_voxels'] == 0, R['platform_volume_voxels'])
+    add('floating', 'no unintended floating', R['floating_components']['count'] == 0, R['floating_components']['count'])
+    add('mirror', 'mirror', R['mirror']['solid_mismatch'] == 0, R['mirror']['solid_mismatch'])
+    add('platform_volume', 'platform volume clear', R['platform_volume_voxels'] == 0, R['platform_volume_voxels'])
     ends = R['ground_under_platform_ends']
-    add('ground under both platform ends', all(v['water_cols'] == 0 for v in ends.values()), ends)
+    add('platform_ends', 'ground under both platform ends', all(v['water_cols'] == 0 for v in ends.values()), ends)
     sq = R['spawn_squares']
-    add('spawn squares: no water / roofs', all(sq[t]['water_cols'] == 0 and sq[t]['roof_cols'] == 0
+    add('spawn_squares', 'spawn squares: no water / roofs', all(sq[t]['water_cols'] == 0 and sq[t]['roof_cols'] == 0
                                                for t in ('blue', 'red')), {t: sq[t] for t in ('blue', 'red')})
-    add('safe descent to tower zone', all(v['safe_descent_to_tower_zone'] for v in R['routes'].values()),
+    add('safe_descent', 'safe descent to tower zone', all(v['safe_descent_to_tower_zone'] for v in R['routes'].values()),
         {k: v['tower_zone_min_cost'] for k, v in R['routes'].items()})
-    add('enemy spawn reachable on foot', all(v['to_enemy_spawn'] is not None for v in R['routes'].values()),
+    add('enemy_spawn', 'enemy spawn reachable on foot', all(v['to_enemy_spawn'] is not None for v in R['routes'].values()),
         {k: v['to_enemy_spawn'] for k, v in R['routes'].items()})
-    add('no trap cells', R['trap_cells']['count'] == 0, R['trap_cells']['count'])
-    add('interiors reachable', not R['interiors']['failures'], R['interiors']['checked'])
-    add('flank route exists', R['flank']['exists'], R['flank']['blue_to_red_cost'])
-    add('platform not reachable on foot', not any(v['platform_reachable_on_foot'] for v in R['build_gap'].values()),
+    add('traps', 'no trap cells', R['trap_cells']['count'] == 0, R['trap_cells']['count'])
+    add('interiors', 'interiors reachable', not R['interiors']['failures'], R['interiors']['checked'])
+    add('flank', 'flank route exists', R['flank']['exists'], R['flank']['blue_to_red_cost'])
+    add('platform_on_foot', 'platform not reachable on foot', not any(v['platform_reachable_on_foot'] for v in R['build_gap'].values()),
         {k: v['blocks_to_build_up_to_platform_level'] for k, v in R['build_gap'].items()})
-    add('no walk-on steps on the enemy face of the anchors',
+    add('anchor_face', 'no walk-on steps on the enemy face of the anchors',
         all(not v['raised'] or v.get('enemy_face_walk_on_rows', 0) == 0 for v in R['anchors'].values()),
         R['anchors'])
     for t, e in R['spawn_exposure'].items():
-        add(f'spawn exposure {t} (<= 10 viewers, >= 15 % hidden)', e['targets_met'],
+        add(f'spawn_exposure_{t}', f'spawn exposure {t} (<= 10 viewers, >= 15 % hidden)', e['targets_met'],
             {'mean': e['viewers_per_spot_mean'], 'hidden_pct': e['hidden_pct']})
     if 'zone_rules' in R:
         from .zones import RULE_KEYS, RULE_TITLES
@@ -563,10 +582,18 @@ def summary(R):
         for k in RULE_KEYS:
             z = Z[k]
             # 'n.a.' and 'skipped' rows are not failures (ok=True) but keep their status for printing
-            rows.append({'rule': RULE_TITLES[k], 'ok': z['status'] != 'fail', 'status': z['status'],
+            rows.append({'key': k, 'rule': RULE_TITLES[k], 'ok': z['status'] != 'fail', 'status': z['status'],
                          'detail': {'why': z['why'], 'avg': z.get('avg'), 'values': z['values'],
                                     'object_ground': Z['object_ground'],
                                     **({'front_exempt': Z['front_exempt']} if k == 'front_dressing' else {})}})
+    wv = R.get('waivers') or {}
+    for row in rows:
+        if row['key'] in wv:
+            row['measured_ok'] = row['ok']
+            row['measured_status'] = row.get('status')
+            row['status'] = 'waived'
+            row['ok'] = True
+            row['waiver'] = wv[row['key']]
     return rows
 
 
@@ -576,6 +603,9 @@ def format_row(row):
     st = row.get('status')
     if st is None:
         return ('PASS ' if row['ok'] else 'FAIL ') + row['rule']
+    if st == 'waived':
+        return ('WAIVED ' + row['rule'] + '  measured: ' + ('pass' if row['measured_ok'] else 'fail') + ' ' +
+                json.dumps(row['detail'], default=str)[:300] + '\n      waiver: ' + row['waiver'])
     tag = {'pass': 'PASS ', 'fail': 'FAIL ', 'n.a.': 'N/A  ', 'skipped': 'SKIP '}[st]
     return tag + row['rule'] + ('' if st == 'pass' else '\n      ' + row['detail']['why'])
 

@@ -323,3 +323,19 @@ def test_zone_rules_not_applicable_skip_and_summary_rows():
     assert len(rows) == 4 and R['zone_rules']['front_exempt_boxes'] == [[150, 155, 230, 282]]
     fr = [row for row in rows if row['rule'].startswith('zone: front')][0]
     assert fr['status'] == 'fail' and not fr['ok'] and 'objects 0 < 4' in babel_checks.format_row(fr)
+
+
+def test_declared_waiver_marks_only_named_rows():
+    data = flat().to_vxl()
+    R = babel_checks.run_all(data, pyspades=False, zone_profile=False, zone_rules=False,
+                             build={'waivers': {'spawn_exposure_blue': 'owner: leave the front open'}})
+    rows = {r['key']: r for r in babel_checks.summary(R)}
+    w = rows['spawn_exposure_blue']
+    assert w['status'] == 'waived' and w['ok'] and not w['measured_ok'] and 'mean' in w['detail']
+    out = babel_checks.format_row(w)
+    assert out.startswith('WAIVED') and 'owner: leave the front open' in out and 'measured: fail' in out
+    assert rows['spawn_exposure_red'].get('status') is None
+    assert not rows['spawn_exposure_red']['ok']                     # not named: stays a plain FAIL
+    with pytest.raises(ValueError):
+        babel_checks.run_all(data, pyspades=False, zone_profile=False, zone_rules=False,
+                             waivers={'no_such_row': 'x'})

@@ -169,8 +169,7 @@ def terrain(S=SPEC):
     av = amphi_val(S)
     amphi = av < 1.0
     aq = S['aqueduct']
-    aqm = _box((aq['x0'] - 4, 255), (aq['y'][0] - 5, aq['y'][1] + 5))
-    aqm |= _mirror_mask(aqm)
+    aqm = (np.abs(Y - aqueduct_line(S)[X]) <= aq['half_w'] + 6) & (XW >= aq['x0'] - 4)
     f = S['front']
     front = _wbox(f['x'], f['y'])
     strip = _box((S['anchor']['x'][0], 312), S['anchor']['y'])
@@ -275,6 +274,11 @@ def terrain(S=SPEC):
     geo['ring_u'] = ring_u
 
     # ---------------------------------------------------------------- safety: ring basins, ceiling, pits
+    cr = S['sites']['crag']                                  # crag in the west foothills (the nest cave is dug in)
+    v = np.sqrt(((XW - cr['c'][0]) / cr['r'][0]) ** 2 + ((Y - cr['c'][1]) / cr['r'][1]) ** 2)
+    zc = np.rint(cr['top'] + (Z['valley'] - cr['top']) * v ** 4).astype(int)
+    m = v <= 1.2
+    H[m] = np.minimum(H[m], zc[m])
     H = fill_basins(H, (ring_u <= 1.0) & (H <= 47))
     H = np.maximum(H, Z['min_solid_z'] + 1)
     for _ in range(40):              # a column > 1 below all 4 neighbours is raised to the lowest one + 1
@@ -284,6 +288,7 @@ def terrain(S=SPEC):
             break
         H[pit] = nb[pit] + 1
     region[(H < 61) & np.isin(region, [3, 4])] = 0          # stream ends buried under the ring
+    geo['cascade'] = cut_cascade(H, region, S)
     region[(H <= 45) & (region == 0)] = 2
     region[(H <= 45) & (region == 5)] = 2
     geo['flats'] = flats
@@ -416,6 +421,10 @@ def building_pads(H, S=SPEC):
     for k in ('main', 'wing'):
         x0, x1, y0, y1 = S['hall'][k]
         pad(x0 - 1, x1 + 1, y0 - 1, y1 + 1, 49)
+    for (x0, x1, y0, y1) in (S['sites']['chapel']['nave'],):
+        pad(x0 - 1, x1 + 8, y0 - 1, y1 + 1, 50)
+    ax, ay, ar = S['hall']['apse']
+    pad(int(ax - ar) - 1, int(ax + ar) + 1, int(ay) - 1, int(ay + ar) + 2, 49)
     for (x0, x1, y0, y1, _o) in S['tents']:
         pad(x0 - 1, x1 + 1, y0 - 1, y1 + 1, 49)
 
@@ -462,32 +471,127 @@ def build_walls(cv, S=SPEC):
     return n
 
 
+def ruin_building(cv, M, origin, g, storeys, sh, name, stairs=(), doors=(), collapse=None, buttresses=(),
+                  parapet=(2, 5), wall_c=None, seed=0, windows=True, interior_pts=None):
+    """Enterable ruin of any footprint. M: bool [w, h] footprint at origin (x0, y0). Walls = the footprint rim
+    (1 thick), a floor slab per storey over the interior, the top storey open to the sky, walls rising 2-5 above
+    the top floor in stepped broken runs (never 1: not a step). stairs: (storey, x, y0, y1, dx) straight flights
+    (they cut the slab above). doors: (x0, x1, y0, y1, storey, height). collapse: (x0, x1, y0, y1) corner where the
+    walls and upper slabs have fallen: open to the ground with 1-tall rubble (climb through). buttresses:
+    (x0, x1, y0, y1, h) masonry piers against the outside. Records one interior point per storey."""
+    wall_c = wall_c or C['building']
+    ox, oy = origin
+    w, h = M.shape
+    I = ndi.binary_erosion(M, structure=np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]]), border_value=0)
+    Wl = M & ~I
+    topf = g - (storeys - 1) * sh
+    hn = noise.fbm2((64, 64), 3, 1, f'ruin_top_{name}', seed)
+    for i in range(w):
+        for j in range(h):
+            x, y = ox + i, oy + j
+            if Wl[i, j]:
+                ph = parapet[0] + int((parapet[1] - parapet[0] + 0.999) * hn[(i // 2) % 64, (j // 2) % 64])
+                cv.box(x, x, y, y, topf - ph, g - 1, wall_c, 'building')
+            elif I[i, j]:
+                cv.carve(x, x, y, y, topf - parapet[1] - 2, g - 1)
+                for k in range(storeys):
+                    cv.set(x, y, g - k * sh, C['floor'], 'building')
+    for (k, x, y0, y1, dx) in stairs:
+        straight_stair(cv, x, y0, y1, g - k * sh, sh, dx, C['stair'])
+    for (x0, x1, y0, y1, k, hh) in doors:
+        cv.carve(x0, x1, y0, y1, g - k * sh - hh, g - k * sh - 1)
+    if windows:
+        for i in range(w):
+            for j in range(h):
+                if Wl[i, j]:
+                    for k in range(storeys):
+                        fz = g - k * sh
+                        if k < storeys - 1 and (ox + i + 2 * (oy + j) + 3 * k) % 7 == 0:   # staggered per storey
+                            cv.carve(ox + i, ox + i, oy + j, oy + j, fz - 3, fz - 2)
+    if collapse:
+        x0, x1, y0, y1 = collapse
+        for x in range(x0, x1 + 1):
+            for y in range(y0, y1 + 1):
+                i, j = x - ox, y - oy
+                if 0 <= i < w and 0 <= j < h and M[i, j]:
+                    cv.carve(x, x, y, y, 0, g - 1)
+                    if (x + y) % 3:
+                        cv.set(x, y, g - 1, C['ruin'], 'rubble')
+    for (x0, x1, y0, y1, bh) in buttresses:
+        gbox(cv, x0, x1, y0, y1, bh, wall_c, 'building')
+    pts = interior_pts or []
+    if not pts:
+        cxy = np.argwhere(I)
+        c = cxy.mean(0)
+        best = cxy[np.argmin(((cxy - c) ** 2).sum(1))]
+        pts = [(ox + int(best[0]), oy + int(best[1]))] * storeys
+    for k in range(storeys):
+        px, py = pts[min(k, len(pts) - 1)]
+        cv.interiors.append([f'{name} floor {k}', px, py, g - k * sh])
+    return {'name': name, 'top_floor': topf}
+
+
+def octagon(w, h, c):
+    xs, ys = np.meshgrid(np.arange(w), np.arange(h), indexing='ij')
+    d = np.minimum(xs, w - 1 - xs) + np.minimum(ys, h - 1 - ys)
+    return d >= c
+
+
 def build_gate_tower(cv, S=SPEC):
+    """Octagonal gate tower (3 storeys) with an arched gateway straight through its base (west-east), stairs to
+    every floor, an open broken top with stepped parapets, a collapsed north-east corner you can climb through,
+    two buttresses on the courtyard side."""
     gt = S['gate_tower']
     x0, x1, y0, y1 = gt['box']
-    g = 50
-    structures.building(cv, x0, x1, y0, y1, g, storeys=gt['storeys'], storey_h=gt['storey_h'], doors=('S', 'W'),
-                        wall=C['building'], floor=C['floor'], roof=C['roof'], stair=C['stair'], name='gate tower',
-                        furnish=False)
-    roof = g - gt['storeys'] * gt['storey_h']
-    for x in range(x0, x1 + 1):                    # merlons (2 tall; the roof has no access)
-        for y in (y0, y1):
-            if (x - x0) % 4 < 2:
-                cv.box(x, x, y, y, roof - 2, roof - 1, C['building'], 'building')
-    for y in range(y0, y1 + 1):
-        for x in (x0, x1):
-            if (y - y0) % 4 < 2:
-                cv.box(x, x, y, y, roof - 2, roof - 1, C['building'], 'building')
-    cv.carve(x1 - 4, x1 - 1, y0 + 1, y0 + 4, roof, roof)          # collapsed roof corner over the top room
-    cv.carve(x1, x1, y0 + 1, y0 + 3, roof - 2, roof + 3)
-    for (cx, cy) in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):      # chamfered corners
-        cv.carve(cx, cx, cy, cy, roof - 2, roof + 1)
+    M = octagon(x1 - x0 + 1, y1 - y0 + 1, 3)
+    g, sh = 50, gt['storey_h']
+    ruin_building(cv, M, (x0, y0), g, gt['storeys'], sh, 'gate tower',
+                  stairs=[(0, x0 + 2, y0 + 2, y0 + 3, 1), (1, x1 - 2, y1 - 3, y1 - 2, -1)],
+                  doors=[(x0, x0, y0 + 6, y0 + 8, 0, 5), (x1, x1, y0 + 6, y0 + 8, 0, 5)],
+                  collapse=(x1 - 1, x1, y0 + 1, y0 + 3), parapet=(2, 6), seed=S['layout_seed'],
+                  buttresses=[(x0 - 2, x0 - 1, y0 + 3, y0 + 4, 7), (x0 + 5, x0 + 6, y0 - 2, y0 - 1, 7)],
+                  interior_pts=[(x0 + 5, y0 + 7), (x0 + 6, y0 + 7), (x0 + 6, y0 + 7)])
+    # arch: round the gateway top (one voxel each side lower) - an arch, not a slot
+    for xx in (x0, x1):
+        cv.box(xx, xx, y0 + 6, y0 + 6, g - 5, g - 5, C['building'], 'building')
+        cv.box(xx, xx, y0 + 8, y0 + 8, g - 5, g - 5, C['building'], 'building')
+
+
+def build_hall(cv, S=SPEC):
+    """Hunters' hall: an L-shaped two-storey ruin (main range + north armoury wing) with a rounded apse on the
+    south, roofless upper floor with broken stepped walls, a collapsed south-west corner, buttresses on the
+    courtyard (east) facade."""
+    hl = S['hall']
+    mx0, mx1, my0, my1 = hl['main']
+    wx0, wx1, wy0, wy1 = hl['wing']
+    ax, ay, ar = hl['apse']
+    x0, x1, y0, y1 = min(mx0, wx0), max(mx1, wx1), min(my0, wy0), max(my1, int(ay + ar) + 1)
+    w, h = x1 - x0 + 1, y1 - y0 + 1
+    M = np.zeros((w, h), bool)
+    M[mx0 - x0:mx1 - x0 + 1, my0 - y0:my1 - y0 + 1] = True
+    M[wx0 - x0:wx1 - x0 + 1, wy0 - y0:wy1 - y0 + 1] = True
+    xs, ys = np.meshgrid(np.arange(w) + x0 + 0.5, np.arange(h) + y0 + 0.5, indexing='ij')
+    M |= (np.hypot(xs - ax, ys - ay) <= ar) & (ys >= my1 - 1)
+    g, sh = 49, hl['storey_h']
+    cy = (my0 + my1) // 2
+    ruin_building(cv, M, (x0, y0), g, hl['storeys'], sh, 'hunters hall',
+                  stairs=[(0, mx0 + 3, my0 + 2, my0 + 3, 1)],
+                  doors=[(mx1, mx1, cy - 1, cy + 1, 0, 4), (mx0, mx0, cy - 2, cy, 0, 4),
+                         ((wx0 + wx1) // 2 - 1, (wx0 + wx1) // 2 + 1, wy0, wy0, 0, 4)],
+                  collapse=(mx0, mx0 + 3, my1 - 6, my1 - 2), parapet=(2, 5), seed=S['layout_seed'] + 1,
+                  buttresses=[(mx1 + 1, mx1 + 2, my0 + 5, my0 + 6, 8), (mx1 + 1, mx1 + 2, my1 - 6, my1 - 5, 8),
+                              (mx1 + 1, mx1 + 2, cy + 6, cy + 7, 6)],
+                  interior_pts=[(mx0 + 10, cy), (mx0 + 12, cy)])
+    for ty in (my0 + 10, my0 + 22):                                    # long tables + benches
+        cv.box(mx0 + 9, mx0 + 16, ty, ty + 1, g - 1, g - 1, C['furn'], 'furniture')
+    cv.box(mx1 - 2, mx1 - 1, my0 + 5, my0 + 12, g - sh - 2, g - sh - 1, C['furn'], 'furniture')
+    cv.box(wx0 + 2, wx0 + 3, wy0 + 2, wy1 - 2, g - 2, g - 1, C['furn'], 'furniture')     # armoury racks
 
 
 def build_bastion(cv, S=SPEC):
-    """Stump of a collapsed round bastion at the south end of the front breach: a broken 3-thick ring wall (6-9
-    tall) filled with fallen masonry (rubble 4-6 tall, never a 1-voxel step from the ground). A ruin mound, not a
-    building: no room, no interior record."""
+    """Broken round tower base at the south end of the front breach: 3-thick ring wall 6-9 tall with a vaulted
+    roof slab over a real room (5 voxels of headroom), a west door and a north breach; the vault is not
+    reachable (no stair, walls >= 6). Recorded as a room."""
     b = S['bastion']
     x0, x1, y0, y1 = b['box']
     cx, cy = (x0 + x1 + 1) / 2.0, (y0 + y1 + 1) / 2.0
@@ -498,33 +602,17 @@ def build_bastion(cv, S=SPEC):
         for y in range(y0, y1 + 1):
             d = math.hypot(x + 0.5 - cx, y + 0.5 - cy)
             if R - 3.0 < d <= R:
-                h = b['h'][0] + int(round((b['h'][1] - b['h'][0]) * hn[x, y]))
-                cv.box(x, x, y, y, g - h, g - 1, C['ruin'], 'ruin')
+                hh = b['h'][0] + int(round((b['h'][1] - b['h'][0]) * hn[x, y]))
+                cv.box(x, x, y, y, g - hh, g - 1, C['ruin'], 'ruin')
             elif d <= R - 3.0:
-                h = b['fill_h'][0] + int(round((b['fill_h'][1] - b['fill_h'][0]) * hn[x, y]))
-                cv.box(x, x, y, y, g - h, g - 1, C['rock'], 'rubble')
-
-
-def build_hall(cv, S=SPEC):
-    hl = S['hall']
-    g = 49
-    x0, x1, y0, y1 = hl['main']
-    structures.building(cv, x0, x1, y0, y1, g, storeys=hl['storeys'], storey_h=hl['storey_h'],
-                        doors=('E', 'S', 'W'), wall=C['building'], floor=C['floor'], roof=C['roof'],
-                        stair=C['stair'], name='hunters hall', furnish=True)
-    roof = g - hl['storeys'] * hl['storey_h']
-    wx0, wx1, wy0, wy1 = hl['wing']
-    structures.building(cv, wx0, wx1, wy0, wy1, g, storeys=1, storey_h=hl['storey_h'], doors=('N',),
-                        wall=C['building'], floor=C['floor'], roof=C['roof'], name='hall armoury', furnish=True)
-    cx = (wx0 + wx1) // 2
-    structures.door(cv, cx - 1, cx + 1, y0, y0, g)                     # armoury -> hall
-    cv.carve(x0 + 1, x0 + 7, y0 + 1, y0 + 9, roof, roof)              # ruined NW corner: roof fallen in
-    cv.carve(x0, x0, y0 + 2, y0 + 7, roof - 1, roof + 3)
-    cv.carve(x0 + 2, x0 + 6, y0, y0, roof - 1, roof + 2)
-    for ty in (y0 + 10, y0 + 22):                                      # long tables
-        cv.box(x0 + 9, x0 + 16, ty, ty + 1, g - 1, g - 1, C['furn'], 'furniture')
-    cv.box(x1 - 2, x1 - 1, y0 + 5, y0 + 12, g - hl['storey_h'] - 2, g - hl['storey_h'] - 1, C['furn'],
-           'furniture')                                                # trophy shelf upstairs
+                cv.set(x, y, g - 6, C['ruin'], 'ruin')                      # vault slab
+                cv.set(x, y, g - 7, C['ruin'], 'ruin')
+    ic, jc = int(cx), int(cy)
+    cv.carve(x0, x0 + 3, jc - 1, jc + 1, g - 4, g - 1)                     # west door
+    cv.carve(ic - 1, ic + 1, y0, y0 + 3, g - 4, g - 1)                     # north breach (doorway height)
+    cv.carve(ic - 2, ic + 2, y0, y0 + 1, 0, g - 5)                         # broken crown over the breach
+    cv.set(ic + 1, jc + 2, g - 1, C['ruin'], 'rubble')
+    cv.interiors.append(['bastion room', ic, jc, g])
 
 
 def tent(cv, x0, x1, y0, y1, open_side, name, g=49):
@@ -926,12 +1014,22 @@ def build_amphi(cv, S=SPEC):
 
 # =============================================================================================== flanks
 
-def build_aqueduct(cv, S=SPEC):
-    """Broken elder aqueduct along the north flank: piers every 16, arch spandrels (7 air under the crown), a deck
-    (floor z 39, 5 wide between 2-tall parapets) on intact spans; collapsed sections with rubble stairs up to both
-    deck ends (way up and down at every collapse)."""
+def aqueduct_line(S=SPEC):
+    """Aqueduct centre y for every column (gentle double bend, symmetric about the axis)."""
     aq = S['aqueduct']
-    y0, y1 = aq['y']
+    xs = np.arange(512)
+    u = 256 - np.minimum(xs, 512 - xs)
+    return np.rint(aq['y_c'] + aq['bend'] * np.sin(math.pi * u / aq['bend_period'])).astype(int)
+
+
+def build_aqueduct(cv, S=SPEC):
+    """Broken elder aqueduct along the north flank, bending gently: piers every 16, arches of varying height
+    (crown 7 air, spandrels 3-6 deep), a deck (floor z 39, 5 wide between 2-tall parapets) on the intact spans,
+    three collapsed gaps per side with rubble stairs up to both deck ends, a fallen span lying on the ground and a
+    surviving tall pier standing in a gap."""
+    aq = S['aqueduct']
+    yc = aqueduct_line(S)
+    hw = aq['half_w']
     dz, sf = aq['deck_z'], aq['soffit']
     g = S['z']['aqueduct_ground']
     coll = aq['collapses']
@@ -940,39 +1038,104 @@ def build_aqueduct(cv, S=SPEC):
         return any(a <= x <= b for (a, b) in coll)
     piers = [p for p in range(aq['pier_x0'], 256, aq['pier_dx']) if not any(a - 3 <= p <= b for (a, b) in coll)]
     for p in piers:
-        cv.box(p, p + aq['pier_w'] - 1, y0, y1, sf, g - 1, C['ruin'], 'aqueduct')
-    allp = piers + [512 - p - aq['pier_w'] + 1 for p in piers]
-    allp.sort()
+        for x in range(p, p + aq['pier_w']):
+            cv.box(x, x, yc[x] - hw, yc[x] + hw, sf, g - 1, C['ruin'], 'aqueduct')
+    allp = sorted(piers + [512 - p - aq['pier_w'] + 1 for p in piers])
     for x in range(aq['x0'], 256):
         if in_coll(x):
             continue
+        y0, y1 = yc[x] - hw, yc[x] + hw
         cv.box(x, x, y0, y1, dz, dz + aq['deck_t'] - 1, C['ruin'], 'aqueduct')
-        if any(p <= x < p + aq['pier_w'] for p in piers):
-            continue
-        left = [p + aq['pier_w'] - 1 for p in allp if p + aq['pier_w'] - 1 < x]
-        right = [p for p in allp if p > x]
-        if left and right:
-            a, b = left[-1], right[0]
-            mid, half = (a + b) / 2.0, max((b - a) / 2.0, 1.0)
-            zs = sf + int(round(4 * ((x - mid) / half) ** 2))
-            cv.box(x, x, y0, y1, sf, min(zs, g - 1), C['ruin'], 'aqueduct')
+        if not any(p <= x < p + aq['pier_w'] for p in piers):
+            left = [p + aq['pier_w'] - 1 for p in allp if p + aq['pier_w'] - 1 < x]
+            right = [p for p in allp if p > x]
+            if left and right:
+                a, b = left[-1], right[0]
+                mid, half = (a + b) / 2.0, max((b - a) / 2.0, 1.0)
+                depth = aq['arch_depth'][(a // aq['pier_dx']) % len(aq['arch_depth'])]
+                zs = sf + int(round(depth * ((x - mid) / half) ** 2))
+                cv.box(x, x, y0, y1, sf, min(zs, g - 1), C['ruin'], 'aqueduct')
         if x % 11 not in (0, 1):
             cv.box(x, x, y0, y0, dz - aq['parapet_h'], dz - 1, C['ruin'], 'aqueduct')
             cv.box(x, x, y1, y1, dz - aq['parapet_h'], dz - 1, C['ruin'], 'aqueduct')
     rise = g - dz
     for (a, b) in coll:
-        straight_stair(cv, a + rise - 1, y0 + 1, y1 - 1, g, rise, -1, C['stair'], mat='stair')
-        straight_stair(cv, b - rise + 1, y0 + 1, y1 - 1, g, rise, 1, C['stair'], mat='stair')
+        for i in range(1, rise + 1):                       # rubble stairs: west end rises to the deck at a - 1,
+            for x, top in ((a + rise - i, g - i), (b - rise + i, g - i)):     # east end to the deck at b + 1
+                cv.box(x, x, yc[x] - hw + 1, yc[x] + hw - 1, top, g - 1, C['stair'], 'stair')
+                cv.carve(x, x, yc[x] - hw + 1, yc[x] + hw - 1, top - 4, top - 1)
+        for x in (a - 1, b + 1):                           # open the parapet ends at the landings
+            cv.carve(x, x, yc[x] - hw + 1, yc[x] + hw - 1, dz - 3, dz - 1)
         m = (a + b) // 2
-        cv.box(m - 2, m + 2, y0, y1 - 2, g - 1, g - 1, C['ruin'], 'rubble')
-        cv.interiors.append([f'aqueduct gap {a}', m, y1 + 1, g])
+        cv.interiors.append([f'aqueduct gap {a}', m, yc[m] + hw + 2, g])
+    # fallen span lying in the middle gap (2 tall: not a step), beside the line
+    fa, fb = coll[aq['fallen_in']]
+    fm = (fa + fb) // 2
+    for x in range(fm - 7, fm + 8):
+        y0 = yc[x] + hw + 3 + (x - fm) // 5
+        gbox(cv, x, x, y0, y0 + 4, 2, C['ruin'], 'aqueduct')
+    # surviving tall pier in the gap nearest the axis (stands above the deck line, not reachable)
+    ta, tb = coll[aq['tall_pier_in']]
+    tm = (ta + tb) // 2
+    for x in range(tm - 1, tm + 2):
+        cv.box(x, x, yc[x] - hw + 1, yc[x] + hw - 1, aq['tall_pier_top'], g - 1, C['ruin'], 'aqueduct')
     secs = [aq['x0']] + [v for ab in coll for v in ab] + [255]
     for i in range(0, len(secs), 2):
         xa, xb = secs[i], secs[i + 1]
         xm = (xa + xb) // 2
-        if cv.H[xm, (y0 + y1) // 2] > dz:
-            cv.interiors.append([f'aqueduct deck {xa}-{xb}', xm, (y0 + y1) // 2, dz])
+        if cv.H[xm, yc[xm]] > dz:
+            cv.interiors.append([f'aqueduct deck {xa}-{xb}', xm, int(yc[xm]), dz])
     return {'piers': len(piers), 'deck_sections': [[secs[i], secs[i + 1]] for i in range(0, len(secs), 2)]}
+
+
+def build_camp_extras(cv, S=SPEC):
+    """Hunters'-camp pieces round the courtyard edges (never in the spawn square + margin): a smithing lean-to with
+    forge and anvil, a notice board, a covered well, a drying rack, crates and barrels, an alchemy table, low
+    breached inner wall stubs (3 tall: not a step)."""
+    E = S['camp_extras']
+    g = 49
+    x0, x1, y0, y1 = E['lean_to']                                       # back wall north, roof sloping south
+    cv.box(x0, x1, y0, y0, g - 5, g - 1, C['timber'], 'timber')
+    for x in (x0, x1):
+        cv.box(x, x, y1, y1, g - 4, g - 1, C['timber'], 'timber')
+    cv.box(x0, x1, y0, y1, g - 6, g - 6, C['roof'], 'roof')
+    cv.box(x0, x1, y1, y1, g - 5, g - 5, C['roof'], 'roof')                            # eave board
+    cv.box(x0 + 1, x0 + 3, y0 + 2, y0 + 4, g - 2, g - 1, C['stone'], 'prop')              # forge
+    cv.box(x0 + 6, x0 + 7, y0 + 3, y0 + 3, g - 1, g - 1, (90, 90, 98), 'prop')           # anvil
+    cv.interiors.append(['smithing lean-to', x0 + 5, y0 + 2, g])
+    bx, by = E['notice']                                                # notice board: two posts and a board
+    cv.box(bx, bx, by, by, g - 5, g - 1, C['timber'], 'timber')
+    cv.box(bx + 3, bx + 3, by, by, g - 5, g - 1, C['timber'], 'timber')
+    cv.box(bx, bx + 3, by, by, g - 5, g - 3, C['furn'], 'prop')
+    wx, wy = E['well']                                                  # covered well
+    for x in range(wx - 2, wx + 3):
+        for y in range(wy - 2, wy + 3):
+            if max(abs(x - wx), abs(y - wy)) == 2 and not (abs(x - wx) == 2 and abs(y - wy) == 2):
+                cv.box(x, x, y, y, g - 2, g - 1, C['stone'], 'prop')
+            elif max(abs(x - wx), abs(y - wy)) <= 1:
+                cv.set(x, y, g, C['water'], 'water')
+    for y in (wy - 2, wy + 2):
+        cv.box(wx, wx, y, y, g - 6, g - 3, C['timber'], 'timber')
+    cv.box(wx, wx, wy - 2, wy + 2, g - 6, g - 6, C['timber'], 'timber')
+    cv.box(wx - 2, wx + 2, wy - 1, wy + 1, g - 7, g - 7, C['roof'], 'roof')
+    x0, x1, y0 = E['drying_rack']
+    cv.box(x0, x0, y0, y0, g - 4, g - 1, C['timber'], 'timber')
+    cv.box(x1, x1, y0, y0, g - 4, g - 1, C['timber'], 'timber')
+    cv.box(x0, x1, y0, y0, g - 4, g - 4, C['timber'], 'timber')
+    for x in range(x0 + 1, x1, 2):
+        cv.box(x, x, y0, y0, g - 3, g - 3, C['tent'], 'prop')
+    for (x, y) in E['crates']:
+        gbox(cv, x, x + 2, y, y + 2, 2, C['prop'], 'prop')
+        gbox(cv, x, x + 1, y, y + 1, 3, C['prop'], 'prop')
+    for (x, y) in E['barrels']:
+        gbox(cv, x, x + 1, y, y + 1, 2, C['trunk'], 'prop')
+    x0, x1, y0 = E['alchemy']
+    cv.box(x0, x1, y0, y0 + 1, g - 2, g - 2, C['furn'], 'furniture')
+    for x in (x0, x1):
+        cv.box(x, x, y0, y0 + 1, g - 1, g - 1, C['furn'], 'furniture')
+    for (a, b) in E['wall_stubs']:
+        for (x, y) in seg_cells(a, b, 1.2):
+            gbox(cv, x, x, y, y, 3, C['ruin'], 'ruin')
 
 
 def build_bridge(cv, S=SPEC):
@@ -980,7 +1143,7 @@ def build_bridge(cv, S=SPEC):
     the banks at the ends, open above the water in the middle (walk under along the shelves)."""
     bd = S['bridge']
     xa = bd['x'][0]
-    col = cv.H[255]
+    col = cv.H[250]
     ys = [y for y in range(395, 480) if col[y] > bd['deck_z']]
     if not ys:
         return None
@@ -998,21 +1161,164 @@ def build_bridge(cv, S=SPEC):
     return [y0, y1]
 
 
-def paint_waterfall(cv, S=SPEC):
-    """Graybox marker for the waterfall: top voxels of the cliff face and the bank behind the pool painted as
-    water (no geometry change; the art pass builds the cascade)."""
-    x0, x1 = S['waterfall']['x']
+def cut_cascade(H, region, S=SPEC):
+    """Stepped falls: a channel cut 3-6 into the south slope (x 240-247 and its mirror), treads 4 rows long with
+    4-voxel risers, from a rock lip high on the slope down to a plunge pool joining the stream pool. Treads are
+    painted water (region 4). Walkable downhill only; every tread drains to the pool (no trap)."""
+    wf = S['waterfall']
+    xa, xb = wf['x']
+    out = {'cols': [xa, xb]}
+    for x in range(xa, xb + 1):
+        col = H[x].copy()
+        ys = [y for y in range(400, 500) if col[y] >= 62]
+        y0 = max(ys) + 1 if ys else 450                      # first dry row south of the pool
+        y_lip = next((y for y in range(y0, 511) if col[y] <= wf['lip_z']), 500)
+        for y in range(y0, y_lip + 1):
+            if y - y0 < wf['plunge']:
+                z = 63 if y - y0 < wf['plunge'] - 2 else 62
+            else:
+                raw = col[y] + wf['depth']
+                k = (y - y0 - wf['plunge']) // wf['tread']
+                z = min(62, int(col[y0 + wf['plunge'] + k * wf['tread']]) + wf['depth'])
+                z = min(z, int(raw) + 2)
+            H[x, y] = max(int(H[x, y]), z)
+            region[x, y] = 4 if z < 62 else (4 if z == 63 else 3)
+        out['lip_y'] = y_lip
+    H[512 - xb:512 - xa + 1] = H[xa:xb + 1][::-1]
+    region[512 - xb:512 - xa + 1] = region[xa:xb + 1][::-1]
+    return out
+
+
+def paint_cascade(cv, S=SPEC):
+    """Water on the risers (the falling sheets) and a rock lip overhanging the top tread."""
+    wf = S['waterfall']
+    xa, xb = wf['x']
     n = 0
-    for x in range(x0, 256):
-        for y in range(440, 512):
-            z = int(cv.H[x, y])
-            if z >= 62:
-                continue
-            cv.set(x, y, z, C['water'], 'waterfall')
-            n += 1
-            if z < 20:
-                break
-    return n
+    lip = 0
+    for x in range(xa, xb + 1):
+        for y in range(420, 510):
+            t, tn = int(cv.H[x, y]), int(cv.H[x, y - 1])
+            if cv.mat[x, y, t] == cv.material('water') and tn > t + 1:
+                for z in range(t, tn):
+                    cv.set(x, y, z, C['water'], 'waterfall')
+                    n += 1
+            lip = max(lip, y if cv.mat[x, y, t] == cv.material('water') else 0)
+    for x in range(xa - 1, xb + 2):                           # rock lip: a ledge jutting 2 over the top tread
+        t = int(cv.H[x, lip + 1])
+        cv.box(x, x, lip - 1, lip + 1, t - 2, t - 1, C['rock'], 'rock')
+    return {'riser_voxels': n, 'lip_y': lip}
+
+
+def build_sites(cv, S=SPEC):
+    """Minor ruin sites in the fields between the outposts and the flanks, each unique (west; east by mirror):
+    collapsed colonnade, toppled obelisk, broken stair to nowhere (climbable, top 9 above the ground: safe drop),
+    roofless chapel, hunters' lookout platform (stair up, railings), monster-nest cave dug into the west cliff."""
+    T = S['sites']
+    g0 = 50
+    rng = noise.rng('sites', S['layout_seed'])
+    # collapsed colonnade on a stylobate, one column fallen, a lintel still spanning two columns
+    x0, x1, y0, y1 = T['colonnade']['box']
+    gbox(cv, x0, x1, y0, y1, 1, C['stone'], 'ruin')
+    cols = list(range(x0 + 2, x1 - 2, T['colonnade']['step']))
+    hs = []
+    for i, cx in enumerate(cols):
+        h = [11, 4, 8, 12, 3, 9][i % 6]
+        hs.append(h)
+        gbox(cv, cx, cx + 2, y0 + 2, y0 + 4, 1 + h, C['ruin'], 'ruin')
+    a = hs.index(max(hs))
+    if a + 1 < len(cols) and hs[a + 1] >= 8:
+        g = int(cv.H[cols[a], y0 + 2])
+        cv.box(cols[a], cols[a + 1] + 2, y0 + 2, y0 + 4, g - 1 - min(hs[a], hs[a + 1]) - 1,
+               g - 1 - min(hs[a], hs[a + 1]), C['ruin'], 'ruin')
+    drum(cv, cols[1] - 1, y1 + 4, 10, 1.6, 'x')
+    # toppled obelisk: plinth, shaft lying across the grass, broken tip
+    ob = T['obelisk']
+    bx, by = ob['base']
+    gbox(cv, bx - 2, bx + 2, by - 2, by + 2, 3, C['stone'], 'ruin')
+    gcells(cv, seg_cells(ob['shaft'][0], ob['shaft'][1], 3.2), 3, C['ruin'], 'ruin')
+    tx, ty = ob['tip']
+    gbox(cv, tx - 1, tx + 1, ty - 1, ty + 1, 2, C['ruin'], 'ruin')
+    # broken stair to nowhere: 9 steps up to a broken landing (top 9 above the ground: safe drop), wall stub behind
+    st = S['sites']['stair']
+    sx, sy0, sy1 = st['x'], st['y'][0], st['y'][1]
+    g0 = int(cv.H[sx - 1, sy0])
+    straight_stair(cv, sx, sy0, sy1, g0, st['rise'], 1, C['ruin'], mat='ruin')
+    lx = sx + st['rise']
+    cv.box(lx, lx + 2, sy0, sy1, g0 - st['rise'], g0 - 1, C['ruin'], 'ruin')
+    cv.carve(lx, lx + 2, sy0, sy1, g0 - st['rise'] - 3, g0 - st['rise'] - 1)
+    cv.box(lx + 3, lx + 3, sy0 - 2, sy1 + 2, g0 - st['rise'] - 4, g0 - 1, C['ruin'], 'ruin')   # wall stub
+    cv.carve(lx + 3, lx + 3, sy0 - 2, sy0 - 1, g0 - st['rise'] - 4, g0 - st['rise'] - 2)
+    cv.interiors.append(['stair to nowhere', lx + 1, sy0 + 1, g0 - st['rise']])
+    # roofless chapel: nave + apse, broken walls 5-8 tall, west door, side door, windows, benches and an altar
+    ch = T['chapel']
+    nx0, nx1, ny0, ny1 = ch['nave']
+    ax, ay, ar = ch['apse']
+    w, h = int(ax + ar) - nx0 + 2, ny1 - ny0 + 1
+    M = np.zeros((w, h), bool)
+    M[:nx1 - nx0 + 1, :] = True
+    xs, ys = np.meshgrid(np.arange(w) + nx0 + 0.5, np.arange(h) + ny0 + 0.5, indexing='ij')
+    M |= (np.hypot(xs - ax, ys - ay) <= ar) & (xs >= nx1)
+    cy = (ny0 + ny1) // 2
+    g0 = 50
+    ruin_building(cv, M, (nx0, ny0), g0, 1, 6, 'roofless chapel',
+                  doors=[(nx0, nx0, cy - 1, cy + 1, 0, 5), (nx0 + 8, nx0 + 10, ny1, ny1, 0, 4)],
+                  collapse=(nx0 + 12, nx0 + 15, ny0, ny0 + 1), parapet=(5, 8), seed=S['layout_seed'] + 7,
+                  interior_pts=[(nx0 + 5, cy)])
+    for bxx in range(nx0 + 4, nx1 - 3, 3):
+        cv.box(bxx, bxx, ny0 + 2, cy - 2, g0 - 1, g0 - 1, C['furn'], 'furniture')
+        cv.box(bxx, bxx, cy + 2, ny1 - 2, g0 - 1, g0 - 1, C['furn'], 'furniture')
+    cv.box(int(ax), int(ax) + 1, cy - 1, cy + 1, g0 - 2, g0 - 1, C['stone'], 'furniture')
+    # hunters' lookout: timber deck 10 up on four posts, railings, a stair up from the west
+    lk = T['lookout']
+    dx0, dx1, dy0, dy1 = lk['deck']
+    g0 = int(cv.H[dx0 - lk['h'] - 1, (dy0 + dy1) // 2])
+    dz = g0 - lk['h']
+    for (px, py) in ((dx0, dy0), (dx1, dy0), (dx0, dy1), (dx1, dy1)):
+        cv.box(px, px, py, py, dz + 1, int(cv.H[px, py]) - 1, C['timber'], 'timber')
+    cv.box(dx0, dx1, dy0, dy1, dz, dz, C['floor'], 'timber')
+    for x in range(dx0, dx1 + 1):
+        for y in (dy0, dy1):
+            cv.box(x, x, y, y, dz - 2, dz - 1, C['timber'], 'timber')
+    for y in range(dy0, dy1 + 1):
+        cv.box(dx1, dx1, y, y, dz - 2, dz - 1, C['timber'], 'timber')
+    sy = (dy0 + dy1) // 2
+    straight_stair(cv, dx0 - lk['h'], sy - 1, sy + 1, g0, lk['h'], 1, C['stair'], mat='stair')
+    cv.carve(dx0, dx0, sy - 1, sy + 1, dz - 3, dz - 1)
+    cv.interiors.append(['hunters lookout', dx0 + 3, sy, dz])
+    # monster-nest cave: a tunnel dug west into the cliff from the foothill line, a chamber at the end
+    cvx = T['cave']
+    yc = cvx['y']
+    row = cv.H[:, yc].astype(int)
+    mx = next(x for x in range(cvx['search_x'][1], cvx['search_x'][0], -1) if row[x - 3] <= row[x] - 6)
+    fz = int(row[mx])
+    for x in range(mx - cvx['len'], mx + 1):
+        for y in range(yc - 2, yc + 3):
+            cv.carve(x, x, y, y, fz - 4, fz - 1)
+            cv.set(x, y, fz, C['dirt'], 'cave')
+    chx = mx - cvx['len'] - 4
+    for x in range(chx - 4, chx + 5):
+        for y in range(yc - 4, yc + 5):
+            if (x - chx) ** 2 + (y - yc) ** 2 <= 22:
+                cv.carve(x, x, y, y, fz - 5, fz - 1)
+                cv.set(x, y, fz, C['dirt'], 'cave')
+    for (dx, dy) in ((-2, -1), (-2, 1), (-1, 2), (1, 2), (2, 1), (2, -1), (-1, -2), (1, -2)):
+        cv.set(chx + dx, yc + dy, fz - 1, C['root'], 'nest')                # nest ring (1 tall)
+    cv.interiors.append(['monster nest cave', chx, yc, fz])
+    return {'cave_mouth': [mx, yc, fz], 'cave_chamber': [chx, yc]}
+
+
+def site_masks(cv, S=SPEC):
+    T = S['sites']
+    boxes = [T['colonnade']['box'], (140, 176, 104, 130), (T['stair']['x'] - 2, T['stair']['x'] + T['stair']['rise'] + 5,
+             T['stair']['y'][0] - 3, T['stair']['y'][1] + 3), T['chapel']['nave'] and
+             (T['chapel']['nave'][0], int(T['chapel']['apse'][0] + T['chapel']['apse'][2]) + 1, T['chapel']['nave'][2],
+              T['chapel']['nave'][3]), (T['lookout']['deck'][0] - T['lookout']['h'] - 1, T['lookout']['deck'][1],
+                                        T['lookout']['deck'][2], T['lookout']['deck'][3]),
+             (T['crag']['c'][0] - T['crag']['r'][0] - 4, T['crag']['c'][0] + T['crag']['r'][0] + 14,
+              T['crag']['c'][1] - T['crag']['r'][1] - 2, T['crag']['c'][1] + T['crag']['r'][1] + 2),
+             (S['waterfall']['x'][0] - 3, S['waterfall']['x'][1] + 3, 440, 511)]
+    for (x0, x1, y0, y1) in boxes:
+        cv.no_prop(x0 - 3, x1 + 3, y0 - 3, y1 + 3, KEEP_MISC)
 
 
 def build_rune_circle(cv, S=SPEC):
@@ -1076,12 +1382,13 @@ def set_masks(cv, geo, S=SPEC):
     cv.keep[st] |= KEEP_STRUCT
     for (x0, x1, y0, y1) in (S['spire']['box'], (S['library']['wing'][0] - 4, 255, S['library']['box'][2] - 4,
                                                   S['library']['box'][3] + 4),
-                             (238, 255, 180, 240), (238, 255, 380, 470), (40, 255, 78, 98),
+                             (238, 255, 180, 240), (238, 255, 380, 470),
                              (S['gate_tower']['box'][0] - 2, S['gate_tower']['box'][1] + 2,
                               S['gate_tower']['box'][2] - 2, S['gate_tower']['box'][3] + 2),
                              (S['bastion']['box'][0] - 2, S['bastion']['box'][1] + 2, S['bastion']['box'][2] - 2,
                               S['bastion']['box'][3] + 2)):
         cv.no_prop(x0 - 3, x1 + 3, y0 - 3, y1 + 3, KEEP_MISC)
+    cv.keep[(np.abs(Y - aqueduct_line(S)[X]) <= S['aqueduct']['half_w'] + 5) & (X <= 255)] |= KEEP_MISC
     for (x, y, r, hh) in S['mushrooms']:
         cv.no_prop(x - r - 3, x + r + 3, y - r - 3, y + r + 3, KEEP_MISC)
 
@@ -1352,6 +1659,7 @@ def build_west(S=SPEC, veg_seed=None):
     build_bastion(cv, S)
     build_hall(cv, S)
     build_camp(cv, S)
+    build_camp_extras(cv, S)
     build_front(cv, S)
     build_under(cv, S)
     rep['spire'] = build_spire(cv, S)
@@ -1361,7 +1669,9 @@ def build_west(S=SPEC, veg_seed=None):
     build_amphi(cv, S)
     rep['aqueduct'] = build_aqueduct(cv, S)
     rep['bridge_y'] = build_bridge(cv, S)
-    rep['waterfall_cells'] = paint_waterfall(cv, S)
+    rep['cascade'] = paint_cascade(cv, S)
+    rep['sites'] = build_sites(cv, S)
+    site_masks(cv, S)
     build_rune_circle(cv, S)
     rep['mushrooms'] = build_mushrooms(cv, S)
     pinned = plant_pinned(cv, S)
