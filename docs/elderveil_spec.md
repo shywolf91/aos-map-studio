@@ -1,7 +1,7 @@
-# Elderveil — spec (v1.0)
+# Elderveil — spec (v1.0 and v1.1)
 
-**Status: server-loaded** (2026-11-14). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
-Not client-inspected and not playtested. The renders in `maps/elderveil_v1/renders/` are numpy previews, not
+**Status: server-loaded** (2026-11-14), v1.0 and v1.1. **v1.1 is the current version** (second art round). Loaded on a live piqueserver 1.4.2 in Babel mode by `aosmap.kit.probe`.
+Not client-inspected and not playtested. The renders in `maps/elderveil_v1*/renders/` are numpy previews, not
 client captures.
 
 An original dark-fantasy map: a forest valley swallowed by the pale-stone ruins of a vanished elder people, on a misty
@@ -179,11 +179,58 @@ Route, trap and interior results come from a graph model, not from play.
   on one stalk; cutting the stalk drops the plate.
 * Round length with a 10-block spire gap is untested; it may end rounds quickly (knowledge base §8.8).
 
+## v1.1: second art round `[USER 2026-11-14]` `[RUN 2026-11-14]`
+
+The owner asked for another art round on the weak pieces. Same vegetation seed 2243074186 as v1.0; all new
+geometry and art is gated on release 1.1. `.vxl` 3,155,476 bytes, SHA-256
+`4e9c485398b4c178cb3ead1b6e355675adb6621f2518e8cda2781fdc695ad8ae`. `.txt` 742,071 bytes, `version = '1.1'`.
+
+What changed:
+
+* **Fallen queen:** rebuilt from rounded masses: head about 10 across with chin, nose ridge, brow and hollow eyes;
+  separate crown points, one snapped off; a neck break; shoulders, chest, waist, hips and a robe skirt; both knees
+  drawn up as walk-under arches (the axis mirror makes both legs bent); open palm-up hands; drapery ridges; a broken
+  staff. It is no longer walkable on top.
+* **Elder head under the platform:** brow ridge, eye sockets, nose, cheek, lips, an ear, a crown band, a broken crown
+  piece and a severed hand. The three column stubs moved 2 west to keep 7-voxel gaps.
+* **Cliffs:** buttress ribs and gullies, 4 pinnacles, 4 rock-fall fans, 3 rubble chutes, variable strata bands,
+  ledge ferns, vines by the falls.
+* **Trees:** crowns with holes, sun and shade tones, new-growth tips, twigs under oak lobes, root flares on firs;
+  a few logs, stumps and saplings on the forest floor.
+* **Small things:** foam at the plunge pools, bank stones, leaf drifts, 9 warm lantern posts beside the paths,
+  two crows perched on ruins (attached, not floating).
+
+| check | v1.0 | v1.1 |
+|---|---|---|
+| checks | 29 pass + 2 waived | 29 pass + 2 waived |
+| spawn exposure (waived) | 10.25 / 10.0 viewers, 0 % hidden | same |
+| highest walkable point near the platform; build gap | z 44; 42 (top of the queen statue) | z 47; 45 |
+| anchor/strip gap; spire gap; spire perch | 48; 10; 92.5 % | same |
+| zone: spawn cover (enemy / rear) | 28.2 % / 62.4 % | 28.5 % / 62.3 % |
+| zone: under the platform (covered / min air) | 15.4 % / 42 | 17.3 % / 41 |
+| zone: centre median footprint | 47.5 | 43 |
+| zone: front dressing | 7 objects, 10.6 %, worst section 74.7 % free | same |
+| interiors; high floors | 84 of 84; 32 | 82 of 82; 26 |
+| featureless patch; flanks; periphery; crossing width | 20; 574 / 538; 81.3 %; 236 | 23; 574 / 538; 81.7 %; 231 |
+| traps; unintended floating; collision diff | 0; 0; 0 unallowed | same |
+| colours | median luma 85.9, min floor 40.6, 92 glow sources | 85.8, 40.6, 102 glow sources |
+| live server probe | loaded | loaded; platform 3,200 cells; spawns inside the stock squares |
+
+Three other seeds pass every check. `--release 1.0` rebuilds v1.0 byte-identical (.vxl and .txt).
+The v1.0 column was re-measured with the current code and seed; two values differ slightly from the v1.0 table above.
+
+Still below the Wicker King / Silverpine standard `[RUN, numpy previews]`: at eye level the queen is a cluster of
+pale rounded lumps (face and hands read only from above); the elder head's features are a voxel or two deep; the
+forest floor has few logs and stumps; cliffs still read as banded terraces from a distance; crowns are still
+blobbier than Silverpine's.
+
 ### Regenerate
 
 ```bash
-python scenes/elderveil/ev_main.py out/elderveil 2243074186   # omit the seed for a new random build
-python scenes/elderveil/ev_render.py out/elderveil
-python -m aosmap.kit.probe out/elderveil --mode babel
-python scenes/elderveil/ev_main.py out/ev_graybox --graybox    # gameplay geometry only
+python scenes/elderveil/ev_main.py out/elderveil_v1_1 2243074186                 # v1.1 (default release)
+python scenes/elderveil/ev_main.py out/elderveil 2243074186 --release 1.0       # v1.0, byte-identical
+python scenes/elderveil/ev_main.py out/new_build                                # new random vegetation seed
+python scenes/elderveil/ev_render.py out/elderveil_v1_1
+python -m aosmap.kit.probe out/elderveil_v1_1 --mode babel
+python scenes/elderveil/ev_main.py out/ev_graybox --graybox                      # gameplay geometry only
 ```

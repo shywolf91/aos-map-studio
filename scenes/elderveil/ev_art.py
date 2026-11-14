@@ -401,18 +401,26 @@ def art_west(cv, rep, S, rng, seed, solid_gray=None):
     out = {}
     import ev_graybox
     S['_plaza_mask'] = ev_graybox.plaza_val(S) < 1.0
+    ev_veg.V11 = bool(S.get('v11'))
     out['stand_ins_cleared'] = ev_veg.clear_stand_ins(cv)
     out['terrain'] = terrain_art(cv, S, seed)
     out['stone'] = stone_art(cv, S, seed)
     out['bands'] = carved_bands(cv, S, glow)
     out['wood'] = wood_art(cv, S, seed)
     out['props'] = ev_props.props_art(cv, S, rng, glow)
+    if S.get('v11'):
+        import ev_v11
+        out['cliff_v11'] = ev_v11.cliff_art(cv, S, seed, None)
     out['heart_tree'] = ev_veg.heart_tree(cv, rng, S, glow)
     out['mushrooms'] = ev_veg.giant_mushrooms(cv, rng, S, glow)
     trees = ev_veg.plant_trees(cv, rep['scatter']['tree_list'], rng, seed, glow)
     out['trees'] = {k: v for k, v in trees.items() if k != 'list'}
+    if S.get('v11'):
+        out['forest_floor_v11'] = ev_v11.forest_floor(cv, rng, seed)
     out['understory'] = ev_veg.understory(cv, rng, seed, plaza_mask=S['_plaza_mask'])
     out['water_plants'] = ev_veg.reeds_and_lilies(cv, rng, seed)
+    if S.get('v11'):
+        out['small_v11'] = ev_v11.small_things(cv, S, seed, glow, rep)
     out['tree_trap_voxels_removed'] = tree_traps(cv, trees['list'])
     if solid_gray is not None:
         out['reach_fix_voxels_removed'] = reach_fix(cv, solid_gray)

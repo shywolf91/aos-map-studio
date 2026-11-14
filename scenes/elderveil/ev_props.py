@@ -288,6 +288,12 @@ def rune_circle_art(cv, S, glow):
 
 
 def props_art(cv, S, rng, glow):
+    if S.get('v11'):
+        import ev_v11
+        return {'queen': ev_v11.queen_art(cv, S, glow), 'head': ev_v11.head_art(cv, S, glow),
+                'moonwell_runes': moonwell_art(cv, S, glow), 'library_books': library_art(cv, S, glow),
+                'hall_window_lights': camp_art(cv, S, glow), 'sites': sites_art(cv, S, glow),
+                'rune_stones_lit': rune_circle_art(cv, S, glow)}
     return {'queen': queen_art(cv, S), 'head': head_art(cv, S), 'moonwell_runes': moonwell_art(cv, S, glow),
             'library_books': library_art(cv, S, glow), 'hall_window_lights': camp_art(cv, S, glow),
             'sites': sites_art(cv, S, glow), 'rune_stones_lit': rune_circle_art(cv, S, glow)}

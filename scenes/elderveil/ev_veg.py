@@ -22,6 +22,7 @@ from aosmap.kit.color import clamp8, mix, shade
 PLANT_MATS = ('leaf', 'bark', 'moss', 'twig', 'fungus', 'flower', 'fern', 'bramble', 'reed', 'deadwood', 'lichen',
               'nest', 'berry', 'shroom')
 KEEP_BLOCK = 1 | 2 | 4 | 8                       # spawn, anchor, front, under-platform
+V11 = False                                      # set by ev_art for release 1.1 (richer crowns)
 
 SPECIES_PAL = {
     'oak': [((46, 60, 40), (112, 116, 68)), ((44, 60, 44), (102, 110, 66)), ((50, 64, 40), (120, 120, 72))],
@@ -112,6 +113,14 @@ def _blob(P, rng, cx, cy, cz, rx, rz, fa, fb, zmin_floor, mat='leaf', fill=1.0):
                         continue
                     t = (cz + rz - Z) / (2 * rz)                     # 0 bottom .. 1 top
                     c = _grad(fa, fb, max(t, 0.0) ** 1.3 + (rng.random() - 0.5) * 0.14)
+                    if V11:
+                        dn = math.sqrt(dx * dx + dy * dy + dz * dz) / max(rx * j, 0.5)
+                        if dn > 0.84 and rng.random() < 0.2:
+                            continue                                    # holes in the outer shell
+                        sun = (dx * 0.7 + dy * 0.5) / max(rx, 1)        # sun side lighter, shade side darker
+                        c = shade(c, 1.0 + 0.12 * sun)
+                        if dn > 0.8 and t > 0.7:
+                            c = mix(c, (150, 148, 92), 0.3)             # new growth at the lit tips
                     P.put(X, Y, Z, shade(c, 0.78 + 0.28 * t), mat)        # shadowed underside, lit top
 
 
@@ -234,6 +243,10 @@ def oak(cv, rng, x, y, g, h, glow):
             before = set(P.v)
             _blob(P, rng, fx + 0.5, fy + 0.5, fz - r * 0.3, r, r * 0.6, fa, fb, g - 5)
             crown += [k for k in P.v if k not in before]
+            if V11:                                       # twigs showing under the lobe
+                for (tx, ty) in ((2, 1), (-1, 2), (1, -2)):
+                    tz = min(int(fz) + 2, g - 5)
+                    _limb(P, (int(fx), int(fy), int(fz)), (int(fx) + tx, int(fy) + ty, tz), shade(bark, 0.88))
     r = 2.8 + h * 0.06
     before = set(P.v)
     _blob(P, rng, top[0] + 0.5, top[1] + 0.5, top[2] - h * 0.3, r, r * 0.7, fa, fb, g - 5)
@@ -273,6 +286,10 @@ def fir(cv, rng, x, y, g, h, glow):
     fa, fb = SPECIES_PAL['fir'][int(rng.integers(3))]
     fa, fb = _hue(rng, fa, 6), _hue(rng, fb, 6)
     _trunk(P, x, y, g, h, w, bark, rng)
+    if V11:                                               # root flare
+        for (dx, dy) in ((-1, 0), (w, 0), (0, -1), (0, w)):
+            if rng.random() < 0.7:
+                P.put(x + dx, y + dy, g - 1, shade(bark, 0.8), 'bark')
     clear = 4
     tier = 1.0
     R0 = 0.24 * h + 1.6

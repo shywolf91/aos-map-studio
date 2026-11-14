@@ -260,6 +260,9 @@ def terrain(S=SPEC):
         for (e, c0, hw, ex) in R['bumps']:
             if e == edge:
                 W = W + ex * np.exp(-((along - c0) / hw) ** 2)
+        if S.get('v11'):                                     # buttress ribs and re-entrant gullies along the face
+            rib = _row('ribs_' + edge, seed, R['v11']['rib_cell'], 2)
+            W = W + (rib[np.clip(along, 0, 511).astype(int)] - 0.5) * 2 * R['v11']['rib_amp']
         h, u = _ring_profile(d, W, pk, rug, ter, R, Z, tj)
         ringH = np.minimum(ringH, h)
         ring_u = np.minimum(ring_u, u)
@@ -280,7 +283,33 @@ def terrain(S=SPEC):
     zc = np.rint(cr['top'] + (Z['valley'] - cr['top']) * v ** 4).astype(int)
     m = v <= 1.2
     H[m] = np.minimum(H[m], zc[m])
+    if S.get('v11'):
+        for (px, py, r, ztop) in R['v11']['pinnacles']:     # overhang-free pinnacles on the foothills
+            dd = np.hypot(XW + 0.5 - px, Y + 0.5 - py)
+            zp = np.rint(ztop + (dd / r) ** 2 * 6).astype(int)
+            m = dd <= r * 2.2
+            H[m] = np.minimum(H[m], zp[m])
+        for (fx, fy, r, hgt) in R['v11']['fans']:             # rock-fall fans at the cliff foot (1-step slopes)
+            dd = np.hypot(XW + 0.5 - fx, Y + 0.5 - fy)
+            zf = np.rint(H + 0 * dd).astype(int)
+            m = dd <= r
+            cap = np.rint(Z['ring_foot'] - hgt * (1 - dd / r)).astype(int)
+            H[m] = np.minimum(H[m], np.maximum(cap[m], H[m] - hgt))
+            del zf
+    if S.get('v11'):                                         # ribs can enclose valley pockets: fill under the ring
+        H = fill_basins(H, (ring_u <= 1.15) & (H <= 62))
     H = fill_basins(H, (ring_u <= 1.0) & (H <= 47))
+    if S.get('v11'):                                         # ledge pits: every way out is a climb >= 2 or a fall > 9
+        for _ in range(20):
+            nbs = np.stack([np.roll(H, 1, 0), np.roll(H, -1, 0), np.roll(H, 1, 1), np.roll(H, -1, 1)])
+            ok = (np.abs(nbs - H[None]) <= 1) | ((nbs > H[None]) & (nbs - H[None] <= 9))
+            hi = np.where(nbs < H[None] - 1, nbs, 99).min(0)
+            pit = ~ok.any(0) & (hi < 99) & (H < 62)
+            pit[:1] = pit[-1:] = False
+            pit[:, :1] = pit[:, -1:] = False
+            if not pit.any():
+                break
+            H[pit] = hi[pit] + 1
     H = np.maximum(H, Z['min_solid_z'] + 1)
     for _ in range(40):              # a column > 1 below all 4 neighbours is raised to the lowest one + 1
         nb = np.stack([np.roll(H, 1, 0), np.roll(H, -1, 0), np.roll(H, 1, 1), np.roll(H, -1, 1)]).max(0)
@@ -1504,6 +1533,13 @@ def build_crest_walls(cv, geo, S=SPEC):
     line = (u >= cw['band_u'][0]) & (u <= cw['band_u'][1]) & (X <= 255)
     seg = noise.fbm2((512, 512), cw['cell'], 2, 'crest_wall', S['layout_seed']) > cw['keep']
     k = 0
+    if S.get('v11'):                                         # collapsed sections: rubble chutes down the face
+        for (a, b) in S['ring']['v11']['chutes']:
+            for (x, y) in seg_cells(a, b, 3.4):
+                if 0 <= x <= 255 and 0 <= y <= 511 and int(cv.H[x, y]) > S['z']['min_solid_z'] + 2:
+                    if noise.hash3(x, y, 0, 33) < 0.75:
+                        gbox(cv, x, x, y, y, 1, C['rock'], 'rubble')
+            line &= ~(np.hypot(X + 0.5 - a[0], Y + 0.5 - a[1]) < 7)
     for x, y in zip(*np.nonzero(line & seg)):
         g = int(cv.H[x, y])
         h = cw['h'][0] + (1 if ((x + y) // 2) % 2 == 0 else 0)
@@ -1808,16 +1844,24 @@ def build_west(S=SPEC, veg_seed=None):
     build_camp(cv, S)
     build_camp_extras(cv, S)
     build_front(cv, S)
-    build_under(cv, S)
+    if S.get('v11'):
+        rep['under_v11'] = build_under_head_v11(cv, S)
+    else:
+        build_under(cv, S)
     rep['spire'] = build_spire(cv, S)
     build_plaza(cv, S)
-    build_queen(cv, S)
+    if S.get('v11'):
+        rep['queen_v11'] = build_queen_v11(cv, S)
+    else:
+        build_queen(cv, S)
     build_library(cv, S)
     build_amphi(cv, S)
     rep['aqueduct'] = build_aqueduct(cv, S)
     rep['bridge_y'] = build_bridge(cv, S)
     rep['cascade'] = paint_cascade(cv, S)
     rep['sites'] = build_sites(cv, S)
+    if S.get('v11'):
+        rep['lanterns'] = build_lanterns_v11(cv, S)
     site_masks(cv, S)
     build_rune_circle(cv, S)
     rep['mushrooms'] = build_mushrooms(cv, S)
@@ -1826,9 +1870,325 @@ def build_west(S=SPEC, veg_seed=None):
     sc['nooks_filled'] = fill_nooks(cv)
     sc['trap_trees_removed'], sc['trap_crest_wall_columns_removed'] = clear_tree_traps(cv, sc['tree_list'])
     bf = break_flats(cv, S)
+    if S.get('v11'):                                     # late passes (nook rock, pads) can sit beside a sculpture
+        rep['late_seal'] = seal_entries(cv, (232, 255, 176, 242), ('statue',)) +             seal_entries(cv, (240, 255, 240, 272), ('statue',))
+        rep['nav_seal'] = seal_nav(cv, (232, 255, 176, 242), ('statue',)) +             seal_nav(cv, (240, 255, 240, 272), ('statue',))
     sc['feature_pads'] = bf['feature_pads']
     sc['largest_flat_after_west'] = bf['largest_side_after_west']
     sc['pinned_trees'] = len(pinned)
     sc['tree_list'] = sc['tree_list'] + pinned
     rep['scatter'] = sc
     return cv, rep
+
+
+# =============================================================================================== v1.1 sculpture
+
+def _g(cv, x, y):
+    return int(cv.H[min(255, int(x)), int(y)])
+
+
+def _rest(cv, cx, cy, rx, ry, rz, c, mat, lift=0.0):
+    """Ellipsoid resting on the local ground (bottom touching it): every column top is >= rz above the ground."""
+    g = _g(cv, cx, cy)
+    cv.ellipsoid(cx, cy, g - rz - lift, rx, ry, rz, c, mat)
+    return g
+
+
+def prune_steps(cv, box, mats, rounds=6):
+    """Remove 1-tall columns of the given materials (a 1-voxel step onto a sculpture); repeat. Returns removed."""
+    x0, x1, y0, y1 = box
+    ids = [cv.materials[m] for m in mats if m in cv.materials]
+    n = 0
+    for _ in range(rounds):
+        hit = 0
+        for x in range(x0, min(255, x1) + 1):
+            for y in range(y0, y1 + 1):
+                t = int(np.argmax(cv.solid[x, y]))
+                g = int(cv.H[x, y])
+                if t == g - 1 and cv.mat[x, y, t] in ids:
+                    cv.clear(x, y, t)
+                    hit += 1
+        n += hit
+        if not hit:
+            break
+    return n
+
+
+def unclimb(cv, box, mats, rounds=8):
+    """Make a sculpture unwalkable on top: on a mirrored copy, find standable cells reachable on foot from a spawn
+    (safe graph) whose floor voxel is one of `mats` inside `box` (west coordinates), clear those voxels, repeat.
+    Edges that a step (or a plaza step next to them) made climbable are cut back. Returns voxels removed."""
+    from aosmap.kit.babel_checks import Nav
+    from aosmap.kit.params import BABEL_DEFAULT as P
+    ids = [cv.materials[m] for m in mats if m in cv.materials]
+    x0, x1, y0, y1 = box
+    n = 0
+    for _ in range(rounds):
+        solid = _mirrored(cv.solid)
+        nav = Nav(solid)
+        h = P['spawn_half']
+        src = np.concatenate([nav.nodes_in(b[0] - h, b[0] + h, b[1] - h, b[1] + h, 0, 62) for b in P['bases']])
+        d = nav.dist_from(src)
+        p = nav.xyz[np.isfinite(d)]
+        xw = np.minimum(p[:, 0], 512 - p[:, 0])
+        sel = (xw >= x0) & (xw <= x1) & (p[:, 1] >= y0) & (p[:, 1] <= y1)
+        hit = 0
+        for (x, y, z) in zip(xw[sel], p[sel, 1], p[sel, 2]):
+            x = int(min(x, 255))
+            if cv.solid[x, y, z] and cv.mat[x, y, z] in ids:
+                cv.clear(x, y, z)
+                hit += 1
+        n += hit
+        if not hit:
+            break
+    return n
+
+
+def seal_entries(cv, box, mats, c=None, rounds=12):
+    """Make a sculpture unwalkable on top without eating it: wherever a sculpture column's top is within one step
+    of the floor of a neighbouring non-sculpture column (terrain, rubble, another object), raise that column to two
+    above that floor (a carved lip). Repeat until stable. Returns voxels added."""
+    ids = [cv.materials[m] for m in mats if m in cv.materials]
+    x0, x1, y0, y1 = box
+    c = c or C['ruin']
+    n = 0
+    for _ in range(rounds):
+        top = np.argmax(cv.solid, axis=2)
+        hit = 0
+        for x in range(max(1, x0), min(255, x1) + 1):
+            for y in range(y0, y1 + 1):
+                t = int(top[x, y])
+                if cv.mat[x, y, t] not in ids:
+                    continue
+                for (dx, dy) in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                    nx, ny = x + dx, y + dy
+                    nx_ = nx if nx <= 255 else 510 - nx
+                    tn = int(top[nx_, ny])
+                    if cv.mat[nx_, ny, tn] in ids:
+                        continue
+                    if t >= tn - 1:
+                        for z in range(tn - 2, t):
+                            cv.set(x, y, z, c, mats[0])
+                        hit += tn - 2 - t if tn - 2 < t else 0
+                        t = tn - 2
+                        hit += 1
+        n += hit
+        if not hit:
+            break
+    return n
+
+
+def seal_nav(cv, box, mats, c=None, rounds=8):
+    """Graph-exact sealing: on a mirrored copy, find every move of the safe nav graph from a reachable non-sculpture
+    floor onto a sculpture floor inside `box`; raise that sculpture column to 2 above the source floor when there is
+    air for it, otherwise (an overhang, e.g. under the knee arch) clear the low sculpture voxels down to the ground.
+    Repeat until no entry is left. Returns the number of entries fixed."""
+    from aosmap.kit.babel_checks import Nav
+    from aosmap.kit.params import BABEL_DEFAULT as P
+    ids = [cv.materials[m] for m in mats if m in cv.materials]
+    c = c or C['ruin']
+    x0, x1, y0, y1 = box
+    fixed = 0
+    for _ in range(rounds):
+        solid, mat = _mirrored(cv.solid), _mirrored(cv.mat)
+        nav = Nav(solid)
+        h = P['spawn_half']
+        src = np.concatenate([nav.nodes_in(b[0] - h, b[0] + h, b[1] - h, b[1] + h, 0, 62) for b in P['bases']])
+        reach = np.isfinite(nav.dist_from(src))
+        p = nav.xyz
+        is_s = np.isin(mat[p[:, 0], p[:, 1], p[:, 2]], ids)
+        G = nav.G.tocoo()
+        e = reach[G.row] & ~is_s[G.row] & is_s[G.col]
+        hit = 0
+        done = set()
+        for r_, c_ in zip(G.row[e], G.col[e]):
+            sx, sy, sz = p[r_]
+            tx, ty, tz = (int(v) for v in p[c_])
+            xw = int(min(tx, 512 - tx)) if tx >= 256 else tx
+            xw = min(xw, 255)
+            if not (x0 <= xw <= x1 and y0 <= ty <= y1) or (xw, ty) in done:
+                continue
+            done.add((xw, ty))
+            new_top = int(sz) - 2
+            if new_top < tz and not cv.solid[xw, ty, new_top:tz].any():
+                for z in range(new_top, tz):
+                    cv.set(xw, ty, z, c, mats[0])
+            else:
+                g = int(cv.H[xw, ty])
+                for z in range(tz, g):
+                    if cv.mat[xw, ty, z] in ids:
+                        cv.clear(xw, ty, z)
+            hit += 1
+        fixed += hit
+        if not hit:
+            break
+    return fixed
+
+
+def build_lanterns_v11(cv, S=SPEC):
+    """v1.1: a few lantern posts beside the worn paths between the camps and the plaza (1x1 post 4 tall, lantern
+    block on top, 2 off the path line, never in a keep zone, never next to anything standing)."""
+    out = []
+    for line in S['art']['paths']:
+        for (ax, ay), (bx, by) in zip(line, line[1:]):
+            L = math.hypot(bx - ax, by - ay)
+            if L < 24:
+                continue
+            t = 0.5
+            px, py = ax + (bx - ax) * t, ay + (by - ay) * t
+            nx, ny = -(by - ay) / L, (bx - ax) / L
+            x, y = int(round(px + 3 * nx)), int(round(py + 3 * ny))
+            if not (2 <= x <= 250) or cv.keep[x - 2:x + 3, y - 2:y + 3].any():
+                continue
+            if not free_for_prop(cv, x - 2, x + 2, y - 2, y + 2, keep_mask=0):
+                continue
+            g = int(cv.H[x, y])
+            cv.box(x, x, y, y, g - 4, g - 1, C['timber'], 'lantern')
+            cv.set(x, y, g - 5, (200, 160, 90), 'lantern')
+            out.append((x, y, g - 5))
+    return out
+
+
+def build_queen_v11(cv, S=SPEC):
+    """v1.1 fallen elder-queen: a colossal reclining figure of rounded masses on the axis (head north, feet south).
+    Head 10 across (chin, brow, nose ridge, hollow eyes, mouth), a crown of separate tall points (one snapped and
+    lying by the head), a neck break (4-wide rubble gap you walk through), rounded shoulders above a rising chest, a
+    dipping waist, hips, both knees drawn up as arches you walk under (>= 3 air), shins, upturned feet, arms along
+    the body ending in open palm-up hands with finger ridges, robe drapery as 2-3 tall ridges flowing onto the plaza,
+    a broken staff lying across. Everything rests on the ground (no 1-tall edge: prune_steps), so the figure is not
+    walkable on top; heights 3-10 above the plaza."""
+    q = S['queen11']
+    W = C['ruin']
+    X0 = 256.0                                                         # axis (kit ellipsoid: integer coordinates)
+    hy = q['head_y']
+    gh = _rest(cv, X0, hy, 5.0, 5.5, 4.2, W, 'statue')                 # head
+    _rest(cv, X0, hy + 5.0, 2.6, 2.0, 2.8, W, 'statue')                # chin
+    def top(x, y):
+        return int(np.argmax(cv.solid[x, y]))
+    for y in range(hy - 2, hy + 3):                                    # nose ridge
+        t = top(255, y)
+        cv.set(255, y, t - 1, W, 'statue')
+    for x in range(251, 256):                                          # brow
+        t = top(x, hy - 3)
+        cv.set(x, hy - 3, t - 1, W, 'statue')
+    for x in (252, 253):                                               # hollow eyes
+        t = top(x, hy - 1)
+        cv.carve(x, x, hy - 1, hy - 1, t, t + 1)
+    for x in (254, 255):                                               # mouth
+        t = top(x, hy + 4)
+        cv.carve(x, x, hy + 4, hy + 4, t, t)
+    for (x, h) in q['crown_points']:                                   # crown points on the north rim
+        t = top(x, hy - 5)
+        cv.box(x, x, hy - 5, hy - 5, t - h, t, W, 'statue')
+    sx, sy0 = q['snapped_point']
+    gbox(cv, sx, sx, sy0, sy0 + 3, 2, W, 'statue')                     # a snapped crown point lying by the head
+    # neck stub + break (rubble only in the 4-wide gap)
+    _tube(cv, [(X0, hy + 5.5, gh - 2.6), (X0, hy + 6.5, gh - 2.4)], 1.9, 1.7, W, 'statue')
+    n0, n1 = q['neck_gap']
+    for (x, y) in ((251, n0), (253, n0 + 1)):
+        cv.set(x, y, _g(cv, x, y) - 1, W, 'rubble')
+    # body masses
+    for (y, rx, ry, rz) in q['body']:
+        _rest(cv, X0, y, rx, ry, rz, W, 'statue')
+    # legs (west leg; the east one is the mirror): thigh up to a raised knee, shin down to an upturned foot
+    lx = q['leg_x']
+    hipy, kneey, ankley = q['leg_y']
+    g1, g2, g3 = _g(cv, lx, hipy), _g(cv, lx, kneey), _g(cv, lx, ankley)
+    _tube(cv, [(lx, hipy, g1 - 2.6), (lx, kneey, g2 - q['knee_h'])], 2.6, 2.3, W, 'statue')
+    cv.ellipsoid(lx, kneey, g2 - q['knee_h'], 2.9, 2.6, 2.6, W, 'statue')
+    _tube(cv, [(lx, kneey + 0.5, g2 - q['knee_h']), (lx, ankley, g3 - 2.0)], 2.2, 1.9, W, 'statue')
+    _rest(cv, lx, ankley + 2.0, 1.9, 2.6, 2.4, W, 'statue')
+    _tube(cv, [(lx, ankley + 2.5, g3 - 2.5), (lx, ankley + 3.0, g3 - 5.0)], 1.4, 1.1, W, 'statue')   # toes up
+    # arms along the body, open palm-up hands with finger ridges
+    for (pts, r0, r1) in q['arm']:
+        _tube(cv, [(x, y, _g(cv, x, y) - zz) for (x, y, zz) in pts], r0, r1, W, 'statue')
+    hx, hyh = q['hand']
+    g4 = _rest(cv, hx, hyh, 2.8, 3.0, 1.9, W, 'statue')
+    t = top(int(hx), int(hyh))
+    cv.carve(int(hx) - 1, int(hx), int(hyh) - 1, int(hyh), t, t)      # the cupped palm
+    for k in range(4):
+        fx = hx - 1.5 + k
+        _tube(cv, [(fx, hyh + 2.5, g4 - 1.2), (fx, hyh + 5.5, g4 - 1.1)], 0.85, 0.75, W, 'statue')
+    # robe drapery: ridges flowing off the hips and shoulders onto the plaza (valleys open outward)
+    _rest(cv, X0, q['skirt'][0], q['skirt'][1], q['skirt'][2], q['skirt'][3], W, 'statue')     # robe skirt
+    for (a, b) in q['drape']:
+        _tube(cv, [(a[0], a[1], _g(cv, *a) - 1.8), (b[0], b[1], _g(cv, *b) - 1.2)], 2.1, 1.5, W, 'statue')
+    # broken staff lying across the plaza at the waist line (two halves, the head of the staff on the west end)
+    (s0, s1), sy = q['staff_x'], q['staff_y']
+    _tube(cv, [(s0, sy, _g(cv, s0, sy) - 1.2), (s1, sy, _g(cv, s1, sy) - 1.2)], 1.15, 1.0, W, 'statue')
+    _rest(cv, s0 - 1.0, sy, 1.9, 1.9, 1.9, W, 'statue')
+    pruned = prune_steps(cv, (232, 255, 176, 242), ('statue',))
+    sealed = seal_entries(cv, (232, 255, 176, 242), ('statue',))
+    cv.interiors += [['queen knee arch', int(lx) - 1, kneey, _g(cv, lx - 1, kneey)],
+                     ['queen neck gap', 253, n0 + 1, _g(cv, 253, n0 + 1)]]
+    return {'pruned_step_voxels': pruned, 'sealed_edge_voxels': sealed}
+
+
+def build_under_head_v11(cv, S=SPEC):
+    """v1.1 elder head under the platform: half-buried, tilted, with brow ridge, eye sockets 2 deep, nose, lips,
+    cheeks, an ear, a hair/crown band, a broken crown piece north of it and a severed hand south of it. Every edge
+    >= 2 tall (prune_steps), top far below the platform."""
+    U = S['under']
+    g = 50
+    hd = U['head']
+    cx, cy = hd['c'][0] + 0.5, hd['c'][1] + 0.5
+    rx, ry, rz = hd['r']
+    W = C['ruin']
+    for x in range(int(cx - rx) - 1, 256):
+        for y in range(int(cy - ry) - 1, int(cy + ry) + 2):
+            u = ((x + 0.5 - cx) / rx) ** 2 + ((y + 0.5 - cy) / ry) ** 2
+            if u > 1:
+                continue
+            tilt = hd['tilt'] * (y + 0.5 - cy) / ry
+            hgt = int(round(rz * math.sqrt(1 - u) - tilt))
+            if hgt >= 2:
+                cv.box(x, x, y, y, g - hgt, g - 1, W, 'statue')
+    def top(x, y):
+        t = int(np.argmax(cv.solid[x, y]))
+        return t if t <= g - 3 else -99
+    ny = int(cy) - 2
+    for y in range(ny - 1, ny + 4):                                    # nose (2 high near the tip)
+        t = top(255, y)
+        if t > 0:
+            cv.box(255, 255, y, y, t - (2 if y == ny + 2 else 1), t - 1, W, 'statue')
+    for x in range(249, 255):                                          # brow ridge
+        t = top(x, ny - 4)
+        if t > 0:
+            cv.set(x, ny - 4, t - 1, W, 'statue')
+    for x in (251, 252):                                               # eye sockets, 2 deep
+        for y in (ny - 2, ny - 1):
+            t = top(x, y)
+            if t > 0:
+                cv.carve(x, x, y, y, t, t + 1)
+    for (x, y) in ((250, ny + 2), (251, ny + 2), (250, ny + 3)):       # cheek
+        t = top(x, y)
+        if t > 0:
+            cv.set(x, y, t - 1, W, 'statue')
+    for x in range(252, 256):                                          # lips: ridge + groove
+        t = top(x, ny + 5)
+        if t > 0:
+            cv.set(x, ny + 5, t - 1, W, 'statue')
+        t = top(x, ny + 6)
+        if t > 0:
+            cv.carve(x, x, ny + 6, ny + 6, t, t)
+    ex = int(cx - rx) - 1                                              # ear on the west side
+    gbox(cv, ex, ex + 1, int(cy) - 2, int(cy) + 1, 3, W, 'statue')
+    for x in range(int(cx) - 6, 256):                                  # hair / crown band on the north rim
+        y = int(cy - ry) + 1
+        t = top(x, y)
+        if t > 0 and x % 2 == 0:
+            cv.set(x, y, t - 1, W, 'statue')
+    cx0, cy0 = U['crown_piece']                                        # broken crown piece (2 tall arc)
+    for (dx, dy) in ((0, 0), (1, 0), (2, 1), (3, 1), (4, 0)):
+        gbox(cv, cx0 + dx, cx0 + dx, cy0 + dy, cy0 + dy, 2 + (dx % 2), W, 'statue')
+    hx, hy = U['hand']                                                 # severed hand + finger ridges
+    _rest(cv, hx, hy, 2.4, 2.2, 1.7, W, 'statue')
+    for k in range(3):
+        _tube(cv, [(hx - 1.0 + k, hy + 2.0, g - 1.1), (hx - 1.0 + k, hy + 4.0, g - 1.0)], 0.8, 0.7, W, 'statue')
+    for (x, y) in U['stubs_v11']:
+        cv.box(x - 3, x + 3, y - 3, y + 3, g - 2, g - 1, C['stone'], 'ruin')
+        cv.carve(x - 3, x - 3, y - 3, y - 3, g - 2, g - 1)
+        cv.carve(x + 3, x + 3, y + 3, y + 3, g - 2, g - 1)
+        cv.cylinder(x + 0.5, y + 0.5, 2.1, g - 5, g - 3, C['ruin'], 'ruin')
+    n = prune_steps(cv, (240, 255, 240, 272), ('statue',))
+    return {'pruned_step_voxels': n, 'sealed_edge_voxels': seal_entries(cv, (240, 255, 240, 272), ('statue',))}

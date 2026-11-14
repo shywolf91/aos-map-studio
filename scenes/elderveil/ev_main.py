@@ -52,6 +52,7 @@ def build_map(out, veg_seed=None, graybox_only=False):
             'spire': rep['spire'], 'aqueduct': rep['aqueduct'], 'bridge_y': rep['bridge_y'],
             'mushrooms': rep['mushrooms'], 'wall_columns': rep['wall_columns'], 'cascade': rep.get('cascade'),
             'sites': rep.get('sites'), 'crest_wall_columns': rep['crest_wall_columns'],
+            **({k: rep[k] for k in ('lanterns', 'queen_v11', 'under_v11', 'late_seal', 'nav_seal') if k in rep}),
             'assist_structures': assist_boxes(SPEC), 'deviations': SPEC['deviations'], 'waivers': SPEC['waivers']}
     ext = {'babel': True, 'water_damage': 0}
     boxes = []
@@ -71,7 +72,7 @@ def build_map(out, veg_seed=None, graybox_only=False):
         stored, fin = ev_art.finish(cv)
         ext = build.glow_extensions(stored, ext)
         final = cv
-        version, desc = SPEC['release']['version'], SPEC['release']['description']
+        version, desc = SPEC.get('release_name', SPEC['release']['version']), SPEC['release']['description']
         info.update({'art': art, 'art_floating_before_cleanup': len(art_float), 'art_cleanup': art_orphans,
                      'post_mirror_floating': {'unexpected': len(post_float[0]), 'expected': len(post_float[1]),
                                               'unexpected_list': post_float[0][:10]},
@@ -118,7 +119,12 @@ def check(out, info, cv=None, cvG=None):
 
 
 if __name__ == '__main__':
-    args = [a for a in sys.argv[1:] if not a.startswith('--')]
+    release = SPEC['release_default']
+    if '--release' in sys.argv:
+        release = sys.argv[sys.argv.index('--release') + 1]
+    SPEC['release_name'] = release
+    SPEC['v11'] = bool(SPEC['releases'][release]['v11'])
+    args = [a for a in sys.argv[1:] if not a.startswith('--') and a != release]
     out = args[0]
     seed = args[1] if len(args) > 1 else None
     cv, info, cvG = build_map(out, seed, graybox_only='--graybox' in sys.argv)

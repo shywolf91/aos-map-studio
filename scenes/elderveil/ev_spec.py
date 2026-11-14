@@ -41,6 +41,12 @@ SPEC = {
                        ('S', 150, 14, 14), ('S', 70, 12, -8), ('S', 256, 26, 14), ('N', 220, 16, -8),
                        ('N', 180, 8, 14), ('W', 205, 10, -8), ('W', 420, 12, -6), ('S', 205, 9, 10)],
              'terrace_jitter': 5.0,
+             # v1.1 cliff geometry: ribs / gullies (along-edge depth noise), pinnacles (x, y, r, top z), rock-fall
+             # fans (x, y, r, rise), collapsed crest-wall rubble chutes (crest point -> foot point); west half
+             'v11': {'rib_cell': 7, 'rib_amp': 6.0,
+                     'pinnacles': [(30, 196, 2.6, 24), (34, 318, 2.8, 26), (118, 34, 2.4, 22), (196, 482, 2.6, 24)],
+                     'fans': [(46, 232, 9, 4), (64, 52, 10, 4), (150, 470, 9, 3), (46, 296, 8, 3)],
+                     'chutes': [((10, 140), (40, 148)), ((150, 8), (152, 40)), ((60, 506), (66, 470))]},
              'crest_wall': {'band_u': (0.085, 0.125), 'h': (3, 4), 'cell': 16, 'keep': 0.40}},
 
     # ---------------------------------------------------------------- ruined outpost (spawn camp), west half
@@ -94,6 +100,8 @@ SPEC = {
     'under': {
         'head': {'c': (256, 256), 'r': (7.0, 8.0, 5.0), 'tilt': 1.5},   # half-buried tilted elder head
         'stubs': [(224, 245), (224, 266), (238, 255)],          # 7x7 plinths (2 tall) + column stub; >= 7 apart
+        'stubs_v11': [(222, 245), (222, 266), (236, 255)],      # v1.1: stubs move 2 west (room for the new ear)
+        'crown_piece': (250, 244), 'hand': (252.0, 267.0),      # v1.1 head: broken crown piece, severed hand
         'mosaic': (218, 255, 240, 271),
     },
 
@@ -116,6 +124,18 @@ SPEC = {
     'queen': {'x': (249, 263), 'head_c': (256, 189), 'head_r': 5.0, 'neck_y': (195, 197), 'torso_y': (198, 214),
               'torso_z': (44, 46), 'arm': (239, 204), 'hips_y': (215, 223), 'legs_y': (226, 234),
               'ramp_x': (241, 248), 'ramp_y': (216, 219)},
+
+    # v1.1: the queen sculpted as a reclining figure of rounded masses (axis x = 256; head north, feet south)
+    'queen11': {'head_y': 186, 'crown_points': [(251, 4), (255, 5)], 'snapped_point': (249, 178),
+                'neck_gap': (194, 197),
+                'body': [(201.5, 8.5, 3.0, 3.6), (205.5, 6.5, 3.5, 4.0), (210.0, 5.0, 2.5, 2.6), (214.5, 7.0, 3.5, 3.2)],
+                'leg_x': 252.0, 'leg_y': (216.5, 225, 232), 'knee_h': 9,
+                'arm': [([(248.0, 201.5, 2.4), (245.0, 208.0, 2.2)], 2.0, 1.9),
+                        ([(245.0, 208.0, 2.2), (246.0, 215.0, 2.0)], 1.9, 1.7)],
+                'hand': (246.0, 218.0),
+                'drape': [((249.5, 216.0), (241.0, 219.0)), ((249.5, 219.5), (241.5, 224.0)),
+                          ((249.0, 223.0), (243.0, 229.0)), ((248.5, 199.0), (242.0, 195.0))],
+                'staff_x': (238.0, 247.0), 'staff_y': 211.0, 'skirt': (216.0, 10.5, 4.0, 2.4)},
 
     # ---------------------------------------------------------------- elder library (north, axis)
     'library': {'box': (238, 274, 106, 132), 'storeys': 2, 'storey_h': 6, 'wing': (226, 238, 110, 126)},
@@ -165,7 +185,7 @@ SPEC = {
     'featureless': {'max_side': 24, 'exempt': [(94, 142, 232, 280), (370, 418, 232, 280), (200, 311, 236, 276)]},
     # composite pieces counted as one structure in the gap check (parts deliberately 2-3 apart: the queen's legs
     # broken off at the knees, the moonwell rim arcs round the pillar plinth)
-    'central_gap': {'min': 7, 'composites': [(248, 264, 161, 180), (240, 272, 184, 236)]},
+    'central_gap': {'min': 7, 'composites': [(248, 264, 161, 180), (240, 272, 176, 240), (240, 272, 240, 272)]},
 
     # ---------------------------------------------------------------- art pass
     'art': {
@@ -176,6 +196,10 @@ SPEC = {
                   [(100, 326), (70, 372), (58, 372)], [(150, 120), (200, 104), (226, 118)]],
         'tag_xy': (10, 12),                     # sky tag plate origin (NW corner, over the cliff crest)
     },
+    # releases (ev_main.py --release): v1.0 stays byte-identical; v1.1 gates the second art round
+    'releases': {'1.0': {'v11': False}, '1.1': {'v11': True}},
+    'release_default': '1.1',
+    'v11': False,                         # set by the release
     'release': {'version': '1.0', 'description': 'Babel, assist structures: overgrown elder ruins in a misty forest '
                                                  'valley at dawn. Two ruined spires shorten the climb but still need a '
                                                  'build; hunters camp in the old outposts.'},

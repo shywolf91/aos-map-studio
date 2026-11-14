@@ -192,11 +192,10 @@ def central_gaps(solid, H, mat, names, S=SPEC):
         above &= ~np.isin(mat, vid)
     col = above.any(2)
     lab0 = col.copy()
-    for (a0, a1, b0, b1) in S['central_gap'].get('composites', []):        # one structure each
-        sub = col[a0:a1 + 1, b0:b1 + 1]
-        if sub.any():
-            xs, ys = np.nonzero(sub)
-            lab0[a0 + xs.min():a0 + xs.max() + 1, b0 + ys.min():b0 + ys.max() + 1] = True
+    for (a0, a1, b0, b1) in S['central_gap'].get('composites', []):        # one structure each: its broken parts
+        box = np.zeros_like(col)                                           # (<= 6 apart) are joined by dilation
+        box[a0:a1 + 1, b0:b1 + 1] = True
+        lab0 |= ndi.binary_dilation(col & box, iterations=3) & box
     lab, n = ndi.label(lab0, structure=np.ones((3, 3)))
     lab[~col] = 0
     sizes = np.bincount(lab.ravel(), minlength=n + 1)
