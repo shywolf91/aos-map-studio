@@ -95,6 +95,13 @@ axis. z = 0 is the sky; a floor z is the solid voxel a player stands on.
 * **Vegetation:** the art centrepiece. Old-growth groves (giant oaks, beeches, firs), ferns, ivy on ruins, hanging
   roots, wildflower patches; three random details per plant, OS seed per build.
 
+## Owner decision on spawn exposure `[USER 2026-11-13]`
+
+The graybox measured about 10 platform viewers per spawn spot and 0 % of spots hidden (targets: at most about 10,
+at least 15 % hidden). A ruined gateway arch across the front would give 44 % hidden (solid band z 34–40) or 83 %
+(z 28–34). The owner chose to **leave the front open**. The spawn-exposure check is waived for this map and is
+reported as waived, with its numbers, not as a pass.
+
 ## Rules that apply
 
 All AGENTS.md §4 rules, including the four 2026-11-13 zone rules (front dressing, spawn cover, under the platform,
