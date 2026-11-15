@@ -1,5 +1,6 @@
 # build outputs (regenerate with scenes/*.py)
 out/
+_out/
 __pycache__/
 *.pyc
 .pytest_cache/

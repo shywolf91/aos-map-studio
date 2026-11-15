@@ -1,0 +1,1127 @@
+{
+ "map": "Yulehaven Isles",
+ "file": "yulehaven_isles",
+ "sha256": "e4d2e7cd35a5597b50e75e5de32802f52dffccac8031b75c03b47dbe36b645a9",
+ "bytes": 2588936,
+ "stage": "art",
+ "layout_seed": 20261114,
+ "veg_seed": 3401930456,
+ "axis": "x512",
+ "floating_before_cleanup": 1,
+ "floating_before_list": [
+  {
+   "voxels": 6,
+   "x": [
+    242,
+    243
+   ],
+   "y": [
+    426,
+    428
+   ],
+   "z": [
+    56,
+    56
+   ]
+  }
+ ],
+ "cleanup": {
+  "removed_components": 1,
+  "removed_voxels": 6,
+  "kept_floating": []
+ },
+ "passage": {
+  "x": [
+   186,
+   242
+  ],
+  "y": 318,
+  "water_cols": 20,
+  "teeth": 10
+ },
+ "sea_cave_mouth": [
+  110,
+  368
+ ],
+ "art_west": {
+  "string_lights": 137,
+  "window_candles": 47,
+  "wreaths": 10,
+  "chimneys": 11,
+  "lanterns": 5,
+  "mast_lights": 14,
+  "embers": 9,
+  "groves": {
+   "trees": 54,
+   "by_species": {
+    "conifer": 40,
+    "bush": 14
+   },
+   "details": {
+    "fruit": 11,
+    "moss": 27,
+    "roots": 26,
+    "deadbranch": 15,
+    "ribbon": 18,
+    "lantern": 18,
+    "nest": 22,
+    "mushrooms": 25
+   }
+  }
+ },
+ "art_cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "untrap": {
+  "removed_voxels": 0,
+  "traps_left": 0,
+  "left_sample": []
+ },
+ "oneoffs": {
+  "lighthouse": 52,
+  "chapel": {
+   "fz": 53,
+   "tower_top": 25
+  },
+  "goat": {
+   "g": 53,
+   "belly_z": 45
+  },
+  "ice_camp": {
+   "ice": 377,
+   "tents": [
+    [
+     108,
+     431
+    ],
+    [
+     112,
+     444
+    ]
+   ],
+   "fire": [
+    104,
+    440,
+    61
+   ]
+  },
+  "spruce": {
+   "tip": 22
+  },
+  "tag": {
+   "plate": [
+    8,
+    100,
+    490,
+    500,
+    8
+   ],
+   "stalk": [
+    54,
+    493,
+    9,
+    31
+   ],
+   "letters": 207
+  },
+  "snowmen": 8,
+  "presents": 24,
+  "sky": [
+   {
+    "name": "sleigh and reindeer",
+    "voxels": 640,
+    "x": [
+     252,
+     261
+    ],
+    "y": [
+     426,
+     509
+    ],
+    "z": [
+     7,
+     8
+    ]
+   },
+   {
+    "name": "snow cloud 0",
+    "voxels": 1013,
+    "x": [
+     47,
+     74
+    ],
+    "y": [
+     146,
+     154
+    ],
+    "z": [
+     4,
+     10
+    ]
+   },
+   {
+    "name": "snow cloud 1",
+    "voxels": 2255,
+    "x": [
+     436,
+     468
+    ],
+    "y": [
+     358,
+     369
+    ],
+    "z": [
+     4,
+     12
+    ]
+   },
+   {
+    "name": "snow cloud 2",
+    "voxels": 1399,
+    "x": [
+     167,
+     193
+    ],
+    "y": [
+     21,
+     31
+    ],
+    "z": [
+     4,
+     10
+    ]
+   },
+   {
+    "name": "snow cloud 3",
+    "voxels": 781,
+    "x": [
+     326,
+     353
+    ],
+    "y": [
+     483,
+     492
+    ],
+    "z": [
+     4,
+     8
+    ]
+   },
+   {
+    "name": "snow cloud 4",
+    "voxels": 508,
+    "x": [
+     31,
+     51
+    ],
+    "y": [
+     327,
+     334
+    ],
+    "z": [
+     6,
+     10
+    ]
+   },
+   {
+    "name": "aurora 0",
+    "voxels": 844,
+    "x": [
+     40,
+     190
+    ],
+    "y": [
+     10,
+     18
+    ],
+    "z": [
+     5,
+     10
+    ]
+   },
+   {
+    "name": "aurora 1",
+    "voxels": 731,
+    "x": [
+     200,
+     330
+    ],
+    "y": [
+     10,
+     18
+    ],
+    "z": [
+     4,
+     9
+    ]
+   },
+   {
+    "name": "aurora 2",
+    "voxels": 734,
+    "x": [
+     340,
+     470
+    ],
+    "y": [
+     18,
+     26
+    ],
+    "z": [
+     5,
+     10
+    ]
+   }
+  ]
+ },
+ "oneoff_glow": 72,
+ "paint": {
+  "snow_terrain_tops": 14020,
+  "terrain_tops": 67642,
+  "snow_roofs": 4310
+ },
+ "post_mirror_floating": {
+  "unexpected": 0,
+  "expected": 12,
+  "unexpected_list": []
+ },
+ "finish": {
+  "grade": [
+   1.018,
+   1.04,
+   1.103
+  ],
+  "brightness": {
+   "dark_floors_raised": 4685,
+   "whites_capped": 14116
+  },
+  "glow_sources": 557,
+  "glow_lit_voxels": 38139,
+  "palette_nudged": 827
+ },
+ "colour_stats": {
+  "top_luma_median": 72.5,
+  "top_dark_share_pct": 0.0,
+  "top_bright_share_pct": 1.05
+ },
+ "cosmetic_asymmetric_boxes": [
+  [
+   69,
+   112,
+   49,
+   92
+  ],
+  [
+   397,
+   447,
+   47,
+   97
+  ],
+  [
+   400,
+   443,
+   413,
+   464
+  ],
+  [
+   94,
+   122,
+   425,
+   455
+  ],
+  [
+   244,
+   268,
+   180,
+   204
+  ],
+  [
+   181,
+   197,
+   327,
+   339
+  ],
+  [
+   333,
+   340,
+   360,
+   378
+  ],
+  [
+   330,
+   335,
+   338,
+   343
+  ],
+  [
+   0,
+   110,
+   460,
+   511
+  ],
+  [
+   35,
+   51,
+   173,
+   189
+  ],
+  [
+   316,
+   332,
+   177,
+   193
+  ],
+  [
+   189,
+   205,
+   330,
+   346
+  ],
+  [
+   458,
+   474,
+   258,
+   274
+  ],
+  [
+   180,
+   196,
+   179,
+   195
+  ],
+  [
+   303,
+   319,
+   204,
+   220
+  ],
+  [
+   33,
+   49,
+   204,
+   220
+  ],
+  [
+   371,
+   387,
+   349,
+   365
+  ],
+  [
+   202,
+   208,
+   202,
+   208
+  ],
+  [
+   403,
+   409,
+   156,
+   162
+  ],
+  [
+   171,
+   177,
+   356,
+   362
+  ],
+  [
+   42,
+   48,
+   285,
+   291
+  ],
+  [
+   307,
+   313,
+   163,
+   169
+  ],
+  [
+   186,
+   192,
+   163,
+   169
+  ],
+  [
+   440,
+   446,
+   163,
+   169
+  ],
+  [
+   68,
+   74,
+   163,
+   169
+  ],
+  [
+   206,
+   212,
+   164,
+   170
+  ],
+  [
+   186,
+   192,
+   198,
+   204
+  ],
+  [
+   41,
+   47,
+   273,
+   279
+  ],
+  [
+   99,
+   105,
+   155,
+   161
+  ],
+  [
+   429,
+   435,
+   342,
+   348
+  ],
+  [
+   467,
+   473,
+   278,
+   284
+  ],
+  [
+   337,
+   343,
+   354,
+   360
+  ],
+  [
+   196,
+   202,
+   214,
+   220
+  ],
+  [
+   467,
+   473,
+   224,
+   230
+  ],
+  [
+   80,
+   86,
+   340,
+   346
+  ],
+  [
+   311,
+   317,
+   199,
+   205
+  ],
+  [
+   130,
+   136,
+   356,
+   362
+  ],
+  [
+   324,
+   330,
+   197,
+   203
+  ],
+  [
+   384,
+   390,
+   155,
+   161
+  ],
+  [
+   266,
+   272,
+   229,
+   235
+  ],
+  [
+   353,
+   359,
+   352,
+   358
+  ]
+ ],
+ "materials": {
+  "air": 0,
+  "sea": 1,
+  "beach": 2,
+  "rock": 3,
+  "turf": 4,
+  "ice": 5,
+  "anchor": 6,
+  "spawn": 7,
+  "front": 8,
+  "hop": 9,
+  "arch": 10,
+  "footing": 11,
+  "floor": 12,
+  "wall_red": 13,
+  "wall_ochre": 14,
+  "roof": 15,
+  "trim": 16,
+  "timber": 17,
+  "plank": 18,
+  "post": 19,
+  "stair": 20,
+  "furniture": 21,
+  "hull_red": 22,
+  "hull_dark": 23,
+  "deck": 24,
+  "mast": 25,
+  "crate": 26,
+  "present": 27,
+  "rope": 28,
+  "stone": 29,
+  "stone_dk": 30,
+  "straw": 31,
+  "ribbon": 32,
+  "canvas": 33,
+  "pot": 34,
+  "fish": 35,
+  "log": 36,
+  "ember": 37,
+  "boulder": 38,
+  "leaf": 39,
+  "bark": 40,
+  "team": 41,
+  "lamp": 42,
+  "glass": 43,
+  "snowman": 44,
+  "buoy": 45,
+  "iceberg": 46,
+  "tag": 47,
+  "sky": 48,
+  "mail": 49,
+  "letter": 50,
+  "tent": 51,
+  "bell": 52,
+  "moss": 53,
+  "fruit": 54,
+  "deadwood": 55,
+  "iron": 56,
+  "nest": 57,
+  "mushroom": 58
+ },
+ "interiors_n": 60,
+ "build_seconds": 28.9,
+ "sky_objects": [
+  {
+   "name": "sleigh and reindeer",
+   "voxels": 640,
+   "x": [
+    252,
+    261
+   ],
+   "y": [
+    426,
+    509
+   ],
+   "z": [
+    7,
+    8
+   ]
+  },
+  {
+   "name": "snow cloud 0",
+   "voxels": 1013,
+   "x": [
+    47,
+    74
+   ],
+   "y": [
+    146,
+    154
+   ],
+   "z": [
+    4,
+    10
+   ]
+  },
+  {
+   "name": "snow cloud 1",
+   "voxels": 2255,
+   "x": [
+    436,
+    468
+   ],
+   "y": [
+    358,
+    369
+   ],
+   "z": [
+    4,
+    12
+   ]
+  },
+  {
+   "name": "snow cloud 2",
+   "voxels": 1399,
+   "x": [
+    167,
+    193
+   ],
+   "y": [
+    21,
+    31
+   ],
+   "z": [
+    4,
+    10
+   ]
+  },
+  {
+   "name": "snow cloud 3",
+   "voxels": 781,
+   "x": [
+    326,
+    353
+   ],
+   "y": [
+    483,
+    492
+   ],
+   "z": [
+    4,
+    8
+   ]
+  },
+  {
+   "name": "snow cloud 4",
+   "voxels": 508,
+   "x": [
+    31,
+    51
+   ],
+   "y": [
+    327,
+    334
+   ],
+   "z": [
+    6,
+    10
+   ]
+  },
+  {
+   "name": "aurora 0",
+   "voxels": 844,
+   "x": [
+    40,
+    190
+   ],
+   "y": [
+    10,
+    18
+   ],
+   "z": [
+    5,
+    10
+   ]
+  },
+  {
+   "name": "aurora 1",
+   "voxels": 731,
+   "x": [
+    200,
+    330
+   ],
+   "y": [
+    10,
+    18
+   ],
+   "z": [
+    4,
+    9
+   ]
+  },
+  {
+   "name": "aurora 2",
+   "voxels": 734,
+   "x": [
+    340,
+    470
+   ],
+   "y": [
+    18,
+    26
+   ],
+   "z": [
+    5,
+    10
+   ]
+  }
+ ],
+ "interiors": [
+  [
+   "islet sea cave (W)",
+   248,
+   318,
+   61
+  ],
+  [
+   "islet sea cave (E)",
+   264,
+   318,
+   61
+  ],
+  [
+   "smugglers cave (W)",
+   106,
+   318,
+   60
+  ],
+  [
+   "smugglers cave (E)",
+   406,
+   318,
+   60
+  ],
+  [
+   "north cabin 1 floor 0 (W)",
+   103,
+   209,
+   46
+  ],
+  [
+   "north cabin 1 floor 0 (E)",
+   409,
+   209,
+   46
+  ],
+  [
+   "north cabin 1 floor 1 (W)",
+   103,
+   209,
+   41
+  ],
+  [
+   "north cabin 1 floor 1 (E)",
+   409,
+   209,
+   41
+  ],
+  [
+   "north cabin 2 floor 0 (W)",
+   122,
+   201,
+   47
+  ],
+  [
+   "north cabin 2 floor 0 (E)",
+   390,
+   201,
+   47
+  ],
+  [
+   "north cabin 3 floor 0 (W)",
+   147,
+   226,
+   46
+  ],
+  [
+   "north cabin 3 floor 0 (E)",
+   365,
+   226,
+   46
+  ],
+  [
+   "north cabin 3 floor 1 (W)",
+   147,
+   226,
+   41
+  ],
+  [
+   "north cabin 3 floor 1 (E)",
+   365,
+   226,
+   41
+  ],
+  [
+   "south cabin 1 floor 0 (W)",
+   103,
+   302,
+   42
+  ],
+  [
+   "south cabin 1 floor 0 (E)",
+   409,
+   302,
+   42
+  ],
+  [
+   "south cabin 1 floor 1 (W)",
+   103,
+   302,
+   37
+  ],
+  [
+   "south cabin 1 floor 1 (E)",
+   409,
+   302,
+   37
+  ],
+  [
+   "smugglers shed floor 0 (W)",
+   119,
+   301,
+   46
+  ],
+  [
+   "smugglers shed floor 0 (E)",
+   393,
+   301,
+   46
+  ],
+  [
+   "south cabin 3 floor 0 (W)",
+   147,
+   285,
+   46
+  ],
+  [
+   "south cabin 3 floor 0 (E)",
+   365,
+   285,
+   46
+  ],
+  [
+   "south cabin 3 floor 1 (W)",
+   147,
+   285,
+   41
+  ],
+  [
+   "south cabin 3 floor 1 (E)",
+   365,
+   285,
+   41
+  ],
+  [
+   "west net loft floor 0 (W)",
+   60,
+   247,
+   46
+  ],
+  [
+   "west net loft floor 0 (E)",
+   452,
+   247,
+   46
+  ],
+  [
+   "west net loft floor 1 (W)",
+   60,
+   247,
+   41
+  ],
+  [
+   "west net loft floor 1 (E)",
+   452,
+   247,
+   41
+  ],
+  [
+   "west cabin floor 0 (W)",
+   60,
+   271,
+   49
+  ],
+  [
+   "west cabin floor 0 (E)",
+   452,
+   271,
+   49
+  ],
+  [
+   "shore cabin N floor 0 (W)",
+   68,
+   175,
+   54
+  ],
+  [
+   "shore cabin N floor 0 (E)",
+   444,
+   175,
+   54
+  ],
+  [
+   "shore cabin S floor 0 (W)",
+   68,
+   336,
+   54
+  ],
+  [
+   "shore cabin S floor 0 (E)",
+   444,
+   336,
+   54
+  ],
+  [
+   "boathouse floor (W)",
+   180,
+   153,
+   57
+  ],
+  [
+   "boathouse floor (E)",
+   332,
+   153,
+   57
+  ],
+  [
+   "trawler hold (W)",
+   203,
+   190,
+   61
+  ],
+  [
+   "trawler hold (E)",
+   309,
+   190,
+   61
+  ],
+  [
+   "trawler wheelhouse (W)",
+   202,
+   190,
+   56
+  ],
+  [
+   "trawler wheelhouse (E)",
+   310,
+   190,
+   56
+  ],
+  [
+   "post office floor 0 (W)",
+   176,
+   341,
+   51
+  ],
+  [
+   "post office floor 0 (E)",
+   336,
+   341,
+   51
+  ],
+  [
+   "fish shed 238 (W)",
+   151,
+   241,
+   45
+  ],
+  [
+   "fish shed 238 (E)",
+   361,
+   241,
+   45
+  ],
+  [
+   "fish shed 268 (W)",
+   151,
+   271,
+   45
+  ],
+  [
+   "fish shed 268 (E)",
+   361,
+   271,
+   45
+  ],
+  [
+   "cargo hold (W)",
+   253,
+   242,
+   61
+  ],
+  [
+   "cargo hold (E)",
+   259,
+   242,
+   61
+  ],
+  [
+   "forecastle cabin (W)",
+   254,
+   228,
+   50
+  ],
+  [
+   "forecastle cabin (E)",
+   258,
+   228,
+   50
+  ],
+  [
+   "deckhouse mess (W)",
+   254,
+   285,
+   50
+  ],
+  [
+   "deckhouse mess (E)",
+   258,
+   285,
+   50
+  ],
+  [
+   "wheelhouse (W)",
+   254,
+   285,
+   45
+  ],
+  [
+   "wheelhouse (E)",
+   258,
+   285,
+   45
+  ],
+  [
+   "lighthouse base",
+   93,
+   67,
+   52
+  ],
+  [
+   "lighthouse lamp room",
+   93,
+   73,
+   26
+  ],
+  [
+   "chapel nave",
+   425,
+   439,
+   53
+  ],
+  [
+   "chapel bell loft",
+   421,
+   447,
+   38
+  ],
+  [
+   "ice tent 1",
+   110,
+   434,
+   62
+  ],
+  [
+   "ice tent 2",
+   114,
+   447,
+   62
+  ]
+ ]
+}
