@@ -32,7 +32,8 @@ def build_map(out, veg_seed=None, graybox_only=False):
     orphans = symmetry.remove_orphans(cv)
     info = {'stage': 'graybox' if graybox_only else 'art', 'layout_seed': SPEC['layout_seed'], 'veg_seed': seed,
             'axis': SPEC['axis'], 'floating_before_cleanup': len(fl_before), 'floating_before_list': fl_before[:15],
-            'cleanup': orphans, 'passage': rep.get('passage'), 'sea_cave_mouth': rep.get('sea_cave_mouth')}
+            'cleanup': orphans, 'passage': rep.get('passage'), 'sea_cave_mouth': rep.get('sea_cave_mouth'),
+            'waivers': SPEC['waivers']}
     boxes = []
     import yh_art
     if not graybox_only:

@@ -43,6 +43,10 @@
   110,
   368
  ],
+ "waivers": {
+  "spawn_exposure_blue": "owner 2026-11-15: accept the open-front trade-off",
+  "spawn_exposure_red": "owner 2026-11-15: accept the open-front trade-off"
+ },
  "art_west": {
   "string_lights": 137,
   "window_candles": 47,

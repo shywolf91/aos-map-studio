@@ -6,6 +6,10 @@
   "max_drop_safe": 9,
   "note": "graph model, not a collision simulation"
  },
+ "waivers": {
+  "spawn_exposure_blue": "owner 2026-11-15: accept the open-front trade-off",
+  "spawn_exposure_red": "owner 2026-11-15: accept the open-front trade-off"
+ },
  "reader": {
   "bytes": 2588936,
   "reencode_identical": true,
@@ -1351,7 +1355,7 @@
    "why": "ok"
   }
  },
- "check_seconds": 7.9,
+ "check_seconds": 7.8,
  "summary": [
   {
    "rule": "parser",
@@ -1507,21 +1511,29 @@
   },
   {
    "rule": "spawn exposure blue (<= 10 viewers, >= 15 % hidden)",
-   "ok": false,
+   "ok": true,
    "detail": {
     "mean": 9.97,
     "hidden_pct": 0.5
    },
-   "key": "spawn_exposure_blue"
+   "key": "spawn_exposure_blue",
+   "measured_ok": false,
+   "measured_status": null,
+   "status": "waived",
+   "waiver": "owner 2026-11-15: accept the open-front trade-off"
   },
   {
    "rule": "spawn exposure red (<= 10 viewers, >= 15 % hidden)",
-   "ok": false,
+   "ok": true,
    "detail": {
     "mean": 9.62,
     "hidden_pct": 1.1
    },
-   "key": "spawn_exposure_red"
+   "key": "spawn_exposure_red",
+   "measured_ok": false,
+   "measured_status": null,
+   "status": "waived",
+   "waiver": "owner 2026-11-15: accept the open-front trade-off"
   },
   {
    "key": "front_dressing",

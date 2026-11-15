@@ -132,26 +132,29 @@ in water (z ≥ 61) `[SRC]`. The rate of those updates is set by the player's cl
 | spawn cover | pass: 59 % on the enemy side within 20, 60 % rear backdrop |
 | under the platform | pass: anchor ends flat (range 0) and prop-free; the strip is 43 % land (sea channel), so its coverage part is n.a.; ship tops ≥ 25 below the platform |
 | centre footprint | pass: median object footprint 36 cells (74 objects) |
-| **spawn exposure** | **fail on hidden share**: Blue 9.97 viewers per spot, 0.5 % hidden; Red 9.62, 1.1 % hidden (targets ≤ 10 and ≥ 15 %) |
+| **spawn exposure** | **WAIVED** `[USER 2026-11-15]`: Blue 9.97 viewers per spot, 0.5 % hidden; Red 9.62, 1.1 % hidden (targets ≤ 10 and ≥ 15 %); measured fail, reported as waived |
 | wading (yh_checks) | spawn → islet 6 water cells, → enemy spawn 3, → islet sea cave 6; no dry route from island to islet or enemy island; the passage roof is not a dry crossing |
 | determinism | same `veg_seed` (3401930456) → same SHA-256 in a fresh process (`e4d2e7cd…b645a9`) |
 | live server | loads; Babel on; platform 3,200 cells; extensions and fog read; spawns on the stock squares |
 
-### Spawn exposure trade-off (owner decision needed)
+### Spawn exposure trade-off (waived by the owner, 2026-11-15)
 
 From the platform's west edge the spawn squares are 68–108 voxels away and 47 voxels lower, about a 30–35° view
 down. Cover only hides a spawn spot if it stands in the front corridor right next to the square and is about
 20 tall. The front rules cap front objects at 10 tall and keep every section at least 50 % free. A 3-high crest and
 two 9-tall fish sheds keep viewers per spot at or under 10, but hide only 0.5–1.1 % of spots. Spawn cover outside the
-front (cabins, boulders, spruce) passes its own rule but can't block a line of sight from the platform. Options:
+front (cabins, boulders, spruce) passes its own rule but can't block a line of sight from the platform. The options were:
 
-1. Accept it (Elderveil's waiver was the same trade-off).
+1. **Accept it** (Elderveil's waiver was the same trade-off). **Chosen by the owner on 2026-11-15.** Declared in
+   `yh_spec.py` `waivers` and `build.json`; `validation.json` reports both rows as `waived` with the measured numbers.
 2. Add a tall, walk-through arch at each village edge, like Frostbell Hollow's gate. That gate hid 58 % of spawn
    spots with a solid band at z 28–40.
 3. Lower the spawn squares into a dell behind a taller natural ridge. That changes the "open front" feel.
 
 ## Known limits
 
+* **Spawn exposure is waived, not met.** Almost every spawn spot can be seen from the platform; expect some
+  spawn camping from the platform's ends.
 * Client FPS and the 2.1 MB `.txt` are untested in a client.
 * The north chain needs a 3-cell wade to reach its middle skerry; the south chain is dry (y-mirror rounding at a pier
   landing). Both chains have the same length and cover.

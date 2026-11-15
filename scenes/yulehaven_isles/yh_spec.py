@@ -125,5 +125,9 @@ SPEC = {
     'iceberg': (46, 476),                        # SW corner, under the sky-level tag
     'tag': {'text': 'YULEHAVEN ISLES', 'x0': 10, 'y0': 492, 'z': 8},
 
+    # declared waivers (babel_checks summary row key -> reason)
+    'waivers': {'spawn_exposure_blue': 'owner 2026-11-15: accept the open-front trade-off',
+                'spawn_exposure_red': 'owner 2026-11-15: accept the open-front trade-off'},
+
     'deviations': [],
 }
