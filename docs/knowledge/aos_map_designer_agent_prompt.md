@@ -60,7 +60,7 @@ A valid VXL with crude shapes or flat empty layout is a **prototype**, not a fin
 15. Edits of community maps stay "relatively the same" and credit the original author.
 16. **Island maps have two styles** (2026-11-15): our dense **current** style is the default. When the brief says
     **"classic island map"**, build the classic style: one natural island in a painted sea, sparse repeated props, and
-    0–2 modest landmarks (`docs/classic_island_style.md`). Whether both versions are wanted every time is still open, so ask.
+    0–2 modest landmarks (`docs/classic_island_style.md`). Build only the style the brief names, not both.
 
 ## 4. Hard technical facts you design against
 

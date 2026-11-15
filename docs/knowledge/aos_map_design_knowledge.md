@@ -659,8 +659,8 @@ periphery can't be walked.
 13. He tests in his own Ruby spectator client **aos_web** (localhost) and the **alohacraft.cc** VXL viewer.
 14. Edits of community maps keep the map "relatively the same" and credit the original author.
 15. Island maps (2026-11-15): current style by default; "classic island map" in the brief → the classic style in
-    `docs/classic_island_style.md`, checked with `tools/island_style_metrics.py`. Whether he wants both versions
-    for every island map is `[OPEN]`.
+    `docs/classic_island_style.md`, checked with `tools/island_style_metrics.py`. Build only the
+    style the brief names, not both.
 
 ---
 
@@ -744,7 +744,7 @@ per run, **save it** in build.json so the build can be reproduced.
 2. **Ask before building** (mandatory). Typical questions:
    * Mode and server script (stock babel? platform variant? team colours? standard or assist-structure Babel?).
    * Full 512 × 512 or island; ground height relative to water; mountain ring or open edges.
-   * Island: current style or **classic** (`docs/classic_island_style.md` §7 lists the classic questions)? Both versions?
+   * Island: current style or **classic** (`docs/classic_island_style.md` §7 lists the classic questions)?
    * Which concept (offer three) and which landmark goes where (centre / edge / under the platform).
    * What fills the centre; any underground layer; flank style.
    * Water behaviour: classic walkable, cursed (`water_damage`), or boundary box.

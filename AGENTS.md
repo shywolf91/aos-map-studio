@@ -117,8 +117,7 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   Measured from utopia2, islandbabel, babelpocalypse and toast; check it with `tools/island_style_metrics.py`.
   Every other rule in this section still applies. Where classic pulls against one (packed centre, one-off objects,
   flank distance, spawn cover), the guide proposes a reconciliation to confirm with the owner.
-* `[OPEN]` Does he want **both** versions delivered for every island map, or only the one the brief names? Ask before the
-  next island build.
+* Build **only the style the brief names** — one map per brief, not both versions (owner, 2026-11-15).
 
 ### Babel (the main mode so far)
 * **Balanced spawns.** Both spawns should be mainly similar; usually the team's half is mirrored `x' = 512 − x`.

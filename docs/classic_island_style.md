@@ -12,16 +12,15 @@ Status: **researched** (2026-11-15). No map has been built in this style yet. Ev
 He attached utopia2, islandbabel, babelpocalypse and toast (community maps: the **classic** style) and yulehaven_isles
 (one of our own recent island maps: the **current** style).
 
-**Claude's interpretation** (not yet confirmed by the owner):
+**What it means** (confirmed by the owner the same day):
 * Island maps now come in two named styles.
 * **Current** is our dense, authored house style (yulehaven_isles, Wicker King's Harvest, Sunken Reef Atoll). It stays
   the default for an island brief.
 * **Classic** is used when the brief says **"classic island map"**. It means one natural island in a painted sea with
   sparse, simple props, as described in this guide.
 
-**Open question for the owner** `[OPEN]`: should every island map now be delivered in **both** versions
-(current and classic), or only the one the brief names? "our current style … plus a more classic version" can be read
-either way. Ask before the next island build; do not decide it.
+* Build **only the style the brief names**: one map per brief, not both versions `[USER]` (asked and answered
+  2026-11-15: "Only the named one").
 
 The reference maps are other people's work. Measure them locally from `refs/`; never copy them, their objects, their
 landmarks or their terrain into the repo or into a map.
@@ -233,15 +232,14 @@ Where the classic refs break our rules (do not imitate):
 ## 7. Questions to ask before a classic island map
 
 These add to knowledge base §14 step 2. The ask-first rule still applies.
-1. Classic only, or classic **and** current versions of the same brief? (§1 open question.)
-2. Island shape: dumbbell with a neck, slab/hourglass, or crescent? Low island (spawns z ~61) or plateau (spawns z ~44–53)?
-3. Climate and palette: tropical sand/palm, temperate grass/pine, snow (≤ 212 max channel), desert?
-4. Sea look: flat calm, caustics, shallows halo with reefs, night sea?
-5. Landmark budget: none, one, or two? Which (house, keep, lighthouse, wreck)? Any one-off object?
-6. Centre: does "classic" relax the "don't leave the centre empty" rule, or should the centre carry dunes, groves and a landmark?
-7. Flanks: walkable shallows and islets (`water_damage` 0), or cursed water with the flank on the island itself?
-8. Sky: clouds, planes, birds, or nothing (opt-in)?
-9. Ships or boats moored on the flanks?
+1. Island shape: dumbbell with a neck, slab/hourglass, or crescent? Low island (spawns z ~61) or plateau (spawns z ~44–53)?
+2. Climate and palette: tropical sand/palm, temperate grass/pine, snow (≤ 212 max channel), desert?
+3. Sea look: flat calm, caustics, shallows halo with reefs, night sea?
+4. Landmark budget: none, one, or two? Which (house, keep, lighthouse, wreck)? Any one-off object?
+5. Centre: does "classic" relax the "don't leave the centre empty" rule, or should the centre carry dunes, groves and a landmark?
+6. Flanks: walkable shallows and islets (`water_damage` 0), or cursed water with the flank on the island itself?
+7. Sky: clouds, planes, birds, or nothing (opt-in)?
+8. Ships or boats moored on the flanks?
 
 ## 8. Validation
 
