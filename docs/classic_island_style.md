@@ -161,7 +161,7 @@ These numbers come from the refs (§2) and do not copy any of their shapes.
 2. **Height profile.** Smooth fBm or blurred-blob height field, no terraces or contour steps. Choose a low island
    (terrain max 3–10, spawns z 61–62, islandbabel/toast) or a plateau (spawn z 44–53, terrain max 20–30 with a 2–6
    column cliff band; utopia2/babelpocalypse). Terrain slope ≤ 0.3, cliff steps ≤ 0.5 %. The owner likes low ground,
-   ~3–10 above water (knowledge base §8.6), which favours the low island.
+   ~3–10 above water (knowledge base §8.5), which favours the low island.
 3. **Shore band.** A beach ring 4–8 columns wide at h 0–2 that rises inland. The refs reach h 4 at 8 columns
    (toast/utopia2), or rise faster to h 12 (babelpocalypse). Measure `beach_ring_low_pct` (refs 41–100 %).
 4. **Palette.** 2–4 hue families. Build it as one material per height or zone band: wet sand → dry sand → grass/dune →
