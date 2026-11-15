@@ -18,6 +18,9 @@ validate, probe, spec, PR), with the `[recreate]` flow from `docs/remus_recreate
    the 2026-11-13 zone targets (front, under-platform strip, centre footprint, cover placement); art stats
    (hue families, bright share, team hues, too white / too black); island-style metrics when it is an island.
    Read the previews and the analysis yourself as well: the tool finds numbers, not the map's identity.
+   Caveats: an original has no authored terrain heights, so zone verdicts use an estimated ground (cliffs and
+   shores can count as objects, mostly on islands); floating pieces may be the author's sky decor; build gap is
+   the kit definition, one less than the figure quoted for remus; reachable roofs are not measured.
 3. Write the element ledger: start from the tool's ledger skeleton, name every element and mark it
    Keep / Reimagine / Replace / Remove / Add.
 4. Ask the recreate questions (how far to move from the original, modes, era or theme, island style if it is
