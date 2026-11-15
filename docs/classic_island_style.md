@@ -223,6 +223,20 @@ Each reconciliation below is `[DESIGN]` and `[OPEN]` until the owner confirms it
 | Every area gets artistic detail; spread structures | classic has big empty sand or grass expanses | Detail goes into the **ground and sea paint** (gradients, wet-sand lines, tide pools, reefs) rather than objects; keep the periphery passable. |
 | No flat expanses (knowledge base §10.6, Backyard Babel) | islandbabel's terrain is 1–3 high everywhere | Gentle low-amplitude dunes (h 1–6), never perfectly flat; spawn squares gently rolling. |
 
+### (c) Zone rules added on main, 2026-11-10 / 2026-11-13
+
+This guide was written before these rules were merged, so they were not measured on the classic refs `[OPEN]`.
+They apply to a classic island map like every other standing rule (AGENTS.md §4, `docs/babel_zone_study.md`):
+
+| rule | effect on a classic island |
+|---|---|
+| Dress the front, never block it: 4–15 low objects on 5–30 % of the front, 90 % ≤ 10 tall, every 8-column section ≥ 50 % free | fits the classic prop set (low bunkers, sandbag rings, bushes, rocks, boats on the sand). The front may not be bare sand. Tall palms count against the height target, so keep palm groves beside the front, not on it |
+| Don't leave the strip under the platform bare: low objects on 15–45 % of x 212–300, y 240–271, ≥ 25 air to the platform | on a low island (ground z ~61) the air target is easy. A lagoon or neck under the platform needs low objects on it, and the anchor ground stays flat and prop-free |
+| Anchor the centre with room-sized pieces: median object footprint ≥ 25 cells | pulls against "sparse props". Meet it with a few larger simple pieces (a hut, a wreck, a rock outcrop) instead of many small ones; it also suits the 0–2 landmark budget |
+| Fronts must not be completely flat and empty | same reconciliation as §6(b) "no flat expanses": gentle dunes plus the low objects above |
+
+Measure these with the kit's zone checks on the first classic build and report any that fail.
+
 Where the classic refs break our rules (do not imitate):
 * **toast**: water under the platform ends (9–10 %); palms reaching z 28 under the platform; 571 floating leaf fragments.
 * **babelpocalypse**: things standing in the spawn squares (22.8 % of square columns have something > 2 high above an air gap); sky decor at z ≤ 2 (not over the platform).
