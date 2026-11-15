@@ -27,6 +27,7 @@ Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project
 7. Read the spec of the newest map closest to your task (§9):
    * `docs/under_the_tree_spec.md` and `docs/bloomhop_kingdom_spec.md` are the newest Babel examples (2026-11-09).
    * `docs/remus_recreate_report.md` is the template for a `[recreate]` job.
+   * `docs/classic_island_style.md` is required reading for any island brief (two island styles, §4).
 
 `docs/knowledge/aos_map_designer_agent_prompt.md` is a self-contained system prompt for other AIs.
 `docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md` and `docs/heightmap_colourmap_tutorials.md` are
@@ -106,6 +107,20 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 * Optional extras he often picks: glow blocks (format in knowledge base §11.4), a floating sky-decor layer, an
   underground layer, `heavens_color`. Ask; don't assume.
 
+### Island maps — two styles `[USER]` (2026-11-15)
+* **Current** (our dense, authored house style: yulehaven_isles, Wicker King's Harvest) stays the default for an island brief.
+* **"classic island map"** in the brief = the classic style in `docs/classic_island_style.md`:
+  * one dominant natural island along the Babel axis (often a dumbbell with a neck), 70–80 % sea, a few islets;
+  * a smooth height field with a beach ring;
+  * 2–4 hue families;
+  * a painted z = 63 sea that carries much of the look;
+  * a sparse, repeated prop vocabulary (palms, bunkers, piers, a ship) and at most one or two modest landmarks.
+
+  Measured from utopia2, islandbabel, babelpocalypse and toast; check it with `tools/island_style_metrics.py`.
+  Every other rule in this section still applies. Where classic pulls against one (packed centre, one-off objects,
+  flank distance, spawn cover), the guide proposes a reconciliation to confirm with the owner.
+* Build **only the style the brief names** — one map per brief, not both versions (owner, 2026-11-15).
+
 ### Babel (the main mode so far)
 * **Balanced spawns.** Both spawns should be mainly similar; usually the team's half is mirrored `x' = 512 − x`.
   * They may differ in structure.
@@ -175,7 +190,7 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 
 ## 5. Map request workflow
 
-1. Extract the requirements: mode and exact script, theme, features, references, server/client target, protection policy, symmetry, outputs.
+1. Extract the requirements: mode and exact script, theme, island style (current / classic), features, references, server/client target, protection policy, symmetry, outputs.
 2. Verify the mode in source. Never assume rules from a mode's name.
 3. Propose **three distinct concepts**, unless the owner gave a clear concept or asked to build straight away. Recommend one.
    * Some briefs say "do not build yet". Then stop at concepts.
