@@ -193,3 +193,135 @@ def run(out, data, info, S, mat=None, terrain_H=None):
         'no_pillar_fields': R['pillars']['fields_16x16_ge3'] == 0,
     }
     return R
+
+
+# =============================================================================================== art vs graybox
+
+ADDON = {'beetle', 'snail_s', 'caterpillar', 'firefly', 'grass_seed', 'silk', 'spider', 'clover_flower', 'bud'}
+FLUSH = {'dew_bead', 'dew_glow', 'gill_glow'}
+
+
+def _routes(nav, targets, assist):
+    half = P['spawn_half']
+    names = P['team_names']
+    src = {n: nav.nodes_in(b[0] - half, b[0] + half, b[1] - half, b[1] + half, 0, 62)
+           for n, b in zip(names, P['bases'])}
+    out, reach = {}, None
+    for i, n in enumerate(names):
+        d = nav.dist_from(src[n])
+        fin = np.isfinite(d)
+        reach = fin if reach is None else (reach | fin)
+        row = {'enemy_spawn': _dmin(d, src[names[1 - i]])}
+        for k, bx in targets.items():
+            row[k] = _dmin(d, nav.nodes_in(*bx))
+        for k, (x0, x1, y0, y1) in assist.items():
+            row['assist_' + k] = _dmin(d, nav.nodes_in(x0, x1, y0, y1, 0, 62))
+        (px0, px1), (py0, py1) = P['platform_x'], P['platform_y']
+        ex = px0 if n == names[0] else px1 - 5
+        row['own_platform_end_ground'] = _dmin(d, nav.nodes_in(ex, ex + 5, py0, py1, 30, 62))
+        out[n] = row
+    return out, reach
+
+
+def art_diff(data, mat, info, gcv, S, targets, assist):
+    """Solid / material differences art vs graybox, by category; standable cells; reachable set; route lengths."""
+    from aosmap.kit.symmetry import standable
+    solid = codec.decode(data)[0]
+    names = {v: k for k, v in info['materials'].items()}
+    gnames = {v: k for k, v in gcv.materials.items()}
+    gs, gm = gcv.solid, gcv.mat
+    sky_box = np.zeros(solid.shape, bool)
+    for o in info.get('sky_objects') or []:
+        sky_box[o['x'][0]:o['x'][1] + 1, o['y'][0]:o['y'][1] + 1, o['z'][0]:o['z'][1] + 1] = True
+    tag = np.zeros(solid.shape[:2], bool)
+    tr = info.get('tag_rect')
+    if tr:
+        tag[tr[0]:tr[1] + 1, tr[2]:tr[3] + 1] = True
+    tag3 = np.broadcast_to(tag[:, :, None], solid.shape)
+    added, removed = solid & ~gs, gs & ~solid
+    both = solid & gs
+    an = np.array([names.get(i, str(i)) for i in range(max(names) + 1)], object)
+    gn = np.array([gnames.get(i, str(i)) for i in range(max(gnames) + 1)], object)
+
+    def count(mask, arr, lut):
+        xs, ys, zs = np.nonzero(mask)
+        out = {}
+        for nm in lut[arr[xs, ys, zs]]:
+            out[nm] = out.get(nm, 0) + 1
+        return out
+    chg = both & (an[mat] != gn[gm])
+    cat = {
+        'added_sky': int((added & sky_box).sum()),
+        'tag_strip': {'added': int((added & tag3).sum()), 'removed': int((removed & tag3).sum()),
+                      'material_changed': int((chg & tag3).sum())},
+        'added_addons_by_material': count(added & ~sky_box & ~tag3, mat, an),
+        'removed_outside_tag': count(removed & ~tag3, gm, gn),
+        'material_changed_outside_tag': count(chg & ~tag3, mat, an),
+    }
+    bad_add = [k for k in cat['added_addons_by_material'] if k not in ADDON]
+    bad_chg = [k for k in cat['material_changed_outside_tag'] if k not in FLUSH | {'firefly'}]
+    sa, sg = standable(solid), standable(gs)
+    out_tag = ~tag3
+    st = {'lost': int((sg & ~sa & out_tag).sum()), 'gained': int((sa & ~sg & out_tag).sum())}
+    nav_a, nav_g = Nav(solid), Nav(gs)
+    ra, reach_a = _routes(nav_a, targets, assist)
+    rg, reach_g = _routes(nav_g, targets, assist)
+    pa = {tuple(p) for p in nav_a.xyz[reach_a] if not tag[p[0], p[1]]}
+    pg = {tuple(p) for p in nav_g.xyz[reach_g] if not tag[p[0], p[1]]}
+    st['reachable_cells_art'] = len(pa)
+    st['reachable_cells_graybox'] = len(pg)
+    st['reachable_only_in_art'] = len(pa - pg)
+    st['reachable_only_in_graybox'] = len(pg - pa)
+    st['sample_diff'] = sorted(list(pa ^ pg))[:10]
+    path_diff = {t: {k: (rg[t][k], ra[t][k]) for k in ra[t] if ra[t][k] != rg[t][k]} for t in ra}
+    try:
+        gsha = __import__('hashlib').sha256(gcv.to_vxl()).hexdigest()
+    except Exception as e:                                   # noqa: BLE001
+        gsha = repr(e)
+    return {'graybox_sha256_rebuilt': gsha, 'categories': cat, 'unexpected_added_materials': bad_add,
+            'unexpected_material_changes': bad_chg, 'standable': st, 'paths': ra, 'path_differences': path_diff,
+            'ok_declared_only': not bad_add and not bad_chg and not cat['removed_outside_tag'],
+            'ok_routes_unchanged': (st['reachable_only_in_art'] == 0 and st['reachable_only_in_graybox'] == 0 and
+                                    not any(path_diff.values()))}
+
+
+def colours(out, data, info):
+    """Colour rules: floor luma, white cap, near-white / near-black shares, team-like colours (glow excluded)."""
+    import os
+    from aosmap import meta
+    from aosmap.kit.color import luma
+    from aosmap.kit.symmetry import standable
+    solid, col, _ = codec.decode(data)
+    rgb = codec.unpack_rgb(codec.as_packed(col)).astype(int)
+    try:
+        mod = meta.check_map_txt(os.path.join(out, info['file'] + '.txt'))
+        stored = mod.extensions.get('glow_stored_colors', {})
+    except Exception:                                        # noqa: BLE001
+        stored = {}
+    glow_any = np.zeros(solid.shape, bool)
+    src = np.zeros(solid.shape, bool)
+    pal = {(255, 255, 255), (255, 95, 95), (255, 255, 95), (95, 255, 255), (255, 175, 95), (95, 255, 95)}
+    for (x, y, z), c in stored.items():
+        glow_any[x, y, z] = True
+        if tuple(c) in pal and tuple(rgb[x, y, z]) == tuple(c):
+            src[x, y, z] = True
+    surf = codec.surface_mask(solid)
+    plain = surf & ~glow_any
+    L = luma(rgb)
+    st = standable(solid) & ~src
+    mx = rgb.max(-1)
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    redish = plain & (r > 150) & (g < 80) & (b < 80)
+    blueish = plain & (b > 150) & (r < 90) & (g < 120)
+    res = {'glow_sources': int(src.sum()), 'glow_lit_voxels': int(glow_any.sum() - src.sum()),
+           'floor_luma_min': round(float(L[st].min()), 1), 'floor_luma_p1': round(float(np.percentile(L[st], 1)), 1),
+           'floor_cells_below_40': int((L[st] < 40).sum()),
+           'max_channel_non_glow': int(mx[plain].max()), 'max_channel_incl_glow_lit': int(mx[surf & ~src].max()),
+           'near_white_share_pct (surface, max >= 200)': round(100 * float((mx[plain] >= 200).mean()), 3),
+           'near_black_share_pct (surface, luma < 40)': round(100 * float((L[plain] < 40).mean()), 3),
+           'team_red_like_voxels': int(redish.sum()), 'team_blue_like_voxels': int(blueish.sum()),
+           'top_luma_median': round(float(np.median(L[np.arange(512)[:, None], np.arange(512)[None, :],
+                                                       np.argmax(solid, axis=2)])), 1)}
+    res['ok'] = (res['floor_cells_below_40'] == 0 and res['max_channel_non_glow'] <= 212 and
+                 res['team_red_like_voxels'] == 0 and res['team_blue_like_voxels'] == 0)
+    return res

@@ -73,9 +73,12 @@ def smooth(t):
     return t * t * (3 - 2 * t)
 
 
-def feature(rep, name, kind, x, y, r_walk, r_top=None):
-    rep.setdefault('features', []).append({'name': name, 'kind': kind, 'x': float(x), 'y': float(y),
-                                           'r_walk': float(r_walk), 'r_top': float(r_top or r_walk)})
+def feature(rep, name, kind, x, y, r_walk, r_top=None, **extra):
+    """Record a feature for the gap report; `extra` (geometry numbers) is read by the art pass only."""
+    f = {'name': name, 'kind': kind, 'x': float(x), 'y': float(y), 'r_walk': float(r_walk),
+         'r_top': float(r_top or r_walk)}
+    f.update(extra)
+    rep.setdefault('features', []).append(f)
 
 
 # =============================================================================================== hose field
@@ -416,6 +419,7 @@ def _blade(cv, rng, bx, by, bz, ang, Hb, lean, rep, stats):
     along_x = abs(ox) >= abs(oy)
     prev = None
     nvox = 0
+    vox = []                                  # (x, y, z, f, a, b, w) per placed voxel: read by the art pass only
     keep_stop = KEEP['spawn'] | KEEP['front'] | KEEP['anchor'] | KEEP['hose'] | KEEP['axis']
     for hh in range(0, Hb + 1):
         off = lean * (hh / Hb) ** 2
@@ -437,8 +441,11 @@ def _blade(cv, rng, bx, by, bz, ang, Hb, lean, rep, stats):
                         if not cv.solid[xx, yy, z] or cv.mat[xx, yy, z] in stats['own']:
                             put(cv, xx, yy, z, 'blade')
                             nvox += 1
+                            vox.append((int(xx), int(yy), int(z), round(f, 3), a, b, w))
     stats['blades'] += 1
     stats['base_w'] = min(stats['base_w'], 3)
+    rep.setdefault('blade_records', []).append({'tussock': stats.get('cur'), 'base': (float(bx), float(by), int(bz)),
+                                                'Hb': int(Hb), 'ang': float(ang), 'vox': vox})
     return nvox
 
 
@@ -458,6 +465,7 @@ def tussock(cv, rep, name, cx, cy, R, rng, stats):
                     box(cv, x, x, y, y, zt, max(zt, gl - 1), 'crown')
                     crown_top[(x, y)] = zt
     stats['own'] = {cv.material('crown'), cv.material('blade')}
+    stats['cur'] = name
     n = int(rng.integers(5, 10))
     hmax = int(min(40, 22 + R * 1.3))
     for k in range(n):
@@ -468,7 +476,7 @@ def tussock(cv, rep, name, cx, cy, R, rng, stats):
         Hb = int(rng.integers(25, max(26, hmax + 1)))
         lean = R * rng.uniform(0.55, 0.95)
         _blade(cv, rng, bx, by, bz, a + rng.normal(0, 0.25), Hb, lean, rep, stats)
-    feature(rep, name, 'tussock', cx, cy, rc + 1, R)
+    feature(rep, name, 'tussock', cx, cy, rc + 1, R, g=g, rc=rc, hc=hc)
 
 
 def clover(cv, rep, name, cx, cy, R, low=False, rot=0.0):
@@ -493,7 +501,7 @@ def clover(cv, rep, name, cx, cy, R, low=False, rot=0.0):
                         put(cv, x, y, zc - 1, 'clover')
     # connect leaflets to the stalk top (the stalk top voxel is inside the leaflet union)
     box(cv, cx - 1, cx + 2, cy - 1, cy + 2, zc, zc, 'clover')
-    feature(rep, name, 'clover_low' if low else 'clover', cx, cy, 1.5, R)
+    feature(rep, name, 'clover_low' if low else 'clover', cx, cy, 1.5, R, g=g, zc=zc, rot=rot, R=R, hgt=hgt)
     return hgt + 1
 
 
@@ -515,7 +523,7 @@ def dandelion(cv, rep, name, cx, cy, R, rng):
                     put(cv, x, y, z, 'seedhead')
     # receptacle where the stalk enters the globe
     box(cv, cx, cx + 2, cy, cy + 2, int(gz + Rg - 2), g - hgt, 'dandelion_stalk')
-    feature(rep, name, 'dandelion', cx + 1, cy + 1, 2, Rg)
+    feature(rep, name, 'dandelion', cx + 1, cy + 1, 2, Rg, g=g, hgt=hgt, gz=gz, Rg=Rg)
 
 
 def pebble(cv, rep, name, cx, cy, R, h=None, mat='pebble', salt=0):
@@ -535,7 +543,7 @@ def pebble(cv, rep, name, cx, cy, R, h=None, mat='pebble', salt=0):
                         col_down(cv, x, y, z, mat)
                     else:
                         put(cv, x, y, z, mat)
-    feature(rep, name, 'pebble', cx, cy, R, R)
+    feature(rep, name, 'pebble', cx, cy, R, R, g=g, h=h)
     return h
 
 
@@ -554,7 +562,7 @@ def mushroom(cv, rep, name, cx, cy, R):
                 zt = g - hgt - int(round(3 * (1 - rr * rr)))
                 zb = g - hgt + (1 if rr > 0.78 else 0)
                 box(cv, x, x, y, y, zt, zb, 'mushroom_cap')
-    feature(rep, name, 'mushroom', cx, cy, 3, R)
+    feature(rep, name, 'mushroom', cx, cy, 3, R, g=g, hgt=hgt, R=R)
 
 
 def acorn(cv, rep, name, cx, cy, R):
@@ -570,7 +578,7 @@ def acorn(cv, rep, name, cx, cy, R):
             zs = np.nonzero(cv.solid[x, y, :g])[0]
             if len(zs) and cv.mat[x, y, zs[-1]] == cv.material('acorn'):
                 col_down(cv, x, y, zs[-1] + 1, 'acorn')
-    feature(rep, name, 'acorn', cx, cy, R * 0.8, R)
+    feature(rep, name, 'acorn', cx, cy, R * 0.8, R, g=g, zc=zc, R=R)
 
 
 def twig(cv, rep, name, cx, cy, L, ang, stubs=2, r=2.8, hmax=3):
@@ -597,7 +605,7 @@ def twig(cv, rep, name, cx, cy, L, ang, stubs=2, r=2.8, hmax=3):
         for (x, y, z) in line_points(sx, sy, g - 2, ex, ey, g - 2):
             for xx, yy in ((x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)):
                 col_down(cv, xx, yy, z, 'twig')
-    feature(rep, name, 'twig', cx, cy, 0, L)
+    feature(rep, name, 'twig', cx, cy, 0, L, ang=ang, L=L, r=r)
 
 
 def leaf(cv, rep, name, cx, cy, R, ang):
@@ -631,7 +639,7 @@ def leaf(cv, rep, name, cx, cy, R, ang):
         if zb - zt >= 3:                                       # tall curl strip: 2 thick (no 1x1 vertical runs)
             _, a, b = max(nbz)
             box(cv, x + a, x + a, y + b, y + b, zt + 1, zb, 'leaf')
-    feature(rep, name, 'leaf', cx, cy, R * 0.6, R)
+    feature(rep, name, 'leaf', cx, cy, R * 0.6, R, ang=ang, R=R)
 
 
 def bottle_cap(cv, rep, name, cx, cy, R, open_axis='x', x_max=511):
@@ -655,7 +663,7 @@ def bottle_cap(cv, rep, name, cx, cy, R, open_axis='x', x_max=511):
         else:
             ya, yb = (cy - R - 2, cy - R + 2) if s < 0 else (cy + R - 2, cy + R + 2)
             cv.carve(cx - 1, min(cx + 1, x_max), ya, yb, g - 3, g - 2)
-    feature(rep, name, 'cap', cx, cy, R, R)
+    feature(rep, name, 'cap', cx, cy, R, R, g=g, R=R)
 
 
 def pinecone(cv, rep, name, cx, cy, R):
@@ -676,7 +684,7 @@ def pinecone(cv, rep, name, cx, cy, R):
     zt = g - 1 - R
     box(cv, cx, cx + 1, cy, cy + 1, zt - 1, zt, 'pinecone')
     put(cv, cx, cy, zt - 2, 'pinecone')
-    feature(rep, name, 'pinecone', cx, cy, R, R)
+    feature(rep, name, 'pinecone', cx, cy, R, R, g=g, R=R)
 
 
 # ---------------------------------------------------------------- front dressing (<= 10 tall, ~25-40 cells each)
@@ -709,7 +717,7 @@ def front_prop(cv, rep, kind, x, y, i):
             box(cv, x, x + 1, y, y + 1, z, z, 'sprout')
         for s in (-1, 1):
             cv.ellipsoid(x + 0.5 + s * 3.0, y + 0.5, g - 6.5, 3.0, 1.8, 1.0, GC['sprout'], 'sprout')
-    feature(rep, f'front {kind} {i}', 'front', x, y, 3)
+    feature(rep, f'front {kind} {i}', 'front', x, y, 3, sub=kind, g=g)
 
 
 # =============================================================================================== west-half build
@@ -749,6 +757,7 @@ def build_west(S, seed):
             bad.append(('tussock', x, y, int(cv.keep[x, y])))
         tussock(cv, rep, f'tussock {i}', x, y, R, noise.rng(f'tussock{i}', seed), stats)
     stats.pop('own', None)
+    stats.pop('cur', None)
     rep['blades'] = stats
     for i, (kind, x, y, R) in enumerate(S['centre_props']):
         if cv.keep[x, y] & (KEEP['spawn'] | KEEP['front'] | KEEP['anchor'] | KEEP['hose'] | KEEP['axis']):

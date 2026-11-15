@@ -2,10 +2,11 @@
 
 graybox (sf_build, fixed layout seed) -> orphan report/cleanup -> [art: sf_art.art_west (OS seed)] -> mirror x512
 -> axis objects (sf_axis: sprinkler, feeder, trowel, queen chamber, cap, valve key; self-symmetric, built after the
-mirror) -> one-off landmarks (sf_oneoffs, cosmetic boxes) -> [art: sf_art.finish (light, glow, brightness, sky
-decor, tag)] -> export -> aosmap.kit checks + sf_checks -> validation.json.
+mirror) -> one-off landmarks (sf_oneoffs, cosmetic boxes) -> [art: sf_art.finish (sky decor, paint, light, glow,
+brightness, tag)] -> export -> aosmap.kit checks + sf_checks (+ art-vs-graybox diff) -> validation.json.
 
-Only the --graybox path exists so far. The art pass (sf_art) is a later stage; its hooks are marked ART HOOK.
+veg_seed (art only): omitted = a fresh OS seed (owner rule: vegetation is non-deterministic), saved in build.json;
+pass it to rebuild that exact map. The layout seed is fixed in SPEC.
 """
 from __future__ import annotations
 
@@ -59,11 +60,14 @@ def build_map(out, veg_seed=None, graybox_only=False):
     ext = {'babel': True, 'water_damage': SPEC['water_damage']}
     if not graybox_only:
         stored, fin = sf_art.finish(cv, rep, SPEC, seed)  # ART HOOK: lighting, glow bake, brightness, sky, tag
+        boxes = boxes + fin.pop('boxes')
         info['finish'] = fin
+        info['tag_rect'] = fin['tag_rect']
+        info['colour_stats'] = fin['colour_stats']
         ext = build.glow_extensions(stored, ext)
-        desc = ('Babel with assist structures: a lawn just after watering, at ant scale. Climb the tripod '
-                'sprinkler or the half-buried trowel toward the intel, or build from your anchor; hose, brick '
-                'edging and an ant nest on the flanks.')
+        desc = ('Babel, assist structures: a freshly watered lawn at ant scale. Climb the tripod sprinkler or the '
+                'half-buried trowel toward the intel, or build from your anchor; garden hose and brick edging on '
+                'the flanks, an ant nest below.')
     else:
         desc = 'Babel: Sprinkler Field - graybox (not a release).'
     info['cosmetic_asymmetric_boxes'] = boxes
@@ -117,6 +121,17 @@ def assist():
             'trowel': (C['c'][0] - C['r'], C['c'][0] + C['r'], C['c'][1] - C['r'], C['c'][1] + C['r'])}
 
 
+def graybox_canvas():
+    """The graybox exactly as `--graybox` builds it (same steps, no export): the reference for the art diff."""
+    cv, rep = sf_build.build_west(SPEC, SPEC['layout_seed'])
+    symmetry.remove_orphans(cv)
+    symmetry.mirror_canvas(cv, SPEC['axis'])
+    sf_axis.build(cv, rep, SPEC)
+    sf_oneoffs.build(cv, rep, SPEC)
+    symmetry.remove_orphans(cv)
+    return cv
+
+
 def check(out, info):
     data = open(os.path.join(out, SPEC['file'] + '.vxl'), 'rb').read()
     mat = np.load(os.path.join(out, 'mat.npy'))
@@ -127,6 +142,13 @@ def check(out, info):
     R['summary'] = babel_checks.summary(R)
     import sf_checks
     R['sf_checks'] = sf_checks.run(out, data, info, SPEC, mat=mat, terrain_H=H)
+    if info.get('stage') == 'art':
+        gcv = graybox_canvas()
+        R['sf_checks']['art_diff'] = sf_checks.art_diff(data, mat, info, gcv, SPEC, targets(), assist())
+        R['sf_checks']['colours'] = sf_checks.colours(out, data, info)
+        R['sf_checks']['summary']['art_geometry_only_declared'] = R['sf_checks']['art_diff']['ok_declared_only']
+        R['sf_checks']['summary']['art_routes_unchanged'] = R['sf_checks']['art_diff']['ok_routes_unchanged']
+        R['sf_checks']['summary']['art_colour_rules'] = R['sf_checks']['colours']['ok']
     R['txt'] = build.check_txt(os.path.join(out, SPEC['file'] + '.txt'))
     with open(os.path.join(out, 'validation.json'), 'w') as f:
         json.dump(R, f, indent=1, default=str)
@@ -144,14 +166,24 @@ if __name__ == '__main__':
         except ImportError:
             raise SystemExit('sf_art (the art pass) is not written yet: run with --graybox')
     cv, info = build_map(out, seed, graybox_only=graybox)
-    keys = ('sha256', 'bytes', 'floating_before_cleanup', 'cleanup', 'post_mirror_floating', 'post_cleanup',
-            'keep_violations', 'tight_pairs', 'build_seconds', 'oneoff_flatten_removed_prop_voxels',
-            'oneoff_outside_site')
-    print(json.dumps({k: info.get(k) for k in keys}, indent=1, default=str)[:5000])
+    keys = ('sha256', 'bytes', 'veg_seed', 'floating_before_cleanup', 'cleanup', 'art_cleanup', 'post_mirror_floating',
+            'post_cleanup', 'keep_violations', 'tight_pairs', 'build_seconds', 'oneoff_flatten_removed_prop_voxels',
+            'oneoff_outside_site', 'art_west', 'colour_stats')
+    print(json.dumps({k: info.get(k) for k in keys}, indent=1, default=str)[:6000])
+    if info.get('finish'):
+        fin = {k: v for k, v in info['finish'].items() if k not in ('sky', 'paint')}
+        print('finish:', json.dumps(fin, default=str)[:2000])
+        print('sky:', json.dumps([{k: o[k] for k in ('name', 'x', 'y', 'z', 'width', 'platform_dist')}
+                                  for o in info['finish']['sky']], default=str))
+        print('paint unhandled:', info['finish']['paint']['unhandled_materials'], info['finish']['paint']['blades'])
     if '--no-checks' not in sys.argv:
         R = check(out, info)
         for row in R['summary']:
             print(babel_checks.format_row(row) if row.get('status') else
                   ('PASS ' if row['ok'] else 'FAIL ') + row['rule'] + '  ' + json.dumps(row['detail'], default=str)[:240])
         print('sf_checks:', json.dumps(R['sf_checks']['summary'], default=str))
+        if 'art_diff' in R['sf_checks']:
+            ad = {k: v for k, v in R['sf_checks']['art_diff'].items() if k != 'paths'}
+            print('art_diff:', json.dumps(ad, default=str)[:3000])
+            print('colours:', json.dumps(R['sf_checks']['colours'], default=str)[:1500])
         print('txt:', R['txt'])

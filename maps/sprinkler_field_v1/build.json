@@ -1,0 +1,1304 @@
+{
+ "map": "Sprinkler Field",
+ "file": "sprinkler_field",
+ "sha256": "4d0431ec05241b7084489a37f6aecd8e5457c20c2777e3458473395957a99f49",
+ "bytes": 2660792,
+ "stage": "art",
+ "layout_seed": 20261115,
+ "veg_seed": 2977889799,
+ "axis": "x512",
+ "floating_before_cleanup": 0,
+ "floating_before_list": [],
+ "cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "waivers": {},
+ "zone_rules_skip": {},
+ "deviations": [
+  [
+   "rear_bank added: worm-cast ridge (64,256) r (14,40), 8 above the lawn, slope 0.9",
+   "zone rule spawn_cover: rear 20-40 backdrop measured 0.111 without it (lawn is 2 BELOW the spawn floor), 0.476 with it (target >= 0.30)"
+  ],
+  [
+   "sprinkler feet W (224,204) -> (218,196), N (256,174) -> (256,170)",
+   "legs climb 27 (pad z 51 -> collar z 24) with 1-voxel steps: each leg needs >= 27 columns of run; the SPEC feet gave 21.6 (W) and 25 (N)"
+  ],
+  [
+   "sprinkler collar_r 6 -> 11, riser_r 3 -> 5 (body top = head deck r 5), leg_w 3 -> 5 (3 walkable + rivet rails); helix spec added (r 5-8.5, 30 deg per step, first step on the axis at north)",
+   "the spiral must lie outside the head deck so its top steps keep 3-4 air above them; the collar deck must reach past the spiral so the legs arrive on a walkable ring"
+  ],
+  [
+   "sprinkler counter_arm z 9 -> 4",
+   "keeps >= 4 air above the north spiral fittings (z 11 and 23)"
+  ],
+  [
+   "trowel blade y (296,330) -> (307,341), tip_z 54 -> 52, shoulder_z 40 -> 38; handle (256,296,38)->(256,277,12) became (256,306,37)->(256,280,11); heap (256,316) -> (256,328); ferrule_y added",
+   "the SPEC handle rose 26 in 19 columns (not climbable with 1-voxel steps); it now rises 1 per column. The cap/handle end stays at y >= 272 (strip under the platform needs >= 25 air) and z 11 (gap 9)"
+  ],
+  [
+   "hose: cz 46, ruts [(40,56)], hoops, split_floor 5, flat band, Y-coupling added",
+   "a 12-tall round hose cannot be stepped onto: the rut sinks it flush with the soil so the top is walkable (and is a 4th crossing). Hoops keep the split reading as a hose"
+  ],
+  [
+   "feeder path end (256,172) -> (256,170), feeder rut y 128-134 added",
+   "N foot moved; the feeder (8 tall) would otherwise wall off the north centre E-W"
+  ],
+  [
+   "nest: crater (r 8, rim 3), ramp_dir per entrance, chamber_air_top added",
+   "numbers for the entrances"
+  ],
+  [
+   "tussocks (236,190) -> (232,178), (236,320) -> (226,322), (40,440) -> (24,476), (170,406) -> (150,436)",
+   "clear of the sprinkler W leg / trowel blade; (40,440) sat in the flowerpot site and its mirror in the glove site; (170,406) stood on the brick edging, then its mirror in the footprint site"
+  ],
+  [
+   "pebbles (160,224)/(160,288) -> (164,218)/(164,294); dandelions (168,206)/(168,306) -> (172,200)/(172,312)",
+   "walking gap to the spawn-cover boulders was 2.1 (min 7)"
+  ],
+  [
+   "clovers (184,228)/(184,284) -> (184,224)/(184,288)",
+   "their canopies reached into the front band (an 18-tall object in the front: front rule low share failed)"
+  ],
+  [
+   "cap (232,150) -> (236,146); pinecone (232,362) -> (236,368)",
+   "gaps to craters B and D were 5 and 5.5"
+  ],
+  [
+   "front props: daisy (166,268) -> (170,264), seed (184,262) -> (184,264), pebble_low (172,272) -> (160,272), sprout (194,256) -> (196,256)",
+   "overlapping footprints (gap 0.2); daisy - pebble_low still 5.8"
+  ],
+  [
+   "under_platform: pebble (246,246,5) -> (236,246,6), clover_low (244,266,5) -> (238,265,8), cap r 6 -> 7",
+   "strip object share measured 0.139 (< 0.15); pebble was 1 from the cap"
+  ],
+  [
+   "puddle (62,256,8) -> (34,300,8)",
+   "the rear bank occupies (62,256)"
+  ],
+  [
+   "twig_angle added (N-S)",
+   "twigs lying E-W reached crater B / the hose band"
+  ],
+  [
+   "one-offs: hose_reel (498,132) -> (494,132); flowerpot (60,420) -> (60,446); glove (452,420) -> (452,446); footprint (300,440,44,20) -> (306,438,40,18); oneoff_sites / oneoff_dims / valve_key added",
+   "the reel stair must fit inside x 511; pot and glove overlapped the brick edging (y 404-412); the print overlapped the valve key socket"
+  ]
+ ],
+ "art_west": {
+  "veg_rule": "every plant has exactly three random details (OS seed)",
+  "plants_west": 192,
+  "by_kind": {
+   "blade": 181,
+   "clover": 3,
+   "mushroom": 2,
+   "dandelion": 2,
+   "daisy": 1,
+   "clover_low": 2,
+   "sprout": 1
+  },
+  "details": {
+   "dew bead": 90,
+   "pollen dusting": 24,
+   "ladybird beetle": 30,
+   "seed head": 32,
+   "wet streak": 45,
+   "firefly": 38,
+   "caterpillar": 25,
+   "chewed notch": 63,
+   "aphids": 64,
+   "withered tip": 56,
+   "moss collar": 48,
+   "snail": 25,
+   "spider thread": 16,
+   "withered leaflet": 2,
+   "dew beads": 2,
+   "chewed holes": 1,
+   "glowing gills": 1,
+   "spore dust": 2,
+   "slug bite": 1,
+   "cap cracks": 1,
+   "bald patch": 2,
+   "side bud": 1,
+   "withered edge": 1
+  },
+  "all_exactly_three": true,
+  "blades_without_voxels": 2,
+  "addon_voxels_west": 1776,
+  "addon_by_mat": {
+   "beetle": 260,
+   "grass_seed": 288,
+   "firefly_glow": 38,
+   "firefly": 114,
+   "caterpillar": 350,
+   "snail_s": 625,
+   "silk": 55,
+   "spider": 32,
+   "bud": 14
+  },
+  "addon_glow_west": 38,
+  "glow_sources_west": 83
+ },
+ "art_cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "cosmetic_boxes_named": {
+  "sprinkler spiral (chiral)": [
+   246,
+   266,
+   200,
+   220
+  ],
+  "spigot": [
+   0,
+   37,
+   118,
+   162
+  ],
+  "hose_reel": [
+   474,
+   511,
+   108,
+   160
+  ],
+  "flowerpot": [
+   38,
+   90,
+   425,
+   467
+  ],
+  "glove": [
+   410,
+   482,
+   412,
+   496
+  ],
+  "snail_shell": [
+   398,
+   442,
+   38,
+   82
+  ],
+  "footprint": [
+   264,
+   348,
+   418,
+   458
+  ],
+  "plant_label": [
+   62,
+   90,
+   29,
+   73
+  ]
+ },
+ "oneoffs": {
+  "spigot": {
+   "hose_voxels_removed": 1568,
+   "roof_z": 45
+  },
+  "hose_reel": {
+   "hose_voxels_removed": 42,
+   "floor_z": 46
+  },
+  "flowerpot": {
+   "floor_z": 46
+  },
+  "glove": {
+   "rooms": 7
+  },
+  "snail_shell": {
+   "floor_z": 51,
+   "deck_z": 27,
+   "ramp_steps": 23
+  },
+  "footprint": {
+   "cells": 1789,
+   "skipped_non_bare": 0
+  },
+  "plant_label": {
+   "top_z": 19
+  }
+ },
+ "oneoff_flatten_removed_prop_voxels": 0,
+ "oneoff_outside_site": {},
+ "post_mirror_floating": {
+  "unexpected": 0,
+  "expected": 0,
+  "unexpected_list": []
+ },
+ "post_cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "finish": {
+  "sky": [
+   {
+    "name": "dandelion seed 1",
+    "voxels": 189,
+    "x": [
+     57,
+     71
+    ],
+    "y": [
+     191,
+     205
+    ],
+    "z": [
+     28,
+     38
+    ],
+    "width": 15,
+    "platform_dist": 139.5
+   },
+   {
+    "name": "dandelion seed 2",
+    "voxels": 185,
+    "x": [
+     165,
+     179
+    ],
+    "y": [
+     45,
+     59
+    ],
+    "z": [
+     22,
+     32
+    ],
+    "width": 15,
+    "platform_dist": 183.0
+   },
+   {
+    "name": "dandelion seed 3",
+    "voxels": 189,
+    "x": [
+     311,
+     325
+    ],
+    "y": [
+     36,
+     50
+    ],
+    "z": [
+     30,
+     40
+    ],
+    "width": 15,
+    "platform_dist": 190.1
+   },
+   {
+    "name": "dandelion seed 4",
+    "voxels": 189,
+    "x": [
+     445,
+     459
+    ],
+    "y": [
+     207,
+     221
+    ],
+    "z": [
+     24,
+     34
+    ],
+    "width": 15,
+    "platform_dist": 141.3
+   },
+   {
+    "name": "dandelion seed 5",
+    "voxels": 189,
+    "x": [
+     373,
+     387
+    ],
+    "y": [
+     463,
+     477
+    ],
+    "z": [
+     26,
+     36
+    ],
+    "width": 15,
+    "platform_dist": 203.7
+   },
+   {
+    "name": "dandelion seed 6",
+    "voxels": 189,
+    "x": [
+     153,
+     167
+    ],
+    "y": [
+     463,
+     477
+    ],
+    "z": [
+     20,
+     30
+    ],
+    "width": 15,
+    "platform_dist": 195.9
+   },
+   {
+    "name": "dragonfly over the NW puddle",
+    "voxels": 224,
+    "x": [
+     89,
+     107
+    ],
+    "y": [
+     143,
+     162
+    ],
+    "z": [
+     30,
+     31
+    ],
+    "width": 20,
+    "platform_dist": 126.0
+   },
+   {
+    "name": "dragonfly over the SE puddle",
+    "voxels": 219,
+    "x": [
+     406,
+     424
+    ],
+    "y": [
+     350,
+     370
+    ],
+    "z": [
+     32,
+     33
+    ],
+    "width": 21,
+    "platform_dist": 128.2
+   }
+  ],
+  "paint": {
+   "surface_voxels": 368483,
+   "by_material": {
+    "soil": 106569,
+    "lawn": 122193,
+    "spawn": 4802,
+    "front": 5146,
+    "anchor": 1066,
+    "bank": 2606,
+    "trail": 4763,
+    "puddle": 3952,
+    "crater": 1782,
+    "tunnel": 4547,
+    "heap": 552,
+    "print": 1059,
+    "potsoil": 625,
+    "dew": 84,
+    "crown": 3964,
+    "clover": 1544,
+    "stalk": 486,
+    "dandelion_stalk": 978,
+    "seedhead": 1820,
+    "mushroom_cap": 1166,
+    "mushroom_stem": 424,
+    "daisy": 80,
+    "daisy_eye": 8,
+    "sprout": 144,
+    "seed": 104,
+    "pebble": 2180,
+    "acorn": 412,
+    "acorn_cap": 380,
+    "twig": 1284,
+    "leaf": 1190,
+    "cap": 550,
+    "cap_inner": 291,
+    "pinecone": 184,
+    "pinecone_dk": 134,
+    "hose": 13606,
+    "reel": 853,
+    "coupling": 391,
+    "pad": 76,
+    "leg": 1201,
+    "rivet": 50,
+    "collar": 591,
+    "riser": 426,
+    "brass": 180,
+    "step": 403,
+    "arm": 246,
+    "tbar": 198,
+    "spring": 15,
+    "blade_steel": 946,
+    "rib": 154,
+    "handle": 362,
+    "ferrule": 250,
+    "concrete": 1561,
+    "tap": 649,
+    "cart": 1967,
+    "wheel": 1042,
+    "pot": 3939,
+    "glove": 5952,
+    "glove_cuff": 1266,
+    "shell": 1601,
+    "shell_dk": 1807,
+    "label": 995,
+    "key": 1767,
+    "stair": 160,
+    "floor": 519,
+    "brick": 10439
+   },
+   "unhandled_materials": [],
+   "blades": {
+    "families": {
+     "emerald": 95,
+     "chartreuse": 95,
+     "olive": 86,
+     "teal": 50,
+     "dry straw": 32
+    },
+    "blade_voxels_painted": 57102
+   }
+  },
+  "underground": {
+   "fungi_glow": 51,
+   "root_ends": 68,
+   "egg_voxels": 154
+  },
+  "object_glow": {
+   "spigot_drip": 3,
+   "nozzle_droplets": 6,
+   "dewdrop_props": 2
+  },
+  "grade": [
+   1.0299999713897705,
+   1.0099999904632568,
+   0.9649999737739563
+  ],
+  "tag_rect": [
+   6,
+   98,
+   495,
+   505,
+   51
+  ],
+  "tag_strip_retextured": 670,
+  "brightness": {
+   "dark_floors_raised": 67,
+   "whites_capped": 1878
+  },
+  "glow_sources": 228,
+  "glow_lit_voxels": 25756,
+  "palette_nudged": 0,
+  "colour_stats": {
+   "top_luma_median": 87.1,
+   "top_dark_share_pct": 0.0,
+   "top_bright_share_pct": 0.34
+  }
+ },
+ "tag_rect": [
+  6,
+  98,
+  495,
+  505,
+  51
+ ],
+ "colour_stats": {
+  "top_luma_median": 87.1,
+  "top_dark_share_pct": 0.0,
+  "top_bright_share_pct": 0.34
+ },
+ "cosmetic_asymmetric_boxes": [
+  [
+   246,
+   266,
+   200,
+   220
+  ],
+  [
+   0,
+   37,
+   118,
+   162
+  ],
+  [
+   474,
+   511,
+   108,
+   160
+  ],
+  [
+   38,
+   90,
+   425,
+   467
+  ],
+  [
+   410,
+   482,
+   412,
+   496
+  ],
+  [
+   398,
+   442,
+   38,
+   82
+  ],
+  [
+   264,
+   348,
+   418,
+   458
+  ],
+  [
+   62,
+   90,
+   29,
+   73
+  ],
+  [
+   6,
+   98,
+   495,
+   505
+  ],
+  [
+   55,
+   73,
+   189,
+   207
+  ],
+  [
+   163,
+   181,
+   43,
+   61
+  ],
+  [
+   309,
+   327,
+   34,
+   52
+  ],
+  [
+   443,
+   461,
+   205,
+   223
+  ],
+  [
+   371,
+   389,
+   461,
+   479
+  ],
+  [
+   151,
+   169,
+   461,
+   479
+  ],
+  [
+   87,
+   109,
+   141,
+   164
+  ],
+  [
+   404,
+   426,
+   348,
+   372
+  ]
+ ],
+ "materials": {
+  "air": 0,
+  "soil": 1,
+  "lawn": 2,
+  "spawn": 3,
+  "front": 4,
+  "anchor": 5,
+  "bank": 6,
+  "trail": 7,
+  "puddle": 8,
+  "hose": 9,
+  "hose_stripe": 10,
+  "brick": 11,
+  "crater": 12,
+  "tunnel": 13,
+  "crown": 14,
+  "blade": 15,
+  "clover": 16,
+  "stalk": 17,
+  "seedhead": 18,
+  "dandelion_stalk": 19,
+  "pebble": 20,
+  "mushroom_cap": 21,
+  "mushroom_stem": 22,
+  "acorn": 23,
+  "acorn_cap": 24,
+  "twig": 25,
+  "leaf": 26,
+  "cap": 27,
+  "cap_inner": 28,
+  "pinecone": 29,
+  "pinecone_dk": 30,
+  "daisy": 31,
+  "daisy_eye": 32,
+  "seed": 33,
+  "dew": 34,
+  "sprout": 35,
+  "pad": 36,
+  "leg": 37,
+  "rivet": 38,
+  "collar": 39,
+  "riser": 40,
+  "step": 41,
+  "brass": 42,
+  "arm": 43,
+  "tbar": 44,
+  "spring": 45,
+  "coupling": 46,
+  "heap": 47,
+  "blade_steel": 48,
+  "rib": 49,
+  "handle": 50,
+  "ferrule": 51,
+  "concrete": 52,
+  "tap": 53,
+  "reel": 54,
+  "cart": 55,
+  "wheel": 56,
+  "pot": 57,
+  "potsoil": 58,
+  "glove": 59,
+  "glove_cuff": 60,
+  "shell": 61,
+  "shell_dk": 62,
+  "label": 63,
+  "print": 64,
+  "key": 65,
+  "stair": 66,
+  "floor": 67,
+  "beetle": 68,
+  "snail_s": 69,
+  "caterpillar": 70,
+  "firefly": 71,
+  "grass_seed": 72,
+  "silk": 73,
+  "spider": 74,
+  "clover_flower": 75,
+  "bud": 76,
+  "dew_bead": 77,
+  "dew_glow": 78,
+  "gill_glow": 79,
+  "sky": 80
+ },
+ "interiors_n": 20,
+ "terrain": {
+  "H_min": 44,
+  "H_max": 54,
+  "spawn_cols_raised": 775,
+  "bank_cells": 1745
+ },
+ "hose": {
+  "crossings": [
+   {
+    "kind": "arch (walk under)",
+    "x": [
+     84,
+     104
+    ]
+   },
+   {
+    "kind": "arch (walk under)",
+    "x": [
+     150,
+     172
+    ]
+   },
+   {
+    "kind": "rut (walk over)",
+    "x": [
+     40,
+     56
+    ]
+   },
+   {
+    "kind": "split (walk through)",
+    "x": [
+     199,
+     219
+    ]
+   }
+  ],
+  "top_rest_z": 40,
+  "arch_top_z": [
+   28,
+   28
+  ],
+  "voxels": 30885
+ },
+ "edging": {
+  "bricks_west": 6
+ },
+ "nest": {
+  "entrances": {
+   "A": {
+    "crater": [
+     103,
+     168,
+     52
+    ],
+    "junction": [
+     112,
+     168,
+     60
+    ]
+   },
+   "B": {
+    "crater": [
+     218,
+     163,
+     52
+    ],
+    "junction": [
+     218,
+     172,
+     60
+    ]
+   },
+   "C": {
+    "crater": [
+     103,
+     344,
+     52
+    ],
+    "junction": [
+     112,
+     344,
+     60
+    ]
+   },
+   "D": {
+    "crater": [
+     218,
+     347,
+     52
+    ],
+    "junction": [
+     218,
+     338,
+     60
+    ]
+   }
+  },
+  "chambers": {
+   "north": [
+    166,
+    170,
+    60
+   ],
+   "south": [
+    166,
+    342,
+    60
+   ]
+  },
+  "tunnel_cells": 1565
+ },
+ "blades": {
+  "blades": 181,
+  "truncated": 13,
+  "base_w": 3
+ },
+ "keep_violations": [],
+ "tight_pairs": [
+  {
+   "a": "front daisy 1",
+   "b": "front pebble_low 5",
+   "gap": 5.8
+  }
+ ],
+ "sprinkler": {
+  "legs": {
+   "W": {
+    "foot": [
+     218,
+     196
+    ],
+    "collar_edge": [
+     245.7,
+     206.2
+    ],
+    "length": 29.5,
+    "rise": 27,
+    "slope": 0.915
+   },
+   "N": {
+    "foot": [
+     256,
+     170
+    ],
+    "collar_edge": [
+     256.0,
+     199.0
+    ],
+    "length": 29.0,
+    "rise": 27,
+    "slope": 0.931
+   },
+   "E": {
+    "foot": [
+     294,
+     196
+    ],
+    "collar_edge": [
+     266.3,
+     206.2
+    ],
+    "length": 29.5,
+    "rise": 27,
+    "slope": 0.915
+   }
+  },
+  "collar_z": 24,
+  "head_z": 9,
+  "arm_z": 6,
+  "tbar": [
+   [
+    240,
+    272
+   ],
+   [
+    235,
+    237
+   ],
+   6
+  ]
+ },
+ "helix": {
+  "steps": 14,
+  "first": {
+   "j": 13,
+   "z": 23,
+   "deg": 270,
+   "cells": 13
+  },
+  "last": {
+   "j": 0,
+   "z": 10,
+   "deg": 300,
+   "cells": 10
+  }
+ },
+ "feeder": {
+  "y": [
+   116,
+   166
+  ],
+  "rut": [
+   128,
+   134
+  ],
+  "top_rest_z": 44
+ },
+ "queen": [
+  256,
+  150,
+  60
+ ],
+ "trowel": {
+  "cap": [
+   256,
+   276,
+   11
+  ],
+  "blade_y": [
+   307,
+   341
+  ],
+  "handle_y": [
+   280,
+   306
+  ]
+ },
+ "valve_key": {
+  "shaft_y": [
+   449,
+   486
+  ],
+  "handle_top": 42
+ },
+ "landings": {
+  "sprinkler_tbar": [
+   240,
+   272,
+   233,
+   237,
+   5,
+   7
+  ],
+  "trowel_cap": [
+   252,
+   260,
+   272,
+   280,
+   10,
+   12
+  ]
+ },
+ "check_targets": {
+  "sprinkler_tbar": [
+   240,
+   272,
+   233,
+   237,
+   5,
+   7
+  ],
+  "sprinkler_head_deck": [
+   251,
+   261,
+   205,
+   215,
+   8,
+   10
+  ],
+  "trowel_cap": [
+   252,
+   260,
+   272,
+   280,
+   10,
+   12
+  ],
+  "queen_chamber": [
+   244,
+   268,
+   142,
+   158,
+   59,
+   61
+  ],
+  "nest_north_chamber_w": [
+   156,
+   176,
+   164,
+   176,
+   59,
+   61
+  ],
+  "hose_arch1_top_w": [
+   88,
+   100,
+   118,
+   124,
+   27,
+   29
+  ],
+  "snail_lookout": [
+   417,
+   423,
+   57,
+   63,
+   26,
+   28
+  ],
+  "hose_reel_drum": [
+   489,
+   499,
+   124,
+   140,
+   45,
+   47
+  ]
+ },
+ "assist": {
+  "sprinkler": [
+   240,
+   272,
+   233,
+   237
+  ],
+  "trowel": [
+   252,
+   260,
+   272,
+   280
+  ]
+ },
+ "build_seconds": 5.9,
+ "sky_objects": [
+  {
+   "name": "dandelion seed 1",
+   "voxels": 189,
+   "x": [
+    57,
+    71
+   ],
+   "y": [
+    191,
+    205
+   ],
+   "z": [
+    28,
+    38
+   ],
+   "width": 15,
+   "platform_dist": 139.5
+  },
+  {
+   "name": "dandelion seed 2",
+   "voxels": 185,
+   "x": [
+    165,
+    179
+   ],
+   "y": [
+    45,
+    59
+   ],
+   "z": [
+    22,
+    32
+   ],
+   "width": 15,
+   "platform_dist": 183.0
+  },
+  {
+   "name": "dandelion seed 3",
+   "voxels": 189,
+   "x": [
+    311,
+    325
+   ],
+   "y": [
+    36,
+    50
+   ],
+   "z": [
+    30,
+    40
+   ],
+   "width": 15,
+   "platform_dist": 190.1
+  },
+  {
+   "name": "dandelion seed 4",
+   "voxels": 189,
+   "x": [
+    445,
+    459
+   ],
+   "y": [
+    207,
+    221
+   ],
+   "z": [
+    24,
+    34
+   ],
+   "width": 15,
+   "platform_dist": 141.3
+  },
+  {
+   "name": "dandelion seed 5",
+   "voxels": 189,
+   "x": [
+    373,
+    387
+   ],
+   "y": [
+    463,
+    477
+   ],
+   "z": [
+    26,
+    36
+   ],
+   "width": 15,
+   "platform_dist": 203.7
+  },
+  {
+   "name": "dandelion seed 6",
+   "voxels": 189,
+   "x": [
+    153,
+    167
+   ],
+   "y": [
+    463,
+    477
+   ],
+   "z": [
+    20,
+    30
+   ],
+   "width": 15,
+   "platform_dist": 195.9
+  },
+  {
+   "name": "dragonfly over the NW puddle",
+   "voxels": 224,
+   "x": [
+    89,
+    107
+   ],
+   "y": [
+    143,
+    162
+   ],
+   "z": [
+    30,
+    31
+   ],
+   "width": 20,
+   "platform_dist": 126.0
+  },
+  {
+   "name": "dragonfly over the SE puddle",
+   "voxels": 219,
+   "x": [
+    406,
+    424
+   ],
+   "y": [
+    350,
+    370
+   ],
+   "z": [
+    32,
+    33
+   ],
+   "width": 21,
+   "platform_dist": 128.2
+  }
+ ],
+ "interiors": [
+  [
+   "ant nest north chamber (W)",
+   166,
+   170,
+   60
+  ],
+  [
+   "ant nest north chamber (E)",
+   346,
+   170,
+   60
+  ],
+  [
+   "ant nest south chamber (W)",
+   166,
+   342,
+   60
+  ],
+  [
+   "ant nest south chamber (E)",
+   346,
+   342,
+   60
+  ],
+  [
+   "ant nest queen chamber",
+   256,
+   150,
+   60
+  ],
+  [
+   "spigot valve room",
+   10,
+   146,
+   52
+  ],
+  [
+   "spigot roof",
+   23,
+   151,
+   45
+  ],
+  [
+   "hose reel drum",
+   494,
+   132,
+   46
+  ],
+  [
+   "flowerpot",
+   60,
+   446,
+   46
+  ],
+  [
+   "glove cuff",
+   452,
+   425,
+   52
+  ],
+  [
+   "glove palm",
+   452,
+   444,
+   52
+  ],
+  [
+   "glove finger 1",
+   437,
+   471,
+   52
+  ],
+  [
+   "glove finger 2",
+   447,
+   473,
+   52
+  ],
+  [
+   "glove finger 3",
+   457,
+   472,
+   52
+  ],
+  [
+   "glove finger 4",
+   467,
+   469,
+   52
+  ],
+  [
+   "glove thumb",
+   424,
+   441,
+   52
+  ],
+  [
+   "snail shell floor",
+   427,
+   60,
+   51
+  ],
+  [
+   "snail lookout deck",
+   423,
+   60,
+   27
+  ],
+  [
+   "sneaker print heel",
+   276,
+   438,
+   53
+  ],
+  [
+   "plant label top",
+   76,
+   36,
+   21
+  ]
+ ]
+}
