@@ -269,12 +269,13 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Clockwork Skyyard | steampunk sky Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/clockwork_skyyard_spec.md` |
 | Cherry Terrace Gardens / Cherry Gardens | spring ground Babel | v1.0 (rebuilt as Cherry Gardens) | parser-validated / server-loaded | **zip from its chat**; specs `docs/cherry_terrace_gardens_spec.md`, `docs/cherry_gardens_spec.md` |
 | Remoria ([recreate] of remus) | ground Babel | v1.0 | server-loaded | **zip from its chat**; report `docs/remus_recreate_report.md` |
-| Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/bloomhop_kingdom_spec.md` |
+| Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | `scenes/bloomhop_kingdom/` (compile `vxlenc.c` first), `maps/bloomhop_kingdom_v1/`, `server_test/bk_babel/`; spec `docs/bloomhop_kingdom_spec.md` |
 | Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
 | Frostbell Hollow | Christmas alpine-village ground Babel | v1.2 (v1.0, v1.1 kept) | server-loaded | `scenes/frostbell_hollow/` (built with `aosmap.kit`), `docs/frostbell_hollow_spec.md` |
 | Elderveil | dark-fantasy ruins ground Babel, assist structures | v1.1 (v1.0 kept) | server-loaded (spawn exposure waived by owner) | `scenes/elderveil/` (built with `aosmap.kit`), `docs/elderveil_spec.md` |
 | Yulehaven Isles | Christmas island Babel (Nordic archipelago) | v1.0 | server-loaded (spawn exposure waived by owner) | `scenes/yulehaven_isles/` (built with `aosmap.kit`), `docs/yulehaven_isles_spec.md` |
 | Cursed Skull Reef | pirate island Babel, assist structures (current island style) | v1.0 | server-loaded (spawn exposure fails, owner decision open) | `scenes/cursed_skull_reef/` (built with `aosmap.kit`), `docs/cursed_skull_reef_spec.md` |
+| Sprinkler Field | Grounded-scale lawn Babel, assist structures | v1.0 | server-loaded (spawn exposure fails; owner decision pending) | `scenes/sprinkler_field/` (built with `aosmap.kit`), `docs/sprinkler_field_spec.md` |
 | Janjira Sound ([recreate] of newfort by JoJoe Stinky) | classic island Babel (Konkan sea forts), 180° rotation | v1.0 | server-loaded (spawn exposure hidden share 0 %, owner decision open) | `scenes/janjira_sound/` (built with `aosmap.kit`), `docs/janjira_sound_recreate_report.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
@@ -295,9 +296,9 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
 * **Importing a map from a chat zip:** unzip into `_updates/<map>/` (git-ignored), then move the generator into
   `scenes/<map>/` and the outputs into `maps/<map>_vN/`, run its check script, and update §9's "where the source
   lives" column. Large build artefacts (`mat.npy`, `*.npy`) stay git-ignored.
-* **Recording new decisions:** when the owner states a new preference or rule, append it to
-  `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
-  That file replaces the claude.ai Project memory.
+* **Recording new decisions** `[USER]` (2026-11-10): when the owner states a new preference or rule, append it to
+  `docs/knowledge/project_memory.md` (`- [stated] … (date)`) **in the same turn**, on a `docs/<topic>` branch, then
+  commit and push. If it's a standing rule, add it to §4 here too. That file replaces the claude.ai Project memory.
 * Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
 * **Cloud sessions** (claude.ai/code) start without the toolchain: run `uv venv --python 3.11 .venv && . .venv/bin/activate &&
   uv pip install -r requirements.txt` (verified 2026-11-15: piqueserver 1.4.2 builds, tests pass). `refs/` is empty there;
