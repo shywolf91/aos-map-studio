@@ -20,6 +20,7 @@ Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project
    2026-11-08): format, physics, metadata, modes, Babel design rules, art direction, fog/glow, house rules, toolchain,
    workflow, checklist, portfolio, reference measurements. `aos_map.md` is the older (10-13) version of it.
 4. `docs/vxl_and_runtime_reference.md` is the source-verified technical reference, with file and function citations.
+   `docs/glow_script_reference.md` is the source-read behaviour of the aloha.pk glow script (only for maps with glow blocks).
 5. `docs/babel_rotation_guide_notes.md` covers Babel spawn-camping rules and the calibrated spawn-exposure targets.
 6. `docs/project_brief/` holds the original project brief, the role instructions and the per-mode design prompts.
 7. Read the spec of the newest map closest to your task (§9):

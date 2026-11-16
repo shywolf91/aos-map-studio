@@ -622,7 +622,10 @@ periphery can't be walked.
 * Night recolour as a **DARK grade** multiplier on the base palette; glow strength is never scaled by DARK, so lanterns
   pop more as the base darkens. Top-surface median luminance: original 1river2night 3 ("too black"), v2 62 (too bright),
   v2.2 24 (accepted "a tad darker"), hallweebalohabeta 47.
-* **Glow-block format** (inferred from hallweebalohabeta's data; no script source found) `[RUN]`:
+* **The script source is now known** (2026-11-15, owner supplied aloha.pk `glow.py` v0.1): see
+  `docs/glow_script_reference.md` (radius 7, strength 1/(2+nearby sources), clamp 254, sources = any channel 255).
+  The format below was inferred before that and is consistent with it.
+* **Glow-block format** (inferred from hallweebalohabeta's data) `[RUN]`:
   * `.txt` extensions `'glow_enabled': True`, `'glow_stored_colors': {(x,y,z): (r,g,b), …}`.
   * Sources = voxels in a fixed palette whose stored colour equals the VXL colour: (255,255,255), (255,95,95),
     (255,255,95), (95,255,255), (255,175,95), (95,255,95).
