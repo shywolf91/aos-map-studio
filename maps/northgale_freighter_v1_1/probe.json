@@ -1,0 +1,93 @@
+{
+ "map_dir": "out/nf11",
+ "mode": "babel",
+ "seconds": 3.3,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Northgale Freighter",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 0,
+   "boundary_damage": "{'left': 8, 'right': 503, 'top': 72, 'bottom': 440, 'damage': 1}",
+   "heavens_color": [
+    52,
+    58,
+    96,
+    255
+   ],
+   "glow_enabled": true
+  },
+  "fog": [
+   170,
+   164,
+   190
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   40,
+   40
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "39": 239,
+     "40": 161
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     40.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "40": 181,
+     "39": 219
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     40.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

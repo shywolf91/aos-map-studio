@@ -27,6 +27,8 @@ SHOTS = {
     '10_lower_hold_locomotive': dict(cam=(182, 226, 9), look=(240, 250, 6), fov=74, size=(1400, 800)),
     '11_gangway_and_side_port': dict(cam=(200, 150, 20), look=(200, 204, 14), fov=66, size=(1400, 800)),
     '12_north_islets': dict(cam=(256, 190, 24), look=(200, 110, 6), fov=66, size=(1400, 800)),
+    '13_lighthouse': dict(cam=(292, 160, 34), look=(256, 118, 24), fov=58, size=(1400, 850)),
+    '14_lighthouse_inside': dict(cam=(256, 121, 13), look=(256, 115, 24), fov=80, size=(1200, 800)),
 }
 
 

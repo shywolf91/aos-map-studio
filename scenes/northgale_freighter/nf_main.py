@@ -34,16 +34,17 @@ def build_map(out, veg_seed=None):
     orphans = symmetry.remove_orphans(cv)
     symmetry.mirror_canvas(cv, SPEC['axis'])
     ends = nf_build.ends(cv, SPEC, rep)
+    lighthouses = [nf_build.lighthouse(cv, SPEC, bx, by) for (bx, by) in SPEC['beacons']]
     sky = nf_build.sky(cv, SPEC)
     post = symmetry.split_expected(symmetry.floating_components(cv.solid), cv.expect_floating)
     import nf_art
     stored, art = nf_art.art(cv, rep, SPEC)
-    boxes = [list(b) for b in SPEC['cosmetic_boxes']] + [art['tag_rect'][:4]]
+    boxes = [list(b) for b in SPEC['cosmetic_boxes']] + [art['tag_rect'][:4]] + [lh['box'] for lh in lighthouses]
     info = {'stage': SPEC['stage'], 'layout_seed': SPEC['layout_seed'], 'veg_seed': seed, 'axis': SPEC['axis'],
             'floating_before_cleanup': len(fl_before), 'cleanup': orphans,
             'post_mirror_floating': {'unexpected': len(post[0]), 'list': post[0][:12]},
             'props': rep['props'], 'companionways': rep['companionways'], 'cranes': rep['cranes'],
-            'gangways': rep['gangways'], 'huts': rep['huts'], 'vegetation': rep['vegetation'], 'ends': ends,
+            'gangways': rep['gangways'], 'huts': rep['huts'], 'vegetation': rep['vegetation'], 'ends': ends, 'lighthouses': lighthouses,
             'sky_records': sky, 'cosmetic_asymmetric_boxes': boxes, 'waivers': SPEC['waivers'],
             'materials': cv.materials, 'art': art, 'tag_rect': art['tag_rect']}
     info['interiors_n'] = len(cv.interiors)

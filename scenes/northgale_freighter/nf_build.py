@@ -271,17 +271,9 @@ def islets(cv, S, rep):
         cv.set(lx + 2, ly, g - 4, LAMP, 'lamp')
         cv.glow.append((lx + 2, ly, g - 4, LAMP))
         cv.nolight[lx + 2, ly, g - 4] = True
-    for (bx, by) in S['beacons']:
-        g = int(np.argmax(cv.solid[bx - 1, by]))
-        for z in range(g - 14, g):
-            band = ((g - z) // 3) % 2
-            cv.cylinder(256.5, by + 0.5, 2.3, z, z, (196, 192, 184) if band else (150, 52, 48), 'beacon')
-        cv.cylinder(256.5, by + 0.5, 3.4, g - 15, g - 15, DARK_STEEL, 'beacon')       # gallery
-        cv.box(255, 257, by - 1, by + 1, g - 17, g - 16, DARK_STEEL, 'beacon')
-        cv.set(255, by, g - 18, LAMP_W, 'lamp')
-        cv.glow.append((255, by, g - 18, LAMP_W))
-        cv.nolight[255, by, g - 18] = True
-        cv.no_prop(250, 262, by - 6, by + 6)
+    for (bx, by) in S['beacons']:                 # lighthouses are one-offs after the mirror (see lighthouse())
+        R = S['lighthouse']['clear_r']
+        cv.no_prop(bx - R, bx + R, by - R, by + R)
     for (bx, by) in S['buoys']:
         col = (70, 120, 70) if by < 256 else (170, 120, 50)
         cv.cylinder(bx + 0.5, by + 0.5, 1.8, 61, 62, col, 'buoy')
@@ -757,6 +749,125 @@ def ends(cv, S, rep):
     out['stern'] = {'x': [xs0, 499], 'bridge': b, 'roof_z': roof}
     rep['ends'] = out
     return out
+
+
+def square_spiral_stair(cv, bx, by, z_top, z_bot, a0=0.0, c=STAIR, core=DARK_STEEL, bins=20):
+    """Stair winding round a 3x3 core inside a 7x7 well (cells bx-3..bx+3): the 2-wide ring is cut into `bins`
+    angular treads, each face-joined to the next and to the core; one tread = one step up, so a full turn climbs
+    `bins` (plenty of headroom). Opens the slab at z_top above the last treads. The first tread starts at angle a0."""
+    n = z_bot - z_top
+    cells = [(dx, dy) for dx in range(-3, 4) for dy in range(-3, 4) if max(abs(dx), abs(dy)) >= 2]
+    ang = {(dx, dy): (math.atan2(dy, dx) - a0) % (2 * math.pi) for (dx, dy) in cells}
+    order = sorted(cells, key=lambda k: (ang[k], max(abs(k[0]), abs(k[1]))))
+    per = len(order) / bins                               # consecutive groups: no empty tread
+    binof = {k: min(bins - 1, int(j / per)) for j, k in enumerate(order)}
+    for (dx, dy) in cells + [(dx, dy) for dx in range(-1, 2) for dy in range(-1, 2)]:
+        cv.carve(bx + dx, bx + dx, by + dy, by + dy, z_top + 1, z_bot - 1)
+    for i in range(1, n + 1):
+        zt = z_bot - i
+        b = (i - 1) % bins
+        for (dx, dy), bb in binof.items():
+            if bb == b:                                   # 2 thick: face contact with the tread below
+                cv.set(bx + dx, by + dy, zt, c if i % 2 else shade(c, 0.9), 'stair')
+                if zt + 1 < z_bot:
+                    cv.set(bx + dx, by + dy, zt + 1, shade(c, 0.8), 'stair')
+    for i in range(max(1, n - 5), n):                     # climb room through the top slab
+        b = (i - 1) % bins
+        for (dx, dy), bb in binof.items():
+            if bb == b:
+                cv.carve(bx + dx, bx + dx, by + dy, by + dy, max(z_top, z_bot - i - 4), z_bot - i - 1)
+    cv.box(bx - 1, bx + 1, by - 1, by + 1, z_top, z_bot - 1, core, 'stair')
+    return n
+
+
+def lighthouse(cv, S, bx, by):
+    """Enterable lighthouse (v1.1, owner asked for a bigger one with glow inside and around): plinth, banded hollow
+    tower with a door toward the ship and a spiral stair to the gallery, open lantern room with a lamp cluster,
+    wall lamps inside, lamps on the gallery rail and lamp posts round the base. Placed after the mirror (a spiral
+    stair is not mirror-symmetric); both lighthouses are identical, so the cosmetic box only skips the mirror test."""
+    L = S['lighthouse']
+    cx, cy = bx + 0.5, by + 0.5
+    ro, ri = L['r_outer'], L['r_inner']
+    X, Y = np.indices((512, 512))
+    disc = np.hypot(X + 0.5 - cx, Y + 0.5 - cy) <= L['plinth_r']
+    tops = np.argmax(cv.solid, axis=2)
+    g = int(tops[disc].min())                         # plinth top: the highest ground under it
+    xs, ys = np.nonzero(disc)
+    for x, y in zip(xs, ys):
+        cv.box(x, x, y, y, g, 62, (124, 122, 118), 'beacon')
+    cv.H[disc] = g
+    zt = g - L['height']                              # gallery floor
+    for z in range(zt, g):
+        band = ((g - z) // L['band']) % 2
+        cv.cylinder(cx, cy, ro, z, z, (204, 200, 192) if band == 0 else (156, 50, 46), 'beacon')
+    for x in range(bx - 7, bx + 8):                   # hollow: carve the inside
+        for y in range(by - 7, by + 8):
+            if math.hypot(x + 0.5 - cx, y + 0.5 - cy) < ri:
+                cv.carve(x, x, y, y, zt + 1, g - 1)
+    north = by < 256                                  # door faces the ship
+    dy = by + int(ro) if north else by - int(ro)
+    door_rows = range(by + 2, dy + 1) if north else range(dy, by - 1)
+    for y in door_rows:
+        cv.carve(bx - 1, bx + 1, y, y, g - 4, g - 1)
+    # windows (dark slits) up the shaft on four sides
+    for k, z in enumerate(range(g - 9, zt + 3, -6)):
+        a = (k % 4) * math.pi / 2 + math.pi / 4
+        wx, wy = int(math.floor(cx + (ro - 0.5) * math.cos(a))), int(math.floor(cy + (ro - 0.5) * math.sin(a)))
+        cv.carve(wx, wx, wy, wy, z - 1, z)
+    # gallery slab + rail, lantern room (posts, roof, cap)
+    cv.cylinder(cx, cy, L['gallery_r'], zt, zt, DARK_STEEL, 'beacon')
+    # first tread opposite the door so the entry column stays clear
+    square_spiral_stair(cv, bx, by, zt, g, a0=(-math.pi / 2 if north else math.pi / 2) % (2 * math.pi))
+    cv.cylinder(cx, cy, L['gallery_r'], zt - 1, zt - 1, (190, 186, 176), 'beacon', hollow=L['gallery_r'] - 0.9)
+    for k in range(8):
+        a = k * math.pi / 4
+        px, py = int(math.floor(cx + 5.2 * math.cos(a))), int(math.floor(cy + 5.2 * math.sin(a)))
+        cv.box(px, px, py, py, zt - 5, zt - 1, DARK_STEEL, 'beacon')
+    cv.cylinder(cx, cy, 6.2, zt - 6, zt - 6, (156, 50, 46), 'beacon')
+    cv.cone(cx, cy, 5.0, zt - 7, zt - 10, (156, 50, 46), 'beacon')
+    cv.set(bx, by, zt - 11, DARK_STEEL, 'beacon')
+    lamps = []
+    for x in (bx - 1, bx, bx + 1):                    # the light: a 3x3x2 cluster on the stair core + a bright top
+        for y in (by - 1, by, by + 1):
+            lamps.append((x, y, zt - 1, LAMP_Y))
+            lamps.append((x, y, zt - 2, LAMP_W))
+    lamps.append((bx, by, zt - 3, LAMP_W))
+    for z in range(g - 4, zt + 2, -5):                # wall lamps inside, on the inner face, spiralling up
+        a = ((g - z) // 5) * 1.9
+        wx = int(math.floor(cx + (ri + 0.3) * math.cos(a)))
+        wy = int(math.floor(cy + (ri + 0.3) * math.sin(a)))
+        if cv.solid[wx, wy, z]:
+            lamps.append((wx, wy, z, LAMP_Y))
+    for k in range(4):                                # lamps on the gallery rail
+        a = k * math.pi / 2 + math.pi / 4
+        px = int(math.floor(cx + (L['gallery_r'] - 0.5) * math.cos(a)))
+        py = int(math.floor(cy + (L['gallery_r'] - 0.5) * math.sin(a)))
+        for rr in (0.3, 0.6, 0.9):                    # find the rail voxel on this bearing
+            qx = int(math.floor(cx + (L['gallery_r'] - rr) * math.cos(a)))
+            qy = int(math.floor(cy + (L['gallery_r'] - rr) * math.sin(a)))
+            if cv.solid[qx, qy, zt - 1]:
+                lamps.append((qx, qy, zt - 1, LAMP))
+                break
+    lamps.append((bx - 2, dy, g - 5, LAMP))             # door lamps
+    lamps.append((bx + 2, dy, g - 5, LAMP))
+    posts = 0
+    for k in range(L['posts']):                       # lamp posts round the base
+        a = k * 2 * math.pi / L['posts'] + 0.3
+        px = int(round(cx + L['post_r'] * math.cos(a)))
+        py = int(round(cy + L['post_r'] * math.sin(a)))
+        t = int(tops[px, py])
+        if t >= 62 or cv.solid[px, py, t - 4:t].any() or abs(px - bx) <= 2 and (py - by) * (1 if north else -1) > 0:
+            continue
+        cv.box(px, px, py, py, t - 3, t - 1, DARK_STEEL, 'beacon')
+        lamps.append((px, py, t - 4, LAMP))
+        posts += 1
+    for (x, y, z, c) in lamps:
+        cv.add_glow(x, y, z, c)
+    cv.interiors.append(['lighthouse base', bx - 2, by + (2 if north else -2), g])
+    cv.interiors.append(['lighthouse gallery', bx + int(L['gallery_r']) - 1, by, zt])
+    R = S['lighthouse']['clear_r']
+    return {'centre': [bx, by], 'ground_z': g, 'gallery_z': zt, 'top_z': zt - 11, 'glow_sources': len(lamps),
+            'lamp_posts': posts, 'box': [bx - R, bx + R, by - R, by + R]}
 
 
 def sky(cv, S):

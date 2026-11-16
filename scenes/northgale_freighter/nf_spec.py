@@ -12,7 +12,7 @@ z = 0 is the sky top, z = 63 the bottom; a "floor z" is the solid voxel a player
 """
 
 SPEC = {
-    'name': 'Northgale Freighter', 'file': 'northgale_freighter', 'version': '1.0', 'stage': 'art',
+    'name': 'Northgale Freighter', 'file': 'northgale_freighter', 'version': '1.1', 'stage': 'art',
     'layout_seed': 20261116, 'axis': 'x512',
     'fog': (170, 164, 190),                     # bright lavender-grey: hue absent from the palette, between blue/red
     'heavens_color': (52, 58, 96, 255),
@@ -85,6 +85,9 @@ SPEC = {
               (222, 346, 4, 3), (58, 424, 5, 4), (58, 88, 5, 4)],
     'piers': [(178, 114, 152, 'S'), (178, 398, 360, 'N'), (256, 145, 168, 'S'), (256, 367, 344, 'N')],
     'beacons': [(256, 118), (256, 394)],
+    # v1.1 (owner 2026-11-16): bigger, enterable lighthouse with glow inside and around (after the mirror)
+    'lighthouse': {'r_outer': 6.0, 'r_inner': 5.0, 'height': 26, 'band': 4, 'plinth_r': 7.5, 'gallery_r': 8.2,
+                   'posts': 6, 'post_r': 11.5, 'clear_r': 13},
     'buoys': [(40, 80), (120, 80), (200, 80), (40, 432), (120, 432), (200, 432)],
     'groves': [(96, 116), (90, 396), (256, 124), (256, 388), (178, 96), (178, 416), (40, 160), (40, 352)],
 

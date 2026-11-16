@@ -1,4 +1,27 @@
-# Northgale Freighter v1.0: classic island Babel on a freighter (2026-11-16)
+# Northgale Freighter v1.1 (v1.0 kept): classic island Babel on a freighter (2026-11-16)
+
+## v1.1 (2026-11-16): bigger lighthouses with glow `[USER]`
+Owner feedback on v1.0: "the map is awesome. one slight tweak. can we make the lighthouse prop a tad bigger and add
+glow blocks inside and maybe around". Only the two lighthouses changed (same layout seed, same veg seed 3975672189);
+v1.0 stays in `maps/northgale_freighter_v1/`, v1.1 is `maps/northgale_freighter_v1_1/` (SHA-256 `70624aeb…`).
+
+| | v1.0 | v1.1 |
+|---|---|---|
+| tower | solid striped post, r 2.3, 14 tall, 1 lamp | **enterable** tower r 6 (13 wide), 26 tall (ground z 52 → gallery z 26, cap z 15), red/white bands, stone plinth r 7.5 |
+| inside | none | door toward the ship, square winding stair (2-wide treads, 2 thick, round a 3×3 core) to the gallery, window slits |
+| top | small gallery | gallery r 8.2 with rail, open lantern room (8 posts, red roof r 6.2, cone cap, finial) |
+| glow | 1 white lamp | 30–31 sources each: 3×3×2 light cluster + bright top on the stair core, 4 wall lamps spiralling up inside, 4 amber lamps on the gallery rail, 2 door lamps, 5–6 lamp posts round the base (amber) |
+
+The lighthouses are placed after the mirror (a winding stair can't be mirrored), and they are identical.
+Their boxes (x 243–269, y 105–131 / 381–407) are listed as cosmetic boxes for the mirror test.
+Total glow sources: 93 → 144. Checks: all 19 kit rows pass as in v1.0 (interiors now 43 / 43 including both
+lighthouse bases and galleries; 0 floating; 0 traps), centre rule N/A; live probe passes; classic table 4 / 8,
+unchanged. Rebuild: `python scenes/northgale_freighter/nf_main.py out/nf 3975672189`. Renders `13_lighthouse.png`,
+`14_lighthouse_inside.png`. Glow intensity can't be judged in the numpy previews; check it in a client.
+
+---
+
+# v1.0 record
 
 **Status:** specified · generated · exported · parser-validated (own reader round trip byte-identical; pyspades 1.4.2
 `generate()` byte-identical) · **server-loaded** (piqueserver 1.4.2, `game_modes.babel` + `babel_script` +
@@ -39,7 +62,7 @@ Stock Babel, no assist structures. Name "Northgale Freighter" picked by Claude; 
 | access | | 4 companionways per team (deck ↔ tween), 2 hold stairs per team (tween ↔ lower hold), 2 accommodation ladders per team down the hull to the sea (x 150–176 / 336–362), 2 side ports (centre), forecastle stairs. |
 | bow (one-off, west) | x 13–72 | Raised forecastle z 35 with a store room below (door at the break), foremast with two lookout rings, yard and masthead light, twin windlasses, chain, bollards, stem light. |
 | stern (one-off, east) | x 440–494 | Bridge x 446–478, 5 storeys (z 40 → roof z 10): real rooms, stairs to every floor, doors W/N/S. Bridge wings at the wheelhouse with green/red side lights, lifeboat balconies with orange enclosed lifeboats, radar mast, funnel (white, orange band, black top) with an attached smoke plume, poop deck with mooring winches and a flagstaff. |
-| islets | 6 main (r 15–22) + 8 rocks, y ≤ 126 / ≥ 386 | Granite, lichen, heather, dark pines. Two fisher huts with lamps, two red-and-white beacons (white light), four plank piers toward the ship. |
+| islets | 6 main (r 15–22) + 8 rocks, y ≤ 126 / ≥ 386 | Granite, lichen, heather, dark pines. Two fisher huts with lamps, two red-and-white beacons (white light; v1.1: enterable lighthouses), four plank piers toward the ship. |
 | sea | z 63 painted | Lit shallows ramp inside the boundary, foam along the hull and beaches, a soft moonlight glitter streak. Deep navy outside the boundary, marked by 12 lit buoys (green north, amber south). |
 | sky (opt-in floating) | 5 gulls, 4 clouds | All placed by `aosmap.kit.sky.place`: ≥ 60 from the platform, never over a spawn square, ≥ 8 air below. The collapse caveat applies: breaking a player block that touches a piece drops it. |
 | tag | "NORTHGALE FREIGHTER", SE corner | Painted on the deep sea, outside the boundary. |
