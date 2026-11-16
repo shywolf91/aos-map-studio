@@ -37,5 +37,6 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | spinline | https://claude.ai/chat/94dfe246-f63e-4bee-8401-471d20daeb92 | no |
 
 Sprinkler Field (2026-11-15) was built in the repo with Claude Code (`scenes/sprinkler_field/`); it has no chat zip.
+Northgale Freighter (2026-11-16) was built in the repo in a Claude Code cloud session (`scenes/northgale_freighter/`); it has no chat zip.
 
 Update the last column as maps are imported.

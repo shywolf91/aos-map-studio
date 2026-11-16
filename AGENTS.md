@@ -277,6 +277,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Cursed Skull Reef | pirate island Babel, assist structures (current island style) | v1.0 | server-loaded (spawn exposure fails, owner decision open) | `scenes/cursed_skull_reef/` (built with `aosmap.kit`), `docs/cursed_skull_reef_spec.md` |
 | Sprinkler Field | Grounded-scale lawn Babel, assist structures | v1.0 | server-loaded (spawn exposure fails; owner decision pending) | `scenes/sprinkler_field/` (built with `aosmap.kit`), `docs/sprinkler_field_spec.md` |
 | Janjira Sound ([recreate] of newfort by JoJoe Stinky) | classic island Babel (Konkan sea forts), 180° rotation | v1.0 | server-loaded (spawn exposure hidden share 0 %, owner decision open) | `scenes/janjira_sound/` (built with `aosmap.kit`), `docs/janjira_sound_recreate_report.md` |
+| Northgale Freighter | classic island Babel: the island is a night freighter on a cold north sea, holds below deck, deep-sea boundary | v1.0 | server-loaded (all kit checks pass incl. spawn exposure; centre rule N/A, sea) | `scenes/northgale_freighter/` (built with `aosmap.kit`), `maps/northgale_freighter_v1/`, `docs/northgale_freighter_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
 chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).

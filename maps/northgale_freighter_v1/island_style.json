@@ -1,0 +1,250 @@
+[
+ {
+  "map": "northgale_freighter",
+  "bytes": 3138856,
+  "floating_components": 9,
+  "floating_voxels": 7737,
+  "floating_z_range": [
+   4,
+   20
+  ],
+  "floating_over_water_pct": 99.6,
+  "water_pct": 75.7,
+  "land_cols": 63825,
+  "landmasses": 11,
+  "landmass_sizes": [
+   46713,
+   2056,
+   2046,
+   1621,
+   1621,
+   1575,
+   1575,
+   1105,
+   1105,
+   1069,
+   1069
+  ],
+  "specks": 28,
+  "main_bbox": [
+   23,
+   489,
+   200,
+   312
+  ],
+  "main_aspect_x_over_y": 4.13,
+  "main_fill_pct": 88.5,
+  "main_share_pct": 73.2,
+  "main_neck_min_y_width": 105,
+  "main_lobe_max_y_width": 113,
+  "land_h": {
+   "med": 13.0,
+   "p90": 23.0,
+   "max": 62
+  },
+  "terrain_h": {
+   "med": 8.0,
+   "p90": 23.0,
+   "max": 23
+  },
+  "terrain_slope": 0.151,
+  "cliff_pct": 0.99,
+  "shore_profile_med_h": {
+   "1": 1.0,
+   "2": 1.0,
+   "4": 3.0,
+   "8": 6.0,
+   "16": 13.0,
+   "32": 13.0
+  },
+  "beach_ring_low_pct": 58.6,
+  "low_land_pct": 19.2,
+  "land_inland_dist_p90": 44.0,
+  "struct_components": 63,
+  "struct_voxels": 250718,
+  "struct_vox_per_land_col": 3.928,
+  "struct_footprint_cols": 46140,
+  "struct_footprint_pct_of_land": 69.8,
+  "centre_zone_struct_footprint_pct": 45.9,
+  "centre_zone_land_pct": 54.5,
+  "struct_max_height_above_terrain": 63,
+  "roofed_pct": 58.1,
+  "surface_colours": 12771,
+  "hue_families_90": 7,
+  "sea_colours": 2462,
+  "sea_L_std": 9.79,
+  "sea_halo_dL_near_minus_far": 19.16,
+  "land_top_luma": {
+   "p5": 62.0,
+   "med": 71.3,
+   "p95": 107.1
+  },
+  "land_top_max_channel_p99": 182.0,
+  "mirror_x_land": 0.938,
+  "mirror_x_axis": "x' = 512 - x",
+  "mirror_x_all": 0.985,
+  "spawn_blue": {
+   "land_pct": 100.0,
+   "top_z": [
+    39,
+    40
+   ],
+   "top_z_med": 39.0,
+   "ground_z_med": 39.0
+  },
+  "spawn_red": {
+   "land_pct": 100.0,
+   "top_z": [
+    39,
+    40
+   ],
+   "top_z_med": 39.0,
+   "ground_z_med": 39.0
+  },
+  "plat_end_blue": {
+   "land_pct": 100.0,
+   "top_z": [
+    40,
+    40
+   ],
+   "top_z_med": 40.0,
+   "ground_z_med": 40.0
+  },
+  "plat_end_red": {
+   "land_pct": 100.0,
+   "top_z": [
+    40,
+    40
+   ],
+   "top_z_med": 40.0,
+   "ground_z_med": 40.0
+  },
+  "solid_z_le2": 281,
+  "solid_z_le2_over_platform": 0,
+  "solid_z_le3_over_platform": 0,
+  "under_platform_top_z_min": 29,
+  "reader_ok": true,
+  "classic": [
+   {
+    "metric": "water_pct",
+    "lo": 68.0,
+    "hi": 84.0,
+    "value": 75.7,
+    "in_range": true,
+    "separates": true
+   },
+   {
+    "metric": "landmasses",
+    "lo": 1,
+    "hi": 10,
+    "value": 11,
+    "in_range": false,
+    "separates": true
+   },
+   {
+    "metric": "main_neck_min_y_width",
+    "lo": 40,
+    "hi": 150,
+    "value": 105,
+    "in_range": true,
+    "separates": true
+   },
+   {
+    "metric": "struct_components",
+    "lo": 0,
+    "hi": 90,
+    "value": 63,
+    "in_range": true,
+    "separates": true
+   },
+   {
+    "metric": "struct_vox_per_land_col",
+    "lo": 0.0,
+    "hi": 1.8,
+    "value": 3.928,
+    "in_range": false,
+    "separates": true
+   },
+   {
+    "metric": "roofed_pct",
+    "lo": 0.0,
+    "hi": 13.0,
+    "value": 58.1,
+    "in_range": false,
+    "separates": true
+   },
+   {
+    "metric": "surface_colours",
+    "lo": 0,
+    "hi": 26000,
+    "value": 12771,
+    "in_range": true,
+    "separates": true
+   },
+   {
+    "metric": "hue_families_90",
+    "lo": 1,
+    "hi": 4,
+    "value": 7,
+    "in_range": false,
+    "separates": true
+   },
+   {
+    "metric": "main_share_pct",
+    "lo": 85.0,
+    "hi": 100.0,
+    "value": 73.2,
+    "in_range": false,
+    "separates": false
+   },
+   {
+    "metric": "main_aspect_x_over_y",
+    "lo": 1.6,
+    "hi": 2.6,
+    "value": 4.13,
+    "in_range": false,
+    "separates": false
+   },
+   {
+    "metric": "terrain_slope",
+    "lo": 0.0,
+    "hi": 0.3,
+    "value": 0.151,
+    "in_range": true,
+    "separates": false
+   },
+   {
+    "metric": "cliff_pct",
+    "lo": 0.0,
+    "hi": 0.5,
+    "value": 0.99,
+    "in_range": false,
+    "separates": false
+   },
+   {
+    "metric": "struct_footprint_pct_of_land",
+    "lo": 0.0,
+    "hi": 40.0,
+    "value": 69.8,
+    "in_range": false,
+    "separates": false
+   },
+   {
+    "metric": "sea_colours",
+    "lo": 0,
+    "hi": 32000,
+    "value": 2462,
+    "in_range": true,
+    "separates": false
+   },
+   {
+    "metric": "mirror_x_land",
+    "lo": 0.35,
+    "hi": 1.0,
+    "value": 0.938,
+    "in_range": true,
+    "separates": false
+   }
+  ]
+ }
+]
