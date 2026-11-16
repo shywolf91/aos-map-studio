@@ -1,0 +1,11 @@
+name = 'Witchwood Isles'
+version = '1.0'
+author = 'shywolf91 and AI'
+description = ('Babel, Halloween island map: twin witchwood isles, a standing-stone isle under the platform '
+               'with an anchor mound under each end, mooring pilings in the water gaps.')
+fog = (182, 168, 150)
+extensions = {
+    'water_damage': 5,
+}
+# No spawn/entity hooks on purpose: stock babel_script uses fixed bases (118,256)/(394,256) and +-20 spawns.
+# water_damage needs piqueserver.scripts.map_extensions in the server's script list.

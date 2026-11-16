@@ -1,0 +1,110 @@
+{
+ "map_dir": "maps/janjira_sound_v1",
+ "mode": "babel",
+ "seconds": 1.4,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Janjira Sound",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 0,
+   "boundary_damage": "{'left': 32, 'right': 480, 'top': 160, 'bottom': 352, 'damage': 1}",
+   "heavens_color": [
+    124,
+    116,
+    146,
+    255
+   ],
+   "glow_enabled": true
+  },
+  "fog": [
+   190,
+   184,
+   178
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   59,
+   59
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "60": 272,
+     "59": 128
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     59.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "60": 275,
+     "59": 125
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     59.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "log_tail": [
+  "2026-11-16T03:09:41+0000 [piqueserver.server#info] starting ban vacuum with 0 bans",
+  "2026-11-16T03:09:41+0000 [piqueserver.map#info] Loading map 'Janjira Sound'...",
+  "2026-11-16T03:09:41+0000 [piqueserver.server#warn] Getting external IP failed: Cannot connect to host services.buildandshoot.com:443 ssl:default [Name or service not known]",
+  "2026-11-16T03:09:41+0000 [piqueserver.map#info] Map loaded successfully. (took 0.11s)",
+  "2026-11-16T03:09:41+0000 [piqueserver.server#info] Local aos identifier: aos://16777343:32999",
+  "2026-11-16T03:09:42+0000 [twisted.internet.defer#critical] Unhandled error in Deferred:",
+  "2026-11-16T03:09:42+0000 [twisted.internet.defer#critical] ",
+  "\tTraceback (most recent call last):",
+  "\t  File \"/home/user/Aos_Map/.venv/lib/python3.11/site-packages/twisted/internet/defer.py\", line 1244, in adapt",
+  "\t    extracted: _SelfResultT | Failure = result.result()",
+  "\t  File \"/home/user/Aos_Map/.venv/lib/python3.11/site-packages/piqueserver/server.py\", line 689, in watch_for_releases",
+  "\t    self.new_release = await check_for_releases()",
+  "\t  File \"/home/user/Aos_Map/.venv/lib/python3.11/site-packages/piqueserver/release.py\", line 37, in check_for_releases",
+  "\t    latest_version = release[\"tag_name\"]",
+  "\tbuiltins.KeyError: 'tag_name'"
+ ],
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

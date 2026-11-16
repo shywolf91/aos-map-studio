@@ -21,17 +21,17 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | Highland Loch Castle | https://claude.ai/chat/af035c37-7268-4ad9-be4e-4d5af19beb77 | no |
 | Lantern Bazaar Canals | https://claude.ai/chat/64860661-16d2-4e79-a72d-8105f607f2ee | no |
 | Mossglade Pond | https://claude.ai/chat/6902054f-c04c-4bb6-ad8d-5489c4cf6340 | no |
-| Silverpine Hunt (v1, v2, v2.2) | https://claude.ai/chat/875ab48b-662b-4201-8341-0385022ccdc1 | no |
+| Silverpine Hunt (v1, v2, v2.2) | https://claude.ai/chat/875ab48b-662b-4201-8341-0385022ccdc1 | v2.2 + v2.2-sky yes (2026-11-10, branch map/silverpine-hunt); v1 not in the zip |
 | Backyard Babel v5 | https://claude.ai/chat/b858367b-60a0-47c2-ad00-9754c612271d | no |
 | Bikini Atoll (Detonation) | https://claude.ai/chat/fa2819b3-1ef2-4447-b241-753f4d1bd334 | no |
 | 1river2night v2.2 | https://claude.ai/chat/5b2c928b-d590-4521-bdf1-8a35b5ad3015 | no |
 | Royal Parade Halloween | https://claude.ai/chat/dba28c5d-29e2-4a24-9420-4db47d3e6e52 | no |
 | Ferrari's Revenge (Skull River) | https://claude.ai/chat/86654164-9957-4b88-acc5-e2993102f64e | no |
-| Haunted Fairground | https://claude.ai/chat/bbb5f3c1-c1f6-4e6f-b285-e6dceca6d060 | no |
+| Haunted Fairground | https://claude.ai/chat/bbb5f3c1-c1f6-4e6f-b285-e6dceca6d060 | yes (2026-11-10, branch map/haunted-fairground) |
 | The Hollow Crown | https://claude.ai/chat/f54a547c-f0ca-469e-b95c-0ba602698c24 | yes (from local repo, 2026-11-10) |
 | Graveyard of the Forgotten | https://claude.ai/chat/6ffb9f97-8d25-4ae4-8cf4-2599d61fed9d | yes (branch map/graveyard-of-the-forgotten) |
 | Death Swamp | https://claude.ai/chat/a222852b-cff1-457c-af9f-b3320824beef | check local repo |
-| Witchwood Isles | https://claude.ai/chat/d8080a71-724e-4c50-9d48-8fbf3793a500 | no |
+| Witchwood Isles | https://claude.ai/chat/d8080a71-724e-4c50-9d48-8fbf3793a500 | yes (2026-11-10, branch map/witchwood-isles) |
 | Brimstone Atoll | https://claude.ai/chat/28b196a0-727b-4116-82e5-6d73dced5d47 | no |
 | spinline | https://claude.ai/chat/94dfe246-f63e-4bee-8401-471d20daeb92 | no |
 
