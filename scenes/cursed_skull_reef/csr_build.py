@@ -125,7 +125,7 @@ def terrain(cv, S, seed):
     Z |= an
     T = np.where(an, S['anchor']['z'], T)
     dz, (ix, iy) = ndi.distance_transform_edt(~Z, return_indices=True)
-    w = np.clip(1 - dz / S['zone_blend'], 0, 1)
+    w = np.clip(1 - dz / S['zone_blend'], 0, 1) * smooth((d - 1) / 10.0)     # beaches stay beaches at the coast
     Tn = T[ix, iy]
     H_I = np.where(land, np.round(H_I * (1 - w) + Tn * w), 63)
     H_I = np.where(Z & land, T, H_I)
@@ -165,9 +165,7 @@ def terrain(cv, S, seed):
             H_S = np.where(m, np.minimum(H_S, np.round(hh)), H_S)
             sk |= m
     # ---------------------------------------------------------------- corner sandbar for the tag (SW)
-    tagbar = (X >= 4) & (X <= 116) & (Y >= 486) & (Y <= 508)
-    H_T = np.where(tagbar, 62, 63)
-    H = np.minimum.reduce([H_I, H_N, H_R, H_C, H_S, H_T])
+    H = np.minimum.reduce([H_I, H_N, H_R, H_C, H_S])
     H = np.clip(H, 0, 63).astype(int)
     H[256:] = 63          # east half comes from the mirror
     # materials

@@ -27,9 +27,9 @@ def run(out, data, info, S):
     nav = Nav(solid)
     p = nav.xyz
     water = p[:, 2] == 63
-    G = nav.G.tocoo()
-    w = 1.0 + 1000.0 * water[G.col]
-    Gw = csr_matrix((w, (G.row, G.col)), shape=nav.G.shape)
+    Gw = nav.G.tocsr().copy()
+    Gw.sum_duplicates()
+    Gw.data = (1.0 + 1000.0 * water[Gw.indices]).astype(float)   # hop count; a water node costs 1000
     half = P['spawn_half']
     tg = dict(info.get('check_targets') or {})
     R = {}

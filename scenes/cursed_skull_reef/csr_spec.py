@@ -36,7 +36,7 @@ SPEC = {
     # ---------------------------------------------------------------- spawn isle (west; east is the mirror)
     'island': {
         'ellipses': [(112, 256, 80, 94), (164, 204, 40, 34), (164, 308, 40, 34), (62, 178, 34, 36),
-                     (62, 334, 34, 36), (186, 256, 28, 46)],
+                     (62, 334, 34, 36), (190, 256, 30, 52)],
         'x_max': 204, 'x_max_shoulder': 214, 'shoulder_y': [(218, 235), (277, 294)],
         'edge_noise': 0.14, 'beach_w': 6, 'rise_w': 20, 'relief_amp': 4.0, 'relief_cell': 24,
         # rear ridge (spawn backdrop): rises up to `h` above the plateau, centred x, half-length in y
@@ -120,7 +120,7 @@ SPEC = {
     'groves': [(150, 212, 8, 'palm'), (150, 300, 8, 'palm'), (66, 214, 12, 'mix'), (66, 298, 12, 'mix'),
                (84, 256, 9, 'palm'), (100, 176, 10, 'palm'), (100, 336, 10, 'palm'), (40, 250, 10, 'mix'),
                (160, 178, 9, 'mangrove'), (162, 334, 9, 'mangrove'), (36, 196, 9, 'dead'), (36, 316, 9, 'dead'),
-               (128, 168, 8, 'palm'), (128, 344, 8, 'palm'), (124, 112, 6, 'palm'), (124, 399, 6, 'palm'),
+               (128, 168, 8, 'palm'), (128, 344, 8, 'palm'), (124, 112, 6, 'palm'),
                (176, 90, 5, 'dead'), (176, 421, 5, 'palm'), (232, 140, 6, 'palm'), (226, 360, 7, 'dead'),
                (236, 382, 6, 'mangrove')],
 
@@ -130,7 +130,7 @@ SPEC = {
     'rum_dock': (124, 399),       # rum-barrel dock (Blue south chain S1)
     'gallows': (388, 399),        # gallows (Red south chain S1)
     'heeled_brig': (256, 58),     # heeled-over brig beside the north chain middle islet
-    'tag': {'text': 'CURSED SKULL REEF', 'corner': 'SW'},
+    'tag': {'text': 'CURSED SKULL REEF', 'corner': 'SW', 'bar': (4, 116, 486, 508)},
 
     # assist structures for the kit report (west box; east = mirror)
     'assist_box': (212, 230, 204, 236),

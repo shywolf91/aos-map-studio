@@ -53,6 +53,7 @@ def build_map(out, veg_seed=None, graybox_only=False):
     one = csr_oneoffs.build(cv, rep, SPEC, rng2, art=not graybox_only)
     boxes += one['boxes']
     info['oneoffs'] = {k: v for k, v in one.items() if k != 'boxes'}
+    info['oneoff_cleanup'] = symmetry.remove_orphans(cv)
     ext = {'babel': True, 'water_damage': SPEC['water_damage']}
     if not graybox_only:
         import csr_sky
@@ -73,6 +74,12 @@ def build_map(out, veg_seed=None, graybox_only=False):
                 'maelstrom. Swimming hurts.')
     else:
         desc = 'Babel, assist structures: Cursed Skull Reef - graybox (not a release).'
+    # corner sandbar for the tag (SW, one-off after the mirror; solid to the bottom)
+    tb = SPEC['tag']['bar']
+    cv.box(tb[0], tb[1], tb[2], tb[3], 62, 63, csr_build.GC['sand'], 'sand')
+    if not graybox_only:
+        cv.rgb[tb[0]:tb[1] + 1, tb[2]:tb[3] + 1, 62] = (150, 136, 108)
+    boxes.append(list(tb))
     rect = tag.paint_tag(cv, SPEC['tag']['text'], corner=SPEC['tag']['corner'], margin=10,
                          rgb=(214, 184, 96), shadow=(80, 60, 40))
     info['tag_rect'] = list(rect)
@@ -139,7 +146,8 @@ def check(out, info):
     H = np.load(os.path.join(out, 'terrain_H.npy')).astype(int)
     names = {v: k for k, v in info.get('materials', {}).items()}
     R = babel_checks.run_all(data, build=info, mat=mat, mat_names=names, terrain_H=H, axis=SPEC['axis'],
-                             targets=targets(), assist=assist_boxes())
+                             targets=targets(), assist=assist_boxes(),
+                             anchor_face=(SPEC['anchor']['x'][1], 512 - SPEC['anchor']['x'][1]))
     R['summary'] = babel_checks.summary(R)
     import csr_checks
     R['csr_checks'] = csr_checks.run(out, data, info, SPEC)
