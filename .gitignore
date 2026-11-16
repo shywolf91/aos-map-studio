@@ -26,6 +26,12 @@ refs/
 *.pdf
 opencode.jsonc
 
+# locally compiled helpers (scenes/bloomhop_kingdom/vxlenc.c -> libvxlenc.so)
+*.so
+*.dll
+*.lib
+*.exp
+
 # Claude Code: per-session worktrees and personal settings
 .claude/worktrees/
 .claude/settings.local.json

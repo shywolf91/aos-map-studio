@@ -12,7 +12,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | Elderveil | built in Claude Code (2026-11-14), branch `map/elderveil` | yes (`scenes/elderveil/`, `maps/elderveil_v1/`, `maps/elderveil_v1_1/`) |
 | Frostbell Hollow | built in Claude Code (2026-11-10), branch `map/frostbell-hollow` | yes (`scenes/frostbell_hollow/`, `maps/frostbell_hollow_v1/`, `maps/frostbell_hollow_v1_1/`, `maps/frostbell_hollow_v1_2/`) |
 | Under the Tree | https://claude.ai/chat/ff19af2e-ee83-4f97-97d0-85bb07c8aa0a | no |
-| Bloomhop Kingdom | https://claude.ai/chat/e3627c2c-c20d-40a9-a155-9d3577299f47 | no |
+| Bloomhop Kingdom | https://claude.ai/chat/e3627c2c-c20d-40a9-a155-9d3577299f47 | yes (2026-11-10, branch map/bloomhop-kingdom) |
 | Remoria (remus recreate) | https://claude.ai/chat/8232c577-1ac0-4c00-8961-b76793fb7799 | no |
 | Cherry Gardens | https://claude.ai/chat/507723ac-809b-471e-8088-e7e95f7c30a1 | no |
 | Cherry Terrace Gardens | https://claude.ai/chat/2c41cb03-7b3e-4060-ba6e-eedcd5700a87 | no |

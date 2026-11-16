@@ -1,0 +1,93 @@
+{
+ "bytes": 3324240,
+ "sha256": "1070ada274ad8ea02c227998788b0d71138e0cab243c4de1a81ede29fa1f4839",
+ "reencode_identical": true,
+ "z63_solid_everywhere": true,
+ "floating_components": 18,
+ "floating_min_dist_to_platform": 134.4,
+ "platform_volume_clear": true,
+ "ground_under_platform_ends": {
+  "west_z": 54,
+  "east_z": 54,
+  "land": true
+ },
+ "spawn_squares": [
+  {
+   "base": [
+    118,
+    256
+   ],
+   "base_top": 46,
+   "zmin": 45,
+   "zmax": 46,
+   "flat_share": 0.94,
+   "water_columns": 0
+  },
+  {
+   "base": [
+    394,
+    256
+   ],
+   "base_top": 46,
+   "zmin": 45,
+   "zmax": 46,
+   "flat_share": 0.94,
+   "water_columns": 0
+  }
+ ],
+ "spawn_mirror_equal": 1.0,
+ "solid_mirror_equal": 0.9853,
+ "routes": {
+  "team1": {
+   "reachable_nodes": 212274,
+   "safe_nodes": 212227,
+   "tower_zone_safe": true,
+   "tower_zone_min_cost": 30,
+   "enemy_spawn_reachable": true,
+   "enemy_spawn_min_cost": 236,
+   "centre_reachable": true,
+   "platform_reachable_without_building": false,
+   "build_gap": 44,
+   "build_gap_from": [
+    244,
+    243,
+    45
+   ]
+  },
+  "stand_nodes_total_dry": 320697,
+  "unreachable_stand_nodes": 111723,
+  "team2": {
+   "reachable_nodes": 212274,
+   "safe_nodes": 212227,
+   "tower_zone_safe": true,
+   "tower_zone_min_cost": 31,
+   "enemy_spawn_reachable": true,
+   "enemy_spawn_min_cost": 236,
+   "centre_reachable": true,
+   "platform_reachable_without_building": false,
+   "build_gap": 44,
+   "build_gap_from": [
+    262,
+    243,
+    45
+   ]
+  }
+ },
+ "anchor_front_step_min": 3,
+ "spawn_exposure": {
+  "team1": {
+   "exposed_pct": 67.8,
+   "mean_viewers": 3.5,
+   "hidden_pct": 32.2,
+   "eyes": 90,
+   "spots": 441
+  },
+  "team2": {
+   "exposed_pct": 67.8,
+   "mean_viewers": 3.51,
+   "hidden_pct": 32.2,
+   "eyes": 90,
+   "spots": 441
+  }
+ }
+}
