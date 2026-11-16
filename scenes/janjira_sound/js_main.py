@@ -1,4 +1,4 @@
-"""Janjira Sound build (stage 1 graybox): python scenes/janjira_sound/js_main.py OUTDIR [veg_seed] [--no-checks]
+"""Janjira Sound build (stage 2 art): python scenes/janjira_sound/js_main.py OUTDIR [veg_seed] [--no-checks]
 
 terrain (point-symmetric) -> fort, towers, islet buildings, props, baoli on the source half -> vegetation (OS seed
 `veg_seed`, saved in build.json; pass it back to rebuild the exact map) -> orphan cleanup -> 180-degree rotation
@@ -17,13 +17,13 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 sys.path.insert(0, os.path.join(HERE, '..', '..'))
-from aosmap.kit import babel_checks, build, noise, symmetry  # noqa: E402
+from aosmap.kit import babel_checks, build, color, noise, symmetry  # noqa: E402
 
 import js_build  # noqa: E402
 from js_spec import SPEC  # noqa: E402
 
-DESCRIPTION = ('Babel: Janjira Sound - Konkan sea forts on four wooded islands around a sand causeway, '
-               'a recreate of newfort by JoJoe Stinky. Stage 1 graybox (not a release).')
+DESCRIPTION = ('Babel: Konkan sea forts on four wooded islands around a sand causeway. Build your tower from the '
+               'causeway; wade the shallows to flank. A recreate of newfort by JoJoe Stinky.')
 
 
 def build_map(out, veg_seed=None):
@@ -35,16 +35,22 @@ def build_map(out, veg_seed=None):
     symmetry.mirror_canvas(cv, SPEC['axis'])
     dh = js_build.dhow(cv, SPEC)
     post = symmetry.split_expected(symmetry.floating_components(cv.solid), cv.expect_floating)
+    import js_art
+    rep['dhow_geom'] = dh['geom']
+    stored, art = js_art.art(cv, rep, SPEC, seed)
     info = {'stage': SPEC['stage'], 'layout_seed': SPEC['layout_seed'], 'veg_seed': seed, 'axis': SPEC['axis'],
             'floating_before_cleanup': len(fl_before), 'floating_before_list': fl_before[:15], 'cleanup': orphans,
             'post_rotation_floating': {'unexpected': len(post[0]), 'list': post[0][:12]},
             'terrain': {'land_cols_spec': rep['land_cols'], 'water_pct_spec': rep['water_pct']},
             'fort': rep['fort'], 'watch_towers': rep['watch_towers'], 'shrine': rep['shrine'], 'hut': rep['hut'],
             'props': rep['props'], 'baoli': rep['baoli'], 'vegetation': rep['vegetation'], 'dhow': dh,
-            'cosmetic_asymmetric_boxes': [dh['box']], 'waivers': SPEC['waivers'], 'materials': cv.materials}
+            'cosmetic_asymmetric_boxes': [dh['box']], 'waivers': SPEC['waivers'], 'materials': cv.materials,
+            'art': art, 'tag_rect': art['tag_rect'], 'colour_stats': color.colour_stats(cv.solid, cv.rgb)}
     info['interiors_n'] = len(cv.interiors)
     info['build_seconds'] = round(time.time() - t0, 1)
-    ext = {'babel': True, 'water_damage': SPEC['water_damage'], 'boundary_damage': dict(SPEC['boundary'])}
+    ext = {'babel': True, 'water_damage': SPEC['water_damage'], 'boundary_damage': dict(SPEC['boundary']),
+           'heavens_color': SPEC['heavens_color']}
+    ext = build.glow_extensions(stored, ext)
     res = build.export(cv, out, SPEC['file'], txt=dict(name=SPEC['name'], version=SPEC['version'],
                                                        description=DESCRIPTION, fog=SPEC['fog'], extensions=ext),
                        build_info=info)

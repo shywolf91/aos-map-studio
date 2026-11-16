@@ -13,7 +13,7 @@ z = 0 is the sky top, z = 63 the bottom; a "floor z" is the solid voxel a player
 """
 
 SPEC = {
-    'name': 'Janjira Sound', 'file': 'janjira_sound', 'version': '1.0', 'stage': 'graybox',
+    'name': 'Janjira Sound', 'file': 'janjira_sound', 'version': '1.0', 'stage': 'art',
     'layout_seed': 20261115, 'axis': 'point512',
     'fog': (190, 184, 178),
     'boundary': {'left': 32, 'right': 480, 'top': 160, 'bottom': 352, 'damage': 1},
@@ -32,10 +32,17 @@ SPEC = {
     'strip': {'x': (212, 300), 'y': (240, 271)},
 
     # ------------------------------------------------------------------ land shapes (west half; rotated)
-    'causeway': {'x': (92, 256), 'y': (235, 277), 'edge_noise': 2, 'slope_x': (146, 200)},   # crest 59 -> 57
-    'channels': {'north_y': (228, 234), 'south_y': (278, 284), 'x': (160, 247)},
+    # causeway: shores wander outside the lane edges (u = 0 cove at the lane edge .. shore_max lobe), straight
+    # (u = 1) beside the anchors and at the plaza; two sand spits per side reach into the channels
+    'causeway': {'x': (92, 256), 'y': (235, 277), 'slope_x': (146, 200), 'shore_mean': 4.0, 'shore_amp': 5.0,
+                 'shore_max': 9, 'beach_slope': 0.7,
+                 'spits': [(172, 'N', 4), (234, 'S', 4)]},                                  # (x, side, length)
+    'channels': {'north_y': (228, 234), 'south_y': (278, 284), 'x': (160, 247), 'width': 7},
     'plaza': {'x': (92, 150), 'y': (222, 290), 'corner_r': 8, 'mound_cell': 9},
-    'fort_ground': {'x': (84, 118), 'y': (190, 322), 'corner_r': 10},
+    'fort_ground': {'x': (86, 97), 'y': (198, 314), 'corner_r': 2},        # paved strip at the wall foot (z 59)
+    'fort_apron': {'x': (78, 124), 'y': (186, 326), 'corner_r': 16, 'warp': 8,   # natural ground round the fort
+                   'outcrop': (0.66, 0.76), 'outcrop_x_max': 86},              # noise thresholds -1 / -2
+    'gate_path': {'x': (76, 85), 'y': (251, 261)},
     'islands': {
         # (name, cx, cy, rx, ry, y clip (lo, hi), knolls [(x, y, R, z)])
         'NW': (185, 206, 62, 23, (0, 227), [(172, 203, 30, 55), (220, 203, 16, 57)]),
@@ -99,6 +106,13 @@ SPEC = {
     # ------------------------------------------------------------------ one-off (after rotation)
     'dhow': {'bar': (232, 280, 326, 344), 'x': (238, 272), 'y_c': 335, 'beam_half': 5, 'keel_z': 62,
              'deck_z': 56, 'mast': ((250, 335), 36)},
+
+    # ------------------------------------------------------------------ art (stage 2)
+    'heavens_color': (124, 116, 146, 255),
+    'tide_rose': (400, 386, 26),                    # (cx, cy, r) painted on the sea, SE quadrant, clear of the dhow
+    'lamps': {'brazier_y': (220, 244, 268, 292)},   # merlon tops on the curtain wall that carry braziers
+    'tag': {'text': 'JANJIRA SOUND', 'corner': 'NW', 'margin': 24, 'scale': 2, 'rgb': (206, 198, 170),
+            'shadow': (40, 74, 86)},
 
     'waivers': {},
     'deviations': [],

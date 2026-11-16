@@ -1,11 +1,11 @@
 {
  "map": "Janjira Sound",
  "file": "janjira_sound",
- "sha256": "06aa8cfc655e0a8adb47c159186db8516305c230d47aa8ca152e65a09b4624f0",
- "bytes": 2297884,
- "stage": "graybox",
+ "sha256": "866d4704a2f3e227ba294570f1d07fc3245a3651e95e420047636dc958580820",
+ "bytes": 2292732,
+ "stage": "art",
  "layout_seed": 20261115,
- "veg_seed": 53891925,
+ "veg_seed": 132910545,
  "axis": "point512",
  "floating_before_cleanup": 0,
  "floating_before_list": [],
@@ -19,8 +19,8 @@
   "list": []
  },
  "terrain": {
-  "land_cols_spec": 46547,
-  "water_pct_spec": 82.24
+  "land_cols_spec": 49147,
+  "water_pct_spec": 81.25
  },
  "fort": {
   "wall": {
@@ -47,7 +47,7 @@
       47
      ]
     },
-    "top_z": 31,
+    "top_z": 29,
     "centre": [
      96,
      204
@@ -68,7 +68,7 @@
       47
      ]
     },
-    "top_z": 31,
+    "top_z": 29,
     "centre": [
      96,
      308
@@ -87,7 +87,7 @@
       59
      ]
     },
-    "top_z": 38,
+    "top_z": 36,
     "centre": [
      150,
      226
@@ -104,7 +104,7 @@
       59
      ]
     },
-    "top_z": 38,
+    "top_z": 36,
     "centre": [
      150,
      286
@@ -160,7 +160,7 @@
    216
   ],
   "G": 56,
-  "top_z": 47
+  "top_z": 46
  },
  "hut": {
   "name": "fisher hut",
@@ -457,123 +457,216 @@
    {
     "species": "banyan",
     "x": 144,
-    "y": 200,
-    "R": 6.848517963052782,
+    "y": 206,
+    "R": 5.686919361911048,
     "h": 14,
-    "roots": 3
+    "roots": 2,
+    "zb": 50,
+    "g": 60,
+    "details": [
+     "nest",
+     "dead_limb",
+     "root_tint"
+    ]
    },
    {
     "species": "banyan",
-    "x": 181,
+    "x": 183,
     "y": 198,
-    "R": 6.070522009825799,
+    "R": 6.313559661263048,
+    "h": 13,
+    "roots": 2,
+    "zb": 48,
+    "g": 57,
+    "details": [
+     "ribbons",
+     "nest",
+     "dead_limb"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 183,
+    "y": 211,
+    "R": 6.179264226111204,
+    "h": 13,
+    "roots": 3,
+    "zb": 48,
+    "g": 57,
+    "details": [
+     "ribbons",
+     "nest",
+     "root_tint"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 197,
+    "y": 188,
+    "R": 6.048834563095545,
     "h": 14,
-    "roots": 3
+    "roots": 3,
+    "zb": 50,
+    "g": 60,
+    "details": [
+     "ribbons",
+     "dead_limb",
+     "root_tint"
+    ]
    },
    {
     "species": "banyan",
-    "x": 182,
-    "y": 187,
-    "R": 6.254888063779012,
-    "h": 13,
-    "roots": 3
-   },
-   {
-    "species": "banyan",
-    "x": 195,
-    "y": 186,
-    "R": 5.459880942421789,
+    "x": 163,
+    "y": 312,
+    "R": 6.261831949962384,
     "h": 12,
-    "roots": 4
+    "roots": 3,
+    "zb": 52,
+    "g": 60,
+    "details": [
+     "figs",
+     "ribbons",
+     "nest"
+    ]
    },
    {
     "species": "banyan",
-    "x": 162,
-    "y": 310,
-    "R": 6.2769057561115655,
-    "h": 12,
-    "roots": 2
-   },
-   {
-    "species": "banyan",
-    "x": 153,
-    "y": 305,
-    "R": 5.8923222379775675,
+    "x": 156,
+    "y": 302,
+    "R": 5.577933676621565,
     "h": 14,
-    "roots": 3
+    "roots": 3,
+    "zb": 50,
+    "g": 60,
+    "details": [
+     "ribbons",
+     "trunk_moss",
+     "root_tint"
+    ]
    },
    {
     "species": "banyan",
-    "x": 226,
-    "y": 310,
-    "R": 6.587384148125171,
-    "h": 13,
-    "roots": 2
+    "x": 223,
+    "y": 318,
+    "R": 5.21656229567861,
+    "h": 14,
+    "roots": 4,
+    "zb": 49,
+    "g": 59,
+    "details": [
+     "figs",
+     "nest",
+     "root_tint"
+    ]
    },
    {
     "species": "banyan",
-    "x": 233,
-    "y": 297,
-    "R": 6.111301012811359,
-    "h": 13,
-    "roots": 3
+    "x": 229,
+    "y": 304,
+    "R": 5.131492527639702,
+    "h": 12,
+    "roots": 2,
+    "zb": 52,
+    "g": 60,
+    "details": [
+     "figs",
+     "dead_limb",
+     "trunk_moss"
+    ]
    },
    {
     "species": "banyan",
-    "x": 50,
+    "x": 52,
     "y": 290,
-    "R": 5.723201410624151,
-    "h": 14,
-    "roots": 4
+    "R": 4.772717728986279,
+    "h": 13,
+    "roots": 3,
+    "zb": 51,
+    "g": 60,
+    "details": [
+     "ribbons",
+     "nest",
+     "root_tint"
+    ]
    }
   ],
   "palm": [
    {
     "species": "palm",
     "x": 136,
-    "y": 191,
-    "h": 13
+    "y": 193,
+    "h": 15,
+    "g": 60,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "trunk_rings"
+    ]
    },
    {
     "species": "palm",
-    "x": 147,
-    "y": 189,
-    "h": 15
+    "x": 144,
+    "y": 196,
+    "h": 14,
+    "g": 59,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "shoot"
+    ]
    },
    {
     "species": "palm",
-    "x": 202,
-    "y": 195,
-    "h": 12
-   },
-   {
-    "species": "palm",
-    "x": 208,
+    "x": 206,
     "y": 185,
-    "h": 11
+    "h": 15,
+    "g": 60,
+    "details": [
+     "coconuts",
+     "trunk_rings",
+     "fallen_nut"
+    ]
    },
    {
     "species": "palm",
-    "x": 228,
-    "y": 327,
-    "h": 15
+    "x": 214,
+    "y": 333,
+    "h": 12,
+    "g": 60,
+    "details": [
+     "dry_frond",
+     "shoot",
+     "fallen_nut"
+    ]
    },
    {
     "species": "palm",
-    "x": 67,
-    "y": 245,
-    "h": 15
+    "x": 70,
+    "y": 243,
+    "h": 13,
+    "g": 61,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "trunk_rings"
+    ]
    },
    {
     "species": "palm",
-    "x": 69,
-    "y": 272,
-    "h": 12
+    "x": 70,
+    "y": 270,
+    "h": 15,
+    "g": 61,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "shoot"
+    ]
    }
   ],
   "counts": {
    "banyan": 9,
-   "palm": 7
+   "palm": 6
   }
  },
  "dhow": {
@@ -584,7 +677,14 @@
    348
   ],
   "mast_top_z": 36,
-  "deck_z": 56
+  "deck_z": 56,
+  "geom": {
+   "x1": 272,
+   "yc": 335,
+   "w_bow": 2,
+   "eye_z": 58,
+   "stern_z": 52
+  }
  },
  "cosmetic_asymmetric_boxes": [
   [
@@ -602,33 +702,242 @@
   "sand": 3,
   "laterite": 4,
   "paving": 5,
-  "basalt": 6,
-  "basalt_dk": 7,
-  "floor": 8,
-  "furniture": 9,
-  "stair": 10,
-  "plaster": 11,
-  "mast": 12,
-  "cloth": 13,
-  "kerb": 14,
-  "timber": 15,
-  "thatch": 16,
-  "keg": 17,
-  "crate": 18,
-  "iron": 19,
-  "shrub": 20,
-  "rope": 21,
-  "net": 22,
-  "hull": 23,
-  "pool": 24,
-  "leaf": 25,
-  "bark": 26,
-  "palm_trunk": 27,
-  "frond": 28,
-  "deck": 29
+  "rock": 6,
+  "basalt": 7,
+  "basalt_dk": 8,
+  "floor": 9,
+  "furniture": 10,
+  "stair": 11,
+  "plaster": 12,
+  "finial": 13,
+  "mast": 14,
+  "cloth": 15,
+  "kerb": 16,
+  "flag_teal": 17,
+  "timber": 18,
+  "thatch": 19,
+  "keg": 20,
+  "crate": 21,
+  "iron": 22,
+  "shrub": 23,
+  "rope": 24,
+  "net": 25,
+  "hull": 26,
+  "pool": 27,
+  "leaf": 28,
+  "bark": 29,
+  "nest": 30,
+  "deadwood": 31,
+  "root": 32,
+  "ribbon": 33,
+  "fig": 34,
+  "moss": 35,
+  "palm_trunk": 36,
+  "frond": 37,
+  "coconut": 38,
+  "dryfrond": 39,
+  "palm_ring": 40,
+  "frond_young": 41,
+  "deck": 42,
+  "sail": 43
+ },
+ "art": {
+  "materials_painted": {
+   "sand": 7291,
+   "laterite": 16068,
+   "grass": 18852,
+   "rock": 1108,
+   "paving": 968,
+   "basalt": 26239,
+   "plaster": 2220,
+   "kerb": 3192,
+   "timber": 1550,
+   "floor": 1568,
+   "furniture": 16,
+   "thatch": 1336,
+   "rope": 64,
+   "net": 54,
+   "crate": 632,
+   "keg": 202,
+   "iron": 108,
+   "hull": 1098,
+   "deck": 320,
+   "mast": 92,
+   "sail": 37,
+   "finial": 18,
+   "flag_teal": 18,
+   "pool": 49,
+   "fig": 60,
+   "nest": 12,
+   "deadwood": 26,
+   "ribbon": 86,
+   "coconut": 30,
+   "moss": 8,
+   "root": 1204,
+   "dryfrond": 86,
+   "palm_ring": 40,
+   "frond_young": 12,
+   "bark": 1484,
+   "palm_trunk": 136,
+   "shrub": 256,
+   "cloth": 82,
+   "leaf": 3414,
+   "frond": 642,
+   "sea": 212287
+  },
+  "lamps": [
+   [
+    103,
+    197,
+    54
+   ],
+   [
+    409,
+    315,
+    54
+   ],
+   [
+    103,
+    315,
+    54
+   ],
+   [
+    409,
+    197,
+    54
+   ],
+   [
+    145,
+    226,
+    54
+   ],
+   [
+    367,
+    286,
+    54
+   ],
+   [
+    145,
+    286,
+    54
+   ],
+   [
+    367,
+    226,
+    54
+   ],
+   [
+    86,
+    220,
+    45
+   ],
+   [
+    426,
+    292,
+    45
+   ],
+   [
+    86,
+    244,
+    45
+   ],
+   [
+    426,
+    268,
+    45
+   ],
+   [
+    86,
+    268,
+    45
+   ],
+   [
+    426,
+    244,
+    45
+   ],
+   [
+    86,
+    292,
+    45
+   ],
+   [
+    426,
+    220,
+    45
+   ],
+   [
+    70,
+    216,
+    52
+   ],
+   [
+    442,
+    296,
+    52
+   ],
+   [
+    248,
+    248,
+    56
+   ],
+   [
+    264,
+    248,
+    56
+   ],
+   [
+    248,
+    264,
+    56
+   ],
+   [
+    264,
+    264,
+    56
+   ],
+   [
+    272,
+    335,
+    52
+   ]
+  ],
+  "brightness": {
+   "dark_floors_raised": 0,
+   "whites_capped": 119
+  },
+  "glow": {
+   "sources": 23,
+   "stored_entries": 4226,
+   "nudged_off_palette": 0
+  },
+  "tag_rect": [
+   22,
+   179,
+   22,
+   39,
+   63
+  ],
+  "solid_unchanged": {
+   "asserted": true,
+   "sha256_before": "86c15a55f661dfff2a86e86f8a04e4ca75969532c86ea2625ee06ccdd6f960fa",
+   "sha256_after": "86c15a55f661dfff2a86e86f8a04e4ca75969532c86ea2625ee06ccdd6f960fa"
+  }
+ },
+ "tag_rect": [
+  22,
+  179,
+  22,
+  39,
+  63
+ ],
+ "colour_stats": {
+  "top_luma_median": 74.3,
+  "top_dark_share_pct": 0.0,
+  "top_bright_share_pct": 0.0
  },
  "interiors_n": 62,
- "build_seconds": 1.2,
+ "build_seconds": 7.0,
  "interiors": [
   [
    "casemate 1 (W)",

@@ -26,10 +26,13 @@ GC = {
     'paving': (150, 128, 110), 'basalt': (84, 84, 92), 'basalt_dk': (66, 66, 74), 'plaster': (204, 196, 180),
     'timber': (128, 92, 60), 'floor': (138, 108, 80), 'stair': (150, 120, 90), 'leaf': (58, 112, 58),
     'frond': (96, 146, 62), 'bark': (98, 76, 58), 'palm_trunk': (140, 116, 84), 'iron': (70, 70, 76),
-    'cloth': (200, 70, 50), 'crate': (160, 124, 80), 'keg': (120, 84, 56), 'rope': (176, 156, 110),
+    'cloth': (226, 150, 48), 'crate': (160, 124, 80), 'keg': (120, 84, 56), 'rope': (176, 156, 110),
     'net': (120, 140, 130), 'hull': (110, 80, 54), 'deck': (156, 124, 86), 'mast': (120, 90, 62),
     'thatch': (186, 160, 96), 'kerb': (160, 96, 64), 'shrub': (70, 118, 62), 'furniture': (110, 82, 58),
-    'pool': (60, 120, 130),
+    'pool': (60, 120, 130), 'rock': (96, 98, 104), 'flag_teal': (72, 138, 128),
+    'finial': (176, 140, 66), 'fig': (128, 82, 72), 'ribbon': (224, 150, 50), 'nest': (118, 94, 66),
+    'deadwood': (124, 110, 94), 'coconut': (104, 96, 48), 'sail': (204, 194, 168), 'moss': (88, 112, 62),
+    'root': (118, 104, 90), 'dryfrond': (150, 126, 74), 'palm_ring': (122, 100, 74), 'frond_young': (150, 172, 84),
 }
 
 
@@ -64,6 +67,46 @@ def symmetrize(a, axis='point512'):
 
 # =============================================================================================== terrain
 
+def causeway_shores(S, seed):
+    """Per-x shorelines (west half) of the causeway and the island edges across the channels.
+    Returns y arrays [512]: north shore, south shore, NW island south edge, SW island north edge, and the shore
+    including the sand spits (spits stick out into the channels; the island edges ignore them).
+    u >= 0 is how far a shore lies outside the lane edge (236 / 276): coves 0, lobes up to ~9."""
+    cw = S['causeway']
+    xs = np.arange(512, dtype=float)
+    rows = noise.fbm2((512, 64), 18, 3, 'cwshore', seed)
+    def norm(r):                                     # zero mean, unit spread over the causeway, then [-1, 1]
+        v = r[cw['x'][0]:cw['x'][1] + 1]
+        return np.clip((r - v.mean()) / (v.std() + 1e-6), -1.6, 1.6) / 1.6
+    un = np.clip(cw['shore_mean'] + cw['shore_amp'] * norm(rows[:, 10]), 0, cw['shore_max'])
+    us = np.clip(cw['shore_mean'] + cw['shore_amp'] * norm(rows[:, 50]), 0, cw['shore_max'])
+    an = S['anchor']
+    # straight (u = 1) beside the anchors and at the plaza; equal at the rotation seam (x 256)
+    t = np.ones(512)
+    t = np.minimum(t, smooth(np.maximum(np.maximum(an['x'][0] - 4 - xs, xs - an['x'][1] - 4), 0) / 6))
+    t = np.minimum(t, smooth((xs - 150) / 6))
+    un = 1 + (un - 1) * t
+    us = 1 + (us - 1) * t
+    seam = smooth((xs - 238) / 18)
+    m = (un + us) / 2
+    un = un + (m - un) * seam
+    us = us + (m - us) * seam
+    spn, sps = np.zeros(512), np.zeros(512)
+    for (x0, side, length) in cw['spits']:
+        bump = length * np.exp(-((xs - x0) / 2.6) ** 2)
+        if side == 'N':
+            spn = np.maximum(spn, bump)
+        else:
+            sps = np.maximum(sps, bump)
+    sh_n, sh_s = np.round(236 - un), np.round(276 + us)
+    ch = S['channels']
+    isl_n = np.where((xs >= ch['x'][0]) & (xs <= ch['x'][1]), sh_n - ch['width'] - 1, 227)
+    isl_s = np.where((xs >= ch['x'][0]) & (xs <= ch['x'][1]), sh_s + ch['width'] + 1, 285)
+    isl_n = np.minimum(isl_n, 227)
+    isl_s = np.maximum(isl_s, 285)
+    return sh_n, sh_s, isl_n, isl_s, np.round(sh_n - spn), np.round(sh_s + sps)
+
+
 def terrain(S, seed):
     """-> (H [x, y] int, zone dict of [x, y] masks). Point-symmetric."""
     X, Y = np.meshgrid(np.arange(512, dtype=float), np.arange(512, dtype=float), indexing='ij')
@@ -75,19 +118,24 @@ def terrain(S, seed):
 
     # ------------------------------------------------------------------ shapes
     fg, pl = S['fort_ground'], S['plaza']
-    fort = rounded_rect(X, Y, *fg['x'], *fg['y'], fg['corner_r'])
+    ap = S['fort_apron']
+    Ax = X + (noise.fbm2((512, 512), 16, 3, 'apronx', seed) - 0.5) * 2 * ap['warp']
+    Ay = Y + (noise.fbm2((512, 512), 16, 3, 'aprony', seed) - 0.5) * 2 * ap['warp']
+    apron = rounded_rect(Ax, Ay, *ap['x'], *ap['y'], ap['corner_r'])
+    court = rounded_rect(X, Y, *fg['x'], *fg['y'], 3)
     for (cx, cy) in S['corner_bastions']:
-        fort |= (X - cx) ** 2 + (Y - cy) ** 2 <= 12 ** 2
+        court |= (X - cx) ** 2 + (Y - cy) ** 2 <= 11.5 ** 2
+        apron |= np.hypot(Ax - cx, Ay - cy) <= 15
+    fort = court | apron
     plaza = rounded_rect(X, Y, *pl['x'], *pl['y'], pl['corner_r'])
     for (cx, cy) in S['gate_bastions']:
         plaza |= (X - cx) ** 2 + (Y - cy) ** 2 <= 9 ** 2
     cw = S['causeway']
-    # edges wander +-edge_noise (outward up to edge_noise, inward at most 1), exactly straight beside the anchors
-    e = np.round(np.clip(N2 * 2.6, -1, 1) * cw['edge_noise'])
-    e = np.maximum(e, -1)
-    near_anchor = (X >= S['anchor']['x'][0] - 8) & (X <= S['anchor']['x'][1] + 6)
-    e = np.where(near_anchor, 0, e)
-    causeway = (X >= cw['x'][0]) & (X <= cw['x'][1]) & (Y >= cw['y'][0] - e) & (Y <= cw['y'][1] + e)
+    sh_n, sh_s, isl_n, isl_s, spit_n, spit_s = causeway_shores(S, seed)
+    # the causeway is land between its two shorelines (natural coves and lobes, sand spits into the channels);
+    # straight beside the anchor blocks, the lane y 236-276 always land
+    causeway = (X >= cw['x'][0]) & (X <= cw['x'][1]) & (Y >= sh_n[:, None]) & (Y <= sh_s[:, None])
+    causeway |= (X >= cw['x'][0]) & (X <= cw['x'][1]) & (Y >= spit_n[:, None]) & (Y <= spit_s[:, None])
     # domain-warped coasts: natural, blobby outlines (classic island style), never terraces
     Wx = (noise.fbm2((512, 512), 32, 3, 'warpx', seed) - 0.5) * 2 * S['warp']
     Wy = (noise.fbm2((512, 512), 32, 3, 'warpy', seed) - 0.5) * 2 * S['warp'] * 0.6
@@ -98,7 +146,8 @@ def terrain(S, seed):
         for (lx, ly, lrx, lry) in S['island_lobes'][name]:
             f = np.maximum(f, 1 - ((Xw - lx) / lrx) ** 2 - ((Yw - ly) / lry) ** 2)
         f += S['edge_noise'] * 2 * N
-        islands |= (f > 0) & (Y >= ylo) & (Y <= yhi) & (X <= S['island_x_max'])
+        clip = (Y <= isl_n[:, None]) if name == 'NW' else (Y >= isl_s[:, None])
+        islands |= (f > 0) & clip & (X <= S['island_x_max'])
     islets = np.zeros((512, 512), bool)
     for (cx, cy, r, kz) in S['islets']:
         islets |= np.hypot(Xw - cx, Yw - cy) <= r * (1 + 0.3 * 2 * N)
@@ -119,8 +168,9 @@ def terrain(S, seed):
     land = (fort | plaza | causeway | islands | islets | bars | spit | mids) & west
     mids &= ~(fort | plaza | causeway | islands | islets | bars | spit)
     ch = S['channels']
-    for (ya, yb) in (ch['north_y'], ch['south_y']):
-        land &= ~((X >= ch['x'][0]) & (X <= ch['x'][1]) & (Y >= ya) & (Y <= yb))
+    cx_ = (X >= ch['x'][0]) & (X <= ch['x'][1])
+    land &= ~(cx_ & (Y > isl_n[:, None]) & (Y < np.minimum(sh_n, spit_n)[:, None]))
+    land &= ~(cx_ & (Y < isl_s[:, None]) & (Y > np.maximum(sh_s, spit_s)[:, None]))
     land = symmetrize(land)
     d = ndi.distance_transform_edt(land)
 
@@ -136,15 +186,19 @@ def terrain(S, seed):
     for (cx, cy, r, kz) in S['islets']:
         k = kz + (61 - kz) * smooth(np.hypot(X - cx, Y - cy) / (r * 1.0))
         H = np.where(islets, np.minimum(H, np.round(k)), H)
-    # fort courtyard flat, plaza gentle mounds (59 / 60), spawn square inside the plaza
-    H = np.where(fort, zs['fort'], H)
+    # fort courtyard flat; the apron outside it is a natural rocky shore (beach profile)
+    H = np.where(court, zs['fort'], H)
+    H = np.where(apron & ~court, np.maximum(H, 59), H)
     mound = np.where(M > 0.52, 59, 60)
     H = np.where(plaza, mound, H)
     # causeway: 59 at the plaza edge rising to 57 by the anchor, flat 57 to the axis
     (sx0, sx1) = cw['slope_x']
     prof = np.round(59 - 2 * np.clip((X - sx0) / (sx1 - sx0), 0, 1))
     cmask = causeway & ~plaza & ~fort
-    H = np.where(cmask, np.minimum(H, prof), H)
+    an = S['anchor']
+    da = np.maximum(np.maximum(an['x'][0] - 4 - X, X - an['x'][1] - 4), 0)
+    k = 1.0 - (1.0 - cw['beach_slope']) * smooth(da / 6)           # 1 beside the anchors, gentler elsewhere
+    H = np.where(cmask, np.maximum(prof, np.round(63 - k * d)), H)
     # rear spit: z 60 at the gate, 61 further out (one step at a time back to the gate floor z 59)
     sp = spit & ~fort
     dx_, dy_, dr, dz_ = rs['dune']
@@ -158,9 +212,19 @@ def terrain(S, seed):
     H = np.where(anchor, an['z'], H)
     # coast slope limit: never more than 1 above the water per column inland
     H = np.maximum(H, 63 - d)
+    # basalt outcrops (1-2 high) along the fort apron's waterline, outside the gate path and play lanes
+    O = noise.fbm2((512, 512), 6, 2, 'outcrop', seed)
+    gp = S['gate_path']
+    path = (X >= gp['x'][0]) & (X <= gp['x'][1]) & (Y >= gp['y'][0]) & (Y <= gp['y'][1])
+    rocky = apron & ~court & ~plaza & ~path & (d >= 2) & (d <= 6) & ((X < ap['outcrop_x_max']) |
+                                                                    (Y < 196) | (Y > 316))
+    H = np.where(rocky & (O > ap['outcrop'][0]), H - 1, H)
+    H = np.where(rocky & (O > ap['outcrop'][1]), H - 1, H)
+    H = np.where(path, np.minimum(H, 60), H)
     H = np.where(land, H, 63).astype(int)
     H = symmetrize(H)
-    zones = {'land': land, 'fort': symmetrize(fort & west), 'plaza': symmetrize(plaza & west),
+    zones = {'land': land, 'fort': symmetrize(court & west), 'apron': symmetrize(apron & ~court & west),
+             'outcrop': symmetrize(rocky & (O > ap['outcrop'][0]) & west), 'plaza': symmetrize(plaza & west),
              'causeway': symmetrize(cmask & west), 'islands': symmetrize(islands & west & land),
              'islets': symmetrize((islets | bars | spit | mids) & west & land), 'anchor': symmetrize(anchor & west),
              'd': d}
@@ -176,10 +240,13 @@ def paint_terrain(cv, H, Z):
     cls[Z['causeway'] | Z['plaza']] = 'laterite'
     cls[Z['causeway'] & (H >= 61)] = 'sand'
     cls[Z['fort']] = 'paving'
+    cls[Z['apron'] & (Z['d'] <= 4) & (H <= 61)] = 'rock'
+    cls[Z['outcrop']] = 'rock'
+    cls[Z['plaza']] = 'laterite'
     cv.fill_terrain(H, GC['sea'], 'sea')
     zz = np.arange(64)[None, None, :]
     below = zz >= H[:, :, None]
-    for name in ('grass', 'sand', 'laterite', 'paving'):
+    for name in ('grass', 'sand', 'laterite', 'paving', 'rock'):
         m = (cls == name)[:, :, None] & below
         cv.rgb[m] = GC[name]
         cv.mat[m] = cv.material(name)
@@ -217,7 +284,7 @@ def _radial_carve(cv, cx, cy, ang, r0, r1, z0, z1, width=2):
 
 
 def round_tower(cv, name, cx, cy, G, r, wall, floors, terrace, steps_per_turn, door_angle, upper_doors=(),
-                pavilion='large', mast_top=None, sense=1, windows=True):
+                pavilion='large', mast_top=None, sense=1, windows=True, flag='cloth'):
     """Round bastion/tower on ground floor z G: solid wall `wall` thick, a helical stair (2 wide, steps 2 voxels
     thick, hugging the inside of the wall) from G up to the roof terrace at z `terrace`, floor discs at `floors`,
     a crenellated parapet, an optional domed pavilion and flag mast.
@@ -317,12 +384,16 @@ def round_tower(cv, name, cx, cy, G, r, wall, floors, terrace, steps_per_turn, d
     if pavilion:
         put(cv, cx, cy, crown, 'plaster')
         top_z = crown
+        if mast_top is None:                                    # brass finial on the dome crown
+            put(cv, cx, cy, crown - 1, 'finial')
+            put(cv, cx, cy, crown - 2, 'finial')
+            top_z = crown - 2
         if mast_top is not None:
             for z in range(mast_top, crown):
                 put(cv, cx, cy, z, 'mast')
             for z in range(mast_top, mast_top + 3):              # flag, face-joined to the mast
                 for k in (1, 2, 3):
-                    put(cv, cx + k, cy, z, 'cloth')
+                    put(cv, cx + k, cy, z, flag)
             top_z = mast_top
     # interiors: ground core, each floor, terrace
     cv.interiors.append([f'{name} ground', cx, cy, G])
@@ -434,7 +505,7 @@ def watch_towers(cv, S):
         door_ang = math.atan2(1 if cy < 256 else -1, -1)                    # toward the channel, spawn side
         out.append(round_tower(cv, f'watch tower ({cx},{cy})', cx, cy, G, WT['r'], WT['wall'], WT['floors'],
                                WT['terrace'], WT['steps_per_turn'], door_ang, pavilion='small',
-                               mast_top=WT['mast_top']))
+                               mast_top=WT['mast_top'], flag='cloth' if cy < 256 else 'flag_teal'))
         r0, r1, wh, gap = WT['yard_wall']
         for x in range(int(cx - r1 - 1), int(cx + r1 + 2)):
             for y in range(int(cy - r1 - 1), int(cy + r1 + 2)):
@@ -487,6 +558,9 @@ def room(cv, name, x0, x1, y0, y1, G, h=4, door='E', wall='basalt', roof='flat',
                     if q <= 1.0:
                         put(cv, x, y, z, 'plaster')
         top -= 4
+        fx, fy = int(ccx), int(ccy)
+        put(cv, fx, fy, top - 1, 'finial')
+        top -= 1
     cv.interiors.append([name, cx, cy, G])
     return {'name': name, 'box': [x0, x1, y0, y1], 'G': G, 'top_z': top}
 
@@ -690,6 +764,10 @@ def can_plant(cv, x, y, R, ok_mats):
     return cv.mat[x, y, int(t[1, 1])] in [cv.materials.get(m, -1) for m in ok_mats]
 
 
+BANYAN_DETAILS = ('figs', 'ribbons', 'nest', 'dead_limb', 'trunk_moss', 'root_tint')
+PALM_DETAILS = ('coconuts', 'dry_frond', 'trunk_rings', 'shoot', 'fallen_nut')
+
+
 def banyan(cv, rng, x, y, R):
     """Broad flat canopy (r R), 3 x 3 trunk, 2-4 thick (2 x 2) aerial-root pillars inside the canopy edge.
     Layers are concentric discs stacked face to face; roots run from the canopy floor to the ground."""
@@ -729,7 +807,49 @@ def banyan(cv, rng, x, y, R):
                     if not cv.solid[px + i_, py + j_, z]:
                         put(cv, px + i_, py + j_, z, 'bark')
         roots.append((px, py))
-    return {'species': 'banyan', 'x': x, 'y': y, 'R': R, 'h': g - (zb - 4), 'roots': len(roots)}
+    details = [BANYAN_DETAILS[i] for i in sorted(rng.choice(len(BANYAN_DETAILS), 3, replace=False))]
+    under = [(X, Y) for X in range(int(x - R), int(x + R) + 1) for Y in range(int(y - R), int(y + R) + 1)
+             if cv.mat[X, Y, zb] == cv.materials['leaf'] and not cv.solid[X, Y, zb + 1]
+             and math.hypot(X - x, Y - y) > 2.5]
+    if 'figs' in details and under:                      # fig clusters hanging from the canopy floor
+        for i in rng.choice(len(under), min(10, len(under)), replace=False):
+            put(cv, *under[i], zb + 1, 'fig')
+    if 'ribbons' in details and under:                   # prayer ribbons: 3 strands of 2-3 voxels
+        for i in rng.choice(len(under), min(3, len(under)), replace=False):
+            for k in range(1, int(rng.integers(3, 5))):
+                if cv.solid[under[i][0], under[i][1], zb + k]:
+                    break
+                put(cv, under[i][0], under[i][1], zb + k, 'ribbon')
+    if 'nest' in details:                                # a nest on the crown
+        topz = zb - 4
+        cand = [(X, Y) for X in range(x - 3, x + 3) for Y in range(y - 3, y + 3)
+                if cv.solid[X, Y, topz] and not cv.solid[X, Y, topz - 1]]
+        if cand:
+            X, Y = cand[int(rng.integers(len(cand)))]
+            put(cv, X, Y, topz - 1, 'nest')
+    if 'dead_limb' in details:                           # a dead limb from the trunk, face-connected
+        a = rng.random() * 6.283
+        dx, dy = (1, 0) if abs(math.cos(a)) > abs(math.sin(a)) else (0, 1)
+        sgn = 1 if rng.random() < 0.5 else -1
+        zl = g - hb // 2 - 1
+        for k in range(2, 6):
+            X, Y = x + sgn * dx * k, y + sgn * dy * k
+            if cv.solid[X, Y, zl]:
+                break
+            put(cv, X, Y, zl, 'deadwood')
+    if 'trunk_moss' in details:                          # paint-type: mark the trunk's lower west face as moss
+        for z in range(g - hb // 2, g):
+            if cv.mat[x - 1, y, z] == cv.materials['bark']:
+                cv.mat[x - 1, y, z] = cv.material('moss')
+    if 'root_tint' in details:                           # paint-type: aerial roots in a paler grey bark
+        for (px, py) in roots:
+            for z in range(zb + 1, g):
+                for i_ in (0, 1):
+                    for j_ in (0, 1):
+                        if cv.mat[px + i_, py + j_, z] == cv.materials['bark']:
+                            cv.mat[px + i_, py + j_, z] = cv.material('root')
+    return {'species': 'banyan', 'x': x, 'y': y, 'R': R, 'h': g - (zb - 4), 'roots': len(roots), 'zb': zb,
+            'g': g, 'details': details}
 
 
 def palm(cv, rng, x, y):
@@ -767,7 +887,33 @@ def palm(cv, rng, x, y):
         for v in line_points(*q0, *q1) + line_points(*q1, *q2):
             if 0 <= v[2] < 62 and not cv.solid[v]:
                 put(cv, *v, 'frond')
-    return {'species': 'palm', 'x': x, 'y': y, 'h': h + 2}
+    details = [PALM_DETAILS[i] for i in sorted(rng.choice(len(PALM_DETAILS), 3, replace=False))]
+    if 'coconuts' in details:                            # nuts face-joined under the crown head
+        for (X, Y) in ((hx - 1, hy), (hx + 2, hy + 1), (hx, hy - 1), (hx + 1, hy + 2)):
+            if rng.random() < 0.8 and not cv.solid[X, Y, hz]:
+                put(cv, X, Y, hz, 'coconut')
+    if 'dry_frond' in details:                           # paint-type: one frond withered
+        for z in range(hz - 3, hz + 3):
+            for X in range(hx - 7, hx + 8):
+                for Y in range(hy - 7, hy + 8):
+                    if cv.mat[X, Y, z] == cv.materials['frond'] and (X - hx) * math.cos(b) + (Y - hy) * \
+                            math.sin(b) > 1.5 and abs(-(X - hx) * math.sin(b) + (Y - hy) * math.cos(b)) < 1.2:
+                        cv.mat[X, Y, z] = cv.material('dryfrond')
+    if 'trunk_rings' in details:                         # paint-type: ringed trunk
+        for k, p in enumerate(pts):
+            if k % 2 == 0:
+                q = (int(round(p[0])), int(round(p[1])), int(p[2]))
+                if cv.mat[q] == cv.materials['palm_trunk']:
+                    cv.mat[q] = cv.material('palm_ring')
+    if 'shoot' in details:                               # a young shoot on top of the head
+        put(cv, hx, hy, hz - 2, 'frond_young')
+        put(cv, hx + 1, hy, hz - 2, 'frond_young')
+    if 'fallen_nut' in details:                          # a fallen coconut at the foot (1 high)
+        X, Y = x + (1 if rng.random() < 0.5 else -1), y
+        gz = ground(cv, X, Y)
+        if gz < 62 and gz == g:
+            put(cv, X, Y, gz - 1, 'coconut')
+    return {'species': 'palm', 'x': x, 'y': y, 'h': h + 2, 'g': g, 'details': details}
 
 
 def plant(cv, S, rng):
@@ -931,6 +1077,13 @@ def dhow(cv, S):
         put(cv, *v, 'mast')
     for v in line_points(mx - 4, my, mtop + 1, mx + 10, my, mtop + 12):
         put(cv, *v, 'mast')
+    for v in line_points(mx - 3, my, mtop + 2, mx + 9, my, mtop + 13):     # furled lateen sail under the yard
+        if not cv.solid[v]:
+            put(cv, *v, 'sail')
+        if not cv.solid[v[0], v[1] + 1, v[2]]:
+            put(cv, v[0], v[1] + 1, v[2], 'sail')
     cv.interiors.append(['dhow hold', x0 + 12, yc, 61])
     cv.interiors.append(['dhow deck', x0 + 8, yc, deck])
-    return {'box': [bx0 - 4, bx1 + 4, by0 - 4, by1 + 4], 'mast_top_z': mtop, 'deck_z': deck}
+    wb = dict(hull_cells).get(x1 - 4, 2)
+    return {'box': [bx0 - 4, bx1 + 4, by0 - 4, by1 + 4], 'mast_top_z': mtop, 'deck_z': deck,
+            'geom': {'x1': x1, 'yc': yc, 'w_bow': int(wb), 'eye_z': deck + 2, 'stern_z': deck - 4}}

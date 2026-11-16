@@ -7,7 +7,7 @@
   "note": "graph model, not a collision simulation"
  },
  "reader": {
-  "bytes": 2297884,
+  "bytes": 2292732,
   "reencode_identical": true,
   "surface_all_coloured": true,
   "z63_solid": true
@@ -27,7 +27,7 @@
  "mirror": {
   "solid_mismatch": 0,
   "material_mismatch": 0,
-  "solid_mismatch_unfiltered": 1810,
+  "solid_mismatch_unfiltered": 1847,
   "excluded_boxes": [
    [
     228,
@@ -82,9 +82,9 @@
    "to_own_platform_end": 68.0,
    "to_enemy_spawn": 236.0,
    "to_enemy_spawn_any_drop": 236.0,
-   "reachable_nodes_pct": 97.1,
-   "reachable_nodes_safe": 261360,
-   "reachable_nodes_any": 261360,
+   "reachable_nodes_pct": 97.3,
+   "reachable_nodes_safe": 261380,
+   "reachable_nodes_any": 261380,
    "to_nw_island": 10.0,
    "to_sw_island": 29.0,
    "to_west_islet_n": 42.0,
@@ -100,9 +100,9 @@
    "to_own_platform_end": 69.0,
    "to_enemy_spawn": 236.0,
    "to_enemy_spawn_any_drop": 236.0,
-   "reachable_nodes_pct": 97.1,
-   "reachable_nodes_safe": 261360,
-   "reachable_nodes_any": 261360,
+   "reachable_nodes_pct": 97.3,
+   "reachable_nodes_safe": 261380,
+   "reachable_nodes_any": 261380,
    "to_nw_island": 157.0,
    "to_sw_island": 156.0,
    "to_west_islet_n": 330.0,
@@ -117,23 +117,23 @@
  },
  "safe_descent": {
   "blue": {
-   "ground_cols_reachable_any": 254481,
-   "ground_cols_reachable_safe": 254481,
+   "ground_cols_reachable_any": 254900,
+   "ground_cols_reachable_safe": 254900,
    "safe_share_pct": 100.0
   },
   "red": {
-   "ground_cols_reachable_any": 254481,
-   "ground_cols_reachable_safe": 254481,
+   "ground_cols_reachable_any": 254900,
+   "ground_cols_reachable_safe": 254900,
    "safe_share_pct": 100.0
   }
  },
  "periphery": {
-  "ground_cols": 44217,
-  "reachable_pct": 82.7
+  "ground_cols": 46229,
+  "reachable_pct": 84.3
  },
  "trap_cells": {
   "count": 0,
-  "of_cells": 258545,
+  "of_cells": 258565,
   "sample": []
  },
  "interiors": {
@@ -218,7 +218,7 @@
      "deck_cols": 0,
      "water_cols": 0,
      "roughness": 0.079,
-     "height_above_front": -1.9,
+     "height_above_front": -1.85,
      "height_above_centre_ground": -2.65,
      "height_above_map_median_land": -0.65,
      "platform_drop": 58.65,
@@ -230,17 +230,17 @@
       "r0_8_rear_cover3": 0.325,
       "r0_8_lateral_vol": 0.55,
       "r0_8_lateral_cover3": 0.029,
-      "r8_20_enemy_vol": 3.73,
+      "r8_20_enemy_vol": 3.75,
       "r8_20_enemy_cover3": 0.367,
       "r8_20_rear_vol": 3.45,
       "r8_20_rear_cover3": 0.295,
-      "r8_20_lateral_vol": 1.92,
+      "r8_20_lateral_vol": 1.87,
       "r8_20_lateral_cover3": 0.14,
-      "r20_40_enemy_vol": 1.65,
-      "r20_40_enemy_cover3": 0.239,
-      "r20_40_rear_vol": 1.82,
-      "r20_40_rear_cover3": 0.325,
-      "r20_40_lateral_vol": 3.26,
+      "r20_40_enemy_vol": 1.63,
+      "r20_40_enemy_cover3": 0.24,
+      "r20_40_rear_vol": 1.81,
+      "r20_40_rear_cover3": 0.324,
+      "r20_40_lateral_vol": 3.21,
       "r20_40_lateral_cover3": 0.316
      },
      "exits": {
@@ -257,13 +257,13 @@
        "total_width": 180
       },
       "r20": {
-       "open_share": 0.597,
-       "exits": 13,
+       "open_share": 0.738,
+       "exits": 11,
        "narrowest": 2,
-       "total_width": 191
+       "total_width": 236
       }
      },
-     "exit_min_cut": 60,
+     "exit_min_cut": 73,
      "sealable": false,
      "platform_viewers_mean": 9.24,
      "platform_viewers_max": 11,
@@ -286,33 +286,33 @@
       5.1,
       4.4,
       5.0,
-      4.9,
-      4.7,
+      5.0,
+      4.8,
       5.8,
-      5.8,
-      5.6,
-      5.6,
       5.7,
-      5.6,
+      5.5,
+      5.3,
+      5.1,
+      5.5,
       5.5,
       5.5,
       5.5,
       5.5,
       5.5
      ],
-     "h_mean": 5.26,
-     "slope_per10_toward_platform": 0.18,
-     "raised_vs_spawn": 1.9,
-     "raised_vs_centre": -0.74,
-     "flat_share": 0.726,
-     "water_share": 0.003,
+     "h_mean": 5.21,
+     "slope_per10_toward_platform": 0.16,
+     "raised_vs_spawn": 1.85,
+     "raised_vs_centre": -0.79,
+     "flat_share": 0.715,
+     "water_share": 0.013,
      "lowland_share": 0.0,
-     "land_width_min": 40,
-     "land_width_p50": 41.0,
-     "object_share": 0.147,
+     "land_width_min": 37,
+     "land_width_p50": 43.0,
+     "object_share": 0.156,
      "object_h": {
-      "n": 441,
-      "mean": 3.98,
+      "n": 467,
+      "mean": 3.9,
       "p10": 2.0,
       "p50": 4.0,
       "p90": 5.0,
@@ -321,13 +321,13 @@
      "objects": 9,
      "object_footprint": {
       "n": 9,
-      "mean": 60.11,
+      "mean": 61.11,
       "p10": 33.0,
-      "p50": 36.0,
-      "p90": 120.8,
-      "max": 136.0
+      "p50": 59.0,
+      "p90": 118.0,
+      "max": 122.0
      },
-     "free_share": 0.85,
+     "free_share": 0.831,
      "free_share_min_section8": 0.683,
      "largest_empty_diam": 29.7,
      "anchor_top_mean": 57.0,
@@ -336,10 +336,10 @@
      "highest_walkable_near_end_z": 55,
      "build_gap_blocks": 53,
      "platform_reachable_on_foot": false,
-     "los_toward_platform_mean": 55.0,
-     "los_along_x_mean": 52.9,
-     "los_16dir_mean": 47.5,
-     "seen_from_enemy_tower_zone_share": 0.123,
+     "los_toward_platform_mean": 46.2,
+     "los_along_x_mean": 48.9,
+     "los_16dir_mean": 48.1,
+     "seen_from_enemy_tower_zone_share": 0.113,
      "anchor_enemy_face": {
       "face_x": 211,
       "enemy_face_step_min": 0,
@@ -360,7 +360,7 @@
      "deck_cols": 0,
      "water_cols": 0,
      "roughness": 0.079,
-     "height_above_front": -1.91,
+     "height_above_front": -1.86,
      "height_above_centre_ground": -2.65,
      "height_above_map_median_land": -0.65,
      "platform_drop": 58.65,
@@ -372,17 +372,17 @@
       "r0_8_rear_cover3": 0.325,
       "r0_8_lateral_vol": 0.55,
       "r0_8_lateral_cover3": 0.029,
-      "r8_20_enemy_vol": 3.73,
+      "r8_20_enemy_vol": 3.75,
       "r8_20_enemy_cover3": 0.367,
       "r8_20_rear_vol": 3.45,
       "r8_20_rear_cover3": 0.295,
-      "r8_20_lateral_vol": 1.92,
+      "r8_20_lateral_vol": 1.87,
       "r8_20_lateral_cover3": 0.14,
-      "r20_40_enemy_vol": 1.65,
-      "r20_40_enemy_cover3": 0.239,
-      "r20_40_rear_vol": 1.82,
-      "r20_40_rear_cover3": 0.325,
-      "r20_40_lateral_vol": 3.26,
+      "r20_40_enemy_vol": 1.63,
+      "r20_40_enemy_cover3": 0.24,
+      "r20_40_rear_vol": 1.81,
+      "r20_40_rear_cover3": 0.324,
+      "r20_40_lateral_vol": 3.21,
       "r20_40_lateral_cover3": 0.316
      },
      "exits": {
@@ -399,19 +399,19 @@
        "total_width": 180
       },
       "r20": {
-       "open_share": 0.597,
-       "exits": 13,
+       "open_share": 0.738,
+       "exits": 11,
        "narrowest": 2,
-       "total_width": 191
+       "total_width": 236
       }
      },
-     "exit_min_cut": 60,
+     "exit_min_cut": 73,
      "sealable": false,
      "platform_viewers_mean": 9.35,
      "platform_viewers_max": 10,
      "platform_hidden_pct": 0.0,
      "seen_from_tower_zone_ground_share": 0.98,
-     "seen_from_tower_zone_ground_viewers_mean": 8.74,
+     "seen_from_tower_zone_ground_viewers_mean": 8.62,
      "seen_from_centre_ground_share": 0.796,
      "steps_to_own_end": 69.0,
      "steps_to_own_end_median": 92.0,
@@ -428,33 +428,33 @@
       5.1,
       4.4,
       5.0,
-      4.9,
-      4.7,
+      5.0,
+      4.8,
       5.8,
-      5.8,
-      5.6,
-      5.6,
       5.7,
-      5.6,
+      5.5,
+      5.3,
+      5.1,
+      5.5,
       5.5,
       5.5,
       5.5,
       5.5,
       5.5
      ],
-     "h_mean": 5.26,
-     "slope_per10_toward_platform": 0.18,
-     "raised_vs_spawn": 1.91,
-     "raised_vs_centre": -0.74,
-     "flat_share": 0.728,
-     "water_share": 0.003,
+     "h_mean": 5.21,
+     "slope_per10_toward_platform": 0.16,
+     "raised_vs_spawn": 1.86,
+     "raised_vs_centre": -0.79,
+     "flat_share": 0.718,
+     "water_share": 0.013,
      "lowland_share": 0.0,
-     "land_width_min": 40,
-     "land_width_p50": 41.0,
-     "object_share": 0.145,
+     "land_width_min": 37,
+     "land_width_p50": 43.0,
+     "object_share": 0.154,
      "object_h": {
-      "n": 441,
-      "mean": 3.98,
+      "n": 467,
+      "mean": 3.9,
       "p10": 2.0,
       "p50": 4.0,
       "p90": 5.0,
@@ -463,13 +463,13 @@
      "objects": 9,
      "object_footprint": {
       "n": 9,
-      "mean": 60.11,
+      "mean": 61.11,
       "p10": 33.0,
-      "p50": 36.0,
-      "p90": 120.8,
-      "max": 136.0
+      "p50": 59.0,
+      "p90": 118.0,
+      "max": 122.0
      },
-     "free_share": 0.852,
+     "free_share": 0.833,
      "free_share_min_section8": 0.726,
      "largest_empty_diam": 29.7,
      "anchor_top_mean": 57.0,
@@ -478,10 +478,10 @@
      "highest_walkable_near_end_z": 56,
      "build_gap_blocks": 54,
      "platform_reachable_on_foot": false,
-     "los_toward_platform_mean": 53.9,
-     "los_along_x_mean": 53.4,
-     "los_16dir_mean": 45.5,
-     "seen_from_enemy_tower_zone_share": 0.093,
+     "los_toward_platform_mean": 43.3,
+     "los_along_x_mean": 47.5,
+     "los_16dir_mean": 45.0,
+     "seen_from_enemy_tower_zone_share": 0.073,
      "anchor_enemy_face": {
       "face_x": 300,
       "enemy_face_step_min": 0,
@@ -503,7 +503,7 @@
     "deck_cols": 0.0,
     "water_cols": 0.0,
     "roughness": 0.079,
-    "height_above_front": -1.905,
+    "height_above_front": -1.855,
     "height_above_centre_ground": -2.65,
     "height_above_map_median_land": -0.65,
     "platform_drop": 58.65,
@@ -515,17 +515,17 @@
      "r0_8_rear_cover3": 0.325,
      "r0_8_lateral_vol": 0.55,
      "r0_8_lateral_cover3": 0.029,
-     "r8_20_enemy_vol": 3.73,
+     "r8_20_enemy_vol": 3.75,
      "r8_20_enemy_cover3": 0.367,
      "r8_20_rear_vol": 3.45,
      "r8_20_rear_cover3": 0.295,
-     "r8_20_lateral_vol": 1.92,
+     "r8_20_lateral_vol": 1.87,
      "r8_20_lateral_cover3": 0.14,
-     "r20_40_enemy_vol": 1.65,
-     "r20_40_enemy_cover3": 0.239,
-     "r20_40_rear_vol": 1.82,
-     "r20_40_rear_cover3": 0.325,
-     "r20_40_lateral_vol": 3.26,
+     "r20_40_enemy_vol": 1.63,
+     "r20_40_enemy_cover3": 0.24,
+     "r20_40_rear_vol": 1.81,
+     "r20_40_rear_cover3": 0.324,
+     "r20_40_lateral_vol": 3.21,
      "r20_40_lateral_cover3": 0.316
     },
     "exits": {
@@ -542,19 +542,19 @@
       "total_width": 180.0
      },
      "r20": {
-      "open_share": 0.597,
-      "exits": 13.0,
+      "open_share": 0.738,
+      "exits": 11.0,
       "narrowest": 2.0,
-      "total_width": 191.0
+      "total_width": 236.0
      }
     },
-    "exit_min_cut": 60.0,
+    "exit_min_cut": 73.0,
     "sealable": false,
     "platform_viewers_mean": 9.295,
     "platform_viewers_max": 10.5,
     "platform_hidden_pct": 0.0,
     "seen_from_tower_zone_ground_share": 0.983,
-    "seen_from_tower_zone_ground_viewers_mean": 9.375,
+    "seen_from_tower_zone_ground_viewers_mean": 9.315,
     "seen_from_centre_ground_share": 0.786,
     "steps_to_own_end": 68.5,
     "steps_to_own_end_median": 91.5,
@@ -571,33 +571,33 @@
      5.1,
      4.4,
      5.0,
-     4.9,
-     4.7,
+     5.0,
+     4.8,
      5.8,
-     5.8,
-     5.6,
-     5.6,
      5.7,
-     5.6,
+     5.5,
+     5.3,
+     5.1,
+     5.5,
      5.5,
      5.5,
      5.5,
      5.5,
      5.5
     ],
-    "h_mean": 5.26,
-    "slope_per10_toward_platform": 0.18,
-    "raised_vs_spawn": 1.905,
-    "raised_vs_centre": -0.74,
-    "flat_share": 0.727,
-    "water_share": 0.003,
+    "h_mean": 5.21,
+    "slope_per10_toward_platform": 0.16,
+    "raised_vs_spawn": 1.855,
+    "raised_vs_centre": -0.79,
+    "flat_share": 0.716,
+    "water_share": 0.013,
     "lowland_share": 0.0,
-    "land_width_min": 40.0,
-    "land_width_p50": 41.0,
-    "object_share": 0.146,
+    "land_width_min": 37.0,
+    "land_width_p50": 43.0,
+    "object_share": 0.155,
     "object_h": {
-     "n": 441.0,
-     "mean": 3.98,
+     "n": 467.0,
+     "mean": 3.9,
      "p10": 2.0,
      "p50": 4.0,
      "p90": 5.0,
@@ -606,13 +606,13 @@
     "objects": 9.0,
     "object_footprint": {
      "n": 9.0,
-     "mean": 60.11,
+     "mean": 61.11,
      "p10": 33.0,
-     "p50": 36.0,
-     "p90": 120.8,
-     "max": 136.0
+     "p50": 59.0,
+     "p90": 118.0,
+     "max": 122.0
     },
-    "free_share": 0.851,
+    "free_share": 0.832,
     "free_share_min_section8": 0.705,
     "largest_empty_diam": 29.7,
     "anchor_top_mean": 57.0,
@@ -621,10 +621,10 @@
     "highest_walkable_near_end_z": 55.5,
     "build_gap_blocks": 53.5,
     "platform_reachable_on_foot": false,
-    "los_toward_platform_mean": 54.45,
-    "los_along_x_mean": 53.15,
-    "los_16dir_mean": 46.5,
-    "seen_from_enemy_tower_zone_share": 0.108,
+    "los_toward_platform_mean": 44.75,
+    "los_along_x_mean": 48.2,
+    "los_16dir_mean": 46.55,
+    "seen_from_enemy_tower_zone_share": 0.093,
     "anchor_enemy_face": {
      "face_x": 255.5,
      "enemy_face_step_min": 0.0,
@@ -637,10 +637,10 @@
    "strip": {
     "ground_z_median": 57.0,
     "water_share": 0.017,
-    "object_share": 0.408,
+    "object_share": 0.414,
     "object_h": {
-     "n": 1162,
-     "mean": 5.64,
+     "n": 1179,
+     "mean": 5.59,
      "p10": 2.0,
      "p50": 6.0,
      "p90": 8.0,
@@ -651,54 +651,54 @@
     "cols_within_8_of_platform": 0
    },
    "zone": {
-    "land_share": 0.462,
-    "object_share": 0.156,
-    "built_volume_per_col": 1.282,
-    "objects": 65,
-    "objects_per_10k": 12.06,
+    "land_share": 0.466,
+    "object_share": 0.165,
+    "built_volume_per_col": 1.253,
+    "objects": 77,
+    "objects_per_10k": 14.29,
     "object_footprint": {
-     "n": 65,
-     "mean": 143.46,
-     "p10": 23.0,
-     "p50": 112.0,
-     "p90": 244.0,
-     "max": 874.0
+     "n": 77,
+     "mean": 121.55,
+     "p10": 19.4,
+     "p50": 67.0,
+     "p90": 241.0,
+     "max": 857.0
     },
     "object_height": {
-     "n": 65,
-     "mean": 10.23,
-     "p10": 3.0,
-     "p50": 6.0,
+     "n": 77,
+     "mean": 8.79,
+     "p10": 2.6,
+     "p50": 5.0,
      "p90": 24.0,
      "max": 36.0
     },
-    "free_share": 0.306,
+    "free_share": 0.301,
     "gap_width": {
      "p10": 2.0,
      "p50": 4.0,
      "p90": 10.0
     },
     "largest_empty_diam": 29.7,
-    "indoor_share": 0.139,
+    "indoor_share": 0.129,
     "multilevel_share": 0.029,
-    "walkable_col_share": 0.439,
+    "walkable_col_share": 0.451,
     "walk_height": {
      "p5": 1.0,
      "p50": 4.0,
      "p95": 8.0
     },
-    "los_mean": 49.2,
+    "los_mean": 49.3,
     "los_p90": 128.0,
-    "seen_from_blue_end_share": 0.515,
-    "seen_from_red_end_share": 0.537,
+    "seen_from_blue_end_share": 0.54,
+    "seen_from_red_end_share": 0.545,
     "high_ground_cols_near_ends": [
      154,
      155
     ],
-    "crossing_width": 19,
+    "crossing_width": 21,
     "lanes_at_axis": 4,
     "lane_widths_at_axis": [
-     44,
+     55,
      19,
      11,
      11
@@ -711,10 +711,10 @@
    "flank_south_steps": 456.0,
    "flank_exists": true,
    "flank_ratio": 1.93,
-   "map_crossing_width": 19
+   "map_crossing_width": 21
   },
   "map": {
-   "land_share": 0.169,
+   "land_share": 0.176,
    "land_height": {
     "p10": 3.0,
     "p50": 4.0,
@@ -724,14 +724,14 @@
    "symmetry": {
     "type": "point512",
     "best": "point512",
-    "best_mismatch": 0.0109,
+    "best_mismatch": 0.0111,
     "mismatch": {
-     "x512": 0.3674,
-     "x511": 0.42,
-     "y512": 0.3717,
-     "y511": 0.4151,
-     "point511": 0.2464,
-     "point512": 0.0109
+     "x512": 0.3718,
+     "x511": 0.421,
+     "y512": 0.376,
+     "y511": 0.4156,
+     "point511": 0.2424,
+     "point512": 0.0111
     }
    }
   },
@@ -824,13 +824,13 @@
       0.683,
       0.738,
       0.96,
-      0.902,
-      0.765,
-      0.902,
+      0.872,
+      0.723,
+      0.881,
       1.0,
       1.0
      ],
-     "land_share": 0.997,
+     "land_share": 0.987,
      "exempt_cols": 0
     },
     "red": {
@@ -860,13 +860,13 @@
       0.683,
       0.738,
       0.96,
-      0.902,
-      0.765,
-      0.902,
+      0.872,
+      0.723,
+      0.881,
       1.0,
       1.0
      ],
-     "land_share": 0.997,
+     "land_share": 0.987,
      "exempt_cols": 0
     }
    },
@@ -888,8 +888,8 @@
      "enemy_0_20": 0.306,
      "enemy_0_8": 0.18,
      "enemy_8_20": 0.367,
-     "rear_20_40": 0.325,
-     "enemy_0_20_land_only": 0.32
+     "rear_20_40": 0.324,
+     "enemy_0_20_land_only": 0.315
     },
     "red": {
      "applicable": true,
@@ -897,8 +897,8 @@
      "enemy_0_20": 0.306,
      "enemy_0_8": 0.18,
      "enemy_8_20": 0.367,
-     "rear_20_40": 0.325,
-     "enemy_0_20_land_only": 0.32
+     "rear_20_40": 0.324,
+     "enemy_0_20_land_only": 0.315
     }
    },
    "why": "ok",
@@ -906,7 +906,7 @@
     "enemy_0_20": 0.306,
     "enemy_0_8": 0.18,
     "enemy_8_20": 0.367,
-    "rear_20_40": 0.325
+    "rear_20_40": 0.324
    }
   },
   "under_platform": {
@@ -949,18 +949,18 @@
   "centre_footprint": {
    "status": "n.a.",
    "values": {
-    "land_share": 0.462
+    "land_share": 0.466
    },
-   "why": "central zone land share 0.46 < 0.50"
+   "why": "central zone land share 0.47 < 0.50"
   }
  },
- "check_seconds": 5.9,
+ "check_seconds": 6.3,
  "summary": [
   {
    "rule": "parser",
    "ok": true,
    "detail": {
-    "bytes": 2297884,
+    "bytes": 2292732,
     "reencode_identical": true,
     "surface_all_coloured": true,
     "z63_solid": true
@@ -1168,13 +1168,13 @@
        0.683,
        0.738,
        0.96,
-       0.902,
-       0.765,
-       0.902,
+       0.872,
+       0.723,
+       0.881,
        1.0,
        1.0
       ],
-      "land_share": 0.997,
+      "land_share": 0.987,
       "exempt_cols": 0
      },
      "red": {
@@ -1204,13 +1204,13 @@
        0.683,
        0.738,
        0.96,
-       0.902,
-       0.765,
-       0.902,
+       0.872,
+       0.723,
+       0.881,
        1.0,
        1.0
       ],
-      "land_share": 0.997,
+      "land_share": 0.987,
       "exempt_cols": 0
      }
     },
@@ -1229,7 +1229,7 @@
      "enemy_0_20": 0.306,
      "enemy_0_8": 0.18,
      "enemy_8_20": 0.367,
-     "rear_20_40": 0.325
+     "rear_20_40": 0.324
     },
     "values": {
      "blue": {
@@ -1238,8 +1238,8 @@
       "enemy_0_20": 0.306,
       "enemy_0_8": 0.18,
       "enemy_8_20": 0.367,
-      "rear_20_40": 0.325,
-      "enemy_0_20_land_only": 0.32
+      "rear_20_40": 0.324,
+      "enemy_0_20_land_only": 0.315
      },
      "red": {
       "applicable": true,
@@ -1247,8 +1247,8 @@
       "enemy_0_20": 0.306,
       "enemy_0_8": 0.18,
       "enemy_8_20": 0.367,
-      "rear_20_40": 0.325,
-      "enemy_0_20_land_only": 0.32
+      "rear_20_40": 0.324,
+      "enemy_0_20_land_only": 0.315
      }
     },
     "object_ground": "terrain_H"
@@ -1304,10 +1304,10 @@
    "ok": true,
    "status": "n.a.",
    "detail": {
-    "why": "central zone land share 0.46 < 0.50",
+    "why": "central zone land share 0.47 < 0.50",
     "avg": null,
     "values": {
-     "land_share": 0.462
+     "land_share": 0.466
     },
     "object_ground": "terrain_H"
    }
@@ -1318,8 +1318,8 @@
    "solid_cols_outside": 0
   },
   "water": {
-   "water_pct": 81.98,
-   "land_cols": 47243
+   "water_pct": 80.99,
+   "land_cols": 49843
   },
   "anchors": {
    "blue": {
@@ -1417,7 +1417,7 @@
      39
     ],
     "nearest_2d": 48.1,
-    "top_z": 38
+    "top_z": 36
    },
    "bastion (150,286)": {
     "nearest_3d": 65.7,
@@ -1427,7 +1427,7 @@
      39
     ],
     "nearest_2d": 48.1,
-    "top_z": 38
+    "top_z": 36
    },
    "bastion (96,204)": {
     "nearest_3d": 111.9,
@@ -1437,7 +1437,7 @@
      37
     ],
     "nearest_2d": 105.9,
-    "top_z": 31
+    "top_z": 29
    },
    "bastion (96,308)": {
     "nearest_3d": 112.2,
@@ -1447,16 +1447,16 @@
      37
     ],
     "nearest_2d": 106.3,
-    "top_z": 31
+    "top_z": 29
    },
    "dhow": {
-    "nearest_3d": 69.7,
+    "nearest_3d": 72.9,
     "at": [
-     232,
-     325,
-     45
+     246,
+     335,
+     36
     ],
-    "nearest_2d": 54.0,
+    "nearest_2d": 59.0,
     "top_z": 36
    }
   },
@@ -1478,11 +1478,11 @@
     "dry_route": false
    },
    "north_70": {
-    "steps": 342.0,
+    "steps": 340.0,
     "dry_route": false
    },
    "south_70": {
-    "steps": 342.0,
+    "steps": 340.0,
     "dry_route": false
    }
   },
@@ -1490,12 +1490,12 @@
    "note": "applicable_land_min lowered to 0.3 for reporting only",
    "status": "pass",
    "values": {
-    "objects": 57,
-    "footprint_p50": 117.0,
-    "footprint_p25": 43.0,
-    "footprint_p75": 181.0,
-    "objects_ge_25_cells": 53,
-    "land_share": 0.462
+    "objects": 53,
+    "footprint_p50": 97.0,
+    "footprint_p25": 39.0,
+    "footprint_p75": 170.0,
+    "objects_ge_25_cells": 49,
+    "land_share": 0.466
    }
   }
  },
@@ -1505,5 +1505,5 @@
    "note: water_damage needs piqueserver.scripts.map_extensions in the server script list"
   ]
  },
- "check_wall_seconds": 6.8
+ "check_wall_seconds": 7.5
 }

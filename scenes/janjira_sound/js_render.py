@@ -28,6 +28,9 @@ SHOTS = {
     '09_blue_front_eye_level': dict(cam=(120, 256, 7), look=(256, 256, 10), fov=70, size=(1400, 800)),
     '10_nw_island_tower': dict(cam=(190, 140, 40), look=(205, 205, 8), fov=60, size=(1400, 800)),
     '11_dhow': dict(cam=(225, 380, 25), look=(255, 335, 8), fov=60, size=(1400, 800)),
+    '12_tag_corner': dict(cam=(110, 120, 60), look=(84, 38, 0), fov=58, size=(1400, 800)),
+    '13_tide_rose': dict(cam=(330, 330, 60), look=(400, 386, 0), fov=58, size=(1400, 800)),
+    '14_rear_islets': dict(cam=(20, 256, 30), look=(80, 256, 6), fov=70, size=(1400, 800)),
 }
 
 
@@ -49,7 +52,7 @@ def main(mapdir):
     topdown(solid, color, scale=2).save(os.path.join(out, '01_top.png'))
     height_png(solid).save(os.path.join(out, '02_height.png'))
     for k, kw in SHOTS.items():
-        view(solid, color, fog=FOG if not k.startswith('03') and not k.startswith('04') else None,
+        view(solid, color, fog=FOG if k[:2] not in ('03', '04', '12', '13') else None,
              fog_dist=(110, 260), **kw).save(os.path.join(out, k + '.png'))
     return out
 
