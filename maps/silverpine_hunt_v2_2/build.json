@@ -1,0 +1,62 @@
+{
+ "sha256": "f91e1075502328dc230e493baf302de0af5e21f8975d33a64fc6179beaa53c4f",
+ "bytes": 3741500,
+ "build_s": 11.6,
+ "tag_rect": [
+  8,
+  102,
+  492,
+  503
+ ],
+ "cosmetic_asymmetric_bbox": [
+  8,
+  102,
+  492,
+  503
+ ],
+ "cleanup": {
+  "tiny_floating_removed_voxels": 523,
+  "large_floating_left": [],
+  "trap_cells_raised": 14
+ },
+ "counts": {
+  "trees": 434,
+  "scatter": {
+   "boulder": 57,
+   "log": 17,
+   "stump": 17,
+   "trap": 11,
+   "bones": 7,
+   "wolfsbane": 9,
+   "sapling": 3,
+   "lantern": 1
+  },
+  "portal_x": 181,
+  "werewolf_ground_z": 41,
+  "watchhouse_g": 46,
+  "floor_z": 56,
+  "falls": {
+   "yb": 53
+  }
+ },
+ "tree_types_total": {
+  "spruce": 402,
+  "scots": 86,
+  "snag": 136,
+  "sapling": 244
+ },
+ "sky_objects": null,
+ "ground_stats": {
+  "snow_white": 34.0,
+  "trampled_snow": 0.1,
+  "foliage": 26.2,
+  "rock": 14.2,
+  "ice": 3.9,
+  "earth_grass_needles": 16.7,
+  "roofs": 1.6,
+  "other": 3.3,
+  "topdown_mean_luma": 98.8,
+  "topdown_pct_luma_over_175": 1.5
+ },
+ "surface_voxels": 559068
+}
