@@ -259,15 +259,18 @@ def windows_on(cv, x0, x1, y0, y1, fz, lights, every=4, sill=2, hgt=2):
     return len(out)
 
 
-def _ground_out(cv, door, dsp):
+def _ground_out(cv, door, dsp, zmin=0):
+    """Ground top just outside a door, ignoring anything above zmin (roof eaves over the door)."""
     x0, x1, y0, y1 = dsp
     if door == 'S':
-        return top(cv, (x0 + x1) // 2, y1 + 1)
-    if door == 'N':
-        return top(cv, (x0 + x1) // 2, y0 - 1)
-    if door == 'E':
-        return top(cv, x1 + 1, (y0 + y1) // 2)
-    return top(cv, x0 - 1, (y0 + y1) // 2)
+        p = ((x0 + x1) // 2, y1 + 1)
+    elif door == 'N':
+        p = ((x0 + x1) // 2, y0 - 1)
+    elif door == 'E':
+        p = (x1 + 1, (y0 + y1) // 2)
+    else:
+        p = (x0 - 1, (y0 + y1) // 2)
+    return cv.column_top(p[0], p[1], zmin)
 
 
 def outside_stair(cv, door, dsp, fz, rise, mat='stair'):
@@ -351,7 +354,7 @@ def house(cv, rep, name, x0, x1, y0, y1, storeys=1, ridge='x', door='S', ruin=No
            'W': (x0, x0, cy - 1, cy + 1)}[door]
     cv.carve(dsp[0], dsp[1], dsp[2], dsp[3], fz - 4, fz - 1)
     rep.setdefault('doors', []).append((name, door, dsp, fz))
-    rise = max(0, _ground_out(cv, door, dsp) - fz)
+    rise = max(0, _ground_out(cv, door, dsp, fz) - fz)
     if rise > 0:
         outside_stair(cv, door, dsp, fz, rise)
     if ruin == 'corner':                                                  # broken corner: jagged top, NE/SE corner
@@ -447,14 +450,24 @@ def rope_bridge(cv, p0, p1, w=3, sag=2, broken=None):
     L = int(max(abs(x1 - x0), abs(y1 - y0)))
     ux, uy = (x1 - x0) / L, (y1 - y0) / L
     nx, ny = -uy, ux
-    prev = None
     pts = []
+    Z = []
     for i in range(L + 1):
         t = i / L
         zz = round(z0 + (z1 - z0) * t + sag * math.sin(math.pi * t))
-        if prev is not None and abs(zz - prev) > 1:
-            zz = prev + (1 if zz > prev else -1)
-        prev = zz
+        cx, cy = x0 + ux * i, y0 + uy * i
+        wet = any(top(cv, int(round(cx + nx * k)), int(round(cy + ny * k))) >= 62 for k in range(-(w // 2) - 1,
+                                                                                               w // 2 + 2))
+        Z.append(min(zz, 58) if wet else zz)
+    for _ in range(3):                                   # steps of at most 1 between planks, both directions
+        for i in range(1, len(Z)):
+            Z[i] = min(Z[i], Z[i - 1] + 1)
+        for i in range(len(Z) - 2, -1, -1):
+            Z[i] = min(Z[i], Z[i + 1] + 1)
+    zmap = Z
+    for i in range(L + 1):
+        t = i / L
+        zz = zmap[i]
         cx, cy = x0 + ux * i, y0 + uy * i
         brk = broken and broken[0] <= t <= broken[1]
         for k in range(-(w // 2), w // 2 + 1):
@@ -482,7 +495,7 @@ def rope_bridge(cv, p0, p1, w=3, sag=2, broken=None):
             if broken and broken[0] <= t <= broken[1]:
                 prevp = None
                 continue
-            zz = round(z0 + (z1 - z0) * t + sag * math.sin(math.pi * t)) - 2
+            zz = zmap[i] - 2
             cx, cy = x0 + ux * i, y0 + uy * i
             q = (int(round(cx + nx * k)), int(round(cy + ny * k)), zz)
             if prevp is not None:
@@ -621,8 +634,11 @@ def galleon(cv, rep, S):
         cv.carve(x, x, y, y, hl.deck(L - 1) - 3, hl.deck(L - 1) - 2)
     cv.interiors.append(['galleon captain cabin', 252, y0 + q0 + 6, hl.deck(q0 + 6)])
     # stair main deck -> quarterdeck (west side, rising south along y) just ahead of the cabin wall
-    st_u = q0 - 5
-    straight_stair(cv, y0 + st_u, 247, 248, hl.deck(st_u), 5, 1, GC['stair'], 'stair', along='y')
+    for rise in range(5, 12):
+        st_u = q0 - rise
+        if hl.deck(st_u) - rise == hl.deck(q0) - 5:
+            break
+    straight_stair(cv, y0 + st_u, 247, 248, hl.deck(st_u), rise, 1, GC['stair'], 'stair', along='y')
     # stairs hold -> gun deck -> main deck across the beam (rising toward the axis) where the deck is level
     rep['galleon_stairs'] = []
     for (u, off) in ((L - 16, 10), (L - 28, 5)):
@@ -631,7 +647,7 @@ def galleon(cv, rep, S):
         fz = hl.deck(u) + off
         straight_stair(cv, 248, y0 + u, y0 + u + 1, fz, 5, 1, GC['stair'], 'stair')
         rep['galleon_stairs'].append((u, fz))
-        cv.interiors.append([f'galleon deck +{off}', 252, y0 + u - 3, fz])
+        cv.interiors.append([f'galleon deck +{off}', 251, y0 + u + 4, hl.deck(u + 4) + off])
     # stern breach into the hold from the stern reef: transom opening + steps
     zh = hl.deck(L - 1) + 10                                         # hold floor at the stern
     cv.carve(253, 255, y1 - 1, y1, zh - 4, zh - 1)
@@ -986,24 +1002,35 @@ def skull(cv, rep, S):
                 box(cv, x, x, y, y, lz, 63, 'rock')
             else:
                 box(cv, x, x, y, y, 63, 63, 'sea')
-    # cave mouth opens to the north lagoon: clear any skull rock in front of the opening
+    # cave mouth opens to the north lagoon: clear rock in front of the opening below the jaw line
     for x in range(mx0, W + 1):
-        for y in range(my0 - 8, my0):
+        for y in range(my0 - 10, my0):
             cv.carve(x, x, y, y, mz0, 62)
-            if top(cv, x, y) < 63 and x >= K['pool_x']:
-                cv.carve(x, x, y, y, mz0, 62)
-                box(cv, x, x, y, y, 63, 63, 'sea')
-    # teeth: upper teeth hang from the jaw roof at the front, lower teeth stand on the ledge front edge (gaps between)
+            box(cv, x, x, y, y, 63, 63, 'sea')
+    # teeth: upper teeth hang from the jaw at the front (grown up until they meet rock), lower teeth on the ledge
     for x in range(mx0 + 1, W + 1, 4):
-        box(cv, x, x + 1, my0 - 1, my0 + 1, mz0, mz0 + 3, 'bone')
+        for xx in (x, x + 1):
+            if xx > W:
+                continue
+            for y in range(my0, my0 + 3):
+                zt = mz0 + 3
+                z = zt
+                while z > mz0 - 12 and not cv.solid[xx, y, z]:
+                    z -= 1
+                if cv.solid[xx, y, z]:
+                    box(cv, xx, xx, y, y, z + 1, zt, 'bone')
         if x < K['pool_x'] - 2:
-            box(cv, x, x + 1, my0 - 1, my0, lz - 2, lz - 1, 'bone')
-    # ledge path out of the cave along the west lip to the islet beach
-    for y in range(my0 - 8, my0 + 1):
-        for x in range(mx0 - 6, mx0 + 6):
-            if top(cv, x, y) > lz:
-                cv.carve(x, x, y, y, lz - 4, lz - 1)
-                box(cv, x, x, y, y, lz, 63, 'rock')
+            box(cv, x, x + 1, my0, my0, lz - 2, lz - 1, 'bone')
+    # ledge path out of the cave: a rock shelf west along the jaw front, then south to the islet beach
+    pts = [(mx0 + 6, my0 - 3), (mx0 - 14, my0 - 3), (mx0 - 14, my0 + 16)]
+    for (p0, p1) in zip(pts, pts[1:]):
+        for (x, y, _) in line_points(p0[0], p0[1], 0, p1[0], p1[1], 0):
+            for dx in range(-2, 3):
+                for dy in range(-2, 3):
+                    X, Y = x + dx, y + dy
+                    if top(cv, X, Y) >= lz:
+                        box(cv, X, X, Y, Y, lz, 63, 'rock')
+                    cv.carve(X, X, Y, Y, lz - 4, lz - 1)
     # treasure alcove at the back of the cave (axis)
     chx, chy = K['chest']
     cv.carve(chx - 5, W, my1 + 1, my1 + 6, lz - 5, lz - 1)
@@ -1245,6 +1272,7 @@ def alcove(cv, rep, x, y, face='W', seed=0):
                 col_down(cv, xx, yy, zs[0], 'rock')
     dx = {'W': -1, 'E': 1}[face]
     nx0 = x + dx * 6
+    g = min(61, top(cv, x + dx * 8, y))                                   # niche floor = ground at its mouth
     a, b = sorted((x, nx0))
     cv.carve(a, b, y - 2, y + 2, g - 5, g - 1)
     box(cv, a, b, y - 2, y + 2, g, 63, 'rock')

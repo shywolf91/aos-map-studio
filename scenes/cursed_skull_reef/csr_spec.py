@@ -36,7 +36,7 @@ SPEC = {
     # ---------------------------------------------------------------- spawn isle (west; east is the mirror)
     'island': {
         'ellipses': [(112, 256, 80, 94), (164, 204, 40, 34), (164, 308, 40, 34), (62, 178, 34, 36),
-                     (62, 334, 34, 36)],
+                     (62, 334, 34, 36), (186, 256, 28, 46)],
         'x_max': 204, 'x_max_shoulder': 214, 'shoulder_y': [(218, 235), (277, 294)],
         'edge_noise': 0.14, 'beach_w': 6, 'rise_w': 20, 'relief_amp': 4.0, 'relief_cell': 24,
         # rear ridge (spawn backdrop): rises up to `h` above the plateau, centred x, half-length in y
@@ -68,25 +68,25 @@ SPEC = {
     # skull crag (axis): cranium, cheekbones, jaw over the sea cave, eye-socket rooms, inner stair
     'skull': {'cranium': (256, 348, 34, 30, 28, 24), 'maxilla': (256, 332, 45, 25, 15, 10),
               'eye': (244, 320, 31, 6.0, 9.0, 5.5), 'eye_room': (237, 251, 316, 328, 25, 31),
-              'nose': (256, 322, 42), 'mouth': (236, 255, 310, 340, 50, 62), 'pool_x': 248, 'ledge_z': 60,
+              'nose': (256, 322, 42), 'mouth': (236, 255, 318, 342, 50, 62), 'pool_x': 248, 'ledge_z': 60,
               'stair_x': (238, 240), 'stair_y0': 360, 'chest': (256, 342)},
 
     # skull bridge ruin across the maelstrom (axis): neck south beach -> skull jaw ledge
-    'bridge_ruin': {'x': (254, 255), 'y': (275, 316), 'z': 60, 'broken': (290, 300)},
+    'bridge_ruin': {'x': (254, 255), 'y': (275, 339), 'z': 61, 'broken': (290, 300)},
 
     # ---------------------------------------------------------------- flank chains (north; south = y-mirror)
     'skerries': {'N1': (124, 112, 15, 52), 'N2': (176, 90, 11, 54), 'N3': (220, 82, 10, 55), 'M': (256, 78, 15, 51)},
     'links': [
-        ('pier', [(124, 162), (124, 127)], 3),               # isle north shore -> N1
+        ('pier', [(124, 172), (124, 126)], 3),               # isle north shore -> N1
         ('rope', [(134, 104), (170, 93)], 3),                # N1 -> N2
         ('broken', [(186, 86), (212, 86)], 3),               # N2 -> N3 (sagging, broken stretch)
         ('rope', [(226, 80), (244, 79)], 3),                 # N3 -> M
     ],
     'centre_links': [
-        ('rope', [(194, 176), (224, 150)], 3),               # isle NE lobe -> fort islet
-        ('rope', [(196, 334), (220, 344)], 3),               # isle SE lobe -> skull islet
+        ('rope', [(184, 178), (224, 150)], 3),               # isle NE lobe -> fort islet
+        ('rope', [(186, 336), (220, 344)], 3),               # isle SE lobe -> skull islet
     ],
-    'axis_piers': [((255, 92), (255, 116)), ((255, 391), (255, 420))],   # M -> fort islet, skull islet -> S-M
+    'axis_piers': [((255, 92), (255, 116)), ((255, 384), (255, 420))],   # M -> fort islet, skull islet -> S-M
 
     # ---------------------------------------------------------------- spawn isle structures (west; mirrored)
     'houses': [
@@ -102,8 +102,8 @@ SPEC = {
         ('lookout cabin', 62, 73, 250, 261, 2, 'y', 'E', None),
     ],
     'harbour': {'pier_y': (240, 272), 'pier_x': (26, 40)},               # west harbour behind the spawn
-    'brig': {'x': (92, 130), 'y': (66, 78), 'deck': 56, 'pier': ((112, 79), (112, 98))},   # moored brig at N1
-    'alcoves': [(40, 214, 'W'), (40, 300, 'W')],                        # treasure-chest alcoves in the coast rock
+    'brig': {'x': (92, 130), 'y': (66, 78), 'deck': 56, 'pier': ((118, 79), (118, 102))},   # moored brig at N1
+    'alcoves': [(54, 214, 'W'), (54, 298, 'W')],                        # treasure-chest alcoves in the coast rock
     'front_props': [
         # (kind, x, y): low dressing (<= 10 tall), every N-S section >= 50 % free
         ('hut', 147, 238), ('hut', 147, 268), ('rowboat', 160, 250), ('crates', 171, 264), ('barrels', 178, 242),
@@ -112,8 +112,8 @@ SPEC = {
     'spawn_cover': [(158, 226, 4), (158, 286, 4)],                      # boulders on the enemy-facing corners
     'strip_props': [
         # (kind, x, y) on the neck under the platform (west half; ribs and chest pile are axis pieces)
-        ('longboat', 222, 250), ('anchor_big', 234, 262), ('coral', 228, 268), ('coral', 240, 246),
-        ('mast_log', 214, 244), ('barrels', 236, 253), ('cannon', 244, 266),
+        ('mast_log', 214, 243), ('longboat', 216, 252), ('anchor_big', 233, 258), ('coral', 222, 266),
+        ('coral', 236, 250), ('barrels', 228, 264), ('cannon', 240, 268),
     ],
     'ribs': {'x': (241, 255), 'y': (247, 265), 'h': 9, 'every': 3},
     # vegetation groves (art pass, OS seed): (x, y, radius, kind) kind: palm / dead / mangrove / mix
