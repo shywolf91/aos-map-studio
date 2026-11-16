@@ -1,0 +1,1242 @@
+{
+ "map": "Northgale Freighter",
+ "file": "northgale_freighter",
+ "sha256": "e4fad6a979302ee0d981faaeb5ea9194cceabd20eef05b16cb9a147b20b79469",
+ "bytes": 3163260,
+ "stage": "art",
+ "layout_seed": 20261116,
+ "veg_seed": 3975672189,
+ "axis": "x512",
+ "floating_before_cleanup": 0,
+ "cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "post_mirror_floating": {
+  "unexpected": 0,
+  "list": []
+ },
+ "props": [
+  [
+   "front",
+   "container",
+   [
+    139,
+    143,
+    237,
+    245
+   ]
+  ],
+  [
+   "front",
+   "container",
+   [
+    139,
+    143,
+    267,
+    275
+   ]
+  ],
+  [
+   "front",
+   "container",
+   [
+    147,
+    151,
+    250,
+    262
+   ]
+  ],
+  [
+   "front",
+   "container",
+   [
+    146,
+    159,
+    237,
+    241
+   ]
+  ],
+  [
+   "front",
+   "tarp",
+   [
+    160,
+    169,
+    250,
+    256
+   ]
+  ],
+  [
+   "front",
+   "crates",
+   [
+    160,
+    165,
+    263,
+    268
+   ]
+  ],
+  [
+   "front",
+   "container",
+   [
+    176,
+    189,
+    270,
+    274
+   ]
+  ],
+  [
+   "front",
+   "tarp",
+   [
+    184,
+    192,
+    240,
+    245
+   ]
+  ],
+  [
+   "front",
+   "drums",
+   [
+    194,
+    200,
+    255,
+    262
+   ]
+  ],
+  [
+   "front",
+   "pallets",
+   [
+    168,
+    173,
+    241,
+    244
+   ]
+  ],
+  [
+   "front",
+   "vents",
+   [
+    155,
+    162,
+    269,
+    272
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    140,
+    158,
+    217,
+    221
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    140,
+    158,
+    224,
+    228
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    74,
+    78,
+    217,
+    230
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    81,
+    85,
+    223,
+    232
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    140,
+    158,
+    291,
+    295
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    140,
+    158,
+    284,
+    288
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    74,
+    78,
+    282,
+    295
+   ]
+  ],
+  [
+   "cover",
+   "container",
+   [
+    81,
+    85,
+    280,
+    289
+   ]
+  ],
+  [
+   "strip",
+   "container",
+   [
+    219,
+    236,
+    242,
+    246
+   ]
+  ],
+  [
+   "strip",
+   "tarp",
+   [
+    222,
+    235,
+    256,
+    266
+   ]
+  ],
+  [
+   "strip",
+   "crates",
+   [
+    240,
+    245,
+    268,
+    273
+   ]
+  ],
+  [
+   "strip",
+   "drums",
+   [
+    238,
+    244,
+    244,
+    251
+   ]
+  ],
+  [
+   "centre",
+   "container",
+   [
+    214,
+    229,
+    222,
+    226
+   ]
+  ],
+  [
+   "centre",
+   "container",
+   [
+    214,
+    229,
+    286,
+    290
+   ]
+  ],
+  [
+   "centre",
+   "tarp",
+   [
+    234,
+    245,
+    213,
+    219
+   ]
+  ],
+  [
+   "centre",
+   "tarp",
+   [
+    234,
+    245,
+    293,
+    299
+   ]
+  ],
+  [
+   "centre",
+   "forklift",
+   [
+    203,
+    211,
+    230,
+    235
+   ]
+  ],
+  [
+   "centre",
+   "forklift",
+   [
+    203,
+    211,
+    277,
+    282
+   ]
+  ],
+  [
+   "tween",
+   "container",
+   [
+    82,
+    86,
+    246,
+    261
+   ]
+  ],
+  [
+   "tween",
+   "container",
+   [
+    142,
+    157,
+    268,
+    272
+   ]
+  ],
+  [
+   "tween",
+   "container",
+   [
+    182,
+    201,
+    240,
+    244
+   ]
+  ],
+  [
+   "tween",
+   "container",
+   [
+    244,
+    255,
+    248,
+    252
+   ]
+  ],
+  [
+   "tween",
+   "crates",
+   [
+    100,
+    105,
+    214,
+    219
+   ]
+  ],
+  [
+   "tween",
+   "crates",
+   [
+    196,
+    201,
+    290,
+    295
+   ]
+  ],
+  [
+   "tween",
+   "container",
+   [
+    214,
+    227,
+    286,
+    290
+   ]
+  ]
+ ],
+ "companionways": [
+  [
+   126,
+   133,
+   209,
+   213
+  ],
+  [
+   126,
+   133,
+   299,
+   303
+  ],
+  [
+   180,
+   187,
+   209,
+   213
+  ],
+  [
+   180,
+   187,
+   299,
+   303
+  ]
+ ],
+ "cranes": [
+  [
+   189,
+   200,
+   168,
+   223
+  ],
+  [
+   189,
+   200,
+   288,
+   343
+  ]
+ ],
+ "gangways": [
+  [
+   150,
+   176,
+   200,
+   203
+  ],
+  [
+   150,
+   176,
+   309,
+   312
+  ]
+ ],
+ "huts": [
+  {
+   "name": "fisher hut",
+   "box": [
+    173,
+    183,
+    96,
+    104,
+    53,
+    58
+   ],
+   "storeys": 1
+  },
+  {
+   "name": "fisher hut",
+   "box": [
+    173,
+    183,
+    408,
+    416,
+    53,
+    58
+   ],
+   "storeys": 1
+  }
+ ],
+ "vegetation": {
+  "trees": 12,
+  "by_species": {
+   "bush": 3,
+   "conifer": 9
+  },
+  "details": {
+   "mushrooms": 4,
+   "roots": 3,
+   "vines": 5,
+   "blossom": 3,
+   "ribbon": 4,
+   "deadbranch": 3,
+   "lantern": 4,
+   "fruit": 5,
+   "nest": 4,
+   "moss": 1
+  }
+ },
+ "ends": {
+  "bow": {
+   "x": [
+    4,
+    72
+   ],
+   "forecastle_z": 35
+  },
+  "stern": {
+   "x": [
+    440,
+    499
+   ],
+   "bridge": {
+    "name": "bridge",
+    "box": [
+     446,
+     478,
+     220,
+     292,
+     10,
+     40
+    ],
+    "storeys": 5
+   },
+   "roof_z": 10
+  }
+ },
+ "lighthouses": [
+  {
+   "centre": [
+    256,
+    118
+   ],
+   "ground_z": 52,
+   "gallery_z": 26,
+   "top_z": 15,
+   "glow_sources": 31,
+   "lamp_posts": 6,
+   "box": [
+    243,
+    269,
+    105,
+    131
+   ]
+  },
+  {
+   "centre": [
+    256,
+    394
+   ],
+   "ground_z": 52,
+   "gallery_z": 26,
+   "top_z": 15,
+   "glow_sources": 30,
+   "lamp_posts": 5,
+   "box": [
+    243,
+    269,
+    381,
+    407
+   ]
+  }
+ ],
+ "detail": {
+  "rail_columns": 1198,
+  "orphans": {
+   "removed_components": 0,
+   "removed_voxels": 0,
+   "kept_floating": []
+  }
+ },
+ "sky_records": [
+  {
+   "name": "gull 1",
+   "voxels": 34,
+   "x": [
+    148,
+    153
+   ],
+   "y": [
+    144,
+    156
+   ],
+   "z": [
+    15,
+    16
+   ]
+  },
+  {
+   "name": "gull 2",
+   "voxels": 35,
+   "x": [
+    163,
+    170
+   ],
+   "y": [
+    153,
+    164
+   ],
+   "z": [
+    17,
+    18
+   ]
+  },
+  {
+   "name": "gull 3",
+   "voxels": 37,
+   "x": [
+    357,
+    362
+   ],
+   "y": [
+    354,
+    366
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "gull 4",
+   "voxels": 34,
+   "x": [
+    344,
+    351
+   ],
+   "y": [
+    367,
+    378
+   ],
+   "z": [
+    16,
+    17
+   ]
+  },
+  {
+   "name": "gull 5",
+   "voxels": 39,
+   "x": [
+    436,
+    443
+   ],
+   "y": [
+    114,
+    125
+   ],
+   "z": [
+    19,
+    20
+   ]
+  },
+  {
+   "name": "cloud 1",
+   "voxels": 3263,
+   "x": [
+    71,
+    108
+   ],
+   "y": [
+    33,
+    47
+   ],
+   "z": [
+    4,
+    12
+   ]
+  },
+  {
+   "name": "cloud 2",
+   "voxels": 3522,
+   "x": [
+    412,
+    448
+   ],
+   "y": [
+    462,
+    476
+   ],
+   "z": [
+    4,
+    14
+   ]
+  },
+  {
+   "name": "cloud 3",
+   "voxels": 1252,
+   "x": [
+    285,
+    316
+   ],
+   "y": [
+    19,
+    28
+   ],
+   "z": [
+    7,
+    13
+   ]
+  },
+  {
+   "name": "cloud 4",
+   "voxels": 1749,
+   "x": [
+    103,
+    137
+   ],
+   "y": [
+    482,
+    492
+   ],
+   "z": [
+    6,
+    12
+   ]
+  }
+ ],
+ "cosmetic_asymmetric_boxes": [
+  [
+   0,
+   72,
+   186,
+   326
+  ],
+  [
+   440,
+   511,
+   186,
+   326
+  ],
+  [
+   266,
+   495,
+   478,
+   495
+  ],
+  [
+   243,
+   269,
+   105,
+   131
+  ],
+  [
+   243,
+   269,
+   381,
+   407
+  ]
+ ],
+ "waivers": {},
+ "materials": {
+  "air": 0,
+  "sea": 1,
+  "rock": 2,
+  "sand": 3,
+  "ground": 4,
+  "pier": 5,
+  "hut": 6,
+  "furniture": 7,
+  "lamp": 8,
+  "buoy": 9,
+  "hullfill": 10,
+  "hull": 11,
+  "deck": 12,
+  "deckhead": 13,
+  "bulwark": 14,
+  "holdfloor": 15,
+  "bulkhead": 16,
+  "steel": 17,
+  "rail": 18,
+  "stair": 19,
+  "hatch": 20,
+  "coaming": 21,
+  "deckhouse": 22,
+  "crane": 23,
+  "jib": 24,
+  "container": 25,
+  "tarp": 26,
+  "crate": 27,
+  "vehicle": 28,
+  "loco": 29,
+  "leaf": 30,
+  "bark": 31,
+  "vine": 32,
+  "blossom": 33,
+  "ribbon": 34,
+  "mushroom": 35,
+  "deadwood": 36,
+  "iron": 37,
+  "fruit": 38,
+  "nest": 39,
+  "moss": 40,
+  "mast": 41,
+  "machinery": 42,
+  "chain": 43,
+  "superstructure": 44,
+  "lifeboat": 45,
+  "kerb": 46,
+  "dome": 47,
+  "funnel": 48,
+  "smoke": 49,
+  "flag": 50,
+  "beacon": 51,
+  "pipe": 52,
+  "kit": 53,
+  "sky": 54
+ },
+ "art": {
+  "sea_columns": 198274,
+  "water_pct": 75.64,
+  "brightness": {
+   "dark_floors_raised": 33648,
+   "whites_capped": 891
+  },
+  "glow": {
+   "sources": 213,
+   "stored_entries": 24839,
+   "nudged_off_palette": 0
+  },
+  "tag_rect": [
+   266,
+   495,
+   478,
+   495,
+   63
+  ],
+  "solid_unchanged": true,
+  "colour_stats": {
+   "top_luma_median": 73.8,
+   "top_dark_share_pct": 8.66,
+   "top_bright_share_pct": 0.02
+  }
+ },
+ "tag_rect": [
+  266,
+  495,
+  478,
+  495,
+  63
+ ],
+ "interiors_n": 45,
+ "build_seconds": 6.5,
+ "sky_objects": [
+  {
+   "name": "gull 1",
+   "voxels": 34,
+   "x": [
+    148,
+    153
+   ],
+   "y": [
+    144,
+    156
+   ],
+   "z": [
+    15,
+    16
+   ]
+  },
+  {
+   "name": "gull 2",
+   "voxels": 35,
+   "x": [
+    163,
+    170
+   ],
+   "y": [
+    153,
+    164
+   ],
+   "z": [
+    17,
+    18
+   ]
+  },
+  {
+   "name": "gull 3",
+   "voxels": 37,
+   "x": [
+    357,
+    362
+   ],
+   "y": [
+    354,
+    366
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "gull 4",
+   "voxels": 34,
+   "x": [
+    344,
+    351
+   ],
+   "y": [
+    367,
+    378
+   ],
+   "z": [
+    16,
+    17
+   ]
+  },
+  {
+   "name": "gull 5",
+   "voxels": 39,
+   "x": [
+    436,
+    443
+   ],
+   "y": [
+    114,
+    125
+   ],
+   "z": [
+    19,
+    20
+   ]
+  },
+  {
+   "name": "cloud 1",
+   "voxels": 3263,
+   "x": [
+    71,
+    108
+   ],
+   "y": [
+    33,
+    47
+   ],
+   "z": [
+    4,
+    12
+   ]
+  },
+  {
+   "name": "cloud 2",
+   "voxels": 3522,
+   "x": [
+    412,
+    448
+   ],
+   "y": [
+    462,
+    476
+   ],
+   "z": [
+    4,
+    14
+   ]
+  },
+  {
+   "name": "cloud 3",
+   "voxels": 1252,
+   "x": [
+    285,
+    316
+   ],
+   "y": [
+    19,
+    28
+   ],
+   "z": [
+    7,
+    13
+   ]
+  },
+  {
+   "name": "cloud 4",
+   "voxels": 1749,
+   "x": [
+    103,
+    137
+   ],
+   "y": [
+    482,
+    492
+   ],
+   "z": [
+    6,
+    12
+   ]
+  }
+ ],
+ "interiors": [
+  [
+   "fisher hut floor 0 (W)",
+   178,
+   100,
+   58
+  ],
+  [
+   "fisher hut floor 0 (E)",
+   334,
+   100,
+   58
+  ],
+  [
+   "fisher hut floor 0 (W)",
+   178,
+   412,
+   58
+  ],
+  [
+   "fisher hut floor 0 (E)",
+   334,
+   412,
+   58
+  ],
+  [
+   "tween deck fore (W)",
+   88,
+   256,
+   50
+  ],
+  [
+   "tween deck fore (E)",
+   424,
+   256,
+   50
+  ],
+  [
+   "tween deck mid (W)",
+   150,
+   256,
+   50
+  ],
+  [
+   "tween deck mid (E)",
+   362,
+   256,
+   50
+  ],
+  [
+   "tween deck aft (W)",
+   222,
+   240,
+   50
+  ],
+  [
+   "tween deck aft (E)",
+   290,
+   240,
+   50
+  ],
+  [
+   "lower hold (W)",
+   190,
+   256,
+   59
+  ],
+  [
+   "lower hold (E)",
+   322,
+   256,
+   59
+  ],
+  [
+   "side port N (W)",
+   252,
+   206,
+   59
+  ],
+  [
+   "side port N (E)",
+   260,
+   206,
+   59
+  ],
+  [
+   "side port S (W)",
+   252,
+   306,
+   59
+  ],
+  [
+   "side port S (E)",
+   260,
+   306,
+   59
+  ],
+  [
+   "companionway (W)",
+   132,
+   211,
+   40
+  ],
+  [
+   "companionway (E)",
+   380,
+   211,
+   40
+  ],
+  [
+   "companionway (W)",
+   132,
+   301,
+   40
+  ],
+  [
+   "companionway (E)",
+   380,
+   301,
+   40
+  ],
+  [
+   "companionway (W)",
+   186,
+   211,
+   40
+  ],
+  [
+   "companionway (E)",
+   326,
+   211,
+   40
+  ],
+  [
+   "companionway (W)",
+   186,
+   301,
+   40
+  ],
+  [
+   "companionway (E)",
+   326,
+   301,
+   40
+  ],
+  [
+   "crane cab (W)",
+   198,
+   221,
+   28
+  ],
+  [
+   "crane cab (E)",
+   314,
+   221,
+   28
+  ],
+  [
+   "crane cab (W)",
+   198,
+   291,
+   28
+  ],
+  [
+   "crane cab (E)",
+   314,
+   291,
+   28
+  ],
+  [
+   "forecastle store",
+   50,
+   256,
+   40
+  ],
+  [
+   "forecastle deck",
+   50,
+   256,
+   35
+  ],
+  [
+   "bridge floor 0",
+   462,
+   256,
+   40
+  ],
+  [
+   "bridge floor 1",
+   462,
+   256,
+   34
+  ],
+  [
+   "bridge floor 2",
+   462,
+   256,
+   28
+  ],
+  [
+   "bridge floor 3",
+   462,
+   256,
+   22
+  ],
+  [
+   "bridge floor 4",
+   462,
+   256,
+   16
+  ],
+  [
+   "bridge wing",
+   452,
+   213,
+   16
+  ],
+  [
+   "bridge wing",
+   452,
+   299,
+   16
+  ],
+  [
+   "lifeboat balcony",
+   461,
+   219,
+   28
+  ],
+  [
+   "lifeboat balcony",
+   461,
+   293,
+   28
+  ],
+  [
+   "helideck",
+   462,
+   248,
+   10
+  ],
+  [
+   "helideck",
+   462,
+   264,
+   10
+  ],
+  [
+   "lighthouse base",
+   254,
+   120,
+   52
+  ],
+  [
+   "lighthouse gallery",
+   263,
+   118,
+   26
+  ],
+  [
+   "lighthouse base",
+   254,
+   392,
+   52
+  ],
+  [
+   "lighthouse gallery",
+   263,
+   394,
+   26
+  ]
+ ]
+}

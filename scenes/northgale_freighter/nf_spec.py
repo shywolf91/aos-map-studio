@@ -12,10 +12,10 @@ z = 0 is the sky top, z = 63 the bottom; a "floor z" is the solid voxel a player
 """
 
 SPEC = {
-    'name': 'Northgale Freighter', 'file': 'northgale_freighter', 'version': '1.1', 'stage': 'art',
+    'name': 'Northgale Freighter', 'file': 'northgale_freighter', 'version': '1.2', 'stage': 'art',
     'layout_seed': 20261116, 'axis': 'x512',
-    'fog': (170, 164, 190),                     # bright lavender-grey: hue absent from the palette, between blue/red
-    'heavens_color': (52, 58, 96, 255),
+    'fog': (112, 114, 134),                     # v1.2 owner: 'Storm dusk' slate fog (v1.0/1.1: (170, 164, 190))
+    'heavens_color': (44, 48, 70, 255),         # v1.2: stormier sky
     'boundary': {'left': 8, 'right': 503, 'top': 72, 'bottom': 440, 'damage': 1},    # outside = deep sea
     'water_damage': 0,                          # inside the boundary the sea is walkable shallows
 
@@ -95,7 +95,11 @@ SPEC = {
     'forecastle': {'x_break': 66, 'store': (24, 63), 'door_y': (253, 259), 'stairs_y': [(209, 212), (300, 303)]},
     'foremast': {'x': 34, 'y': 256, 'top': 6, 'rings': (24, 15)},
     'bridge': {'x': (446, 478), 'y': (220, 292), 'storeys': 5, 'storey_h': 6, 'wing_y': (207, 305)},
-    'funnel': {'x': (482, 489), 'y': (248, 264), 'top': 6},
+    'funnel': {'x': (481, 490), 'y': (247, 265), 'top': 3},           # v1.2: taller and wider
+    'helideck': {'c': (462, 256), 'r': 15},                           # v1.2: on the bridge roof (z 10)
+    'detail': {'pipe_y': (213, 214), 'mast_x': [96, 160, 226], 'fire_x': [110, 204], 'raft_x': [86, 236],
+               'vent_x': [104, 150, 230], 'vent_y': 215, 'barrels': [(182, 226)],
+               'bulb': (25.0, 60.0, 12.0, 5.0, 3.0), 'anchor_x': 46},                 # bulbous bow (cx, cz, rx, ry, rz)
     'lifeboats': [(452, 208), (452, 297)],
     'cosmetic_boxes': [(0, 72, 186, 326), (440, 511, 186, 326)],
 

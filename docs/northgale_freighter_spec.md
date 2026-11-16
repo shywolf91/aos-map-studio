@@ -1,4 +1,28 @@
-# Northgale Freighter v1.1 (v1.0 kept): classic island Babel on a freighter (2026-11-16)
+# Northgale Freighter v1.2 (v1.0, v1.1 kept): classic island Babel on a freighter (2026-11-16)
+
+## v1.2 (2026-11-16): ship detail pass + storm fog `[USER]`
+Owner: loves the map, but a user said the ship "looks rather unpromising" next to their oil-platform map. Asked what
+to improve on the ship only, and for darker fog "but not pitch black night" so it looks stormy and the glow pops.
+He chose all four proposed upgrades and fog "Storm dusk". The platform screenshot was a craft reference only: nothing
+copied. Gameplay layout unchanged (same SPEC numbers for spawns, fronts, strip, anchors, holds, routes; same seeds).
+`maps/northgale_freighter_v1_2/`, SHA-256 `e4fad6a9…`.
+
+| upgrade | what changed |
+|---|---|
+| deck & rails | Steel-grey tiled deck (soft 1-in-8 plate seams, rust patches). Hatch panels stay green with white borders, numbers at double size. Yellow walkway lane edges. 2-wide yellow/dark hazard stripes round crane pedestals, deckhouses, stair heads and the deck hatch. Yellow handrails (posts every 3, continuous top rail) on every bulwark: 1,198 columns, hull, forecastle and stern. Rails on the long sides of the open deck hatch (ends left open). |
+| skyline | The 4 crane jibs are raised red/white lattice booms (2×2, 44 long), reaching outboard over the sea from z 25 to z 10, with a red tip light, a cable and a yellow hook block. 3D distance to the platform is 37 or more; they point away from it. Bridge-roof helideck: slate deck, white perimeter, yellow touchdown circle, white H, yellow kerb, 8 green perimeter lights, stairs up from both bridge wings. Radar mast moved to the roof corner, 3 white radar/satellite domes. Taller, wider funnel (top z 3) with a 14-lump billowing plume, dark to pale downwind. |
+| deck kit & lights | Red fire main and grey service pipe along both hatch edges (1 high, stepped over). Red fire stations, life-raft canisters on racks, gooseneck vents, barrel clusters. 12 floodlight masts along both rails with warm lamps. |
+| hull & bridge | Bulbous bow at the waterline. Anchors with hawse pipes on both bows. Soft hull plate seams, a pale belting line, lit forecastle portholes. Navy band at every bridge floor, orange roof band, 45 ceiling lamps inside the bridge rooms (light shows through the windows). |
+| fog / sky | fog (170,164,190) → **(112,114,134)** "Storm dusk"; heavens_color (52,58,96) → (44,48,70). This is a per-map exception to the bright-fog rule, by owner request. Floors still luma ≥ 40 (`enforce_brightness`). |
+
+Glow sources 144 → 213. Checks `[RUN]`: all 19 kit rows pass, unchanged from v1.1. Spawn exposure is the same:
+blue 8.41 / 16.3 %, red 7.56 / 17.5 %. Interiors 45 / 45 (adds the two helideck stairs). 0 floating, 0 traps,
+mirror 0. Centre rule N/A. Live probe passes, classic table 4 / 8. Same seed → same SHA-256 in fresh processes.
+Not client-inspected: the darker fog and the glow need a look in aos_web or BetterSpades.
+
+---
+
+# v1.1 record
 
 ## v1.1 (2026-11-16): bigger lighthouses with glow `[USER]`
 Owner feedback on v1.0: "the map is awesome. one slight tweak. can we make the lighthouse prop a tad bigger and add

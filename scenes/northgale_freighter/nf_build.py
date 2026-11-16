@@ -11,7 +11,8 @@ import math
 
 import numpy as np
 
-from aosmap.kit import Canvas, noise, structures, veg
+from aosmap.kit import Canvas, noise, structures, symmetry, veg
+from aosmap.kit.canvas import line_points
 from aosmap.kit.color import shade
 
 # ---------------------------------------------------------------------- base palette (night grade in nf_art)
@@ -19,8 +20,8 @@ SEA = (60, 88, 108)
 HULL = (124, 38, 40)
 HULLFILL = (96, 92, 92)
 BULWARK = (196, 192, 184)
-DECK = (72, 118, 86)
-GANGWAY = (96, 112, 104)
+DECK = (92, 98, 104)            # v1.2: steel-grey tiled deck (hatch panels stay green)
+GANGWAY = (108, 112, 110)
 HATCH = (84, 130, 96)
 SUPER = (200, 200, 194)
 STEEL = (118, 122, 128)
@@ -380,7 +381,8 @@ def companionway(cv, x0, yc, deck, tween):
 
 
 def crane(cv, cx, cy, deck, rest_x, south=False):
-    """Deck crane: hollow pedestal with a spiral stair to the cab, jib stowed west on a rest post."""
+    """Deck crane: hollow pedestal with a spiral stair to the cab; v1.2: a raised red/white lattice boom
+    reaching outboard over the sea (away from the platform) with a hook block on a cable."""
     x0, x1, y0, y1 = cx - 5, cx + 4, cy - 5, cy + 4
     top = deck - 12                                      # cab floor z 28
     cv.box(x0, x1, y0, y1, top, deck - 1, vcol(SUPER, 0.05, 32), 'crane')
@@ -399,17 +401,24 @@ def crane(cv, cx, cy, deck, rest_x, south=False):
         cv.carve(wx, wx + 1, cy1, cy1, top - 4, top - 3)
     cv.carve(cx0, cx0, cy0 + 2, cy1 - 2, top - 4, top - 3)
     cv.interiors.append(['crane cab', cx + 3, cy + (2 if not south else -2), top])
-    # jib (2x2 lattice beam) stowed west, resting on a post
-    jz = top - 2                                         # below the cab's west window (z top-4..top-3)
-    jy = cy - 1
-    g = surf_top(cv, rest_x - 1, rest_x, jy, jy + 1)
-    cv.box(rest_x, cx0 - 1, jy, jy + 1, jz, jz + 1, (196, 156, 58), 'jib')
-    for x in range(rest_x + 1, cx0 - 1, 2):
-        cv.set(x, jy, jz + 1, (120, 96, 40), 'jib')
-    cv.box(rest_x - 1, rest_x, jy, jy + 1, jz, g - 1, DARK_STEEL, 'jib')
+    # boom: 2x2 lattice from the cab's outboard wall up and out over the sea
+    sgn = 1 if south else -1
+    yf = (cy1 + 1) if south else (cy0 - 1)
+    yt = yf + sgn * 44
+    zf, zt_ = top - 3, top - 18
+    pts = line_points(cx, yf, zf, cx, yt, zt_)
+    for k, (_, y, z) in enumerate(pts):
+        band = (k // 4) % 2
+        col = (206, 52, 44) if band else (214, 210, 200)
+        for x in (cx - 1, cx):
+            cv.set(x, y, z, col, 'jib')
+            cv.set(x, y, z + 1, shade(col, 0.72 if (k + x) % 2 else 0.9), 'jib')
+    cv.add_glow(cx, yt, zt_ - 1 if cv.solid[cx, yt, zt_ - 1] else zt_, (255, 95, 95))
+    cv.box(cx, cx, yt, yt, zt_ + 2, 34, (60, 62, 66), 'jib')                 # cable
+    cv.box(cx - 1, cx + 1, yt - 1, yt + 1, 35, 36, YELLOW, 'jib')          # hook block
     cv.add_glow(cx0, cy0 + 2, top - 6, LAMP)
     cv.add_glow(cx1, cy0 + 2, top - 6, LAMP)
-    return (rest_x - 1, cx1, cy0, cy1)
+    return (cx0, cx1, min(cy0, yt - 1), max(cy1, yt + 1))
 
 
 def gangway(cv, x0, y0, y1, deck):
@@ -714,12 +723,42 @@ def ends(cv, S, rep):
     for k in range(1, Bd['storeys']):
         for y in (226, 286):
             cv.add_glow(bx0, y, deck - k * sh - 3, LAMP_Y)
-    # radar mast on the roof
-    mx, my = 466, 256
-    cv.box(mx, mx + 1, my - 1, my, 2, roof - 1, (190, 186, 176), 'mast')
-    cv.box(mx, mx, my - 8, my + 7, 6, 6, DARK_STEEL, 'mast')
-    cv.box(mx - 3, mx + 4, my, my, 9, 9, DARK_STEEL, 'mast')
+    # v1.2: ceiling lamps in every bridge room (light spills out of the windows)
+    for k in range(Bd['storeys']):
+        fz = deck - k * sh
+        for x in (456, 466, 474):
+            for y in (238, 256, 274):
+                if cv.solid[x, y, fz - sh]:
+                    cv.add_glow(x, y, fz - sh, LAMP_Y)
+    # v1.2: helideck on the bridge roof (markings in nf_art), stairs up from both wings, kerb + perimeter lights
+    hx, hy, hr = S['helideck']['c'][0], S['helideck']['c'][1], S['helideck']['r']
+    for north in (True, False):
+        ys0 = by0 - 8 if north else by1 + 8                    # first step on the wing
+        d = 1 if north else -1
+        structures.straight_stair(cv, ys0, bx0 + 1, bx0 + 2, top_floor, top_floor - roof, d, STAIR, 'stair',
+                                  along='y')
+        ly = ys0 + d * (top_floor - roof)
+        for yy in (ly, ly + d):
+            cv.box(bx0 + 1, bx0 + 2, yy, yy, roof, top_floor - 1, STAIR, 'stair')
+        cv.interiors.append(['helideck', hx, hy + (-8 if north else 8), roof])
+    for x in range(bx0, bx1 + 1):
+        for y in (by0, by1):
+            if not (bx0 + 1 <= x <= bx0 + 2):
+                cv.set(x, y, roof - 1, YELLOW, 'kerb')
+    for y in range(by0, by1 + 1):
+        for x in (bx0, bx1):
+            cv.set(x, y, roof - 1, YELLOW, 'kerb')
+    for (x, y) in ((bx0, 240), (bx0, 272), (bx1, 240), (bx1, 272), (456, by0), (468, by0), (456, by1), (468, by1)):
+        cv.add_glow(x, y, roof - 1, LAMP_G)
+    # radar mast and satellite / radar domes at the roof corners (outside the helideck circle)
+    mx, my = 475, 227
+    cv.box(mx, mx + 1, my, my + 1, 2, roof - 1, (190, 186, 176), 'mast')
+    cv.box(mx, mx, my - 5, my + 6, 5, 5, DARK_STEEL, 'mast')
+    cv.box(mx - 4, mx + 3, my, my, 7, 7, DARK_STEEL, 'mast')
     cv.add_glow(mx, my, 1, LAMP_W)
+    for (dx_, dy_) in ((450, 226), (450, 286), (475, 286)):
+        cv.box(dx_, dx_, dy_, dy_, roof - 2, roof - 1, DARK_STEEL, 'mast')
+        cv.ellipsoid(dx_ + 0.5, dy_ + 0.5, roof - 4.5, 2.6, 2.6, 2.6, (206, 204, 198), 'dome')
     # funnel (white, orange band, black top) with an attached smoke plume
     Fn = S['funnel']
     fx0, fx1 = Fn['x']
@@ -733,11 +772,16 @@ def ends(cv, S, rep):
                 if ((x + 0.5 - fcx) / rx) ** 2 + ((y + 0.5 - fcy) / ry) ** 2 <= 1:
                     cv.set(x, y, z, col, 'funnel')
     prev = None
-    puffs = [(486, 256, Fn['top'] - 1, 3.0), (489, 255, Fn['top'] - 3, 3.6), (493, 254, Fn['top'] - 4, 4.2),
-             (498, 252, Fn['top'] - 5, 4.6), (503, 250, Fn['top'] - 5, 4.4), (507, 248, Fn['top'] - 6, 3.6)]
-    for i, (px, py, pz, pr) in enumerate(puffs):
-        g = int(110 - 6 * i)
-        cv.ellipsoid(px, py, max(pr * 0.7, pz), pr, pr * 0.9, pr * 0.7, (g, g, g + 8), 'smoke')
+    # v1.2: billowing plume drifting aft: overlapping lumps, dark at the funnel, paler and wider downwind
+    rng = noise.rng('smoke', S['layout_seed'])
+    for i in range(14):
+        t = i / 13
+        px = fcx + 1 + 24 * t + rng.uniform(-1, 1)
+        py = fcy - 8 * t + rng.uniform(-1.5, 1.5)
+        pr = 2.4 + 2.8 * t + rng.uniform(0, 0.8)
+        pz = max(pr * 0.75, Fn['top'] - 1.5 - 2 * t)
+        gr = int(78 + 50 * t)
+        cv.ellipsoid(px, py, pz, pr, pr * 0.85, pr * 0.7, (gr, gr, gr + 10), 'smoke')
     # poop deck: mooring winches, bollards, a flagstaff
     for (wy0, wy1) in ((232, 240), (272, 280)):
         cv.box(484, 490, wy0, wy1, deck - 3, deck - 1, vcol(DARK_STEEL, 0.06, 54), 'machinery')
@@ -749,6 +793,90 @@ def ends(cv, S, rep):
     out['stern'] = {'x': [xs0, 499], 'bridge': b, 'roof_z': roof}
     rep['ends'] = out
     return out
+
+
+def details(cv, S):
+    """v1.2 ship detail pass (owner: the ship looked plain next to a dense oil-platform map). Runs after the mirror
+    and the ends; every core piece is placed with its x512 mirror (and N/S twin) so the mirror test still holds."""
+    Z = S['z']
+    deck = Z['deck']
+    D = S['detail']
+    rep = {}
+    ya, yb = S['hull']['y']
+
+    def xs_mirror(xs):
+        return sorted(set(list(xs) + [512 - x for x in xs]))
+
+    # 1. yellow handrails on every bulwark top (posts every 3 from the axis, a continuous top rail)
+    tops = np.argmax(cv.solid, axis=2)
+    bid = cv.materials['bulwark']
+    X, Y = np.indices((512, 512))
+    zt = tops
+    isb = cv.mat[X, Y, zt] == bid
+    n = 0
+    for x, y in zip(*np.nonzero(isb)):
+        z = int(zt[x, y])
+        if z < 3:
+            continue
+        post = (abs(x - 256) % 3 == 0) or (abs(y - 256) % 3 == 0 and (x < 75 or x > 437))
+        if post:
+            cv.set(x, y, z - 1, (190, 150, 34), 'rail')
+        cv.set(x, y, z - 2, (222, 182, 44), 'rail')
+        n += 1
+    rep['rail_columns'] = n
+    # 2. pipe runs on the deck beside the hatches (fire main red, service grey), both sides
+    for (yr, col) in ((D['pipe_y'][0], (150, 52, 46)), (D['pipe_y'][1], (124, 128, 134))):
+        for yy in (yr, 512 - yr):
+            for x in range(S['hull']['core_x'][0], S['hull']['core_x'][1] + 1):
+                if cv.solid[x, yy, deck] and not cv.solid[x, yy, 30:deck].any():
+                    cv.set(x, yy, deck - 1, shade(col, 0.88 if abs(x - 256) % 12 == 0 else 1.0), 'pipe')
+    # 3. floodlight masts along both rails (lamp heads lean inboard)
+    for x in xs_mirror(D['mast_x']):
+        for (yp, yh) in ((ya + 2, ya + 3), (yb - 2, yb - 3)):
+            cv.box(x, x, yp, yp, deck - 9, deck - 1, DARK_STEEL, 'mast')
+            cv.set(x, yh, deck - 9, DARK_STEEL, 'mast')
+            cv.set(x, yh, deck - 8, LAMP, 'lamp')
+            cv.glow.append((x, yh, deck - 8, LAMP))
+            cv.nolight[x, yh, deck - 8] = True
+    # 4. fire stations (red cabinets), life-raft canisters on racks, gooseneck vents, barrels
+    for x in xs_mirror(D['fire_x']):
+        for (yy, ) in ((ya + 2,), (yb - 2,)):
+            if not cv.solid[x:x + 2, yy, deck - 3:deck].any():
+                cv.box(x, x + 1, yy, yy, deck - 3, deck - 1, (176, 44, 40), 'kit')
+                cv.set(x, yy, deck - 2, (210, 200, 190), 'kit')
+    for x in xs_mirror(D['raft_x']):
+        for (y0, y1) in ((ya + 2, ya + 3), (yb - 3, yb - 2)):
+            x0 = x if x < 256 else x - 4
+            if cv.solid[x0:x0 + 5, y0:y1 + 1, deck - 3:deck].any():
+                continue
+            cv.box(x0, x0 + 4, y0, y1, deck - 1, deck - 1, DARK_STEEL, 'kit')
+            cv.box(x0, x0 + 4, y0, y1, deck - 3, deck - 2, (206, 204, 196), 'kit')
+            cv.box(x0 + 2, x0 + 2, y0, y1, deck - 3, deck - 2, ORANGE, 'kit')
+    for x in xs_mirror(D['vent_x']):
+        for (yy, yb_) in ((D['vent_y'], D['vent_y'] - 1), (512 - D['vent_y'], 512 - D['vent_y'] + 1)):
+            if cv.solid[x, yy, deck - 4:deck].any():
+                continue
+            cv.box(x, x, yy, yy, deck - 3, deck - 1, (150, 154, 150), 'kit')
+            cv.set(x, yb_, deck - 3, (150, 154, 150), 'kit')
+            cv.set(x, yb_, deck - 2, (60, 62, 66), 'kit')
+    for (bx, by) in D['barrels']:
+        for (X0, Y0) in ((bx, by), (512 - bx - 2, by), (bx, 512 - by - 2), (512 - bx - 2, 512 - by - 2)):
+            for (ox, oy) in ((0, 0), (2, 0), (1, 1), (0, 2), (2, 2)):          # x-symmetric pattern
+                if not cv.solid[X0 + ox, Y0 + oy, deck - 3:deck].any():
+                    col = (60, 92, 150) if oy == 1 else (196, 112, 44)
+                    cv.box(X0 + ox, X0 + ox, Y0 + oy, Y0 + oy, deck - 2, deck - 1, col, 'kit')
+    # 5. rails on the long sides of the open deck hatch under the platform (ends left open to hop in)
+    H_ = S['deck_hatch']
+    for y in (H_['y'][0] - 1, H_['y'][1] + 1):
+        for x in range(H_['x'][0] - 1, 512 - H_['x'][0] + 2):
+            if abs(x - 256) % 3 == 0:
+                cv.set(x, y, Z['hatch'] - 1, (190, 150, 34), 'rail')
+            cv.set(x, y, Z['hatch'] - 2, (222, 182, 44), 'rail')
+    # 6. bulbous bow at the waterline
+    B = D['bulb']
+    cv.ellipsoid(B[0], 256.5, B[1], B[2], B[3], B[4], (70, 40, 42), 'hull')
+    rep['orphans'] = symmetry.remove_orphans(cv)
+    return rep
 
 
 def square_spiral_stair(cv, bx, by, z_top, z_bot, a0=0.0, c=STAIR, core=DARK_STEEL, bins=20):

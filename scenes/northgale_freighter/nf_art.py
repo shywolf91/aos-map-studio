@@ -10,6 +10,7 @@ art(cv, rep, S) -> (stored glow colours, report)
 from __future__ import annotations
 
 import hashlib
+import math
 
 import numpy as np
 from scipy import ndimage as ndi
@@ -63,6 +64,37 @@ def art(cv, rep, S):
             for z in range(48, 62, 3):
                 if solid[x, y, z]:
                     cv.rgb[x, y, z] = (190, 186, 176)
+    # v1.2: plate seams (soft), a pale belting line, anchors in their hawse pockets, forecastle portholes
+    hx, hy, hz = np.nonzero(sel('hull'))
+    c = cv.rgb[hx, hy, hz].astype(float)
+    seam = (np.abs(hx - 256) % 14 == 0) | (hz == 50)
+    c[seam] *= 0.9
+    c[hz == 47] = _mix(c[hz == 47], (196, 176, 120), 0.6)
+    cv.rgb[hx, hy, hz] = np.clip(c, 0, 255).astype(np.uint8)
+
+    def hull_face(x, z, north):
+        rng_ = range(180, 256) if north else range(332, 256, -1)
+        for y in rng_:
+            if solid[x, y, z]:
+                return y
+        return None
+    anchor = [(0, -1), (0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (-2, 0), (-1, 0), (1, 0), (2, 0),
+              (-3, 5), (-2, 6), (-1, 6), (0, 6), (1, 6), (2, 6), (3, 5), (-3, 4), (3, 4)]
+    for north in (True, False):
+        ax, az = S['detail']['anchor_x'], deck + 3
+        for (ox, oz) in [(o, -1) for o in (-1, 0, 1)] + [(o, -2) for o in (-1, 0, 1)]:
+            y = hull_face(ax + ox, az + oz, north)
+            if y is not None:
+                cv.rgb[ax + ox, y, az + oz] = (34, 34, 38)                   # hawse pipe
+        for (ox, oz) in anchor:
+            y = hull_face(ax + ox, az + oz, north)
+            if y is not None:
+                cv.rgb[ax + ox, y, az + oz] = (70, 72, 78)
+        for x in range(24, 62, 6):                                         # forecastle portholes
+            for z in (Z['forecastle'] + 2,):
+                y = hull_face(x, z, north)
+                if y is not None and cv.mat[x, y, z] == M['hull']:
+                    cv.rgb[x, y, z] = (214, 196, 120)
     # ship's name on both sides near the bow (west) and on the quarters (east)
     name = 'NORTHGALE'
     m = text_mask([name])                       # (w, h) bool, x along the text
@@ -77,25 +109,80 @@ def art(cv, rep, S):
                     X = x_first + step * i
                     if solid[X, y_face, z0 + j]:
                         cv.rgb[X, y_face, z0 + j] = (206, 202, 192)
-    # ------------------------------------------------------------------ deck: walkway lines, hatch numbers, rust
+    # ------------------------------------------------------------------ deck (v1.2): tiled steel grid, lanes, hazards
     dx_, dy_, dz_ = np.nonzero(sel('deck'))
     g = cv.rgb[dx_, dy_, dz_].astype(float)
     f = noise.fbm2((512, 512), 6, 3, 'deckwear', seed)[dx_, dy_]
-    g *= (0.92 + 0.14 * f)[:, None]
-    g = _mix(g, (118, 96, 70), 0.30 * np.clip((f - 0.7) / 0.15, 0, 1))
-    walk = (np.abs(dy_ - (ya + 11)) == 0) | (np.abs(dy_ - (yb - 11)) == 0)
-    g[walk] = (176, 168, 112)                                              # yellow walkway lines
+    g *= (0.93 + 0.12 * f)[:, None]
+    tile = ((np.abs(dx_ - 256) % 8) == 0) | ((np.abs(dy_ - 256) % 8) == 4)
+    g[tile] *= 0.86                                                         # plate seams (soft, 1 in 8)
+    g = _mix(g, (124, 92, 66), 0.32 * np.clip((f - 0.72) / 0.14, 0, 1))  # rust patches
+    lane = (np.abs(dy_ - (ya + 11)) <= 0) | (np.abs(dy_ - (yb - 11)) <= 0) | \
+        (np.abs(dy_ - (ya + 1)) == 0) | (np.abs(dy_ - (yb - 1)) == 0)
+    g[lane] = (196, 166, 64)                                               # yellow walkway lane edges
+    # hazard stripes (2-wide diagonal yellow / dark) round crane pedestals, deckhouses, stair heads, the deck hatch
+    near = np.zeros((512, 512), bool)
+    for nm in ('crane', 'deckhouse', 'coaming', 'stair'):
+        if nm in M:
+            m2 = (cv.mat == M[nm]).any(axis=2)
+            near |= ndi.binary_dilation(m2, iterations=2) & ~m2
+    hz_ = near[dx_, dy_] & (dz_ == deck)
+    stripe = ((dx_ + dy_) // 2) % 2 == 0
+    g[hz_ & stripe] = (206, 170, 52)
+    g[hz_ & ~stripe] = (76, 76, 80)
     cv.rgb[dx_, dy_, dz_] = np.clip(g, 0, 255).astype(np.uint8)
-    # hatch numbers 01..06 painted on the panels next to the gangway edge
+    # hatch panels: green with white borders (panel edges) and big numbers 01..06
+    hx_, hy_, hz2 = np.nonzero(sel('hatch'))
+    hid = M['hatch']
+    edge = np.zeros(len(hx_), bool)
+    for (ox, oy) in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+        edge |= cv.mat[np.clip(hx_ + ox, 0, 511), np.clip(hy_ + oy, 0, 511), hz2] != hid
+    c = cv.rgb[hx_, hy_, hz2].astype(float)
+    c[edge] = (176, 180, 170)
+    cv.rgb[hx_, hy_, hz2] = np.clip(c, 0, 255).astype(np.uint8)
     for k, (bx0, bx1) in enumerate(S['hatch_bays']):
-        for (xx, num) in ((bx0 + 2, f'0{k + 1}'), (512 - bx1 + 2, f'0{6 - k}')):
-            mm = text_mask([num])
+        for (xx, num) in ((bx0 + 3, f'0{k + 1}'), (512 - bx1 + 3, f'0{6 - k}')):
+            mm = np.kron(text_mask([num]), np.ones((2, 2), bool))
             for i in range(mm.shape[0]):
                 for j in range(mm.shape[1]):
                     if mm[i, j]:
-                        X, Y = xx + i, S['hatch_y'][0] + 2 + j
-                        if solid[X, Y, Z['hatch']]:
-                            cv.rgb[X, Y, Z['hatch']] = (200, 196, 186)
+                        X_, Y_ = xx + i, S['hatch_y'][0] + 3 + j
+                        if solid[X_, Y_, Z['hatch']] and cv.mat[X_, Y_, Z['hatch']] == hid:
+                            cv.rgb[X_, Y_, Z['hatch']] = (206, 202, 192)
+    # ------------------------------------------------------------------ bridge (v1.2): floor bands, helideck markings
+    Bd = S['bridge']
+    bx0, bx1 = Bd['x']
+    by0, by1 = Bd['y']
+    roof = deck - Bd['storeys'] * Bd['storey_h']
+    sid = M.get('superstructure')
+    for k in range(Bd['storeys'] + 1):
+        z = deck - k * Bd['storey_h']
+        col = (56, 74, 122) if k < Bd['storeys'] else (214, 112, 40)
+        for x in range(bx0, bx1 + 1):
+            for y in (by0, by1):
+                if solid[x, y, z] and cv.mat[x, y, z] == sid:
+                    cv.rgb[x, y, z] = col
+        for y in range(by0, by1 + 1):
+            for x in (bx0, bx1):
+                if solid[x, y, z] and cv.mat[x, y, z] == sid:
+                    cv.rgb[x, y, z] = col
+    hc, hr = S['helideck']['c'], S['helideck']['r']
+    for x in range(hc[0] - hr - 1, hc[0] + hr + 2):
+        for y in range(hc[1] - hr - 1, hc[1] + hr + 2):
+            if not (solid[x, y, roof] and cv.mat[x, y, roof] == sid) or solid[x, y, roof - 1]:
+                continue
+            r = math.hypot(x - hc[0], y - hc[1])
+            if r > hr + 0.5:
+                continue
+            col = (64, 76, 74)
+            if hr - 0.6 <= r <= hr + 0.5:
+                col = (200, 198, 188)                                      # perimeter line
+            elif hr * 0.62 <= r <= hr * 0.62 + 1.6:
+                col = (214, 176, 48)                                       # touchdown circle
+            u, v = x - hc[0], y - hc[1]
+            if (abs(v) <= 5 and 2 <= abs(u) <= 3) or (abs(u) <= 3 and abs(v) <= 0):
+                col = (206, 204, 196)                                      # the H
+            cv.rgb[x, y, roof] = col
     # ------------------------------------------------------------------ islets: rock / moss / sand cover
     X, Y = np.indices((512, 512))
     rx, ry, rz = np.nonzero(sel('rock'))
