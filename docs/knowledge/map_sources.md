@@ -9,6 +9,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 
 | Map | Chat | Imported into repo? |
 |---|---|---|
+| Cursed Skull Reef | built in Claude Code (2026-11-16), branch `ccr-e22e20a5-bpypq9` | yes (`scenes/cursed_skull_reef/`, `maps/cursed_skull_reef_v1/`) |
 | Elderveil | built in Claude Code (2026-11-14), branch `map/elderveil` | yes (`scenes/elderveil/`, `maps/elderveil_v1/`, `maps/elderveil_v1_1/`) |
 | Frostbell Hollow | built in Claude Code (2026-11-10), branch `map/frostbell-hollow` | yes (`scenes/frostbell_hollow/`, `maps/frostbell_hollow_v1/`, `maps/frostbell_hollow_v1_1/`, `maps/frostbell_hollow_v1_2/`) |
 | Under the Tree | https://claude.ai/chat/ff19af2e-ee83-4f97-97d0-85bb07c8aa0a | no |
