@@ -31,7 +31,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | The Hollow Crown | https://claude.ai/chat/f54a547c-f0ca-469e-b95c-0ba602698c24 | yes (from local repo, 2026-11-10) |
 | Graveyard of the Forgotten | https://claude.ai/chat/6ffb9f97-8d25-4ae4-8cf4-2599d61fed9d | yes (branch map/graveyard-of-the-forgotten) |
 | Death Swamp | https://claude.ai/chat/a222852b-cff1-457c-af9f-b3320824beef | check local repo |
-| Witchwood Isles | https://claude.ai/chat/d8080a71-724e-4c50-9d48-8fbf3793a500 | no |
+| Witchwood Isles | https://claude.ai/chat/d8080a71-724e-4c50-9d48-8fbf3793a500 | yes (2026-11-10, branch map/witchwood-isles) |
 | Brimstone Atoll | https://claude.ai/chat/28b196a0-727b-4116-82e5-6d73dced5d47 | no |
 | spinline | https://claude.ai/chat/94dfe246-f63e-4bee-8401-471d20daeb92 | no |
 
