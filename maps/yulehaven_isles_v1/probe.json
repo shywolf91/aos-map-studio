@@ -1,0 +1,107 @@
+{
+ "map_dir": "maps/yulehaven_isles_v1",
+ "mode": "babel",
+ "seconds": 2.6,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Yulehaven Isles",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 1,
+   "heavens_color": [
+    46,
+    74,
+    112,
+    255
+   ],
+   "glow_enabled": true
+  },
+  "fog": [
+   172,
+   174,
+   192
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   48,
+   48
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "47": 36,
+     "48": 364
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     48.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "48": 366,
+     "47": 34
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     48.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "log_tail": [
+  "Loading config from 'C:\\\\Users\\\\SHYWOL~1\\\\AppData\\\\Local\\\\Temp\\\\aoskit_probe_u1jzivak\\\\config.toml'",
+  "2026-11-15T00:23:38-0500 [piqueserver.server#info] piqueserver started on Sun Nov 15 00:23:38 2026",
+  "2026-11-15T00:23:38-0500 [piqueserver.server#info] advancing to map 'yulehaven_isles'",
+  "2026-11-15T00:23:38-0500 [piqueserver.server#warn] The following config items are not used:",
+  "2026-11-15T00:23:38-0500 [stdout#info] {'ban_publish': {'enabled': False}}",
+  "2026-11-15T00:23:38-0500 [piqueserver.server#info] Started server...",
+  "2026-11-15T00:23:38-0500 [piqueserver.server#info] Retrieving external IP from https://services.buildandshoot.com/getip to generate server identifier.",
+  "2026-11-15T00:23:38-0500 [piqueserver.server#info] starting ban vacuum with 0 bans",
+  "2026-11-15T00:23:38-0500 [piqueserver.map#info] Loading map 'Yulehaven Isles'...",
+  "2026-11-15T00:23:39-0500 [piqueserver.map#info] Map loaded successfully. (took 0.22s)",
+  "2026-11-15T00:23:39-0500 [piqueserver.server#info] Server public ip address: 97.104.55.169:32999",
+  "2026-11-15T00:23:39-0500 [piqueserver.server#info] Public aos identifier: aos://2838980705:32999",
+  "2026-11-15T00:23:39-0500 [piqueserver.server#info] Local aos identifier: aos://16777343:32999"
+ ],
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

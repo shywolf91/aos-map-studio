@@ -324,6 +324,9 @@ an actual script before you design to it.
   building (standard Babel — relaxed for the assist-structure variant, §8.8).
 * Styles: **sky babel** (abridgetoofar, tradeoff, anticbridgebabelv2 — decks at z 2–13 around spawn) and **ground
   babel** (alexandria-babel2, islandbabel, babelpocalypse, normandie). Island babel = ground babel on islands.
+  Island maps come in two styles `[USER]` (2026-11-15): **current** (our dense authored style, the default) and
+  **classic** (when the brief says "classic island map"). The classic style is one natural island in a painted sea
+  with sparse props; see `docs/classic_island_style.md`.
 * **Custom variant: Babel with assist structures** `[USER]` (2026-11-08) — stock Babel rules, but the map provides
   climbable structures (ruins, a tall tree, a crag…) that reach the platform on foot or with a short build, so players
   can get the intel without building a tower in their tower zone. Runs on stock babel_script. Full rules §8.8.
@@ -655,6 +658,9 @@ periphery can't be walked.
 12. Toolchain targets Python 3.11; repo `D:\Ace of Spades\Aos_Map` (to be hosted on GitHub for other sessions/AIs).
 13. He tests in his own Ruby spectator client **aos_web** (localhost) and the **alohacraft.cc** VXL viewer.
 14. Edits of community maps keep the map "relatively the same" and credit the original author.
+15. Island maps (2026-11-15): current style by default; "classic island map" in the brief → the classic style in
+    `docs/classic_island_style.md`, checked with `tools/island_style_metrics.py`. Build only the
+    style the brief names, not both.
 
 ---
 
@@ -682,8 +688,11 @@ aosmap/meta.py      map_txt() / check_map_txt()
 aosmap/render.py    top_down, isometric (4 views), contact_sheet
 aosmap/pixelfont.py 5×7 font for painted name tags
 aosmap/pipeline.py  export → parser checks → real-piqueserver runtime checks → renders
+aosmap/kit/         (2026-11-10) shared kit for new maps: codec, noise, canvas, structures, symmetry, color, veg,
+                    tag, sky, babel_checks (full suite + summary), probe (live server), build (export, .txt rules),
+                    preview. Merges the per-map copies; reproduces the HC / Silverpine / Bloomhop reports (docs/kit.md)
 tools/              art_metrics.py (FIRST ARG IS THE OUTPUT JSON), fp_view.py (numpy first-person raymarcher),
-                    compare_refs, movement_sim, fetch_map_from_server, bot_protect_test, babel_live_check.py,
+                    compare_refs, island_style_metrics (classic vs current island style), movement_sim, fetch_map_from_server, bot_protect_test, babel_live_check.py,
                     aosweb_capture.cjs, betterspades_capture.sh (+ camfile patch)
 server_scripts/     authored_protect.py
 scenes/<map>/       per-map generator: *_main.py (build), *_check.py (validation.json), *_render.py (previews);
@@ -738,6 +747,7 @@ per run, **save it** in build.json so the build can be reproduced.
 2. **Ask before building** (mandatory). Typical questions:
    * Mode and server script (stock babel? platform variant? team colours? standard or assist-structure Babel?).
    * Full 512 × 512 or island; ground height relative to water; mountain ring or open edges.
+   * Island: current style or **classic** (`docs/classic_island_style.md` §7 lists the classic questions)?
    * Which concept (offer three) and which landmark goes where (centre / edge / under the platform).
    * What fills the centre; any underground layer; flank style.
    * Water behaviour: classic walkable, cursed (`water_damage`), or boundary box.
@@ -869,7 +879,9 @@ Backyard Babel 0 % hidden (open fronts).
 |---|---|---|---|---|---|---|
 | swag2 | 76 % | 3 | 61 | building to z 27 | 43 | butterfly island, tombstone field, ring of plank-bridged islets |
 | islandbabel | 80 % | 6 | 61 | z 61 | ~56 | sand, cyan sea |
-| babelpocalypse | 63 % | 11 | 44 | hill to z 9 | ~8 | |
+| babelpocalypse | 63 %¹ | 11¹ | 44 | hill to z 9 | ~8 | |
+| toast² | 80 % | 1 | 62 | z 62 sand, lagoon; palms to z 28 | ~60 from ground | palm dumbbell, 2 plank bridges, caustic sea; 9–10 % water under the platform ends |
+| utopia2² | 75 % | 3 | 52–53 | plateau z ~53, house to z 34 | ~50 from ground | cliff plateau, one house, cloud layer at z 0–28, painted shallows/deeps |
 | alexandria-babel2 | 69 % | 4 | 58 | pyramid | ~4 | |
 | GoonassaultJapan | 87 % | 1 | 62 | tower to z 11 | ~15 | spawn squares partly water |
 | normandie | 0 % | — | 59/60 | z 59 | ~36 | not mirrored yet fair; 94 % solid underground |
@@ -878,6 +890,12 @@ Backyard Babel 0 % hidden (open fronts).
 | remus | 6 % | — | 60/57 | z 62 | — | dense city, river |
 | hallweebalohabeta | 21 % | — | 62 | z 3 | ~4 | Halloween city, good cover |
 | Cloud Smash | sky | — | z 8–23 | — | — | exact mirror, painted sunset backdrop, 4 tethers |
+
+¹ These earlier babelpocalypse cells used "land = topmost voxel above z 62", which counts its floating clouds and planes
+as land. With the engine's water definition (z 62 air; `tools/island_style_metrics.py`, 2026-11-15), it is 70.8 %
+water and 9 landmasses ≥ 200 columns. islandbabel's 80 % / 6 is unchanged under both definitions (80.6 % / 6).
+² Measured 2026-11-15 with `tools/island_style_metrics.py`. The gap is rough, `[DERIVED]` from ground under the platform
+to z 1. Full classic-vs-current tables: `docs/classic_island_style.md` §2.
 
 ---
 
