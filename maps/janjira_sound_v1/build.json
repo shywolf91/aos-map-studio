@@ -1,0 +1,1315 @@
+{
+ "map": "Janjira Sound",
+ "file": "janjira_sound",
+ "sha256": "866d4704a2f3e227ba294570f1d07fc3245a3651e95e420047636dc958580820",
+ "bytes": 2292732,
+ "stage": "art",
+ "layout_seed": 20261115,
+ "veg_seed": 132910545,
+ "axis": "point512",
+ "floating_before_cleanup": 0,
+ "floating_before_list": [],
+ "cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "post_rotation_floating": {
+  "unexpected": 0,
+  "list": []
+ },
+ "terrain": {
+  "land_cols_spec": 49147,
+  "water_pct_spec": 81.25
+ },
+ "fort": {
+  "wall": {
+   "x": [
+    86,
+    91
+   ],
+   "y": [
+    204,
+    308
+   ],
+   "walk_z": 47
+  },
+  "corner_bastions": [
+   {
+    "name": "corner bastion (96,204)",
+    "doors": {
+     "ground": [
+      -45,
+      59
+     ],
+     "wall-walk": [
+      135,
+      47
+     ]
+    },
+    "top_z": 29,
+    "centre": [
+     96,
+     204
+    ],
+    "r": 10,
+    "G": 59,
+    "T": 39
+   },
+   {
+    "name": "corner bastion (96,308)",
+    "doors": {
+     "ground": [
+      45,
+      59
+     ],
+     "wall-walk": [
+      -135,
+      47
+     ]
+    },
+    "top_z": 29,
+    "centre": [
+     96,
+     308
+    ],
+    "r": 10,
+    "G": 59,
+    "T": 39
+   }
+  ],
+  "gate_bastions": [
+   {
+    "name": "gate bastion (150,226)",
+    "doors": {
+     "ground": [
+      180,
+      59
+     ]
+    },
+    "top_z": 36,
+    "centre": [
+     150,
+     226
+    ],
+    "r": 6,
+    "G": 59,
+    "T": 45
+   },
+   {
+    "name": "gate bastion (150,286)",
+    "doors": {
+     "ground": [
+      180,
+      59
+     ]
+    },
+    "top_z": 36,
+    "centre": [
+     150,
+     286
+    ],
+    "r": 6,
+    "G": 59,
+    "T": 45
+   }
+  ]
+ },
+ "watch_towers": [
+  {
+   "name": "watch tower (220,203)",
+   "doors": {
+    "ground": [
+     135,
+     59
+    ]
+   },
+   "top_z": 24,
+   "centre": [
+    220,
+    203
+   ],
+   "r": 8,
+   "G": 59,
+   "T": 41
+  },
+  {
+   "name": "watch tower (190,314)",
+   "doors": {
+    "ground": [
+     -135,
+     57
+    ]
+   },
+   "top_z": 24,
+   "centre": [
+    190,
+    314
+   ],
+   "r": 8,
+   "G": 57,
+   "T": 41
+  }
+ ],
+ "shrine": {
+  "name": "islet shrine",
+  "box": [
+   66,
+   74,
+   208,
+   216
+  ],
+  "G": 56,
+  "top_z": 46
+ },
+ "hut": {
+  "name": "fisher hut",
+  "box": [
+   64,
+   71,
+   297,
+   304
+  ],
+  "G": 56,
+  "top_z": 51
+ },
+ "props": {
+  "front": [
+   {
+    "kind": "garden_wall",
+    "x": 141,
+    "y": 236,
+    "box": [
+     141,
+     158,
+     236,
+     237
+    ],
+    "G": 60
+   },
+   {
+    "kind": "garden_wall",
+    "x": 141,
+    "y": 275,
+    "box": [
+     141,
+     158,
+     274,
+     275
+    ],
+    "G": 60
+   },
+   {
+    "kind": "kegs",
+    "x": 140,
+    "y": 262,
+    "box": [
+     140,
+     148,
+     262,
+     265
+    ],
+    "G": 59
+   },
+   {
+    "kind": "cannon",
+    "x": 156,
+    "y": 241,
+    "box": [
+     156,
+     163,
+     241,
+     245
+    ],
+    "G": 58
+   },
+   {
+    "kind": "cannon",
+    "x": 156,
+    "y": 267,
+    "box": [
+     156,
+     163,
+     267,
+     271
+    ],
+    "G": 58
+   },
+   {
+    "name": "front guard hut",
+    "box": [
+     168,
+     176,
+     260,
+     268
+    ],
+    "G": 58,
+    "top_z": 53
+   },
+   {
+    "kind": "cart",
+    "x": 178,
+    "y": 243,
+    "box": [
+     178,
+     190,
+     242,
+     248
+    ],
+    "G": 57
+   },
+   {
+    "kind": "kegs",
+    "x": 177,
+    "y": 262,
+    "box": [
+     177,
+     185,
+     262,
+     265
+    ],
+    "G": 58
+   },
+   {
+    "kind": "shrub",
+    "x": 192,
+    "y": 250,
+    "box": [
+     189,
+     195,
+     247,
+     253
+    ],
+    "G": 57
+   },
+   {
+    "kind": "crates",
+    "x": 147,
+    "y": 251,
+    "box": [
+     147,
+     154,
+     251,
+     258
+    ],
+    "G": 59
+   }
+  ],
+  "strip": [
+   {
+    "kind": "rack_shelter",
+    "x": 219,
+    "y": 241,
+    "box": [
+     219,
+     230,
+     241,
+     256
+    ],
+    "G": 57
+   },
+   {
+    "kind": "crates",
+    "x": 231,
+    "y": 263,
+    "box": [
+     231,
+     238,
+     263,
+     270
+    ],
+    "G": 57
+   },
+   {
+    "kind": "cannon",
+    "x": 236,
+    "y": 244,
+    "box": [
+     236,
+     240,
+     243,
+     250
+    ],
+    "G": 57
+   },
+   {
+    "kind": "net_rack",
+    "x": 219,
+    "y": 257,
+    "box": [
+     219,
+     221,
+     257,
+     267
+    ],
+    "G": 57
+   },
+   {
+    "kind": "shrub",
+    "x": 244,
+    "y": 268,
+    "box": [
+     241,
+     247,
+     265,
+     271
+    ],
+    "G": 57
+   },
+   {
+    "kind": "boat",
+    "x": 228,
+    "y": 256,
+    "box": [
+     228,
+     244,
+     253,
+     259
+    ],
+    "G": 50
+   }
+  ],
+  "island": [
+   {
+    "kind": "boat_shed",
+    "x": 158,
+    "y": 186,
+    "box": [
+     158,
+     168,
+     186,
+     202
+    ],
+    "G": 55
+   },
+   {
+    "kind": "boat",
+    "x": 152,
+    "y": 326,
+    "box": [
+     152,
+     168,
+     323,
+     329
+    ],
+    "G": 59
+   },
+   {
+    "kind": "field_wall",
+    "x": 154,
+    "y": 217,
+    "box": [
+     154,
+     204,
+     217,
+     222
+    ],
+    "G": 59
+   },
+   {
+    "kind": "field_wall",
+    "x": 162,
+    "y": 293,
+    "box": [
+     162,
+     212,
+     290,
+     295
+    ],
+    "G": 60
+   },
+   {
+    "kind": "shrub",
+    "x": 146,
+    "y": 232,
+    "box": [
+     143,
+     149,
+     229,
+     235
+    ],
+    "G": 59
+   },
+   {
+    "kind": "shrub",
+    "x": 146,
+    "y": 280,
+    "box": [
+     143,
+     149,
+     277,
+     283
+    ],
+    "G": 60
+   }
+  ]
+ },
+ "baoli": {
+  "c": [
+   256,
+   256
+  ],
+  "half": 8,
+  "pool_floor_z": 62
+ },
+ "vegetation": {
+  "banyan": [
+   {
+    "species": "banyan",
+    "x": 144,
+    "y": 206,
+    "R": 5.686919361911048,
+    "h": 14,
+    "roots": 2,
+    "zb": 50,
+    "g": 60,
+    "details": [
+     "nest",
+     "dead_limb",
+     "root_tint"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 183,
+    "y": 198,
+    "R": 6.313559661263048,
+    "h": 13,
+    "roots": 2,
+    "zb": 48,
+    "g": 57,
+    "details": [
+     "ribbons",
+     "nest",
+     "dead_limb"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 183,
+    "y": 211,
+    "R": 6.179264226111204,
+    "h": 13,
+    "roots": 3,
+    "zb": 48,
+    "g": 57,
+    "details": [
+     "ribbons",
+     "nest",
+     "root_tint"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 197,
+    "y": 188,
+    "R": 6.048834563095545,
+    "h": 14,
+    "roots": 3,
+    "zb": 50,
+    "g": 60,
+    "details": [
+     "ribbons",
+     "dead_limb",
+     "root_tint"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 163,
+    "y": 312,
+    "R": 6.261831949962384,
+    "h": 12,
+    "roots": 3,
+    "zb": 52,
+    "g": 60,
+    "details": [
+     "figs",
+     "ribbons",
+     "nest"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 156,
+    "y": 302,
+    "R": 5.577933676621565,
+    "h": 14,
+    "roots": 3,
+    "zb": 50,
+    "g": 60,
+    "details": [
+     "ribbons",
+     "trunk_moss",
+     "root_tint"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 223,
+    "y": 318,
+    "R": 5.21656229567861,
+    "h": 14,
+    "roots": 4,
+    "zb": 49,
+    "g": 59,
+    "details": [
+     "figs",
+     "nest",
+     "root_tint"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 229,
+    "y": 304,
+    "R": 5.131492527639702,
+    "h": 12,
+    "roots": 2,
+    "zb": 52,
+    "g": 60,
+    "details": [
+     "figs",
+     "dead_limb",
+     "trunk_moss"
+    ]
+   },
+   {
+    "species": "banyan",
+    "x": 52,
+    "y": 290,
+    "R": 4.772717728986279,
+    "h": 13,
+    "roots": 3,
+    "zb": 51,
+    "g": 60,
+    "details": [
+     "ribbons",
+     "nest",
+     "root_tint"
+    ]
+   }
+  ],
+  "palm": [
+   {
+    "species": "palm",
+    "x": 136,
+    "y": 193,
+    "h": 15,
+    "g": 60,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "trunk_rings"
+    ]
+   },
+   {
+    "species": "palm",
+    "x": 144,
+    "y": 196,
+    "h": 14,
+    "g": 59,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "shoot"
+    ]
+   },
+   {
+    "species": "palm",
+    "x": 206,
+    "y": 185,
+    "h": 15,
+    "g": 60,
+    "details": [
+     "coconuts",
+     "trunk_rings",
+     "fallen_nut"
+    ]
+   },
+   {
+    "species": "palm",
+    "x": 214,
+    "y": 333,
+    "h": 12,
+    "g": 60,
+    "details": [
+     "dry_frond",
+     "shoot",
+     "fallen_nut"
+    ]
+   },
+   {
+    "species": "palm",
+    "x": 70,
+    "y": 243,
+    "h": 13,
+    "g": 61,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "trunk_rings"
+    ]
+   },
+   {
+    "species": "palm",
+    "x": 70,
+    "y": 270,
+    "h": 15,
+    "g": 61,
+    "details": [
+     "coconuts",
+     "dry_frond",
+     "shoot"
+    ]
+   }
+  ],
+  "counts": {
+   "banyan": 9,
+   "palm": 6
+  }
+ },
+ "dhow": {
+  "box": [
+   228,
+   284,
+   322,
+   348
+  ],
+  "mast_top_z": 36,
+  "deck_z": 56,
+  "geom": {
+   "x1": 272,
+   "yc": 335,
+   "w_bow": 2,
+   "eye_z": 58,
+   "stern_z": 52
+  }
+ },
+ "cosmetic_asymmetric_boxes": [
+  [
+   228,
+   284,
+   322,
+   348
+  ]
+ ],
+ "waivers": {},
+ "materials": {
+  "air": 0,
+  "sea": 1,
+  "grass": 2,
+  "sand": 3,
+  "laterite": 4,
+  "paving": 5,
+  "rock": 6,
+  "basalt": 7,
+  "basalt_dk": 8,
+  "floor": 9,
+  "furniture": 10,
+  "stair": 11,
+  "plaster": 12,
+  "finial": 13,
+  "mast": 14,
+  "cloth": 15,
+  "kerb": 16,
+  "flag_teal": 17,
+  "timber": 18,
+  "thatch": 19,
+  "keg": 20,
+  "crate": 21,
+  "iron": 22,
+  "shrub": 23,
+  "rope": 24,
+  "net": 25,
+  "hull": 26,
+  "pool": 27,
+  "leaf": 28,
+  "bark": 29,
+  "nest": 30,
+  "deadwood": 31,
+  "root": 32,
+  "ribbon": 33,
+  "fig": 34,
+  "moss": 35,
+  "palm_trunk": 36,
+  "frond": 37,
+  "coconut": 38,
+  "dryfrond": 39,
+  "palm_ring": 40,
+  "frond_young": 41,
+  "deck": 42,
+  "sail": 43
+ },
+ "art": {
+  "materials_painted": {
+   "sand": 7291,
+   "laterite": 16068,
+   "grass": 18852,
+   "rock": 1108,
+   "paving": 968,
+   "basalt": 26239,
+   "plaster": 2220,
+   "kerb": 3192,
+   "timber": 1550,
+   "floor": 1568,
+   "furniture": 16,
+   "thatch": 1336,
+   "rope": 64,
+   "net": 54,
+   "crate": 632,
+   "keg": 202,
+   "iron": 108,
+   "hull": 1098,
+   "deck": 320,
+   "mast": 92,
+   "sail": 37,
+   "finial": 18,
+   "flag_teal": 18,
+   "pool": 49,
+   "fig": 60,
+   "nest": 12,
+   "deadwood": 26,
+   "ribbon": 86,
+   "coconut": 30,
+   "moss": 8,
+   "root": 1204,
+   "dryfrond": 86,
+   "palm_ring": 40,
+   "frond_young": 12,
+   "bark": 1484,
+   "palm_trunk": 136,
+   "shrub": 256,
+   "cloth": 82,
+   "leaf": 3414,
+   "frond": 642,
+   "sea": 212287
+  },
+  "lamps": [
+   [
+    103,
+    197,
+    54
+   ],
+   [
+    409,
+    315,
+    54
+   ],
+   [
+    103,
+    315,
+    54
+   ],
+   [
+    409,
+    197,
+    54
+   ],
+   [
+    145,
+    226,
+    54
+   ],
+   [
+    367,
+    286,
+    54
+   ],
+   [
+    145,
+    286,
+    54
+   ],
+   [
+    367,
+    226,
+    54
+   ],
+   [
+    86,
+    220,
+    45
+   ],
+   [
+    426,
+    292,
+    45
+   ],
+   [
+    86,
+    244,
+    45
+   ],
+   [
+    426,
+    268,
+    45
+   ],
+   [
+    86,
+    268,
+    45
+   ],
+   [
+    426,
+    244,
+    45
+   ],
+   [
+    86,
+    292,
+    45
+   ],
+   [
+    426,
+    220,
+    45
+   ],
+   [
+    70,
+    216,
+    52
+   ],
+   [
+    442,
+    296,
+    52
+   ],
+   [
+    248,
+    248,
+    56
+   ],
+   [
+    264,
+    248,
+    56
+   ],
+   [
+    248,
+    264,
+    56
+   ],
+   [
+    264,
+    264,
+    56
+   ],
+   [
+    272,
+    335,
+    52
+   ]
+  ],
+  "brightness": {
+   "dark_floors_raised": 0,
+   "whites_capped": 119
+  },
+  "glow": {
+   "sources": 23,
+   "stored_entries": 4226,
+   "nudged_off_palette": 0
+  },
+  "tag_rect": [
+   22,
+   179,
+   22,
+   39,
+   63
+  ],
+  "solid_unchanged": {
+   "asserted": true,
+   "sha256_before": "86c15a55f661dfff2a86e86f8a04e4ca75969532c86ea2625ee06ccdd6f960fa",
+   "sha256_after": "86c15a55f661dfff2a86e86f8a04e4ca75969532c86ea2625ee06ccdd6f960fa"
+  }
+ },
+ "tag_rect": [
+  22,
+  179,
+  22,
+  39,
+  63
+ ],
+ "colour_stats": {
+  "top_luma_median": 74.3,
+  "top_dark_share_pct": 0.0,
+  "top_bright_share_pct": 0.0
+ },
+ "interiors_n": 62,
+ "build_seconds": 7.0,
+ "interiors": [
+  [
+   "casemate 1 (W)",
+   88,
+   218,
+   59
+  ],
+  [
+   "casemate 1 (E)",
+   424,
+   294,
+   59
+  ],
+  [
+   "casemate 2 (W)",
+   88,
+   243,
+   59
+  ],
+  [
+   "casemate 2 (E)",
+   424,
+   269,
+   59
+  ],
+  [
+   "casemate 3 (W)",
+   88,
+   269,
+   59
+  ],
+  [
+   "casemate 3 (E)",
+   424,
+   243,
+   59
+  ],
+  [
+   "casemate 4 (W)",
+   88,
+   294,
+   59
+  ],
+  [
+   "casemate 4 (E)",
+   424,
+   218,
+   59
+  ],
+  [
+   "wall-walk north (W)",
+   89,
+   216,
+   47
+  ],
+  [
+   "wall-walk north (E)",
+   423,
+   296,
+   47
+  ],
+  [
+   "wall-walk south (W)",
+   89,
+   296,
+   47
+  ],
+  [
+   "wall-walk south (E)",
+   423,
+   216,
+   47
+  ],
+  [
+   "corner bastion (96,204) ground (W)",
+   96,
+   204,
+   59
+  ],
+  [
+   "corner bastion (96,204) ground (E)",
+   416,
+   308,
+   59
+  ],
+  [
+   "corner bastion (96,204) floor z53 (W)",
+   96,
+   204,
+   53
+  ],
+  [
+   "corner bastion (96,204) floor z53 (E)",
+   416,
+   308,
+   53
+  ],
+  [
+   "corner bastion (96,204) floor z47 (W)",
+   96,
+   204,
+   47
+  ],
+  [
+   "corner bastion (96,204) floor z47 (E)",
+   416,
+   308,
+   47
+  ],
+  [
+   "corner bastion (96,204) terrace (W)",
+   96,
+   204,
+   39
+  ],
+  [
+   "corner bastion (96,204) terrace (E)",
+   416,
+   308,
+   39
+  ],
+  [
+   "corner bastion (96,308) ground (W)",
+   96,
+   308,
+   59
+  ],
+  [
+   "corner bastion (96,308) ground (E)",
+   416,
+   204,
+   59
+  ],
+  [
+   "corner bastion (96,308) floor z53 (W)",
+   96,
+   308,
+   53
+  ],
+  [
+   "corner bastion (96,308) floor z53 (E)",
+   416,
+   204,
+   53
+  ],
+  [
+   "corner bastion (96,308) floor z47 (W)",
+   96,
+   308,
+   47
+  ],
+  [
+   "corner bastion (96,308) floor z47 (E)",
+   416,
+   204,
+   47
+  ],
+  [
+   "corner bastion (96,308) terrace (W)",
+   96,
+   308,
+   39
+  ],
+  [
+   "corner bastion (96,308) terrace (E)",
+   416,
+   204,
+   39
+  ],
+  [
+   "gate bastion (150,226) ground (W)",
+   150,
+   226,
+   59
+  ],
+  [
+   "gate bastion (150,226) ground (E)",
+   362,
+   286,
+   59
+  ],
+  [
+   "gate bastion (150,226) terrace (W)",
+   150,
+   226,
+   45
+  ],
+  [
+   "gate bastion (150,226) terrace (E)",
+   362,
+   286,
+   45
+  ],
+  [
+   "gate bastion (150,286) ground (W)",
+   150,
+   286,
+   59
+  ],
+  [
+   "gate bastion (150,286) ground (E)",
+   362,
+   226,
+   59
+  ],
+  [
+   "gate bastion (150,286) terrace (W)",
+   150,
+   286,
+   45
+  ],
+  [
+   "gate bastion (150,286) terrace (E)",
+   362,
+   226,
+   45
+  ],
+  [
+   "watch tower (220,203) ground (W)",
+   220,
+   203,
+   59
+  ],
+  [
+   "watch tower (220,203) ground (E)",
+   292,
+   309,
+   59
+  ],
+  [
+   "watch tower (220,203) floor z49 (W)",
+   220,
+   203,
+   49
+  ],
+  [
+   "watch tower (220,203) floor z49 (E)",
+   292,
+   309,
+   49
+  ],
+  [
+   "watch tower (220,203) terrace (W)",
+   220,
+   203,
+   41
+  ],
+  [
+   "watch tower (220,203) terrace (E)",
+   292,
+   309,
+   41
+  ],
+  [
+   "watch tower (190,314) ground (W)",
+   190,
+   314,
+   57
+  ],
+  [
+   "watch tower (190,314) ground (E)",
+   322,
+   198,
+   57
+  ],
+  [
+   "watch tower (190,314) floor z49 (W)",
+   190,
+   314,
+   49
+  ],
+  [
+   "watch tower (190,314) floor z49 (E)",
+   322,
+   198,
+   49
+  ],
+  [
+   "watch tower (190,314) terrace (W)",
+   190,
+   314,
+   41
+  ],
+  [
+   "watch tower (190,314) terrace (E)",
+   322,
+   198,
+   41
+  ],
+  [
+   "islet shrine (W)",
+   70,
+   212,
+   56
+  ],
+  [
+   "islet shrine (E)",
+   442,
+   300,
+   56
+  ],
+  [
+   "fisher hut (W)",
+   67,
+   300,
+   56
+  ],
+  [
+   "fisher hut (E)",
+   445,
+   212,
+   56
+  ],
+  [
+   "front guard hut (W)",
+   172,
+   264,
+   58
+  ],
+  [
+   "front guard hut (E)",
+   340,
+   248,
+   58
+  ],
+  [
+   "rack shelter (W)",
+   223,
+   247,
+   57
+  ],
+  [
+   "rack shelter (E)",
+   289,
+   265,
+   57
+  ],
+  [
+   "boat shed (W)",
+   163,
+   194,
+   55
+  ],
+  [
+   "boat shed (E)",
+   349,
+   318,
+   55
+  ],
+  [
+   "baoli pool (W)",
+   253,
+   256,
+   62
+  ],
+  [
+   "baoli pool (E)",
+   259,
+   256,
+   62
+  ],
+  [
+   "dhow hold",
+   250,
+   335,
+   61
+  ],
+  [
+   "dhow deck",
+   246,
+   335,
+   56
+  ]
+ ]
+}
