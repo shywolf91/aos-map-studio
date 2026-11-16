@@ -294,9 +294,9 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
 * **Importing a map from a chat zip:** unzip into `_updates/<map>/` (git-ignored), then move the generator into
   `scenes/<map>/` and the outputs into `maps/<map>_vN/`, run its check script, and update §9's "where the source
   lives" column. Large build artefacts (`mat.npy`, `*.npy`) stay git-ignored.
-* **Recording new decisions:** when the owner states a new preference or rule, append it to
-  `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
-  That file replaces the claude.ai Project memory.
+* **Recording new decisions** `[USER]` (2026-11-10): when the owner states a new preference or rule, append it to
+  `docs/knowledge/project_memory.md` (`- [stated] … (date)`) **in the same turn**, on a `docs/<topic>` branch, then
+  commit and push. If it's a standing rule, add it to §4 here too. That file replaces the claude.ai Project memory.
 * Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
 * **Cloud sessions** (claude.ai/code) start without the toolchain: run `uv venv --python 3.11 .venv && . .venv/bin/activate &&
   uv pip install -r requirements.txt` (verified 2026-11-15: piqueserver 1.4.2 builds, tests pass). `refs/` is empty there;
