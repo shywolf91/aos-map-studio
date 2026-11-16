@@ -7,6 +7,9 @@ floating() reports.
 Mirror axes used in this project (state which one a map uses in its SPEC):
   'x512'  x' = 512 - x   (column 0 and 256 are on the axis; 256 must be copied from 255) - most Babel maps
   'x511'  x' = 511 - x   (no shared column) - Bloomhop, Under the Tree
+  'point512'  (x, y) -> (512 - x, 512 - y): 180 degree rotation about (256, 256) (newfort-style maps, Janjira
+          Sound). Teams swap sides AND north/south. The source half is x < 256 plus the x = 256 column for
+          y <= 256; everything else is copied from its rotated partner. Column/row 0 map onto themselves (mod 512).
 """
 from __future__ import annotations
 
@@ -16,12 +19,51 @@ from scipy import ndimage as ndi
 _FACE = ndi.generate_binary_structure(3, 1)
 
 
+AXES = ('x512', 'x511', 'point512')
+_R512 = (512 - np.arange(512)) % 512
+
+
 def mirror_index(x, axis='x512'):
-    return (512 - x) % 512 if axis == 'x512' else 511 - x
+    """Partner x of column x (for 'point512' the partner row is mirror_index_y)."""
+    return (512 - x) % 512 if axis in ('x512', 'point512') else 511 - x
+
+
+def mirror_index_y(y, axis='x512'):
+    return (512 - y) % 512 if axis == 'point512' else y
+
+
+def mirror_point(x, y, axis='x512'):
+    return mirror_index(x, axis), mirror_index_y(y, axis)
+
+
+def source_mask(axis='x512'):
+    """[x, y] bool: the authored half that mirror_west_to_east keeps (everything else is copied)."""
+    m = np.zeros((512, 512), bool)
+    m[:256] = True
+    if axis == 'x512':
+        m[256] = False                         # column 256 is filled from 255 (legacy behaviour)
+    elif axis == 'point512':
+        m[256, :257] = True
+    return m
+
+
+def rotate180(a):
+    """a[512 - x, 512 - y] (mod 512) for an [x, y, ...] array (the 'point512' partner of every cell)."""
+    return a[_R512][:, _R512]
 
 
 def mirror_west_to_east(*arrays, axis='x512'):
-    """Copy the west half onto the east half in place, for every [x, ...] array given."""
+    """Copy the west half onto the east half in place, for every [x, ...] array given.
+    axis 'point512': rotate the source half (x < 256, and x = 256 for y <= 256) by 180 degrees about (256, 256)."""
+    if axis not in AXES:
+        raise ValueError(f'unknown symmetry axis {axis!r} (known: {AXES})')
+    if axis == 'point512':
+        src = source_mask(axis)
+        for a in arrays:
+            r = rotate180(a).copy()
+            m = src.reshape(src.shape + (1,) * (a.ndim - 2))
+            a[...] = np.where(m, a, r)
+        return arrays
     for a in arrays:
         if axis == 'x512':
             a[257:] = a[255:0:-1]
@@ -36,13 +78,13 @@ def mirror_canvas(cv, axis='x512'):
     east = []
     for (x, y, z, c) in cv.glow:
         if x < 256:
-            east.append((mirror_index(x, axis), y, z, c))
+            east.append((mirror_index(x, axis), mirror_index_y(y, axis), z, c))
     cv.glow = [g for g in cv.glow if g[0] < 256] + east
     ints = []
     for (nm, x, y, z) in cv.interiors:
         if x < 256:
             ints.append([f'{nm} (W)', x, y, z])
-            ints.append([f'{nm} (E)', mirror_index(x, axis), y, z])
+            ints.append([f'{nm} (E)', mirror_index(x, axis), mirror_index_y(y, axis), z])
     if ints:
         cv.interiors = ints
     return cv
@@ -54,7 +96,19 @@ def mirror_mismatch(solid, mat=None, axis='x512', exclude=None):
     for (x0, x1, y0, y1) in exclude or []:
         excl[x0:x1 + 1, y0:y1 + 1] = True
         a, b = sorted((mirror_index(x0, axis), mirror_index(x1, axis)))
-        excl[a:b + 1, y0:y1 + 1] = True
+        c, d = sorted((mirror_index_y(y0, axis), mirror_index_y(y1, axis)))
+        excl[a:b + 1, c:d + 1] = True
+    if axis == 'point512':
+        # every cell of the source half (x 1-255, and x 256 for y 1-255) against its rotated partner
+        src = source_mask(axis)
+        src[0, :] = False
+        src[:, 0] = False
+        src[256, 256] = False
+        keep = (src & ~excl)[:, :, None]
+        out = {'solid': int(((solid != rotate180(solid)) & keep).sum())}
+        if mat is not None:
+            out['material'] = int(((mat != rotate180(mat)) & keep).sum())
+        return out
     if axis == 'x512':
         west, east, keep = slice(1, 256), slice(511, 256, -1), ~excl[1:256, :, None]
     else:

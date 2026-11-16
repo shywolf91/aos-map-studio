@@ -250,18 +250,18 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Drowned Cathedral | Halloween Babel | v2 (rotated redesign) | server-loaded; v1 playtested by a tester | `scenes/drowned_cathedral*` |
 | spinline | joke Babel (pinline-style) | v1.4 | client-loaded by owner | **zip from its chat**; spec `docs/spinline_spec.md` |
 | Brimstone Atoll | Halloween island Babel | v1.3 | server-loaded | **zip from its chat**; spec `docs/brimstone_atoll_spec.md` |
-| Witchwood Isles | Halloween island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/witchwood_isles_spec.md` |
+| Witchwood Isles | Halloween island Babel | v1.0 | server-loaded | `scenes/witchwood_isles/`, `maps/witchwood_isles_v1_0/`; spec `docs/witchwood_isles_spec.md` |
 | Backyard Babel | Grounded-style backyard Babel | v5.0 | server-loaded | **zip from its chat**; spec `docs/backyard_babel_spec.md` (v2 spec kept) |
 | The Wicker King's Harvest | Halloween island Babel | v1.0 / v1.1 (sky) | server-loaded | `scenes/wicker_kings_harvest/` |
 | Graveyard of the Forgotten — The Bone Cathedral | Halloween ground Babel | v1.0 | client-inspected (BetterSpades screenshots) | `scenes/graveyard_forgotten/`, `docs/graveyard_of_the_forgotten_spec.md` |
 | The Hollow Crown | Halloween ground Babel | v1.1 (v1.0 kept) | server-loaded + bots | `scenes/hollow_crown/`, `docs/hollow_crown_spec.md` |
 | Death Swamp | Push (first) | v1.0 | server-loaded + bots | **zip from its chat**; spec `docs/death_swamp_spec.md` |
-| Haunted Fairground | Halloween island Babel (Ruins layout) | v1.3 | server-loaded | **zip from its chat**; spec `docs/haunted_fairground_isles_v1.md` |
+| Haunted Fairground | Halloween island Babel (Ruins layout) | v1.3 | server-loaded | `scenes/haunted_fairground/` (needs `refs/Ruins.vxl` or `RUINS_VXL`), `maps/haunted_fairground_v1_3/`; spec `docs/haunted_fairground_isles_v1.md` |
 | Ferrari's Revenge (Skull River) | Babel | v3 | parser-validated | **zip from its chat**; spec `docs/skull_river_spec.md` |
 | Royal Parade Halloween | community-map edit (Bradley & Mile) | v1.1 | parser-validated; viewed on alohacraft | **zip from its chat**; spec `docs/royal_parade_halloween_spec.md` |
 | 1river2night v2.2 | night recolour + glow | v2.2 | parser-validated | **zip from its chat**; spec `docs/1river2night_v2_spec.md` |
 | Bikini Atoll (Detonation) | Push glow edit (IAmYourFriend) | v1.2 | parser-validated | **zip from its chat**; spec `docs/bikini_atoll_detonation_spec.md` |
-| Silverpine Hunt | Halloween snow Babel | v1.x → v2.2 (+sky) | server-loaded | **zip from its chat**; specs `docs/silverpine_hunt_spec.md`, `docs/silverpine_hunt_v2_spec.md` |
+| Silverpine Hunt | Halloween snow Babel | v1.x → v2.2 (+sky) | server-loaded | v2.2: `scenes/silverpine_hunt_v2/`, `maps/silverpine_hunt_v2_2*/`, `server_test/sph_babel/` (v1 still zip-only); specs `docs/silverpine_hunt_spec.md`, `docs/silverpine_hunt_v2_spec.md` |
 | Mossglade Pond | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/mossglade_pond_spec.md` (owner decisions open) |
 | Lantern Bazaar Canals | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/lantern_bazaar_canals_spec.md` |
 | Highland Loch Castle | island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/highland_loch_castle_spec.md` |
@@ -275,6 +275,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Elderveil | dark-fantasy ruins ground Babel, assist structures | v1.1 (v1.0 kept) | server-loaded (spawn exposure waived by owner) | `scenes/elderveil/` (built with `aosmap.kit`), `docs/elderveil_spec.md` |
 | Yulehaven Isles | Christmas island Babel (Nordic archipelago) | v1.0 | server-loaded (spawn exposure waived by owner) | `scenes/yulehaven_isles/` (built with `aosmap.kit`), `docs/yulehaven_isles_spec.md` |
 | Cursed Skull Reef | pirate island Babel, assist structures (current island style) | v1.0 | server-loaded (spawn exposure fails, owner decision open) | `scenes/cursed_skull_reef/` (built with `aosmap.kit`), `docs/cursed_skull_reef_spec.md` |
+| Janjira Sound ([recreate] of newfort by JoJoe Stinky) | classic island Babel (Konkan sea forts), 180° rotation | v1.0 | server-loaded (spawn exposure hidden share 0 %, owner decision open) | `scenes/janjira_sound/` (built with `aosmap.kit`), `docs/janjira_sound_recreate_report.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
 chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).
@@ -298,6 +299,12 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
   `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
   That file replaces the claude.ai Project memory.
 * Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
+* **Cloud sessions** (claude.ai/code) start without the toolchain: run `uv venv --python 3.11 .venv && . .venv/bin/activate &&
+  uv pip install -r requirements.txt` (verified 2026-11-15: piqueserver 1.4.2 builds, tests pass). `refs/` is empty there;
+  the owner attaches the maps a job needs.
+* **`[recreate]` analysis:** `python tools/recreate_analysis.py refs/<map>.vxl` writes the original-map analysis
+  (`out/recreate/<stem>/`); `--compare <new.vxl>` adds the fidelity section. `/recreate` describes the flow and the
+  planning/implementation model split (owner, 2026-11-15).
 * **Slash commands** (`.claude/commands/`): `/new-map <brief>`, `/recreate <file.vxl>`, `/check-map <maps dir>`,
   `/remember <rule>`, `/sync`. `.claude/settings.json` allowlists routine work; force-push and pushes to main are denied.
 * **Shared kit** (`aosmap/kit/`, `docs/kit.md`): new maps import codec, canvas, structures, symmetry, colour, veg,

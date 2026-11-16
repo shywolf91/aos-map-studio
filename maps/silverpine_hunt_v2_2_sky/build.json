@@ -1,0 +1,303 @@
+{
+ "sha256": "dfd752eefad9d2d74a4edebeff3df81da86d9b941fbe71ac1dd305021f08a1a7",
+ "bytes": 3751464,
+ "build_s": 11.2,
+ "tag_rect": [
+  8,
+  102,
+  492,
+  503
+ ],
+ "cosmetic_asymmetric_bbox": [
+  8,
+  102,
+  492,
+  503
+ ],
+ "cleanup": {
+  "tiny_floating_removed_voxels": 523,
+  "large_floating_left": [],
+  "trap_cells_raised": 14
+ },
+ "counts": {
+  "trees": 434,
+  "scatter": {
+   "boulder": 57,
+   "log": 17,
+   "stump": 17,
+   "trap": 11,
+   "bones": 7,
+   "wolfsbane": 9,
+   "sapling": 3,
+   "lantern": 1
+  },
+  "portal_x": 181,
+  "werewolf_ground_z": 41,
+  "watchhouse_g": 46,
+  "floor_z": 56,
+  "falls": {
+   "yb": 53
+  }
+ },
+ "tree_types_total": {
+  "spruce": 402,
+  "scots": 86,
+  "snag": 136,
+  "sapling": 244
+ },
+ "sky_objects": [
+  {
+   "name": "moon",
+   "voxels": 1282,
+   "x": [
+    242,
+    270
+   ],
+   "y": [
+    82,
+    83
+   ],
+   "z": [
+    1,
+    29
+   ]
+  },
+  {
+   "name": "crow0",
+   "voxels": 36,
+   "x": [
+    229,
+    241
+   ],
+   "y": [
+    125,
+    130
+   ],
+   "z": [
+    21,
+    22
+   ]
+  },
+  {
+   "name": "crow1",
+   "voxels": 33,
+   "x": [
+    240,
+    247
+   ],
+   "y": [
+    113,
+    124
+   ],
+   "z": [
+    24,
+    25
+   ]
+  },
+  {
+   "name": "crow2",
+   "voxels": 34,
+   "x": [
+    259,
+    264
+   ],
+   "y": [
+    117,
+    129
+   ],
+   "z": [
+    20,
+    21
+   ]
+  },
+  {
+   "name": "crow3",
+   "voxels": 35,
+   "x": [
+    272,
+    283
+   ],
+   "y": [
+    123,
+    130
+   ],
+   "z": [
+    23,
+    24
+   ]
+  },
+  {
+   "name": "crow4",
+   "voxels": 36,
+   "x": [
+    269,
+    281
+   ],
+   "y": [
+    147,
+    152
+   ],
+   "z": [
+    22,
+    23
+   ]
+  },
+  {
+   "name": "crow5",
+   "voxels": 37,
+   "x": [
+    271,
+    278
+   ],
+   "y": [
+    159,
+    170
+   ],
+   "z": [
+    19,
+    20
+   ]
+  },
+  {
+   "name": "crow6",
+   "voxels": 35,
+   "x": [
+    249,
+    254
+   ],
+   "y": [
+    158,
+    170
+   ],
+   "z": [
+    23,
+    24
+   ]
+  },
+  {
+   "name": "crow7",
+   "voxels": 38,
+   "x": [
+    233,
+    244
+   ],
+   "y": [
+    147,
+    153
+   ],
+   "z": [
+    21,
+    22
+   ]
+  },
+  {
+   "name": "bat0",
+   "voxels": 60,
+   "x": [
+    272,
+    287
+   ],
+   "y": [
+    373,
+    382
+   ],
+   "z": [
+    15,
+    16
+   ]
+  },
+  {
+   "name": "bat1",
+   "voxels": 56,
+   "x": [
+    262,
+    268
+   ],
+   "y": [
+    386,
+    402
+   ],
+   "z": [
+    18,
+    19
+   ]
+  },
+  {
+   "name": "bat2",
+   "voxels": 61,
+   "x": [
+    235,
+    247
+   ],
+   "y": [
+    382,
+    394
+   ],
+   "z": [
+    14,
+    15
+   ]
+  },
+  {
+   "name": "bat3",
+   "voxels": 60,
+   "x": [
+    225,
+    240
+   ],
+   "y": [
+    357,
+    366
+   ],
+   "z": [
+    17,
+    18
+   ]
+  },
+  {
+   "name": "bat4",
+   "voxels": 56,
+   "x": [
+    249,
+    255
+   ],
+   "y": [
+    338,
+    354
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "bat5",
+   "voxels": 61,
+   "x": [
+    268,
+    280
+   ],
+   "y": [
+    348,
+    360
+   ],
+   "z": [
+    16,
+    17
+   ]
+  }
+ ],
+ "ground_stats": {
+  "snow_white": 33.9,
+  "trampled_snow": 0.1,
+  "foliage": 26.2,
+  "rock": 14.2,
+  "ice": 3.8,
+  "earth_grass_needles": 16.7,
+  "roofs": 1.6,
+  "other": 3.5,
+  "topdown_mean_luma": 98.6,
+  "topdown_pct_luma_over_175": 1.5
+ },
+ "surface_voxels": 560952
+}
