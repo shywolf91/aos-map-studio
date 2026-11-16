@@ -50,6 +50,28 @@ def test_mirror_canvas_is_symmetric_and_fills_axis_column():
     assert symmetry.mirror_mismatch(cv2.solid, None, 'x511')['solid'] == 0
 
 
+def test_point512_rotation_is_symmetric_and_spawn_squares_match():
+    cv = flat()
+    cv.box(40, 60, 30, 50, 30, 49, (10, 20, 30), 'a')        # west, off-centre in y: rotation moves it to y 462-482
+    cv.box(100, 130, 240, 250, 45, 49, (1, 2, 3), 'b')        # inside the blue spawn square (north half)
+    cv.box(250, 256, 200, 230, 40, 49, (4, 5, 6), 'c')        # touches the x = 256 source column
+    cv.interiors.append(['room', 50, 40, 49])
+    symmetry.mirror_canvas(cv, 'point512')
+    assert symmetry.mirror_mismatch(cv.solid, cv.mat, 'point512') == {'solid': 0, 'material': 0}
+    assert cv.solid[452:473, 462:483, 30:50].all() and not cv.solid[452:473, 30:51, 30:50].any()
+    assert cv.solid[256, 282:313, 40:50].all() and cv.solid[256, 200:231, 40:50].all()
+    assert ['room (E)', 462, 472, 49] in cv.interiors
+    # an x-mirror check of the same map is NOT clean; the spawn squares are equal under the rotation
+    assert symmetry.mirror_mismatch(cv.solid, None, 'x512')['solid'] > 0
+    sq = babel_checks.spawn_square_checks(cv.solid, axis='point512')
+    assert sq['mirror_equal_share'] == 1.0
+    assert babel_checks.spawn_square_checks(cv.solid, axis='x512')['mirror_equal_share'] < 1.0
+    # an excluded one-off box (and its rotated partner) is left out
+    cv.box(60, 70, 300, 310, 40, 49, (9, 9, 9))
+    assert symmetry.mirror_mismatch(cv.solid, None, 'point512')['solid'] > 0
+    assert symmetry.mirror_mismatch(cv.solid, None, 'point512', [(60, 70, 300, 310)])['solid'] == 0
+
+
 def test_orphans_removed_and_expected_kept():
     cv = flat()
     cv.box(300, 302, 300, 302, 10, 12, (1, 1, 1))           # stray fragment

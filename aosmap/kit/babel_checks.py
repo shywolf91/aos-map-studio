@@ -10,7 +10,8 @@ Route checks are a GRAPH MODEL (3 air voxels to stand, 1-voxel step up, drops <=
 not a collision simulation, and never proof of playability.
 
     python -m aosmap.kit.babel_checks maps/<map>_v1 [--out scratch/validation.json] [--rules hc|bloomhop]
-        [--exposure calibrated|bloomhop] [--axis x512|x511] [--no-pyspades] [--targets targets.json]
+        [--exposure calibrated|bloomhop] [--axis x512|x511|point512] [--no-pyspades] [--targets targets.json]
+    (--axis defaults to build.json 'axis', else x512; 'point512' = 180 degree rotation about (256, 256))
 
 Inputs read from the map folder when present: the .vxl, build.json (sky_objects / kept_floating, interiors,
 cosmetic_asymmetric_bbox and/or cosmetic_asymmetric_boxes, tag_rect, check_targets), mat.npy, terrain_H.npy.
@@ -30,7 +31,8 @@ from scipy.sparse.csgraph import dijkstra
 
 from . import codec
 from .params import BABEL_DEFAULT, FALL_ANY_MAX, FALL_SAFE_MAX, MX, MY, MZ
-from .symmetry import floating_components, mirror_index, mirror_mismatch, split_expected, standable
+from .symmetry import AXES, floating_components, mirror_index, mirror_index_y, mirror_mismatch, split_expected, \
+    standable
 
 
 # =============================================================================================== navigation graph
@@ -280,7 +282,8 @@ def spawn_square_checks(solid, params=BABEL_DEFAULT, axis='x512'):
     # red square mirrored onto blue's
     bx_r = params['bases'][1][0]
     xs = [mirror_index(x, axis) for x in range(params['bases'][0][0] - half, params['bases'][0][0] + half + 1)]
-    b_m = top[xs, params['bases'][1][1] - half:params['bases'][1][1] + half + 1]
+    ys = [mirror_index_y(y, axis) for y in range(params['bases'][0][1] - half, params['bases'][0][1] + half + 1)]
+    b_m = top[np.ix_(xs, ys)]
     out['mirror_equal_share'] = round(float((a == b_m).mean()), 3)
     out['_red_base_x'] = bx_r
     return out
@@ -627,13 +630,14 @@ def main(argv=None):
     ap.add_argument('--out', help='where to write validation.json (default: print only)')
     ap.add_argument('--rules', default='hc', choices=('hc', 'bloomhop'))
     ap.add_argument('--exposure', default='calibrated', choices=tuple(EXPOSURE_PRESETS))
-    ap.add_argument('--axis', default='x512', choices=('x512', 'x511'))
+    ap.add_argument('--axis', default=None, choices=AXES, help="default: build.json 'axis', else x512")
     ap.add_argument('--no-pyspades', action='store_true')
     ap.add_argument('--targets', help='JSON file: {"name": [x0, x1, y0, y1, z0, z1], ...} extra route targets')
     a = ap.parse_args(argv)
     path, data, build, mat, H = _load_dir(a.mapdir)
     targets = json.load(open(a.targets)) if a.targets else build.get('check_targets')
-    R = run_all(data, build=build, mat=mat, terrain_H=H, axis=a.axis, exposure_preset=a.exposure, rules=a.rules,
+    axis = a.axis or build.get('axis') or 'x512'
+    R = run_all(data, build=build, mat=mat, terrain_H=H, axis=axis, exposure_preset=a.exposure, rules=a.rules,
                 pyspades=not a.no_pyspades, targets=targets)
     R['map'] = os.path.basename(path)
     R['summary'] = summary(R)
