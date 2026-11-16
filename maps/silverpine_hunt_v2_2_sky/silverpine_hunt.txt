@@ -1,0 +1,11 @@
+name = 'Silverpine Hunt'
+version = '2.2-sky'
+author = 'shywolf91 + AI'
+description = ('Babel: a moonlit werewolf snow forest. Hunters lodges at both spawns, the werewolf den under '
+               'the platform, a frozen waterfall to the north and a silver mine to the south.')
+fog = (170, 160, 190)
+extensions = {
+    'babel': True,
+    'water_damage': 0,
+    'heavens_color': (96, 102, 156, 255),
+}

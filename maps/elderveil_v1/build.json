@@ -1,0 +1,1399 @@
+{
+ "map": "Elderveil",
+ "file": "elderveil",
+ "sha256": "de354987685297fd39ded48a9bb59f0b84503a0e059d151d48de1bb129ae8d62",
+ "bytes": 3189784,
+ "stage": "art",
+ "layout_seed": 20261113,
+ "veg_seed": 2243074186,
+ "axis": "x512",
+ "floating_before_cleanup": 8,
+ "floating_before_list": [
+  {
+   "voxels": 72,
+   "x": [
+    48,
+    52
+   ],
+   "y": [
+    165,
+    169
+   ],
+   "z": [
+    41,
+    45
+   ]
+  },
+  {
+   "voxels": 88,
+   "x": [
+    61,
+    65
+   ],
+   "y": [
+    146,
+    150
+   ],
+   "z": [
+    36,
+    44
+   ]
+  },
+  {
+   "voxels": 91,
+   "x": [
+    69,
+    73
+   ],
+   "y": [
+    62,
+    66
+   ],
+   "z": [
+    35,
+    44
+   ]
+  },
+  {
+   "voxels": 196,
+   "x": [
+    103,
+    109
+   ],
+   "y": [
+    109,
+    115
+   ],
+   "z": [
+    31,
+    42
+   ]
+  },
+  {
+   "voxels": 80,
+   "x": [
+    153,
+    157
+   ],
+   "y": [
+    311,
+    315
+   ],
+   "z": [
+    37,
+    43
+   ]
+  },
+  {
+   "voxels": 92,
+   "x": [
+    224,
+    228
+   ],
+   "y": [
+    378,
+    382
+   ],
+   "z": [
+    34,
+    43
+   ]
+  },
+  {
+   "voxels": 1,
+   "x": [
+    228,
+    228
+   ],
+   "y": [
+    148,
+    148
+   ],
+   "z": [
+    46,
+    46
+   ]
+  },
+  {
+   "voxels": 4,
+   "x": [
+    255,
+    255
+   ],
+   "y": [
+    189,
+    192
+   ],
+   "z": [
+    42,
+    42
+   ]
+  }
+ ],
+ "cleanup": {
+  "removed_components": 8,
+  "removed_voxels": 624,
+  "kept_floating": []
+ },
+ "scatter": {
+  "trees": 210,
+  "ring_firs": 64,
+  "outcrops": 20,
+  "veg_seed": 2243074186,
+  "nooks_filled": 4,
+  "trap_trees_removed": 2,
+  "trap_crest_wall_columns_removed": 0,
+  "feature_pads": [],
+  "largest_flat_after_west": 21,
+  "pinned_trees": 7
+ },
+ "spire": {
+  "centre": [
+   190.5,
+   218.5
+  ],
+  "top_floor_z": 12,
+  "rises": 38,
+  "tread_cells": 223,
+  "arrive_deg": 292.5,
+  "mid_door_deg": 7.5,
+  "box": [
+   180,
+   201,
+   208,
+   229
+  ]
+ },
+ "aqueduct": {
+  "piers": 8,
+  "deck_sections": [
+   [
+    44,
+    96
+   ],
+   [
+    122,
+    152
+   ],
+   [
+    178,
+    208
+   ],
+   [
+    234,
+    255
+   ]
+  ]
+ },
+ "bridge_y": [
+  408,
+  457
+ ],
+ "mushrooms": [
+  [
+   96,
+   462,
+   6,
+   17
+  ],
+  [
+   104,
+   457,
+   4,
+   11
+  ],
+  [
+   112,
+   466,
+   5,
+   14
+  ],
+  [
+   160,
+   394,
+   7,
+   20
+  ],
+  [
+   170,
+   390,
+   4,
+   10
+  ],
+  [
+   150,
+   398,
+   5,
+   13
+  ]
+ ],
+ "wall_columns": 919,
+ "cascade": {
+  "riser_voxels": 242,
+  "lip_y": 497
+ },
+ "sites": {
+  "cave_mouth": [
+   52,
+   372,
+   43
+  ],
+  "cave_chamber": [
+   40,
+   372
+  ]
+ },
+ "crest_wall_columns": 1499,
+ "assist_structures": {
+  "west spire": [
+   180,
+   201,
+   208,
+   229
+  ],
+  "east spire": [
+   311,
+   332,
+   208,
+   229
+  ]
+ },
+ "deviations": [
+  "spire footprint x 180-201, y 208-229 (spec about 178-200 / 206-228): centre (190.5, 218.5), stair radius 9.5",
+  "gate tower y 222-235 and the bastion y 277-290 sit right beside the front band (spawn-cover rule); the bastion is a collapsed rubble-filled stump (ruin mound, no room) rather than an enterable tower",
+  "front: a fallen lintel block (5 tall) added inside the band for spawn cover; the shrine sits just north of the band (y 226-234) so every band column keeps >= 70 % free rows and pieces stay >= 7 apart; one fern clump (spec: ferns); the sled-cart is the hunters sled",
+  "under the platform: no root humps (they broke the 7-voxel gap rule); the head is r 7.5 and there are three 7x7 plinths with column stubs; the broken mosaic floor is paint only (region 6)",
+  "rune circle centre y 398 (spec 410): the footbridge abutment needs y 405-412; the circle opens onto the bridge",
+  "footbridge spans the pool where the bank is below z 50 (about y 410-462, centre ~436; spec 440)",
+  "waterfall: graybox paint only (cliff face + bank behind the pool); the cascade is art-pass geometry",
+  "library y 106-132 (centre 119) with a west wing (east by mirror); plaza ellipse centre (256, 176) r 64 x 36 (x 192-320, y 140-212)",
+  "heart-tree roots end in steep knees (top >= 6 above the ground) so they cannot be walked onto",
+  "crest walls are removed within 3 of any trap cell they create (logged in build.json)",
+  "not in the graybox (art pass): corner tag at sky level, sky islets and crows, glow blocks, vegetation art"
+ ],
+ "waivers": {
+  "spawn_exposure_blue": "owner 2026-11-13: leave the front open",
+  "spawn_exposure_red": "owner 2026-11-13: leave the front open"
+ },
+ "art": {
+  "stand_ins_cleared": 39605,
+  "terrain": {
+   "path_cols": 1832
+  },
+  "stone": {
+   "stone_voxels": 37676,
+   "moss_voxels": 4844,
+   "ivy_voxels": 3056
+  },
+  "bands": 271,
+  "wood": 849,
+  "props": {
+   "queen": 1164,
+   "head": 267,
+   "moonwell_runes": 4,
+   "library_books": 28,
+   "hall_window_lights": 14,
+   "sites": true,
+   "rune_stones_lit": 6
+  },
+  "heart_tree": {
+   "moss_curtain_voxels": 331,
+   "vine_voxels": 90,
+   "bracket_fungi": 7,
+   "rune_knots": 2,
+   "lantern": [
+    244,
+    344,
+    27
+   ]
+  },
+  "mushrooms": [
+   "amber cap",
+   "violet bell",
+   "teal shelf",
+   "ivory parasol",
+   "amber cap",
+   "violet bell"
+  ],
+  "trees": {
+   "trees": 215,
+   "by_species": {
+    "beech": 18,
+    "fir": 90,
+    "oak": 51,
+    "snag": 13,
+    "birch": 43
+   },
+   "details": {
+    "carved_rune": 9,
+    "golden_leaves": 38,
+    "nest": 29,
+    "flowers": 37,
+    "lichen": 96,
+    "shelf_fungus": 38,
+    "deadbranch": 70,
+    "hanging_moss": 57,
+    "resin": 51,
+    "ivy": 31,
+    "mushrooms": 101,
+    "catkins": 24,
+    "hollow": 24,
+    "cones": 40
+   }
+  },
+  "understory": {
+   "fern": 3484,
+   "bramble": 859,
+   "flower": 102,
+   "shroom": 33
+  },
+  "water_plants": {
+   "reeds": 249,
+   "lily_cells": 54
+  },
+  "tree_trap_voxels_removed": 3275,
+  "reach_fix_voxels_removed": 7968,
+  "glow_sources_west": 44,
+  "glow_skipped": 2
+ },
+ "art_floating_before_cleanup": 16,
+ "art_cleanup": {
+  "removed_components": 16,
+  "removed_voxels": 343,
+  "kept_floating": []
+ },
+ "post_mirror_floating": {
+  "unexpected": 0,
+  "expected": 13,
+  "unexpected_list": []
+ },
+ "sky": [
+  {
+   "name": "islet balcony",
+   "voxels": 313,
+   "x": [
+    73,
+    83
+   ],
+   "y": [
+    152,
+    162
+   ],
+   "z": [
+    14,
+    28
+   ]
+  },
+  {
+   "name": "islet arch",
+   "voxels": 194,
+   "x": [
+    472,
+    480
+   ],
+   "y": [
+    162,
+    170
+   ],
+   "z": [
+    16,
+    33
+   ]
+  },
+  {
+   "name": "islet stair",
+   "voxels": 325,
+   "x": [
+    115,
+    125
+   ],
+   "y": [
+    447,
+    457
+   ],
+   "z": [
+    8,
+    23
+   ]
+  },
+  {
+   "name": "islet tree",
+   "voxels": 251,
+   "x": [
+    400,
+    408
+   ],
+   "y": [
+    400,
+    408
+   ],
+   "z": [
+    12,
+    31
+   ]
+  },
+  {
+   "name": "crow 0",
+   "voxels": 35,
+   "x": [
+    298,
+    303
+   ],
+   "y": [
+    64,
+    76
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "crow 1",
+   "voxels": 35,
+   "x": [
+    282,
+    287
+   ],
+   "y": [
+    74,
+    86
+   ],
+   "z": [
+    14,
+    15
+   ]
+  },
+  {
+   "name": "crow 2",
+   "voxels": 35,
+   "x": [
+    284,
+    289
+   ],
+   "y": [
+    52,
+    64
+   ],
+   "z": [
+    12,
+    13
+   ]
+  },
+  {
+   "name": "crow 3",
+   "voxels": 35,
+   "x": [
+    268,
+    273
+   ],
+   "y": [
+    68,
+    80
+   ],
+   "z": [
+    15,
+    16
+   ]
+  },
+  {
+   "name": "crow 4",
+   "voxels": 35,
+   "x": [
+    270,
+    275
+   ],
+   "y": [
+    42,
+    54
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "crow 5",
+   "voxels": 35,
+   "x": [
+    254,
+    259
+   ],
+   "y": [
+    78,
+    90
+   ],
+   "z": [
+    14,
+    15
+   ]
+  },
+  {
+   "name": "crow 6",
+   "voxels": 35,
+   "x": [
+    252,
+    257
+   ],
+   "y": [
+    56,
+    68
+   ],
+   "z": [
+    16,
+    17
+   ]
+  }
+ ],
+ "tag": {
+  "box": [
+   8,
+   64,
+   10,
+   20,
+   7,
+   8
+  ],
+  "stalk": [
+   10,
+   15
+  ],
+  "cleared_voxels": 1,
+  "note": "tethered by one stalk (not floating); excluded from the mirror check"
+ },
+ "tag_rect": [
+  8,
+  64,
+  10,
+  20,
+  7,
+  8
+ ],
+ "finish": {
+  "grade": [
+   1.063,
+   1.096,
+   1.129
+  ],
+  "brightness": {
+   "dark_floors_raised": 1578,
+   "whites_capped": 1749
+  },
+  "glow_sources": 92,
+  "glow_lit_voxels": 13077,
+  "palette_nudged": 7
+ },
+ "feature_pads": [],
+ "colour_stats": {
+  "top_luma_median": 85.9,
+  "top_dark_share_pct": 0.0,
+  "top_bright_share_pct": 0.09
+ },
+ "cosmetic_asymmetric_boxes": [
+  [
+   73,
+   83,
+   152,
+   162
+  ],
+  [
+   472,
+   480,
+   162,
+   170
+  ],
+  [
+   115,
+   125,
+   447,
+   457
+  ],
+  [
+   400,
+   408,
+   400,
+   408
+  ],
+  [
+   298,
+   303,
+   64,
+   76
+  ],
+  [
+   282,
+   287,
+   74,
+   86
+  ],
+  [
+   284,
+   289,
+   52,
+   64
+  ],
+  [
+   268,
+   273,
+   68,
+   80
+  ],
+  [
+   270,
+   275,
+   42,
+   54
+  ],
+  [
+   254,
+   259,
+   78,
+   90
+  ],
+  [
+   252,
+   257,
+   56,
+   68
+  ],
+  [
+   8,
+   64,
+   10,
+   20
+  ]
+ ],
+ "materials": {
+  "air": 0,
+  "ground": 1,
+  "paving": 2,
+  "rock": 3,
+  "shelf": 4,
+  "water": 5,
+  "dirt": 6,
+  "mosaic": 7,
+  "crest_wall": 8,
+  "ruin": 9,
+  "building": 10,
+  "stair": 11,
+  "rubble": 12,
+  "furniture": 13,
+  "tent": 14,
+  "prop": 15,
+  "fire": 16,
+  "timber": 17,
+  "roof": 18,
+  "statue": 19,
+  "mound": 20,
+  "fern": 21,
+  "spire": 22,
+  "rune": 23,
+  "trunk": 24,
+  "root": 25,
+  "canopy": 26,
+  "aqueduct": 27,
+  "bridge": 28,
+  "waterfall": 29,
+  "cave": 30,
+  "nest": 31,
+  "mushroom": 32,
+  "veg": 33,
+  "moss": 34,
+  "deadwood": 35,
+  "fungus": 36,
+  "bark": 37,
+  "leaf": 38,
+  "flower": 39,
+  "lichen": 40,
+  "shroom": 41,
+  "bramble": 42,
+  "reed": 43,
+  "sky": 44,
+  "tag": 45
+ },
+ "build_seconds": 17.2,
+ "sky_objects": [
+  {
+   "name": "islet balcony",
+   "voxels": 313,
+   "x": [
+    73,
+    83
+   ],
+   "y": [
+    152,
+    162
+   ],
+   "z": [
+    14,
+    28
+   ]
+  },
+  {
+   "name": "islet arch",
+   "voxels": 194,
+   "x": [
+    472,
+    480
+   ],
+   "y": [
+    162,
+    170
+   ],
+   "z": [
+    16,
+    33
+   ]
+  },
+  {
+   "name": "islet stair",
+   "voxels": 325,
+   "x": [
+    115,
+    125
+   ],
+   "y": [
+    447,
+    457
+   ],
+   "z": [
+    8,
+    23
+   ]
+  },
+  {
+   "name": "islet tree",
+   "voxels": 251,
+   "x": [
+    400,
+    408
+   ],
+   "y": [
+    400,
+    408
+   ],
+   "z": [
+    12,
+    31
+   ]
+  },
+  {
+   "name": "crow 0",
+   "voxels": 35,
+   "x": [
+    298,
+    303
+   ],
+   "y": [
+    64,
+    76
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "crow 1",
+   "voxels": 35,
+   "x": [
+    282,
+    287
+   ],
+   "y": [
+    74,
+    86
+   ],
+   "z": [
+    14,
+    15
+   ]
+  },
+  {
+   "name": "crow 2",
+   "voxels": 35,
+   "x": [
+    284,
+    289
+   ],
+   "y": [
+    52,
+    64
+   ],
+   "z": [
+    12,
+    13
+   ]
+  },
+  {
+   "name": "crow 3",
+   "voxels": 35,
+   "x": [
+    268,
+    273
+   ],
+   "y": [
+    68,
+    80
+   ],
+   "z": [
+    15,
+    16
+   ]
+  },
+  {
+   "name": "crow 4",
+   "voxels": 35,
+   "x": [
+    270,
+    275
+   ],
+   "y": [
+    42,
+    54
+   ],
+   "z": [
+    13,
+    14
+   ]
+  },
+  {
+   "name": "crow 5",
+   "voxels": 35,
+   "x": [
+    254,
+    259
+   ],
+   "y": [
+    78,
+    90
+   ],
+   "z": [
+    14,
+    15
+   ]
+  },
+  {
+   "name": "crow 6",
+   "voxels": 35,
+   "x": [
+    252,
+    257
+   ],
+   "y": [
+    56,
+    68
+   ],
+   "z": [
+    16,
+    17
+   ]
+  }
+ ],
+ "interiors": [
+  [
+   "gate tower floor 0 (W)",
+   148,
+   229,
+   50
+  ],
+  [
+   "gate tower floor 0 (E)",
+   364,
+   229,
+   50
+  ],
+  [
+   "gate tower floor 1 (W)",
+   149,
+   229,
+   44
+  ],
+  [
+   "gate tower floor 1 (E)",
+   363,
+   229,
+   44
+  ],
+  [
+   "gate tower floor 2 (W)",
+   149,
+   229,
+   38
+  ],
+  [
+   "gate tower floor 2 (E)",
+   363,
+   229,
+   38
+  ],
+  [
+   "bastion room (W)",
+   150,
+   284,
+   50
+  ],
+  [
+   "bastion room (E)",
+   362,
+   284,
+   50
+  ],
+  [
+   "hunters hall floor 0 (W)",
+   70,
+   253,
+   49
+  ],
+  [
+   "hunters hall floor 0 (E)",
+   442,
+   253,
+   49
+  ],
+  [
+   "hunters hall floor 1 (W)",
+   72,
+   253,
+   43
+  ],
+  [
+   "hunters hall floor 1 (E)",
+   440,
+   253,
+   43
+  ],
+  [
+   "tent 0 (W)",
+   67,
+   203,
+   49
+  ],
+  [
+   "tent 0 (E)",
+   445,
+   203,
+   49
+  ],
+  [
+   "tent 1 (W)",
+   107,
+   201,
+   49
+  ],
+  [
+   "tent 1 (E)",
+   405,
+   201,
+   49
+  ],
+  [
+   "tent 2 (W)",
+   128,
+   210,
+   49
+  ],
+  [
+   "tent 2 (E)",
+   384,
+   210,
+   49
+  ],
+  [
+   "tent 3 (W)",
+   69,
+   303,
+   49
+  ],
+  [
+   "tent 3 (E)",
+   443,
+   303,
+   49
+  ],
+  [
+   "tent 4 (W)",
+   103,
+   307,
+   49
+  ],
+  [
+   "tent 4 (E)",
+   409,
+   307,
+   49
+  ],
+  [
+   "tent 5 (W)",
+   128,
+   300,
+   49
+  ],
+  [
+   "tent 5 (E)",
+   384,
+   300,
+   49
+  ],
+  [
+   "smithing lean-to (W)",
+   113,
+   216,
+   49
+  ],
+  [
+   "smithing lean-to (E)",
+   399,
+   216,
+   49
+  ],
+  [
+   "front shrine (W)",
+   168,
+   230,
+   50
+  ],
+  [
+   "front shrine (E)",
+   344,
+   230,
+   50
+  ],
+  [
+   "spire ground room (W)",
+   190,
+   218,
+   50
+  ],
+  [
+   "spire ground room (E)",
+   322,
+   218,
+   50
+  ],
+  [
+   "spire mid floor (W)",
+   192,
+   219,
+   31
+  ],
+  [
+   "spire mid floor (E)",
+   320,
+   219,
+   31
+  ],
+  [
+   "spire top (W)",
+   190,
+   218,
+   12
+  ],
+  [
+   "spire top (E)",
+   322,
+   218,
+   12
+  ],
+  [
+   "spire mid landing (W)",
+   198,
+   219,
+   31
+  ],
+  [
+   "spire mid landing (E)",
+   314,
+   219,
+   31
+  ],
+  [
+   "moonwell basin (W)",
+   251,
+   173,
+   53
+  ],
+  [
+   "moonwell basin (E)",
+   261,
+   173,
+   53
+  ],
+  [
+   "arcade 180 (W)",
+   202,
+   176,
+   53
+  ],
+  [
+   "arcade 180 (E)",
+   310,
+   176,
+   53
+  ],
+  [
+   "arcade 232 (W)",
+   222,
+   152,
+   53
+  ],
+  [
+   "arcade 232 (E)",
+   290,
+   152,
+   53
+  ],
+  [
+   "queen walk-under (W)",
+   252,
+   208,
+   52
+  ],
+  [
+   "queen walk-under (E)",
+   260,
+   208,
+   52
+  ],
+  [
+   "queen back (W)",
+   252,
+   208,
+   44
+  ],
+  [
+   "queen back (E)",
+   260,
+   208,
+   44
+  ],
+  [
+   "queen hips (W)",
+   252,
+   219,
+   44
+  ],
+  [
+   "queen hips (E)",
+   260,
+   219,
+   44
+  ],
+  [
+   "library wing floor 0 (W)",
+   232,
+   118,
+   50
+  ],
+  [
+   "library wing floor 0 (E)",
+   280,
+   118,
+   50
+  ],
+  [
+   "library alcove (W)",
+   247,
+   128,
+   44
+  ],
+  [
+   "library alcove (E)",
+   265,
+   128,
+   44
+  ],
+  [
+   "heart-tree hollow (W)",
+   255,
+   338,
+   53
+  ],
+  [
+   "heart-tree hollow (E)",
+   257,
+   338,
+   53
+  ],
+  [
+   "amphitheatre arena (W)",
+   246,
+   340,
+   53
+  ],
+  [
+   "amphitheatre arena (E)",
+   266,
+   340,
+   53
+  ],
+  [
+   "aqueduct gap 96 (W)",
+   109,
+   88,
+   49
+  ],
+  [
+   "aqueduct gap 96 (E)",
+   403,
+   88,
+   49
+  ],
+  [
+   "aqueduct gap 152 (W)",
+   165,
+   96,
+   49
+  ],
+  [
+   "aqueduct gap 152 (E)",
+   347,
+   96,
+   49
+  ],
+  [
+   "aqueduct gap 208 (W)",
+   221,
+   98,
+   49
+  ],
+  [
+   "aqueduct gap 208 (E)",
+   291,
+   98,
+   49
+  ],
+  [
+   "aqueduct deck 44-96 (W)",
+   70,
+   83,
+   39
+  ],
+  [
+   "aqueduct deck 44-96 (E)",
+   442,
+   83,
+   39
+  ],
+  [
+   "aqueduct deck 122-152 (W)",
+   137,
+   86,
+   39
+  ],
+  [
+   "aqueduct deck 122-152 (E)",
+   375,
+   86,
+   39
+  ],
+  [
+   "aqueduct deck 178-208 (W)",
+   193,
+   94,
+   39
+  ],
+  [
+   "aqueduct deck 178-208 (E)",
+   319,
+   94,
+   39
+  ],
+  [
+   "aqueduct deck 234-255 (W)",
+   244,
+   90,
+   39
+  ],
+  [
+   "aqueduct deck 234-255 (E)",
+   268,
+   90,
+   39
+  ],
+  [
+   "footbridge deck (W)",
+   255,
+   432,
+   50
+  ],
+  [
+   "footbridge deck (E)",
+   257,
+   432,
+   50
+  ],
+  [
+   "under the footbridge (W)",
+   255,
+   432,
+   63
+  ],
+  [
+   "under the footbridge (E)",
+   257,
+   432,
+   63
+  ],
+  [
+   "stair to nowhere (W)",
+   175,
+   168,
+   42
+  ],
+  [
+   "stair to nowhere (E)",
+   337,
+   168,
+   42
+  ],
+  [
+   "roofless chapel floor 0 (W)",
+   99,
+   349,
+   50
+  ],
+  [
+   "roofless chapel floor 0 (E)",
+   413,
+   349,
+   50
+  ],
+  [
+   "hunters lookout (W)",
+   153,
+   365,
+   39
+  ],
+  [
+   "hunters lookout (E)",
+   359,
+   365,
+   39
+  ],
+  [
+   "monster nest cave (W)",
+   40,
+   372,
+   43
+  ],
+  [
+   "monster nest cave (E)",
+   472,
+   372,
+   43
+  ],
+  [
+   "rune circle (W)",
+   251,
+   398,
+   50
+  ],
+  [
+   "rune circle (E)",
+   261,
+   398,
+   50
+  ]
+ ]
+}
