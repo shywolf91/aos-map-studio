@@ -23,7 +23,7 @@ from aosmap.kit.structures import straight_stair
 # flat graybox colours, one per material (stage 2 replaces them)
 GC = {
     'sea': (40, 92, 112), 'sand': (206, 184, 136), 'grass': (104, 138, 70), 'laterite': (172, 104, 70),
-    'paving': (150, 128, 110), 'basalt': (84, 84, 92), 'basalt_dk': (66, 66, 74), 'plaster': (214, 204, 186),
+    'paving': (150, 128, 110), 'basalt': (84, 84, 92), 'basalt_dk': (66, 66, 74), 'plaster': (204, 196, 180),
     'timber': (128, 92, 60), 'floor': (138, 108, 80), 'stair': (150, 120, 90), 'leaf': (58, 112, 58),
     'frond': (96, 146, 62), 'bark': (98, 76, 58), 'palm_trunk': (140, 116, 84), 'iron': (70, 70, 76),
     'cloth': (200, 70, 50), 'crate': (160, 124, 80), 'keg': (120, 84, 56), 'rope': (176, 156, 110),
@@ -256,11 +256,11 @@ def round_tower(cv, name, cx, cy, G, r, wall, floors, terrace, steps_per_turn, d
     for (x, y), tops in step_tops.items():
         if any(T + 1 <= t <= T + 4 for t in tops):
             cv.clear(x, y, T)
-    # parapet ring with crenels
+    # parapet ring: 2 high (a player cannot step onto it from the terrace) with loopholes in the lower course
     for (x, y, a) in _ring_cells(cx_, cy_, r - 1.0, r):
-        put(cv, x, y, T - 1, 'basalt_dk')
-        if int((a + math.pi) / (2 * math.pi) * (r * 4)) % 2 == 0:
-            put(cv, x, y, T - 2, 'basalt_dk')
+        put(cv, x, y, T - 2, 'basalt_dk')
+        if int((a + math.pi) / (2 * math.pi) * (r * 4)) % 3 != 0:
+            put(cv, x, y, T - 1, 'basalt_dk')
     doors = {}
     # ground door (2 wide x 4 high) through the wall at the stair foot
     _radial_carve(cv, cx_, cy_, door_angle, ri - 0.5, r + 0.6, G - 4, G - 1)
@@ -273,8 +273,8 @@ def round_tower(cv, name, cx, cy, G, r, wall, floors, terrace, steps_per_turn, d
         doors[dn] = (round(math.degrees(ang)), L)
     # window slits (1 wide x 2 high) on every level, away from the doors
     if windows:
-        levels = [G] + list(floors)
-        for k, L in enumerate(levels):
+        levels = list(floors)                       # the ground level sits behind the solid first-turn ramp
+        for k, L in enumerate(levels, start=1):
             for j in range(4):
                 ang = door_angle + math.pi / 4 + j * math.pi / 2 + k * 0.4
                 _radial_carve(cv, cx_, cy_, ang, ri + 0.45, r + 0.6, L - 3, L - 2, width=1)
@@ -367,6 +367,7 @@ def fort(cv, S):
     box(cv, x0, x1, ga, gb, G, G, 'paving')
     # stair flights up to the wall-walk on the courtyard side (outside the spawn square)
     for (ys, dy) in W['stairs']:
+        box(cv, x1 + 1, x1 + 3, min(ys, ys + dy * (G - wz)), max(ys, ys + dy * (G - wz)), G, G, 'paving')
         straight_stair(cv, ys, x1 + 1, x1 + 3, G, G - wz, dy, GC['stair'], 'stair', along='y')
     rep['wall'] = {'x': [x0, x1], 'y': [y0, y1], 'walk_z': wz}
     cv.interiors.append(['wall-walk north', x0 + 3, y0 + 12, wz])

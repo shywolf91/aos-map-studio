@@ -14,8 +14,6 @@ flank_islands   spawn -> enemy spawn inside the boundary box with the centre ban
 from __future__ import annotations
 
 import numpy as np
-from scipy.sparse import csr_matrix
-from scipy.sparse.csgraph import dijkstra
 
 from aosmap.kit import codec
 from aosmap.kit.babel_checks import Nav
@@ -83,13 +81,10 @@ def run(out, data, info, S, H):
         clr[nm] = {'nearest_3d': round(float(d3[k]), 1), 'at': [int(xs[k] + a), int(ys[k] + c), int(zs[k])],
                    'nearest_2d': round(float(d2.min()), 1), 'top_z': int(zs.min())}
     R['clearance'] = clr
-    # flank routes on the islands (inside the boundary box)
+    # flank routes on the islands (inside the boundary box): steps, and whether a dry (no wading) route exists
     nav = Nav(solid)
     p = nav.xyz
     wat = p[:, 2] == 63
-    G = nav.G.tocoo()
-    w = 1.0 + 1000.0 * wat[G.col]
-    Gw = csr_matrix((w, (G.row, G.col)), shape=nav.G.shape)
     inb = (p[:, 0] >= b['left']) & (p[:, 0] <= b['right']) & (p[:, 1] >= b['top']) & (p[:, 1] <= b['bottom'])
     fl = {}
     src = nav.nodes_in(P['bases'][0][0] - h, P['bases'][0][0] + h, 236, 276, 0, 62)
@@ -99,15 +94,15 @@ def run(out, data, info, S, H):
             dy = (p[:, 1] - 256) * sgn
             band = (p[:, 0] >= 176) & (p[:, 0] <= 336)
             ok = inb & (~band | (dy >= fmin))
-            keep = np.zeros(len(p), bool)
-            keep[ok] = True
-            Gm = Gw.multiply(keep[:, None]).multiply(keep[None, :]).tocsr()
-            d = dijkstra(Gm, directed=True, indices=src[keep[src]], min_only=True)
-            dd = d[dst]
-            if np.isfinite(dd).any():
-                c = float(dd.min())
-                fl[f'{side}_{fmin}'] = {'water_cells': int(c // 1000), 'steps': int(c % 1000)}
-            else:
-                fl[f'{side}_{fmin}'] = None
+            d = nav.dist_from(src, allowed=np.nonzero(ok)[0])
+            d_dry = nav.dist_from(src, allowed=np.nonzero(ok & ~wat)[0])
+            fl[f'{side}_{fmin}'] = {'steps': float(d[dst].min()) if np.isfinite(d[dst]).any() else None,
+                                    'dry_route': bool(np.isfinite(d_dry[dst]).any())}
     R['flank_islands'] = fl
+    # centre footprint: the kit rule is N/A here (central zone land 0.46 < 0.50); report the measured median anyway
+    from aosmap.kit import zones
+    zr = zones.zone_rules(solid, overrides={'applicable_land_min': 0.3}, terrain_H=H)
+    R['centre_footprint_relaxed'] = {'note': 'applicable_land_min lowered to 0.3 for reporting only',
+                                     'status': zr['centre_footprint']['status'],
+                                     'values': zr['centre_footprint']['values']}
     return R

@@ -38,7 +38,7 @@ SPEC = {
     'fort_ground': {'x': (84, 118), 'y': (190, 322), 'corner_r': 10},
     'islands': {
         # (name, cx, cy, rx, ry, y clip (lo, hi), knolls [(x, y, R, z)])
-        'NW': (185, 206, 62, 23, (0, 227), [(172, 203, 30, 55), (220, 208, 16, 57)]),
+        'NW': (185, 206, 62, 23, (0, 227), [(172, 203, 30, 55), (220, 203, 16, 57)]),
         'SW': (196, 310, 52, 26, (285, 511), [(198, 312, 28, 55)]),
     },
     'island_lobes': {'NW': [(146, 200, 24, 15), (228, 199, 20, 15), (196, 192, 26, 12)],
@@ -60,7 +60,7 @@ SPEC = {
     'corner_bastion': {'r': 10, 'wall': 2, 'floors': (53, 47), 'terrace': 39, 'steps_per_turn': 22},
     'gate_bastions': [(150, 226), (150, 286)],
     'gate_bastion': {'r': 6, 'wall': 2, 'floors': (), 'terrace': 45, 'steps_per_turn': 9},
-    'watch_towers': [(220, 208), (190, 314)],
+    'watch_towers': [(220, 203), (190, 314)],
     'watch_tower': {'r': 8, 'wall': 2, 'floors': (49,), 'terrace': 41, 'steps_per_turn': 14, 'mast_top': 24,
                     'yard_wall': (12.0, 13.2, 3, 0.55)},    # low laterite yard wall: r0, r1, height, gap half-angle
                                                              # (rad) centred on the door
