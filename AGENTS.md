@@ -274,6 +274,7 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 | Frostbell Hollow | Christmas alpine-village ground Babel | v1.2 (v1.0, v1.1 kept) | server-loaded | `scenes/frostbell_hollow/` (built with `aosmap.kit`), `docs/frostbell_hollow_spec.md` |
 | Elderveil | dark-fantasy ruins ground Babel, assist structures | v1.1 (v1.0 kept) | server-loaded (spawn exposure waived by owner) | `scenes/elderveil/` (built with `aosmap.kit`), `docs/elderveil_spec.md` |
 | Yulehaven Isles | Christmas island Babel (Nordic archipelago) | v1.0 | server-loaded (spawn exposure waived by owner) | `scenes/yulehaven_isles/` (built with `aosmap.kit`), `docs/yulehaven_isles_spec.md` |
+| Sprinkler Field | Grounded-scale lawn Babel, assist structures | v1.0 | server-loaded (spawn exposure fails; owner decision pending) | `scenes/sprinkler_field/` (built with `aosmap.kit`), `docs/sprinkler_field_spec.md` |
 | Janjira Sound ([recreate] of newfort by JoJoe Stinky) | classic island Babel (Konkan sea forts), 180° rotation | v1.0 | server-loaded (spawn exposure hidden share 0 %, owner decision open) | `scenes/janjira_sound/` (built with `aosmap.kit`), `docs/janjira_sound_recreate_report.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
