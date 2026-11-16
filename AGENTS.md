@@ -297,6 +297,12 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
   `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
   That file replaces the claude.ai Project memory.
 * Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
+* **Cloud sessions** (claude.ai/code) start without the toolchain: run `uv venv --python 3.11 .venv && . .venv/bin/activate &&
+  uv pip install -r requirements.txt` (verified 2026-11-15: piqueserver 1.4.2 builds, tests pass). `refs/` is empty there;
+  the owner attaches the maps a job needs.
+* **`[recreate]` analysis:** `python tools/recreate_analysis.py refs/<map>.vxl` writes the original-map analysis
+  (`out/recreate/<stem>/`); `--compare <new.vxl>` adds the fidelity section. `/recreate` describes the flow and the
+  planning/implementation model split (owner, 2026-11-15).
 * **Slash commands** (`.claude/commands/`): `/new-map <brief>`, `/recreate <file.vxl>`, `/check-map <maps dir>`,
   `/remember <rule>`, `/sync`. `.claude/settings.json` allowlists routine work; force-push and pushes to main are denied.
 * **Shared kit** (`aosmap/kit/`, `docs/kit.md`): new maps import codec, canvas, structures, symmetry, colour, veg,
