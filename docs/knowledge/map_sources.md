@@ -27,7 +27,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | 1river2night v2.2 | https://claude.ai/chat/5b2c928b-d590-4521-bdf1-8a35b5ad3015 | no |
 | Royal Parade Halloween | https://claude.ai/chat/dba28c5d-29e2-4a24-9420-4db47d3e6e52 | no |
 | Ferrari's Revenge (Skull River) | https://claude.ai/chat/86654164-9957-4b88-acc5-e2993102f64e | no |
-| Haunted Fairground | https://claude.ai/chat/bbb5f3c1-c1f6-4e6f-b285-e6dceca6d060 | no |
+| Haunted Fairground | https://claude.ai/chat/bbb5f3c1-c1f6-4e6f-b285-e6dceca6d060 | yes (2026-11-10, branch map/haunted-fairground) |
 | The Hollow Crown | https://claude.ai/chat/f54a547c-f0ca-469e-b95c-0ba602698c24 | yes (from local repo, 2026-11-10) |
 | Graveyard of the Forgotten | https://claude.ai/chat/6ffb9f97-8d25-4ae4-8cf4-2599d61fed9d | yes (branch map/graveyard-of-the-forgotten) |
 | Death Swamp | https://claude.ai/chat/a222852b-cff1-457c-af9f-b3320824beef | check local repo |

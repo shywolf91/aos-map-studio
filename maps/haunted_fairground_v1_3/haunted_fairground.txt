@@ -1,0 +1,18 @@
+# piqueserver map metadata for haunted_fairground.vxl
+# Keys used here are the ones piqueserver/map.py reads (name, version, author,
+# description, extensions) plus 'fog', which server.py and babel_script.py read
+# from map_info.info (getattr(..., 'fog', default)).
+name = 'Haunted Fairground'
+version = '1.3'
+author = 'Dylan'
+description = ('An autumn fair abandoned mid-season. Fight over the Midnight Pavilion, '
+               'hold the Ferris wheel, and build your tower to the platform above.')
+
+# Bright lavender-dusk tint (all channels ~150+, per the project fog rule); the dark palette carries the spooky mood.
+fog = (158, 146, 182)
+
+# babel_script.py has ALWAYS_ENABLED = True by default; this key only matters
+# if a server sets ALWAYS_ENABLED = False.
+extensions = {
+    'babel': True,
+}
