@@ -1,0 +1,19 @@
+{
+ "pyspades_generate_identical": true,
+ "ours_vs_pyspades": true,
+ "txt_loads": true,
+ "txt_name": "Tradeoff Christmas",
+ "txt_author": "shywolf91 + AI",
+ "glow_entries": 73675,
+ "txt_bytes": 2908497,
+ "keys": [
+  "glow_enabled",
+  "glow_stored_colors",
+  "heavens_color"
+ ],
+ "fog": [
+  182,
+  166,
+  208
+ ]
+}

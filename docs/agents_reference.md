@@ -46,6 +46,7 @@ pointers in `AGENTS.md`. Read this when you need the catalogue, a past lesson, o
 | Remoria ([recreate] of remus) | ground Babel | v1.0 | server-loaded | **zip from its chat**; report `docs/remus_recreate_report.md` |
 | Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | `scenes/bloomhop_kingdom/` (compile `vxlenc.c` first), `maps/bloomhop_kingdom_v1/`, `server_test/bk_babel/`; spec `docs/bloomhop_kingdom_spec.md` |
 | Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
+| Tradeoff Christmas (aloha.pk Tradeoff retheme) | community-map Christmas edit, mode unknown | v1.0 | parser-validated | `scenes/tradeoff_christmas/`, `maps/tradeoff_christmas_v1/`, spec `docs/tradeoff_christmas_spec.md` |
 | Frostbell Hollow | Christmas alpine-village ground Babel | v1.2 (v1.0, v1.1 kept) | server-loaded | `scenes/frostbell_hollow/` (built with `aosmap.kit`), `docs/frostbell_hollow_spec.md` |
 | Elderveil | dark-fantasy ruins ground Babel, assist structures | v1.1 (v1.0 kept) | server-loaded (spawn exposure waived by owner) | `scenes/elderveil/` (built with `aosmap.kit`), `docs/elderveil_spec.md` |
 | Yulehaven Isles | Christmas island Babel (Nordic archipelago) | v1.0 | server-loaded (spawn exposure waived by owner) | `scenes/yulehaven_isles/` (built with `aosmap.kit`), `docs/yulehaven_isles_spec.md` |

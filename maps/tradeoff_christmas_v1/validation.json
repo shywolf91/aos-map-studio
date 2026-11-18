@@ -1,0 +1,107 @@
+{
+ "reader_ok": true,
+ "issues": [],
+ "reencode_identical": true,
+ "z63_all_solid": true,
+ "tower_geometry_changed_voxels_in_slab_footprint": 224,
+ "slab_changes_not_z1": 0,
+ "floating_components_total": 17,
+ "floating_expected_pieces": 15,
+ "floating_unexpected": [],
+ "floating_unexpected_count": 0,
+ "floating_components_per_expected_piece": [
+  [
+   "flying sleigh + 4 reindeer",
+   3,
+   759
+  ],
+  [
+   "snow-cloud island",
+   1,
+   3641
+  ],
+  [
+   "snow-cloud island",
+   1,
+   2415
+  ],
+  [
+   "snow-cloud island",
+   1,
+   4131
+  ],
+  [
+   "snow-cloud island",
+   1,
+   2970
+  ],
+  [
+   "snow-cloud island",
+   1,
+   3194
+  ],
+  [
+   "snow-cloud island",
+   1,
+   1733
+  ],
+  [
+   "snowflake",
+   1,
+   118
+  ],
+  [
+   "snowflake",
+   1,
+   132
+  ],
+  [
+   "snowflake",
+   1,
+   118
+  ],
+  [
+   "snowflake",
+   1,
+   118
+  ],
+  [
+   "snowflake",
+   1,
+   132
+  ],
+  [
+   "snowflake",
+   1,
+   118
+  ],
+  [
+   "snowflake",
+   1,
+   170
+  ],
+  [
+   "snowflake",
+   1,
+   118
+  ]
+ ],
+ "interiors_connect_to_outside": {
+  "gingerbread@190,240": true,
+  "gingerbread@315,260": true,
+  "igloo@152,266": true,
+  "igloo@340,232": true
+ },
+ "floor_luma_min_median": [
+  75.56,
+  188.67999999999998
+ ],
+ "floor_max_channel_max": 255,
+ "roof_luma_median": 181.89,
+ "roof_max_channel_p99": 255.0,
+ "surface_luma_min_p1": [
+  32.06,
+  77.98
+ ],
+ "file_bytes": 5150068
+}

@@ -1,0 +1,236 @@
+{
+ "seed": 20261118,
+ "sha256": "9a34c245eeae9c527707749aee3ad9e803728adcaafae7424107794e4c3a0530",
+ "bytes": 5150068,
+ "counts": {
+  "tree": 210,
+  "snowman": 26,
+  "gift": 115,
+  "lamp": 40,
+  "boulder": 28
+ },
+ "oneoffs": {
+  "giant_tree": [
+   256,
+   256
+  ],
+  "gingerbread": [
+   [
+    190,
+    240
+   ],
+   [
+    315,
+    260
+   ]
+  ],
+  "sleigh": [
+   [
+    263,
+    289
+   ]
+  ],
+  "nutcracker": [
+   [
+    214,
+    262
+   ],
+   [
+    300,
+    250
+   ],
+   [
+    40,
+    256
+   ]
+  ],
+  "igloo": [
+   [
+    152,
+    266
+   ],
+   [
+    340,
+    232
+   ]
+  ]
+ },
+ "roof_bulbs": 224,
+ "floaters": [
+  {
+   "name": "flying sleigh + 4 reindeer",
+   "bbox": [
+    118,
+    50,
+    8,
+    190,
+    76,
+    26
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    387,
+    57,
+    13,
+    413,
+    83,
+    39
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    49,
+    109,
+    19,
+    71,
+    131,
+    41
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    70,
+    416,
+    14,
+    98,
+    444,
+    42
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    418,
+    388,
+    12,
+    442,
+    412,
+    36
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    238,
+    438,
+    20,
+    262,
+    462,
+    44
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    260,
+    40,
+    24,
+    280,
+    60,
+    44
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    20,
+    50,
+    12,
+    40,
+    70,
+    28
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    459,
+    139,
+    13,
+    481,
+    161,
+    31
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    20,
+    320,
+    16,
+    40,
+    340,
+    32
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    470,
+    290,
+    10,
+    490,
+    310,
+    26
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    149,
+    459,
+    13,
+    171,
+    481,
+    31
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    350,
+    30,
+    6,
+    370,
+    50,
+    22
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    131,
+    19,
+    7,
+    149,
+    37,
+    21
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    380,
+    465,
+    12,
+    400,
+    485,
+    28
+   ]
+  }
+ ],
+ "removed_floating_voxels": 22,
+ "tag": {
+  "x": 438,
+  "y": 476,
+  "w": 53,
+  "h": 17
+ },
+ "glow_sources": 1260,
+ "glow_lit_voxels": 72415,
+ "build_s": 10.3
+}
