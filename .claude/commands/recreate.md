@@ -33,5 +33,7 @@ validate, probe, spec, PR), with the `[recreate]` flow from `docs/remus_recreate
 **Model split (owner, 2026-11-15).** The planning model (Fable) does the analysis reading, ledger, questions,
 concepts and the SPEC numbers, and reviews every stage (graybox, art pass, release) against AGENTS.md §4 and the
 check output before it is committed. Implementation (generator code, art pass, export, running the checks) is
-delegated to Opus subagents working from the written SPEC. In a session that cannot spawn subagents, do both
+delegated to the `map-builder` subagent (Opus) working from the written SPEC; running the analysis tool,
+checks, export, probe, previews and the report draft goes to `map-runner` (Sonnet). A recreate is always tier L
+in /new-map step 0. In a session that cannot spawn subagents, do both
 roles in order and say so in the hand-off.

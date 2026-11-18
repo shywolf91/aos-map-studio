@@ -1,4 +1,5 @@
 ---
+model: sonnet
 description: Full validation + live server probe for a map folder, with a status-ladder report
 argument-hint: <maps\dir>
 ---

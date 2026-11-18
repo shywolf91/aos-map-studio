@@ -4,7 +4,22 @@ argument-hint: <brief>
 ---
 Brief: $ARGUMENTS
 
-Follow AGENTS.md (§3–§5, §11 git workflow) and the knowledge base. Steps:
+Follow AGENTS.md (§3–§5, §11 git workflow) and the knowledge base.
+
+**Step 0 — classify the scope and route models** (owner, 2026-11-18; saves usage without lowering quality).
+Say the tier in one line before step 1, and re-classify if my answers change the scope.
+
+| tier | brief looks like | planning (this session) | implementation | mechanical |
+|---|---|---|---|---|
+| **S** | edit/recolour/glow/fog/`.txt` change of an existing map, version bump, small fix | short, no concepts unless asked | `map-runner` (Sonnet) | `map-runner` |
+| **M** | a normal new map in a style we have built before | full questions + concepts | `map-builder` (Opus) per stage | `map-runner` |
+| **L** | `[recreate]`, assist structures, new mode, new island style, many unique structures, or anything we have not built before | full, careful SPEC; review every stage | `map-builder` (Opus) per stage | `map-runner` |
+
+Rules for every tier: questions, concepts, SPEC numbers, reviewing check output and every commit stay in this
+session. Hand subagents a self-contained brief (SPEC path, files to touch, what done looks like). If the session
+cannot spawn subagents, do the work here and say so in the hand-off.
+
+Steps:
 
 1. Sync and branch. In the main checkout: `git checkout main && git pull`, then `git checkout -b map/<slug>`.
    In a worktree (main is held by the main checkout): `git fetch origin && git checkout -b map/<slug> origin/main`.
