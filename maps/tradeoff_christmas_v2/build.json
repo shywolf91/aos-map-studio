@@ -1,0 +1,280 @@
+{
+ "seed": 20261119,
+ "sha256": "a40d44d98164884373f402f5a3cee403db0fd53fe41e5910dda074e6c1353bff",
+ "bytes": 4806024,
+ "tree": {
+  "centre": [
+   256,
+   256
+  ],
+  "height": 38,
+  "star_z": 18,
+  "island_radius": 19,
+  "stair_top_stand_z": 37,
+  "stair_steps": 23
+ },
+ "strand_tip_baubles": [
+  [
+   169,
+   255
+  ],
+  [
+   170,
+   243
+  ],
+  [
+   175,
+   236
+  ],
+  [
+   184,
+   231
+  ],
+  [
+   195,
+   230
+  ],
+  [
+   316,
+   281
+  ],
+  [
+   327,
+   280
+  ],
+  [
+   336,
+   275
+  ],
+  [
+   341,
+   268
+  ],
+  [
+   342,
+   255
+  ]
+ ],
+ "roof_bulbs": 224,
+ "floaters": [
+  {
+   "name": "flying sleigh + 4 reindeer",
+   "bbox": [
+    118,
+    50,
+    8,
+    190,
+    76,
+    26
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    387,
+    57,
+    13,
+    413,
+    83,
+    39
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    49,
+    109,
+    19,
+    71,
+    131,
+    41
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    70,
+    416,
+    14,
+    98,
+    444,
+    42
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    418,
+    388,
+    12,
+    442,
+    412,
+    36
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    238,
+    438,
+    20,
+    262,
+    462,
+    44
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    260,
+    40,
+    24,
+    280,
+    60,
+    44
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    451,
+    219,
+    19,
+    473,
+    241,
+    41
+   ]
+  },
+  {
+   "name": "snow-cloud island",
+   "bbox": [
+    34,
+    252,
+    16,
+    54,
+    272,
+    36
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    20,
+    50,
+    12,
+    40,
+    70,
+    28
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    459,
+    139,
+    13,
+    481,
+    161,
+    31
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    20,
+    320,
+    16,
+    40,
+    340,
+    32
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    470,
+    320,
+    10,
+    490,
+    340,
+    26
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    149,
+    459,
+    13,
+    171,
+    481,
+    31
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    350,
+    30,
+    6,
+    370,
+    50,
+    22
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    131,
+    19,
+    7,
+    149,
+    37,
+    21
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    370,
+    455,
+    12,
+    390,
+    475,
+    28
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    11,
+    181,
+    7,
+    29,
+    199,
+    21
+   ]
+  },
+  {
+   "name": "snowflake",
+   "bbox": [
+    481,
+    71,
+    9,
+    499,
+    89,
+    23
+   ]
+  }
+ ],
+ "tag": {
+  "x": 438,
+  "y": 476,
+  "w": 53,
+  "h": 17
+ },
+ "removed_floating_voxels": 20,
+ "glow_sources": 329,
+ "glow_lit_voxels": 26666,
+ "build_s": 9.8
+}
