@@ -1,4 +1,5 @@
 ---
+model: sonnet
 description: Record a new owner rule or preference in project memory, on a docs branch, pushed
 argument-hint: <rule>
 ---

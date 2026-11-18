@@ -1,4 +1,5 @@
 ---
+model: haiku
 description: Pull main and report branches, PRs and anything not pushed
 ---
 Read-only report; change no files.
