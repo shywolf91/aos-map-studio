@@ -34,7 +34,7 @@ y 240–271) hangs over the water gap; nothing original is solid in its volume.
 | Roofs | team-tinted snow with topographic contour lines; candy-striped edge ring |
 | Web strands | red/white candy canes with a big bauble hanging from each tip |
 | Water | cold teal with ripple lines (luma median {v['water_luma_min_median'][1]:.0f}, min {v['water_luma_min_median'][0]:.0f}); still reads as deadly water, no ice floes (they would mislead players) |
-| Centre landmark | giant tree on a seabed island at (256, 256): island r 19 (snow top z = 60, step rings z = 61 dry / z = 62 wet), tree {t['height']} high (star at z {t['star_z']}), tinsel / baubles / berries, 7 gift boxes, 3-wide candy-ribbon staircase ({t['stair_steps']} steps, 1 up per step) to a gold landing |
+| Centre landmark | giant tree on a seabed island at (256, 256): island r 22 (snow top z = 60, step rings z = 61 dry / z = 62 wet), tree {t['height']} high (star at z {t['star_z']}), tinsel / baubles / berries, 7 gift boxes, 3-wide candy-ribbon staircase ({t['stair_steps']} steps, 1 up per step) to a gold landing |
 | Sky decor (outer water only) | flying sleigh + 4 reindeer, 8 snow-cloud islands (trees, gifts, baubles), 10 snowflakes; z 6–44 |
 | Glow | {b['glow_sources']} sources, {b['glow_lit_voxels']} lit voxels baked; no white sources (dense white washes colours out) |
 | Corner tag | "Tradeoff / Christmas" painted on the water floor, bottom-right, no credit line |
