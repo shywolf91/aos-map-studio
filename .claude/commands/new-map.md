@@ -24,7 +24,7 @@ Follow AGENTS.md (§3–§5, §11 git workflow) and the knowledge base. Steps:
    them numpy previews.
 8. Write `docs/<slug>_spec.md` (status ladder, owner answers, layout table, validation table, limits,
    regenerate commands). Put the map, renders, `build.json` and `validation.json` in `maps/<slug>_v1/`.
-   Update AGENTS.md §9 and `docs/knowledge/map_sources.md`.
+   Update the catalogue in `docs/agents_reference.md` §9 and `docs/knowledge/map_sources.md`.
 9. Release commit, push, open a PR into main. Never merge.
 
 Report the highest status-ladder rung actually reached. Never call a numpy preview a client capture.

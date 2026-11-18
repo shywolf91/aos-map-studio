@@ -2,7 +2,7 @@
 
 These maps were built in claude.ai chat sandboxes. Their generator code, `.vxl`, `.txt`, renders and validation
 files exist only as the download zip in each chat (near the end, on the file card). To bring one into the repo:
-download the zip, unzip it into `_updates\<map>\`, and follow AGENTS.md §11.
+download the zip, unzip it into `_updates\<map>\`, and follow `docs/agents_reference.md` §11.
 
 Hollow Crown and Graveyard of the Forgotten are imported. Death Swamp was built through the device link too, but it
 was not found in the local repo on 2026-11-10, so use its chat zip.
