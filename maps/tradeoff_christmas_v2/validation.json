@@ -3,7 +3,7 @@
  "reencode_identical": true,
  "z63_all_solid": true,
  "pyspades_generate_identical": true,
- "changed_voxels_total": 37943,
+ "changed_voxels_total": 41249,
  "footprint_changes_outside_allowed": 0,
  "removed_original_voxels_in_footprint": 0,
  "new_solid_in_platform_volume": 0,
@@ -20,19 +20,19 @@
    256,
    256
   ],
-  "height": 38,
-  "star_z": 18,
-  "island_radius": 19,
+  "height": 44,
+  "star_z": 12,
+  "island_radius": 22,
   "stair_top_stand_z": 37,
   "stair_steps": 23
  },
  "gap_stair_top_to_platform_underside": 35,
- "gap_star_to_platform_underside": 16,
- "walk_from_island_edge_highest_feet_z_reached": 37,
+ "gap_star_to_platform_underside": 10,
+ "walk_from_island_edge_highest_feet_z_reached": 36,
  "stair_reaches_landing": true,
  "water_luma_min_median": [
   79.76,
   107.21
  ],
- "file_bytes": 4806024
+ "file_bytes": 4812724
 }

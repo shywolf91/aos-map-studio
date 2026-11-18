@@ -50,7 +50,7 @@ res['floating_unexpected_count'] = len(unexp)
 # outer water untouched: no solid above the water floor outside tower footprint except the island and sky pieces
 low = S[:, :, :63] & ~O[:, :, :63]
 outside = ~foot
-island = np.zeros((512, 512), bool); island[256 - 27:256 + 28, 256 - 27:256 + 28] = True
+island = np.zeros((512, 512), bool); island[256 - 31:256 + 32, 256 - 31:256 + 32] = True
 res['props_on_water_outside_island_z>=50'] = int((low[:, :, 50:] & outside[:, :, None] & ~island[:, :, None]).sum())
 # tree/stairs: dry footing and build gaps
 t = info['tree']
@@ -67,7 +67,7 @@ start = None
 for x in range(0, 61):
     for y in range(0, 61):
         d = ((x - 30) ** 2 + (y - 30) ** 2) ** .5
-        if 21 < d < 23 and standable(x, y, 60):
+        if 22.5 < d < 24 and standable(x, y, 60):
             start = (x, y, 60); break
     if start: break
 seen = {start}; q = deque([start]); best = 63

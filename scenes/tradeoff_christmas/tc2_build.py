@@ -158,15 +158,15 @@ def recolour(vm, seed=7):
 
 
 # ===================================================================== centre landmark
-def centre_tree(cv, rng, log, h=38, stair_h=22):
+def centre_tree(cv, rng, log, h=44, stair_h=22):
     cx, cy = TREE_C
     base = 59                                     # lowest air voxel above the island top (z = 60)
-    R_isl = 19
+    R_isl = 22
     # seabed island: snow top z=60, step ring z=61 (dry), outer step z=62 (still wet)
     def snow(a, b, c):
         return lerp(SNOW_D, SNOW_L, 0.45 + 0.5 * rng.random())
-    for x in range(cx - 25, cx + 26):
-        for y in range(cy - 25, cy + 26):
+    for x in range(cx - 29, cx + 30):
+        for y in range(cy - 29, cy + 30):
             d = ((x - cx) ** 2 + (y - cy) ** 2) ** 0.5
             if d <= R_isl:
                 top = 60
@@ -224,8 +224,8 @@ def centre_tree(cv, rng, log, h=38, stair_h=22):
             if cv.S[px_, py_, z]:
                 return px_, py_
         return None
-    for k in range(46):
-        t = 5 + (h - 8) * k / 46.0
+    for k in range(54):
+        t = 5 + (h - 8) * k / 54.0
         z = int(base - t)
         hit = snap(k * 0.62, z, Rm + 2)
         if hit:
@@ -247,7 +247,7 @@ def centre_tree(cv, rng, log, h=38, stair_h=22):
         cv.lit(cx + dx, cy, top - 3, 2); cv.lit(cx, cy + dx, top - 3, 2)
     for k in range(7):                              # gift pile on the island
         a = k * 0.9 + 0.3
-        gift(cv, int(cx + 16 * np.cos(a)) - 2, int(cy + 16 * np.sin(a)) - 2, int(rng.integers(4, 7)), int(rng.integers(4, 7)),
+        gift(cv, int(cx + 19 * np.cos(a)) - 2, int(cy + 19 * np.sin(a)) - 2, int(rng.integers(4, 7)), int(rng.integers(4, 7)),
              int(rng.integers(3, 6)), rng, base=59)
     log['tree'] = dict(centre=TREE_C, height=h, star_z=int(top - 3), island_radius=R_isl, stair_top_stand_z=int(base + 1 - stair_h) - 1,
                        stair_steps=len(stairs))

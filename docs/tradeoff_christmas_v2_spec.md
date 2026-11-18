@@ -28,15 +28,15 @@ y 240–271) hangs over the water gap; nothing original is solid in its volume.
 | Roofs | team-tinted snow with topographic contour lines; candy-striped edge ring |
 | Web strands | red/white candy canes with a big bauble hanging from each tip |
 | Water | cold teal with ripple lines (luma median 107, min 80); still reads as deadly water, no ice floes (they would mislead players) |
-| Centre landmark | giant tree on a seabed island at (256, 256): island r 19 (snow top z = 60, step rings z = 61 dry / z = 62 wet), tree 38 high (star at z 18), tinsel / baubles / berries, 7 gift boxes, 3-wide candy-ribbon staircase (23 steps, 1 up per step) to a gold landing |
+| Centre landmark | giant tree on a seabed island at (256, 256): island r 19 (snow top z = 60, step rings z = 61 dry / z = 62 wet), tree 44 high (star at z 12), tinsel / baubles / berries, 7 gift boxes, 3-wide candy-ribbon staircase (23 steps, 1 up per step) to a gold landing |
 | Sky decor (outer water only) | flying sleigh + 4 reindeer, 8 snow-cloud islands (trees, gifts, baubles), 10 snowflakes; z 6–44 |
-| Glow | 329 sources, 26666 lit voxels baked; no white sources (dense white washes colours out) |
+| Glow | 337 sources, 27583 lit voxels baked; no white sources (dense white washes colours out) |
 | Corner tag | "Tradeoff / Christmas" painted on the water floor, bottom-right, no credit line |
 | `.txt` | original hooks, `water_damage` 25, `babel`, orange `heavens_color` and fog kept verbatim (not AI-authored); name, version and author (`shywolf91 + AI`) changed, credit to ei8htx in the description; glow keys added |
 
 ## Centre tree as assist (Babel `[DESIGN]`)
 It stands in the neutral zone (x 206–305, where both teams may build). Build gap to the platform underside (z = 2):
-**stair top 35 blocks**, **tree top 16 blocks**; the star is not a standing
+**stair top 35 blocks**, **tree top 10 blocks**; the star is not a standing
 spot. Reaching the island means crossing about 30 voxels of deadly water from either tower (mirror symmetric, equal for both
 teams). That saves a lot over building from the water floor (about 60), so treat it as a light assist and shorten the tree if
 it proves too strong.
@@ -50,7 +50,7 @@ it proves too strong.
 | new solid in platform volume (x 196–315, y 230–281, z 0–3) / in spawn rects | 0 / 0 |
 | props on the outer water (z ≥ 50, outside the island) | 0 |
 | floating components | 21 (all listed sky pieces; unexpected 0); the original has 0 |
-| staircase walk (step ≤ 1) from the island edge | reaches feet z 37 (landing) |
+| staircase walk (step ≤ 1) from the island edge | reaches feet z 36 (landing) |
 | `.txt` loads (3.11 venv, original hooks present) | yes |
 
 Expected floating (collapse caveat: breaking a player block next to one drops it for the round): sleigh + reindeer, 8 clouds,

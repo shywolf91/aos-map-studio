@@ -1,15 +1,15 @@
 {
  "seed": 20261119,
- "sha256": "a40d44d98164884373f402f5a3cee403db0fd53fe41e5910dda074e6c1353bff",
- "bytes": 4806024,
+ "sha256": "9e7b143682abf193789dafdf611fc8c846a1fbbede80c2bae0d93a311f2e8f4e",
+ "bytes": 4812724,
  "tree": {
   "centre": [
    256,
    256
   ],
-  "height": 38,
-  "star_z": 18,
-  "island_radius": 19,
+  "height": 44,
+  "star_z": 12,
+  "island_radius": 22,
   "stair_top_stand_z": 37,
   "stair_steps": 23
  },
@@ -274,7 +274,7 @@
   "h": 17
  },
  "removed_floating_voxels": 20,
- "glow_sources": 329,
- "glow_lit_voxels": 26666,
- "build_s": 9.8
+ "glow_sources": 337,
+ "glow_lit_voxels": 27583,
+ "build_s": 11.2
 }
