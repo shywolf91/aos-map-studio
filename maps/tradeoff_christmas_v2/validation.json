@@ -3,7 +3,7 @@
  "reencode_identical": true,
  "z63_all_solid": true,
  "pyspades_generate_identical": true,
- "changed_voxels_total": 41249,
+ "changed_voxels_total": 41257,
  "footprint_changes_outside_allowed": 0,
  "removed_original_voxels_in_footprint": 0,
  "new_solid_in_platform_volume": 0,
@@ -31,8 +31,8 @@
  "walk_from_island_edge_highest_feet_z_reached": 36,
  "stair_reaches_landing": true,
  "water_luma_min_median": [
-  79.76,
-  107.21
+  59.69,
+  87.18
  ],
- "file_bytes": 4812724
+ "file_bytes": 4812756
 }

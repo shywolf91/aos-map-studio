@@ -32,7 +32,7 @@ y 240–271) hangs over the water gap; nothing original is solid in its volume.
 | Sky decor (outer water only) | flying sleigh + 4 reindeer, 8 snow-cloud islands (trees, gifts, baubles), 10 snowflakes; z 6–44 |
 | Glow | 337 sources, 27583 lit voxels baked; no white sources (dense white washes colours out) |
 | Corner tag | "Tradeoff / Christmas" painted on the water floor, bottom-right, no credit line |
-| `.txt` | original hooks, `water_damage` 25, `babel`, orange `heavens_color` and fog kept verbatim (not AI-authored); name, version and author (`shywolf91 + AI`) changed, credit to ei8htx in the description; glow keys added |
+| `.txt` | original hooks, `water_damage` 25, `babel` (fog and heavens changed, see Night mood), kept verbatim (not AI-authored); name, version and author (`shywolf91 + AI`) changed, credit to ei8htx in the description; glow keys added |
 
 ## Centre tree as assist (Babel `[DESIGN]`)
 It stands in the neutral zone (x 206–305, where both teams may build). Build gap to the platform underside (z = 2):
@@ -68,3 +68,12 @@ python scenes/tradeoff_christmas/tc2_build.py <tradeoff.vxl> <tradeoff.txt> maps
 <venv>/python scenes/tradeoff_christmas/tc2_check.py maps/tradeoff_christmas_v2/tradeoff_christmas.vxl <tradeoff.vxl> maps/tradeoff_christmas_v2/build.json maps/tradeoff_christmas_v2/validation.json
 python scenes/tradeoff_christmas/tc_render.py maps/tradeoff_christmas_v2/tradeoff_christmas.vxl maps/tradeoff_christmas_v2/renders
 ```
+
+## Night mood and glow (update 2026-11-18, owner request: icy winter night, show off the glow blocks)
+* `fog = (172, 190, 242)` (icy periwinkle, bright per rule, hue not used elsewhere) and `heavens_color = (22, 30, 96, 255)`
+  (deep night blue); the original orange fog/heavens (255, 200, 120) / (250, 130, 40) are replaced.
+* Whole map graded cooler and darker (x 0.72 / 0.80 / 0.95 on R/G/B) so the lights pop; glow voxels are not graded.
+  Water luma min 60, so nothing near-black.
+* Glow sources now 692 (97918 lit voxels in the `.txt`): tree lights + star, every second tree
+  ornament, 3 glow spots on each big web-tip bauble, sleigh (hull rim lights, front lanterns, harness bells, Rudolph's nose),
+  cloud-island baubles, roof-edge bulbs and 303 garland bulbs on the tower walls. No white sources.

@@ -1,7 +1,8 @@
 {
  "seed": 20261119,
- "sha256": "9e7b143682abf193789dafdf611fc8c846a1fbbede80c2bae0d93a311f2e8f4e",
- "bytes": 4812724,
+ "sha256": "593afef48093d55d0bf8222f2da730292c930ecc124bee091a0c4e77e7d66886",
+ "bytes": 4812756,
+ "wall_bulb_glow_sources": 303,
  "tree": {
   "centre": [
    256,
@@ -274,7 +275,7 @@
   "h": 17
  },
  "removed_floating_voxels": 20,
- "glow_sources": 337,
- "glow_lit_voxels": 27583,
- "build_s": 11.2
+ "glow_sources": 692,
+ "glow_lit_voxels": 97918,
+ "build_s": 10.2
 }

@@ -34,6 +34,9 @@ TREE_C = (256, 256)
 SPAWN_RECTS = [(108, 246, 128, 266), (384, 246, 404, 266)]       # from the original .txt (BLUE_RECT / GREEN_RECT)
 PLATFORM = (206, 240, 305, 271)                                  # stock babel_script platform, z = 1
 GARLAND_ROWS = (14, 30, 46)
+FOG = (172, 190, 242)                                            # icy periwinkle night haze (owner request 2026-11-18)
+HEAVENS = (22, 30, 96, 255)
+GRADE = np.array([0.72, 0.80, 0.95], np.float32)                 # night grade; glow voxels are never graded
 
 
 # ===================================================================== web strands
@@ -94,6 +97,7 @@ def recolour(vm, seed=7):
     nB = value_noise(xs, ys, zs, 9.0, seed + 1)
     nC = value_noise(xs, ys, zs, 1.4, seed + 2)
     out = np.zeros((n, 3), np.float32)
+    wall_glow = []
 
     # --- deadly water: cold teal with ripple lines (must still read as water)
     big = fbm(xs, ys, None, 60.0, 3, seed + 3)
@@ -118,6 +122,8 @@ def recolour(vm, seed=7):
             gcol = lerp(PINE[0], (70, 150, 92), np.clip(nC + 0.2, 0, 1))
             wall = np.where(gm[:, None], gcol, wall)
             bulb = (np.mod(np.floor(u), 4) == 2) & (np.round(zs - zc) == 2)
+            glowsel = bulb & side & ((np.floor(u / 4).astype(int) % 3) == 0)
+            wall_glow.append((xs[glowsel], ys[glowsel], zs[glowsel], (np.floor(u[glowsel] / 12).astype(int) + zr) % 4))
             bi = np.mod(np.floor(u / 4).astype(int) + zr, len(BAUBLES))
             wall = np.where(bulb[:, None], np.array(BAUBLES, np.float32)[bi], wall)
             bow = ((pos >= 23) | (pos <= 1.0)) & (np.abs(zs - zr) <= 2)
@@ -154,7 +160,7 @@ def recolour(vm, seed=7):
                            | (np.clip(out[:, 1], 0, 255).astype(np.int64) << 8)
                            | np.clip(out[:, 2], 0, 255).astype(np.int64)).astype(np.uint32)
     vm.colored[:] = S
-    return T2, slab
+    return T2, slab, wall_glow
 
 
 # ===================================================================== centre landmark
@@ -236,6 +242,8 @@ def centre_tree(cv, rng, log, h=44, stair_h=22):
         hit = snap(rng.uniform(0, 6.28), z, Rm + 2)
         if hit:
             cv.ball(hit[0], hit[1], z, 1.5, 1.5, 1.5, BAUBLES[k % len(BAUBLES)])
+            if k % 2 == 0:
+                cv.lit(hit[0], hit[1], z - 1, [2, 3, 4, 5, 1][k % 5])      # glowing ornament
     top = base - h
     sc = (244, 208, 96)
     for dz in range(-4, 1):
@@ -256,6 +264,7 @@ def centre_tree(cv, rng, log, h=44, stair_h=22):
 def fin_baubles(cv, tips, log):
     for k, (x, y) in enumerate(tips):
         cv.ball(x, y, 16, 3.2, 3.2, 3.2, BAUBLES[k % len(BAUBLES)])
+        cv.lit(x, y, 19, [2, 3, 4, 5][k % 4]); cv.lit(x + 3, y, 16, [3, 4, 5, 2][k % 4]); cv.lit(x - 3, y, 16, [4, 5, 2, 3][k % 4])
         for zz in range(9, 15):
             cv.put(x, y, zz, (240, 206, 90), over=False)
     log['strand_tip_baubles'] = tips
@@ -265,11 +274,16 @@ def fin_baubles(cv, tips, log):
 def build(src, seed):
     t0 = time.time()
     vm, rep = read_vxl(open(src, 'rb').read())
-    T2, slab = recolour(vm)
+    T2, slab, wall_glow = recolour(vm)
     cv = Cv(vm)
     rng = np.random.default_rng(seed)
     log = {}
     _, tips = strand_info(vm.solid)
+    nwall = 0
+    for gx, gy, gz, gp in wall_glow:
+        for a, b_, c_, q in zip(gx, gy, gz, gp):
+            cv.lit(int(a), int(b_), int(c_), [2, 3, 4, 5][int(q)]); nwall += 1
+    log['wall_bulb_glow_sources'] = nwall
     centre_tree(cv, rng, log)
     fin_baubles(cv, tips, log)
 
@@ -295,6 +309,14 @@ def build(src, seed):
         floaters.append({'name': name, 'bbox': [int(v) for v in bbox]})
     sx, sy, sz = 120, 62, 24
     sleigh(cv, sx, sy, rng, base=sz, scale=1, deer=4, flying=True)
+    ba = sz + 1                                        # sleigh() shifts its base by 1
+    L, W = 14, 6
+    for dx in range(0, L, 6):                          # string lights along both hull rims
+        cv.lit(sx + dx, sy, ba - 6, [2, 4, 3][dx // 6 % 3]); cv.lit(sx + dx, sy + W - 1, ba - 6, [3, 2, 4][dx // 6 % 3])
+    for yy in (sy, sy + W - 1):                        # lanterns on the front curls
+        cv.lit(sx + L + 1, yy, ba - 6, 4)
+    for dx in range(L + 3, L + 6 + 4 * 11, 11):        # harness bells (between the reindeer)
+        cv.lit(sx + dx, sy + W // 2, ba - 3, [2, 5, 4, 3][dx // 11 % 4])
     mark('flying sleigh + 4 reindeer', (sx - 2, sy - 12, 8, sx + 70, sy + 14, sz + 2))
     for (cx, cy, cz, R) in [(400, 70, 26, 13), (60, 120, 30, 11), (84, 430, 28, 14), (430, 400, 24, 12), (250, 450, 32, 12),
                             (270, 50, 34, 10), (462, 230, 30, 11), (44, 262, 26, 10)]:
@@ -333,6 +355,18 @@ def build(src, seed):
     cv.glow = {k: v for k, v in cv.glow.items() if vm.solid[k]}
     log['removed_floating_voxels'] = removed
     vm.colored[:] = vm.solid
+    gx_, gy_, gz_ = np.nonzero(vm.solid)
+    cc = vm.color[gx_, gy_, gz_].astype(np.int64)
+    rgbf = np.stack([(cc >> 16) & 255, (cc >> 8) & 255, cc & 255], 1).astype(np.float32) * GRADE
+    isg = np.zeros(len(gx_), bool)
+    gk = np.zeros(vm.solid.shape, bool)
+    for (a, b_, c_) in cv.glow:
+        gk[a, b_, c_] = True
+    isg = gk[gx_, gy_, gz_]
+    rgbf = np.where(isg[:, None], np.stack([(cc >> 16) & 255, (cc >> 8) & 255, cc & 255], 1).astype(np.float32), rgbf)
+    vm.color[gx_, gy_, gz_] = ((SHADE << 24) | (np.clip(rgbf[:, 0], 0, 255).astype(np.int64) << 16)
+                              | (np.clip(rgbf[:, 1], 0, 255).astype(np.int64) << 8)
+                              | np.clip(rgbf[:, 2], 0, 255).astype(np.int64)).astype(np.uint32)
     stored, nlit = bake_glow(vm, cv.glow)
     log.update(glow_sources=len(cv.glow), glow_lit_voxels=nlit, build_s=round(time.time() - t0, 1))
     return vm, stored, log
@@ -343,16 +377,17 @@ def make_txt(orig_txt, stored):
     src = open(orig_txt, encoding='utf-8').read().replace('\r\n', '\n')
     head, tail = src.split('extensions', 1)
     rest = tail.split('}', 1)[1]                        # everything after the original extensions dict
-    lines = ["# Tradeoff Christmas v2 - based on Tradeoff by ei8htx / aloha.pk; spawn rects, bases, water_damage, babel flag, fog",
-             "# and heavens_color are the original map's own settings (not AI-authored).",
+    lines = ["# Tradeoff Christmas v2 - based on Tradeoff by ei8htx / aloha.pk; spawn rects, bases, water_damage and the babel flag",
+             "# are the original map's own settings (not AI-authored). Fog and heavens_color are the icy-night values.",
              f"name = {NAME!r}", "version = '2.0'", "author = 'shywolf91 + AI'",
              "description = 'Tradeoff Christmas: candy-garland towers, a giant tree island in the middle, deadly water kept. "
              "Original Tradeoff by ei8htx.'",
-             "extensions = {", "\t'water_damage' : 25,", "\t'babel' : True,", "\t'heavens_color' : (250, 130, 40, 255),",
+             "extensions = {", "\t'water_damage' : 25,", "\t'babel' : True,", f"\t'heavens_color' : {HEAVENS!r},",
              "\t'glow_enabled' : True,", "\t'glow_stored_colors' : {"]
     lines += [f"\t\t{k!r}: {tuple(int(v) for v in stored[k])!r}," for k in sorted(stored)]
     lines += ["\t},", "}"]
     fog_and_code = rest[rest.index('fog'):] if 'fog' in rest else rest
+    fog_and_code = fog_and_code.replace('fog = (255, 200, 120)', f'fog = {FOG!r}', 1)
     return '\n'.join(lines) + '\n\n' + fog_and_code
 
 
