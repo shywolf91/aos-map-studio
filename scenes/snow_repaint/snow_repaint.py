@@ -48,7 +48,7 @@ def ramp(t, stops):
 
 
 def repaint(m, snow, palette='yukon', luma_max=224.0, coast_w=24.0, ribbon=0.35, seed=7511,
-            zone_scale=1.0, wind=0.30, bias=0.62, soft=0.0):
+            zone_scale=1.0, wind=0.30, bias=0.62, soft=0.0, foot_mode='any'):
     rng = np.random.default_rng(seed)
 
     def noise(sigma):
@@ -77,8 +77,11 @@ def repaint(m, snow, palette='yukon', luma_max=224.0, coast_w=24.0, ribbon=0.35,
     del ns, occ
 
     # ---- snow footprint: edge glow + ribbons ----
-    foot = snow.any(axis=2)
-    dist = ndi.distance_transform_edt(foot)
+    if foot_mode == 'top':      # snow covers the whole ground: measure distance to trees/buildings
+        foot = np.take_along_axis(snow, top_z[:, :, None], 2)[:, :, 0]
+    else:
+        foot = snow.any(axis=2)
+    dist = ndi.distance_transform_edt(np.pad(foot, 1, constant_values=True))[1:-1, 1:-1]
     warp = noise(14) * 4.0 + noise(5) * 1.2
     rib = (0.5 + 0.5 * np.sin((dist + warp) * 0.62)) * np.clip(dist / 8, 0, 1)
     coast = ndi.gaussian_filter(np.clip(1 - dist / coast_w, 0, 1) ** 1.3, 2)
@@ -171,7 +174,14 @@ def snow_pvp(m):
     return s & ~(ring & (Z <= 52))          # leave the sky-box walls alone, only ground snow
 
 
+def snow_battlefarm_snow(m):
+    r, g, b = _rgb(m)
+    return m.colored & (r == 221) & (g == 221) & (b == 221)
+
+
 MAPS = {
+    'battlefarm_snow': (snow_battlefarm_snow, dict(palette='pale', luma_max=222, coast_w=8, ribbon=0.3, zone_scale=1.0,
+                                                   bias=0.68, soft=0.3, wind=0.4, foot_mode='top')),
     'battlefarm_winter': (snow_battlefarm, dict(palette='pale', luma_max=226, coast_w=9, ribbon=0.25, zone_scale=0.7, bias=0.68, soft=0.3)),
     'RoyalParadeSnowNight': (snow_royal, dict(palette='night', luma_max=214, coast_w=7, ribbon=0.2, zone_scale=1.4, bias=0.74, soft=0.25)),
     'ChristmasPVP': (snow_pvp, dict(palette='pale', luma_max=224, coast_w=8, ribbon=0.3, zone_scale=0.6, bias=0.74, soft=0.5)),
