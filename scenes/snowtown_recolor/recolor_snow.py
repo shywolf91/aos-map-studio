@@ -96,6 +96,14 @@ def main(src, dst):
     L += 0.12 * np.clip((Z - 56) / 6.0, -1, 1)
     L += 0.18 * (faceN[X, Y, Z] | faceW[X, Y, Z]) * ~top_open[X, Y, Z]
     L -= 0.45 * (faceS[X, Y, Z] | faceE[X, Y, Z]) * ~top_open[X, Y, Z]
+    # terraced contour steps (Yukon-style): bright rim where the ground drops away from the sun,
+    # cold foot-shadow where it rises toward the sun side
+    def sh(a, dx, dy):
+        return np.roll(np.roll(a, dx, 0), dy, 1)
+    rim = np.clip(H - sh(H, 1, 1), 0, 3) / 3.0 + 0.5 * np.clip(H - sh(H, 2, 2), 0, 3) / 3.0
+    foot_ = np.clip(sh(H, -1, -1) - H, 0, 3) / 3.0 + 0.5 * np.clip(sh(H, -2, -2) - H, 0, 3) / 3.0
+    atop = (Z == (63 - H[X, Y]).astype(int))
+    L += 0.55 * rim[X, Y] * atop - 0.50 * foot_[X, Y] * atop
     L += rng.normal(0, 0.06, len(X))
     t = np.clip(0.62 + 0.52 * L, 0, 1)
 
