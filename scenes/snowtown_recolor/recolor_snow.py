@@ -1,5 +1,5 @@
 """SnowTown snow - artistic repaint. Only voxels that are exactly RGB(221,221,221) change colour;
-no voxel is added or removed. Every output channel is <= 221 (OpenSpades glare limit).
+no voxel is added or removed. Cap raised on request to Yukon-like colours: channels <= 255 but luma <= 224 (no glare).
 
 The snow is "lit" by baked geometry: sun shading from the terrain relief, ambient-occlusion
 shadows in hollows and against walls/props, wind-sculpted ripples (sastrugi), flowing
@@ -14,7 +14,8 @@ import numpy as np
 from scipy import ndimage as ndi
 from aosmap import vxl
 
-CAP = 221
+CAP = 255          # per-channel; brightness is limited by LUMA_MAX instead
+LUMA_MAX = 224.0   # keeps it from glaring (Yukon's ice median luma ~203, p90 ~222)
 rng = np.random.default_rng(7511)
 
 
@@ -112,30 +113,34 @@ def main(src, dst):
     h_mint = np.clip(z2[X, Y] * 0.9 + zB[X, Y] * 0.3, 0, 1)         # aqua mint
     h_lav = np.clip(-z1[X, Y] * 0.7 + zA[X, Y] * 0.5, 0, 1)         # lavender
 
-    cool = ramp(t, [(0.00, (78, 104, 176)), (0.18, (112, 143, 205)), (0.38, (150, 182, 221)),
-                    (0.60, (190, 214, 221)), (0.80, (212, 221, 221)), (1.00, (221, 221, 214))])
-    blush = ramp(t, [(0.00, (118, 98, 170)), (0.25, (158, 140, 205)), (0.50, (200, 188, 221)),
-                     (0.75, (221, 208, 221)), (1.00, (221, 218, 205))])
-    mint = ramp(t, [(0.00, (60, 120, 168)), (0.25, (96, 160, 200)), (0.50, (150, 205, 221)),
-                    (0.75, (190, 221, 221)), (1.00, (214, 221, 216))])
-    lav = ramp(t, [(0.00, (92, 92, 178)), (0.25, (128, 128, 210)), (0.55, (176, 178, 221)),
-                   (0.80, (205, 208, 221)), (1.00, (221, 219, 221))])
+    # palette sampled from Yukon: saturated cyan ice, periwinkle plains, cold deep shadows
+    cool = ramp(t, [(0.00, (66, 96, 168)), (0.18, (100, 140, 205)), (0.38, (128, 184, 244)),
+                    (0.60, (160, 208, 255)), (0.80, (188, 226, 255)), (1.00, (208, 232, 255))])
+    blush = ramp(t, [(0.00, (96, 84, 168)), (0.25, (140, 128, 218)), (0.50, (184, 172, 250)),
+                     (0.75, (212, 196, 255)), (1.00, (228, 214, 250))])
+    mint = ramp(t, [(0.00, (54, 112, 170)), (0.25, (88, 160, 214)), (0.50, (126, 208, 246)),
+                    (0.75, (170, 234, 255)), (1.00, (204, 242, 252))])
+    lav = ramp(t, [(0.00, (82, 84, 186)), (0.25, (128, 132, 232)), (0.55, (182, 185, 255)),
+                   (0.80, (205, 208, 255)), (1.00, (224, 224, 255))])
     col = cool
-    for w, fam in ((0.75 * h_blush, blush), (0.7 * h_mint, mint), (0.8 * h_lav, lav)):
+    for w, fam in ((0.65 * h_blush, blush), (0.6 * h_mint, mint), (0.85 * h_lav, lav)):
         col = col + (fam - col) * w[:, None]
 
     # coast: deep glacier cyan so the island melts into the surrounding ice
-    ice = ramp(t, [(0.0, (40, 100, 176)), (0.4, (80, 160, 215)), (0.75, (140, 205, 221)), (1.0, (196, 221, 221))])
+    ice = ramp(t, [(0.0, (40, 100, 180)), (0.4, (84, 168, 240)), (0.75, (140, 214, 255)), (1.0, (190, 238, 255))])
     col = col + (ice - col) * (0.8 * coast[X, Y])[:, None]
 
     # frost sparkle: sparse bright crystals, and a few cold cracks
     u = rng.random(len(X))
     sp = (u > 0.985) & top_open[X, Y, Z]
-    col[sp] = col[sp] * 0.35 + np.array([221, 221, 221]) * 0.65
+    col[sp] = col[sp] * 0.35 + np.array([232, 240, 255]) * 0.65
     cr = (u < 0.012) & top_open[X, Y, Z]
     col[cr] = col[cr] * 0.78 + np.array([70, 110, 190]) * 0.22
     col += rng.normal(0, 1.8, (len(X), 1))
 
+    col = np.clip(col, 0, CAP)
+    luma = col @ np.array([0.299, 0.587, 0.114])
+    col = col * np.minimum(1.0, LUMA_MAX / np.maximum(luma, 1))[:, None]   # never glaring
     col = np.clip(np.rint(col), 0, CAP).astype(np.uint32)
     old = c[snow]
     c[xs, ys, zs] = (old & 0xFF000000) | (col[:, 0] << 16) | (col[:, 1] << 8) | col[:, 2]
