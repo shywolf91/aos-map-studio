@@ -11,24 +11,26 @@ Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project
 
 ---
 
-## 1. Read in this order
+## 1. What to read (only what the task needs)
 
-1. **This file.** It holds the owner's standing rules (§4).
-2. `docs/knowledge/project_memory.md` is the owner's decision and feedback log (every `[USER]` rule with its date,
-   plus the history of each map request). Newest entries win.
-3. `docs/knowledge/aos_map_design_knowledge.md` is the newest, most complete knowledge base (2026-10-30, updated
-   2026-11-08): format, physics, metadata, modes, Babel design rules, art direction, fog/glow, house rules, toolchain,
-   workflow, checklist, portfolio, reference measurements. `aos_map.md` is the older (10-13) version of it.
-4. `docs/vxl_and_runtime_reference.md` is the source-verified technical reference, with file and function citations.
-5. `docs/babel_rotation_guide_notes.md` covers Babel spawn-camping rules and the calibrated spawn-exposure targets.
-6. `docs/project_brief/` holds the original project brief, the role instructions and the per-mode design prompts.
-7. Read the spec of the newest map closest to your task (§9):
-   * `docs/under_the_tree_spec.md` and `docs/bloomhop_kingdom_spec.md` are the newest Babel examples (2026-11-09).
-   * `docs/remus_recreate_report.md` is the template for a `[recreate]` job.
+This file is loaded in every session; keep it lean. Read the rest **on demand**, and for big files read only the
+section you need (each has a Contents list — grep the heading, then read that range).
 
-`docs/knowledge/aos_map_designer_agent_prompt.md` is a self-contained system prompt for other AIs.
-`docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md` and `docs/heightmap_colourmap_tutorials.md` are
-deeper background. Read them when you touch those areas.
+| task | read |
+|---|---|
+| any map design/build | `docs/knowledge/project_memory.md` (newest entries win), then the matching sections of `docs/knowledge/aos_map_design_knowledge.md` (§7–§11 design, §14 questions, §15 checklist) |
+| Babel spawns / zones | `docs/babel_rotation_guide_notes.md`; `docs/babel_zone_study.md` (2026-11-13; four §9 targets adopted in §4, rest proposals) |
+| island brief | `docs/classic_island_style.md` (required, two island styles §4) |
+| `[recreate]` | `docs/remus_recreate_report.md` (template) |
+| format / runtime / toolchain | `docs/vxl_and_runtime_reference.md`, `docs/kit.md`; deeper: `docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md`, `docs/heightmap_colourmap_tutorials.md` |
+| example of a finished map | the spec of the newest similar map (catalogue: `docs/agents_reference.md` §9; newest Babel examples `docs/under_the_tree_spec.md`, `docs/bloomhop_kingdom_spec.md`) |
+| original brief / per-mode prompts | `docs/project_brief/` |
+| palette, fog, snow or winter colours | `docs/colour_palette_guide.md` (2026-11-19): snow rules, ramps, fog choice, winter audit; tools `aosmap/kit/palette.py`, `tools/palette_audit.py` |
+| git, catalogue, lessons, Claude Code tooling | `docs/agents_reference.md` |
+| git question, small fix, doc edit | nothing beyond this file |
+
+`aos_map.md` is the older (10-13) knowledge base. `docs/knowledge/aos_map_designer_agent_prompt.md` is a
+self-contained system prompt for other AIs.
 
 ## 2. Target environment
 
@@ -63,7 +65,7 @@ Never import mechanics from the Jagex/Steam Ace of Spades. It is a different gam
 
 ## 4. Owner's standing rules `[USER]`
 
-These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026-11-09 (dated log:
+These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026-11-13 (dated log:
 `docs/knowledge/project_memory.md`). Follow them unless a brief says otherwise.
 
 ### Process
@@ -101,16 +103,48 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 * **Vegetation:** non-deterministic, varied colours with smooth gradients, **three random details per plant**,
   groves not even scatter, striking and intricate.
 * Players hate maps that are **too white** (snow: cap max channel ~212) and **too black** (floors luma ≥ 40).
+  * Snow field = light grey-blue/cream at luma ~165–185, never white; brightest crest short and broken on exposed lips
+    (≤ ~5 % of the top surface); no isolated bright voxels. Run `tools/palette_audit.py` on every export.
+    (`docs/colour_palette_guide.md` §4 — guide-derived, not an owner rule yet.)
 * Optional extras he often picks: glow blocks (format in knowledge base §11.4), a floating sky-decor layer, an
   underground layer, `heavens_color`. Ask; don't assume.
+
+### Island maps — two styles `[USER]` (2026-11-15)
+* **Current** (our dense, authored house style: yulehaven_isles, Wicker King's Harvest) stays the default for an island brief.
+* **"classic island map"** in the brief = the classic style in `docs/classic_island_style.md`:
+  * one dominant natural island along the Babel axis (often a dumbbell with a neck), 70–80 % sea, a few islets;
+  * a smooth height field with a beach ring;
+  * 2–4 hue families;
+  * a painted z = 63 sea that carries much of the look;
+  * a sparse, repeated prop vocabulary (palms, bunkers, piers, a ship) and at most one or two modest landmarks.
+
+  Measured from utopia2, islandbabel, babelpocalypse and toast; check it with `tools/island_style_metrics.py`.
+  Every other rule in this section still applies. Where classic pulls against one (packed centre, one-off objects,
+  flank distance, spawn cover), the guide proposes a reconciliation to confirm with the owner.
+* Build **only the style the brief names** — one map per brief, not both versions (owner, 2026-11-15).
 
 ### Babel (the main mode so far)
 * **Balanced spawns.** Both spawns should be mainly similar; usually the team's half is mirrored `x' = 512 − x`.
   * They may differ in structure.
   * **The fronts (spawn → tower zone) must be open** and give neither team an advantage.
-* **Don't default to structures or screens between spawn and tower zone.** Many players dislike them.
-  They're fine occasionally, but they must not become every map's pattern.
+* **Dress the front, never block it** (2026-11-10, tester feedback; replaces "don't default to structures or
+  screens between spawn and tower zone"). The spawn → tower-zone strip is the most played part of the map, so it
+  must not be bare flat ground. Scatter small, low, theme-fitting details across it: vehicles, bushes, one-storey
+  one-room houses, haystacks, rocks, or slightly larger items, but nothing tall.
+  * Players must move through it without obstruction: no wall, screen or structure that stops movement from
+    spawn to the tower zone, and the space must still read as open.
+  * A slight tower-building advantage from these objects is fine as long as both sides are symmetric.
+  * It should look neither unnaturally empty next to the rest of the map nor like an out-of-place anomaly.
+  * **In numbers** (2026-11-13, from `docs/babel_zone_study.md`): 4–15 low objects covering 5–30 % of the front;
+    90 % of them no taller than 10 voxels; every 8-column north–south section at least 50 % free.
+    A gate the owner asked for is reported separately and does not count against the height target.
 * **Don't default to a raised tower zone.** Players like building towers from the ground.
+* **Don't leave the strip under the platform bare** (2026-11-13). Low objects cover 15–45 % of the strip
+  (x 212–300, y 240–271), with at least 25 voxels of air between their tops and the platform, so nothing becomes
+  free scaffolding. The anchor ground under both platform ends stays flat and prop-free.
+* **Anchor the centre with room-sized pieces** (2026-11-13). Alongside the small one-off props, the central zone
+  has a few larger objects, so the typical (median) object footprint is 25 cells or more. Our earlier centres were
+  made of many 7–21 cell props; community maps sit around 40.
 * **Solid ground directly under both ends of the script platform** (stock x 206–211 / 300–305, y 240–271),
   so towers can anchor on each side.
 * **No stairs on the enemy-facing side** of a team's tower-anchor ground. They make it too easy to climb up to that team's tower.
@@ -118,6 +152,10 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
   * Feedback on Drowned Cathedral v1: it was too tall and hard to get down.
 * **Spawn camping from the platform** is the classic way Babel maps fail.
   * Cover spawns with trees, walls, buildings or terrain, but not inside the stock ±20 square, because players spawn on the topmost voxel.
+  * **Cover placement** (2026-11-13): at least 25 % of the ground on the enemy-facing side within 20 voxels of the
+    spawn square carries cover 3 or more voxels tall, and at least 30 % of the ground 20–40 voxels behind the
+    square is a backdrop (trees, buildings, terrain). Both benchmarks (Silverpine Hunt, Wicker King) have this.
+    It never overrides "dress the front, never block it": if the two can't both be met, report the trade-off.
   * No roof spawns, no steep or low spawns right under the platform, no sealable single-exit spawns.
   * Targets: ≤ ~10 platform viewers per spawn spot, ≥ 15 % of spots hidden.
   * Measure with `aosmap/sightline.py`. Calibration and the rotation-guide rules are in `docs/babel_rotation_guide_notes.md`.
@@ -154,15 +192,16 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 
 ## 5. Map request workflow
 
-1. Extract the requirements: mode and exact script, theme, features, references, server/client target, protection policy, symmetry, outputs.
+1. Extract the requirements: mode and exact script, theme, island style (current / classic), features, references, server/client target, protection policy, symmetry, outputs.
 2. Verify the mode in source. Never assume rules from a mode's name.
 3. Propose **three distinct concepts**, unless the owner gave a clear concept or asked to build straight away. Recommend one.
    * Some briefs say "do not build yet". Then stop at concepts.
 4. Write a spatial spec: bounds, elevations, landmarks, routes, spawns, objectives, anchors, descents.
    Put the numbers in a `SPEC` dict in the generator as the single source of truth.
-5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure, building interiors (every room/floor reachable; see `scenes/hollow_crown/hc_check.py` → `interiors`).
+5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure, building interiors (every room/floor reachable).
+   Build with **`aosmap.kit`** and run `python -m aosmap.kit.babel_checks <dir>`, which does all of these (`docs/kit.md`; template `scenes/kit_example/`).
 6. Art pass in a separate module, then re-run every check.
-7. Export `.vxl` + `.txt`. Cross-check with pyspades, load on a live piqueserver in the mode, render previews.
+7. Export `.vxl` + `.txt` (`aosmap.kit.build.export`). Cross-check with pyspades, load on a live piqueserver in the mode (`python -m aosmap.kit.probe <dir>`), render previews (`aosmap.kit.preview`).
 8. Write `docs/<map>_spec.md` with status, layout table, validation table, known limits and regenerate commands.
    Put the map, renders and `validation.json` in `maps/<map>_vN/`.
 9. Hand off honestly: what was tested, what wasn't, the next tests. Iterate on the owner's or testers' feedback.
@@ -193,51 +232,11 @@ Put maps in `<config dir>/maps/` and custom scripts in `<config dir>/scripts/`.
 
 ## 8. Lessons not to repeat
 
-* Mirror first, then place cosmetic or asymmetric pieces (stem, witches, sky decor).
-* Mirroring leaves column 256 empty unless you copy 255 into it.
-* Props must test the surface they land on. Keep spawn squares, anchors, walkways and objective columns in a no-prop mask.
-* Enforce face contact for trunks, branches, roofs and vigas. Diagonal-only contact floats, and floating pieces collapse.
-* Sky decor only reads within ~65 voxels. Fog (~128) and the 64-voxel ceiling stop backdrops from carrying across the map.
-  Birds narrower than ~13 voxels vanish.
-* Dense foliage creates walk-out pockets (Backyard Babel). Check for trap cells, and keep foliage off spawn fronts.
-* A painted z = 63 sea or sky (Cloud Smash technique) gives a large visual payoff at zero gameplay cost.
-* Big maps are fine for the server, but watch the file size: Backyard Babel is 7.6 MB, about 3× normandie. Client FPS is untested.
+Moved to `docs/agents_reference.md` §8 — read it before a graybox or art pass.
 
 ## 9. Map catalogue
 
-| map | mode | latest | status | where the source lives |
-|---|---|---|---|---|
-| Kestrel Spires | sky Babel | art v2 / v3 | client-inspected (BetterSpades) | `scenes/kestrel_spires*` |
-| Hollowfen | Babel + CTF | art v1 | client-inspected (BetterSpades) | `scenes/hollowfen*` |
-| Hollowfen Vale | Babel | v1 | server-loaded | `scenes/hollowfen*`, `docs/hollowfen_vale_spec.md` |
-| Drowned Cathedral | Halloween Babel | v2 (rotated redesign) | server-loaded; v1 playtested by a tester | `scenes/drowned_cathedral*` |
-| spinline | joke Babel (pinline-style) | v1.4 | client-loaded by owner | **zip from its chat**; spec `docs/spinline_spec.md` |
-| Brimstone Atoll | Halloween island Babel | v1.3 | server-loaded | **zip from its chat**; spec `docs/brimstone_atoll_spec.md` |
-| Witchwood Isles | Halloween island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/witchwood_isles_spec.md` |
-| Backyard Babel | Grounded-style backyard Babel | v5.0 | server-loaded | **zip from its chat**; spec `docs/backyard_babel_spec.md` (v2 spec kept) |
-| The Wicker King's Harvest | Halloween island Babel | v1.0 / v1.1 (sky) | server-loaded | `scenes/wicker_kings_harvest/` |
-| Graveyard of the Forgotten — The Bone Cathedral | Halloween ground Babel | v1.0 | client-inspected (BetterSpades screenshots) | `scenes/graveyard_forgotten/`, `docs/graveyard_of_the_forgotten_spec.md` |
-| The Hollow Crown | Halloween ground Babel | v1.1 (v1.0 kept) | server-loaded + bots | `scenes/hollow_crown/`, `docs/hollow_crown_spec.md` |
-| Death Swamp | Push (first) | v1.0 | server-loaded + bots | **zip from its chat**; spec `docs/death_swamp_spec.md` |
-| Haunted Fairground | Halloween island Babel (Ruins layout) | v1.3 | server-loaded | **zip from its chat**; spec `docs/haunted_fairground_isles_v1.md` |
-| Ferrari's Revenge (Skull River) | Babel | v3 | parser-validated | **zip from its chat**; spec `docs/skull_river_spec.md` |
-| Royal Parade Halloween | community-map edit (Bradley & Mile) | v1.1 | parser-validated; viewed on alohacraft | **zip from its chat**; spec `docs/royal_parade_halloween_spec.md` |
-| 1river2night v2.2 | night recolour + glow | v2.2 | parser-validated | **zip from its chat**; spec `docs/1river2night_v2_spec.md` |
-| Bikini Atoll (Detonation) | Push glow edit (IAmYourFriend) | v1.2 | parser-validated | **zip from its chat**; spec `docs/bikini_atoll_detonation_spec.md` |
-| Silverpine Hunt | Halloween snow Babel | v1.x → v2.2 (+sky) | server-loaded | **zip from its chat**; specs `docs/silverpine_hunt_spec.md`, `docs/silverpine_hunt_v2_spec.md` |
-| Mossglade Pond | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/mossglade_pond_spec.md` (owner decisions open) |
-| Lantern Bazaar Canals | ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/lantern_bazaar_canals_spec.md` |
-| Highland Loch Castle | island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/highland_loch_castle_spec.md` |
-| Sunken Reef Atoll | island Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/sunken_reef_atoll_spec.md` |
-| Clockwork Skyyard | steampunk sky Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/clockwork_skyyard_spec.md` |
-| Cherry Terrace Gardens / Cherry Gardens | spring ground Babel | v1.0 (rebuilt as Cherry Gardens) | parser-validated / server-loaded | **zip from its chat**; specs `docs/cherry_terrace_gardens_spec.md`, `docs/cherry_gardens_spec.md` |
-| Remoria ([recreate] of remus) | ground Babel | v1.0 | server-loaded | **zip from its chat**; report `docs/remus_recreate_report.md` |
-| Bloomhop Kingdom | platformer-world ground Babel | v1.0 | server-loaded | **zip from its chat**; spec `docs/bloomhop_kingdom_spec.md` |
-| Under the Tree | Christmas Babel, assist structures | v1.0 | server-loaded | **zip from its chat**; spec `docs/under_the_tree_spec.md` |
-| Floebreaker (Day / Night) | [recreate] of arctic_icebreaker, ice-floe ground Babel | v1.0 | server-loaded (live bots on a dev build of day) | `scenes/floebreaker/`, spec `docs/floebreaker_spec.md`, report `docs/floebreaker_recreate_report.md` |
-
-Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
-chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11).
+Moved to `docs/agents_reference.md` §9 (every map, version, status, where its source lives). Update it there.
 
 ## 10. Not in the repo (by design)
 
@@ -245,32 +244,16 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
   They are other people's work: use them locally, but don't push them to a public repo. Our distilled notes are in `docs/`.
 * Local config (`opencode.jsonc`) and update bundles (`_updates/`).
 
-## 11. Working in Claude Code (since 2026-11-09)
+## 11. Working in Claude Code
 
-* Work happens in `D:\Ace of Spades\Aos_Map` on the owner's Windows PC (DRAGONSPIRE). Use Python 3.11 in a venv with
-  `requirements.txt` + `piqueserver==1.4.2`. Shell commands in docs are written bash-style; on Windows use
-  `python` from the venv and adjust `cp`/paths.
-* Put reference maps in `refs/` (git-ignored). Read them with `aosmap.vxl.read_vxl`.
-* **Importing a map from a chat zip:** unzip into `_updates/<map>/` (git-ignored), then move the generator into
-  `scenes/<map>/` and the outputs into `maps/<map>_vN/`, run its check script, and update §9's "where the source
-  lives" column. Large build artefacts (`mat.npy`, `*.npy`) stay git-ignored.
-* **Recording new decisions:** when the owner states a new preference or rule, append it to
-  `docs/knowledge/project_memory.md` (`- [stated] … (date)`) and, if it's a standing rule, add it to §4 here.
-  That file replaces the claude.ai Project memory.
-* Finish every map with `docs/<map>_spec.md` (status ladder, layout table, validation table, limits, regenerate).
-* Commit per map version; don't push `refs/` or the rotation-guide PDF.
+Details (venv, importing chat zips, cloud sessions, `[recreate]` analysis, slash commands, shared kit, full git
+steps) are in `docs/agents_reference.md` §11. The rules that apply every time:
 
-### Git workflow — keep GitHub up to date, one branch per map `[USER]` (2026-11-10)
-The owner wants every Claude session (claude.ai and Claude Code) to keep `https://github.com/shywolf91/Aos_Map`
-current at all times. This is standing permission to pull, branch, commit and push for map work.
-1. **Before any map work:** `git checkout main && git pull`. Never start from a stale tree.
-2. **One branch per map:** `git checkout -b map/<map-slug>` (e.g. `map/under-the-tree`). A new version of an
-   existing map gets its own branch too (`map/<map-slug>-v2`). Non-map work (toolchain, docs, setup) uses
-   `tooling/<topic>` or `docs/<topic>`.
-3. **Commit as you go** — at least after the graybox, after the art pass, and at release — and **push the branch
-   after each commit** (`git push -u origin map/<map-slug>`), so the work is never only on one machine.
-4. **When the map is released**, open a PR into `main`, then update the §9 catalogue, `docs/<map>_spec.md`,
-   `docs/knowledge/project_memory.md` and `docs/knowledge/map_sources.md` on the same branch.
-   Merge only when the owner says so.
-5. Large build artefacts (`*.npy`) and `refs/` stay git-ignored. If a file is over ~50 MB, ask before committing it.
-6. If a push fails (auth, rejected), say so plainly and leave the work committed locally; never force-push `main`.
+* **Record new owner decisions in the same turn** `[USER]` (2026-11-10): append to `docs/knowledge/project_memory.md`
+  (`- [stated] … (date)`) on a `docs/<topic>` branch, commit and push; standing rules also go into §4 here.
+* **Git workflow** `[USER]` (2026-11-10) — standing permission to pull, branch, commit and push for map work:
+  `git checkout main && git pull` first; one branch per map (`map/<slug>`, new version `map/<slug>-v2`; other work
+  `tooling/<topic>` / `docs/<topic>`); commit after graybox, art pass and release and push after each commit; PR into
+  `main` at release, merge only when the owner says so. Ask before committing files over ~50 MB; never force-push
+  `main`; if a push fails, say so and leave the work committed locally.
+* New maps use the shared kit `aosmap.kit` (`docs/kit.md`). Finish every map with `docs/<map>_spec.md`.

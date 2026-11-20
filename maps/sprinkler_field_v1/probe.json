@@ -1,0 +1,86 @@
+{
+ "map_dir": "maps/sprinkler_field_v1",
+ "mode": "babel",
+ "seconds": 2.5,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Sprinkler Field",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 0,
+   "glow_enabled": true
+  },
+  "fog": [
+   206,
+   186,
+   216
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   50,
+   50
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "50": 258,
+     "49": 142
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     50.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "50": 266,
+     "49": 134
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     50.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

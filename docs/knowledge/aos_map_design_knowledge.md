@@ -5,6 +5,8 @@ Babel rotation guide, the Build and Shoot heightmap tutorials, 15+ maps built an
 the owner (Dylan / shywolf91) has set. Target: classic **Ace of Spades 0.75** (vanilla, OpenSpades, BetterSpades)
 on **piqueserver / pyspades 1.4.2**, Python 3.11. Not the Jagex/Steam game.
 Updated 2026-11-08: the custom Babel variant is redefined as **Babel with assist structures** (§7.1, §8.5, §8.8).
+Updated 2026-11-19: colour palettes and snow (§2.2, §10.6b, §10.7, §11.1, §13.2, §15) — full detail in
+`docs/colour_palette_guide.md`.
 
 **Evidence tags** used throughout:
 
@@ -93,6 +95,10 @@ Updated 2026-11-08: the custom Babel variant is redefined as **Babel with assist
   sends these to clients, so a reader **must** accept them.
 * Hidden voxels carry no colour after a pyspades load; `get_point()` reports (0,0,0) for them (this is why Arena gates
   must be ≤ 2 thick — §7.3).
+* **Dug-out faces:** `destroy_point` does not colour newly exposed neighbours; when the server serialises the map for a
+  joining client, every uncoloured surface voxel is written as `DEFAULT_COLOR` 0x674028 (dirt brown 103,64,40)
+  (vxl_c.cpp `get_write_color`) `[SRC]`. So an "underground colour" can't be authored, and dug snow/ice shows brown to
+  late joiners. What in-game clients paint there is `[OPEN]`. See `docs/colour_palette_guide.md` §1.
 * Quirks in the wild: "void columns" (whole column air including z 63, e.g. 10yearsaloha) load in pyspades;
   OpenSpades copies the z 62 colour to z 63 when z 62 is coloured; some editors store colours on hidden voxels (harmless).
 * Always force z = 63 solid for new maps.
@@ -324,6 +330,9 @@ an actual script before you design to it.
   building (standard Babel — relaxed for the assist-structure variant, §8.8).
 * Styles: **sky babel** (abridgetoofar, tradeoff, anticbridgebabelv2 — decks at z 2–13 around spawn) and **ground
   babel** (alexandria-babel2, islandbabel, babelpocalypse, normandie). Island babel = ground babel on islands.
+  Island maps come in two styles `[USER]` (2026-11-15): **current** (our dense authored style, the default) and
+  **classic** (when the brief says "classic island map"). The classic style is one natural island in a painted sea
+  with sparse props; see `docs/classic_island_style.md`.
 * **Custom variant: Babel with assist structures** `[USER]` (2026-11-08) — stock Babel rules, but the map provides
   climbable structures (ruins, a tall tree, a crag…) that reach the platform on foot or with a short build, so players
   can get the intel without building a tower in their tower zone. Runs on stock babel_script. Full rules §8.8.
@@ -584,12 +593,32 @@ layout · decoration that blocks movement or hides players unfairly · 1-voxel h
 channel ~212) · **maps too black** (players hate it — lift floors to luma ≥ 40) · props packed so tightly the
 periphery can't be walked.
 
+### 10.6b Colour palettes and snow — see `docs/colour_palette_guide.md` (2026-11-19)
+Full guide: format limits, colour theory for voxels, hue-shifted ramps, a 29-map winter audit, snow rules, winter light
+presets, other biomes, fog selection, client test protocol. Tools: `aosmap/kit/palette.py`, `tools/palette_audit.py`. Core rules:
+* **Value carries shape; hue/saturation separate materials.** Block in three values (mid = largest surface, dark =
+  recesses/rock, light = exposed edges); check in greyscale. `[GUIDE]`
+* **Snow:** the field (most of the view) is light grey-blue/grey-cream at **luma ~165–185**, never white, so a crest
+  still fits under the 212 cap. Paint in four passes: field → darker trough patches along tracks/lee (connected, not
+  checkerboard) → short broken crest on exposed lips only → a non-snow reference (rock cut, timber, treeline).
+  Brightest band ≤ ~5 % of top surface; sparkle < ~20 isolated bright voxels per 10k columns. `[GUIDE][RUN][DESIGN]`
+* The 212 cap is max-channel: blue-white crests hit it first (moonlit crest ≈ luma 195), neutral/cream crests get ≈ 210.
+  Fit published snow palettes by scaling the **whole** snow family (`palette.cap_snow`), not just the crest. `[RUN]`
+* Community snow maps fail by white fields (1river2white, SnowyApoc, Snow2: 92–100 % of snow over the cap, crest =
+  field); good ones (alpine_desaturated, MarshAlpine, Silverpine v2.2) use snow as a value band inside a darker world. `[RUN]`
+* Ramps: hue-shift (light → light's hue, shadow → cool), chroma falls at both ends; greys get temperature from a small
+  end tint (`palette.shifted_ramp`). Accents (amber door, rust gate, ochre post) only where they mean something.
+* Never rely on hue alone for routes, hazards or teams (~8 % of men are colour-deficient): add value and shape cues.
+
 ### 10.7 Palettes that worked
 * Halloween: charcoal/weathered stone, black slate + dark purple roofs, dead grass/mud/grey dirt, charcoal trunks,
   muted orange/amber pumpkins, pale grave stone + moss; accents blood red, ghostly cyan, sickly green.
 * Swamp: teal water with ink halos, olive/khaki rock-moss-peat-bone, dark bark, amber lanterns.
 * Snow forest: shaded snow (never white), 8 close conifer greens, slate rock, teal lake gradient.
 * Keep 3–4 hue families; push maps must also clear team hue/sat.
+* Field-guide starters (untested in client) for overcast / late-sun / blue-hour snow, winter crossing, woodland valley,
+  desert canyon, industrial rail yard, volcanic highlands: `palette.STARTERS` (snow ones capped in `STARTERS_CAPPED`);
+  table in `docs/colour_palette_guide.md` §4.3, §5.
 
 ---
 
@@ -606,6 +635,13 @@ periphery can't be walked.
 * Fogs used: lilac dusk (200,188,206), (176,160,186); slate-green (152,174,168); pale moonlit lilac-grey (168,164,178);
   lavender dusk (158,146,182); pale lilac-grey (178,172,192); bright mauve-amber (190,168,176).
 * Fog is server-side (`fog` in `.txt`, `/fog r g b` live) — iterate without re-exporting.
+* **Choosing fog** `[GUIDE]`: sample the largest surface, the orienting landmark, the objective and both team colours
+  from a screenshot facing the objective; pick a low-saturation hue in a gap of that set. Fixes in order: move the fog
+  hue; then separate values or enlarge the landmark; for snow glare, deepen the ridge below the horizon before
+  brightening snow. Fog ≈ a ground tone is fine for ground, not for skyline/landmark/objective.
+* **Team lean, measurable:** warn when fog chroma (OKLCH) > 0.035 and hue within 30° of a team hue (blue 264°, red 29°)
+  — `palette.fog_team_lean`. Our lilac fogs (~300–315°) pass; community night fogs (35,55,75), (70,70,100) fail.
+* Trial pairings and the fog-station test (spawn exit, ~60, ~110 voxels): `docs/colour_palette_guide.md` §6–7.
 
 ### 11.2 Sky
 * `heavens_color` (RGBA) sets the sky colour separately from fog on the owner's setup.
@@ -655,6 +691,9 @@ periphery can't be walked.
 12. Toolchain targets Python 3.11; repo `D:\Ace of Spades\Aos_Map` (to be hosted on GitHub for other sessions/AIs).
 13. He tests in his own Ruby spectator client **aos_web** (localhost) and the **alohacraft.cc** VXL viewer.
 14. Edits of community maps keep the map "relatively the same" and credit the original author.
+15. Island maps (2026-11-15): current style by default; "classic island map" in the brief → the classic style in
+    `docs/classic_island_style.md`, checked with `tools/island_style_metrics.py`. Build only the
+    style the brief names, not both.
 
 ---
 
@@ -681,9 +720,15 @@ aosmap/sightline.py babel_spawn_report: platform-edge eyes → spawn heads (view
 aosmap/meta.py      map_txt() / check_map_txt()
 aosmap/render.py    top_down, isometric (4 views), contact_sheet
 aosmap/pixelfont.py 5×7 font for painted name tags
+aosmap/kit/palette.py   luma/OKLab/OKLCH, delta_e, shifted_ramp (hue-shifted, capped), cap_snow, STARTERS(_CAPPED),
+                    FOG_PAIRINGS, check_palette, fog_team_lean, grade
 aosmap/pipeline.py  export → parser checks → real-piqueserver runtime checks → renders
-tools/              art_metrics.py (FIRST ARG IS THE OUTPUT JSON), fp_view.py (numpy first-person raymarcher),
-                    compare_refs, movement_sim, fetch_map_from_server, bot_protect_test, babel_live_check.py,
+aosmap/kit/         (2026-11-10) shared kit for new maps: codec, noise, canvas, structures, symmetry, color, veg,
+                    tag, sky, babel_checks (full suite + summary), probe (live server), build (export, .txt rules),
+                    preview. Merges the per-map copies; reproduces the HC / Silverpine / Bloomhop reports (docs/kit.md)
+tools/              palette_audit.py (value bands, snow over cap, crest coverage, sparkle, fog checks),
+                    art_metrics.py (FIRST ARG IS THE OUTPUT JSON), fp_view.py (numpy first-person raymarcher),
+                    compare_refs, island_style_metrics (classic vs current island style), movement_sim, fetch_map_from_server, bot_protect_test, babel_live_check.py,
                     aosweb_capture.cjs, betterspades_capture.sh (+ camfile patch)
 server_scripts/     authored_protect.py
 scenes/<map>/       per-map generator: *_main.py (build), *_check.py (validation.json), *_render.py (previews);
@@ -738,6 +783,7 @@ per run, **save it** in build.json so the build can be reproduced.
 2. **Ask before building** (mandatory). Typical questions:
    * Mode and server script (stock babel? platform variant? team colours? standard or assist-structure Babel?).
    * Full 512 × 512 or island; ground height relative to water; mountain ring or open edges.
+   * Island: current style or **classic** (`docs/classic_island_style.md` §7 lists the classic questions)?
    * Which concept (offer three) and which landmark goes where (centre / edge / under the platform).
    * What fills the centre; any underground layer; flank style.
    * Water behaviour: classic walkable, cursed (`water_damage`), or boundary box.
@@ -777,6 +823,8 @@ per run, **save it** in build.json so the build can be reproduced.
 - [ ] centre crossable on foot; flank routes avoiding ±130 of centre exist; periphery ≥ 99 % reachable
 - [ ] spawn exposure: ≤ ~10 viewers per spot, ≥ 15 % hidden (or the trade-off reported)
 - [ ] no team-colour clashes (Push); entity settling (no roofs over intel/base/CP columns)
+- [ ] `tools/palette_audit.py` clean: snow ≤ 212, walkable tops ≥ luma 40, brightest band small, low sparkle, fog not
+      leaning to a team or matching a landmark (colour guide §7)
 - [ ] art metrics within calibration; renders reviewed for floating props, blocked routes, noise, stripes, pillar fields
 - [ ] deterministic build (same seed → same bytes in a fresh process); seed saved
 - [ ] `.txt` loads, only real keys, author `shywolf91 + AI`, no spawn hooks
@@ -869,7 +917,9 @@ Backyard Babel 0 % hidden (open fronts).
 |---|---|---|---|---|---|---|
 | swag2 | 76 % | 3 | 61 | building to z 27 | 43 | butterfly island, tombstone field, ring of plank-bridged islets |
 | islandbabel | 80 % | 6 | 61 | z 61 | ~56 | sand, cyan sea |
-| babelpocalypse | 63 % | 11 | 44 | hill to z 9 | ~8 | |
+| babelpocalypse | 63 %¹ | 11¹ | 44 | hill to z 9 | ~8 | |
+| toast² | 80 % | 1 | 62 | z 62 sand, lagoon; palms to z 28 | ~60 from ground | palm dumbbell, 2 plank bridges, caustic sea; 9–10 % water under the platform ends |
+| utopia2² | 75 % | 3 | 52–53 | plateau z ~53, house to z 34 | ~50 from ground | cliff plateau, one house, cloud layer at z 0–28, painted shallows/deeps |
 | alexandria-babel2 | 69 % | 4 | 58 | pyramid | ~4 | |
 | GoonassaultJapan | 87 % | 1 | 62 | tower to z 11 | ~15 | spawn squares partly water |
 | normandie | 0 % | — | 59/60 | z 59 | ~36 | not mirrored yet fair; 94 % solid underground |
@@ -878,6 +928,12 @@ Backyard Babel 0 % hidden (open fronts).
 | remus | 6 % | — | 60/57 | z 62 | — | dense city, river |
 | hallweebalohabeta | 21 % | — | 62 | z 3 | ~4 | Halloween city, good cover |
 | Cloud Smash | sky | — | z 8–23 | — | — | exact mirror, painted sunset backdrop, 4 tethers |
+
+¹ These earlier babelpocalypse cells used "land = topmost voxel above z 62", which counts its floating clouds and planes
+as land. With the engine's water definition (z 62 air; `tools/island_style_metrics.py`, 2026-11-15), it is 70.8 %
+water and 9 landmasses ≥ 200 columns. islandbabel's 80 % / 6 is unchanged under both definitions (80.6 % / 6).
+² Measured 2026-11-15 with `tools/island_style_metrics.py`. The gap is rough, `[DERIVED]` from ground under the platform
+to z 1. Full classic-vs-current tables: `docs/classic_island_style.md` §2.
 
 ---
 
@@ -911,10 +967,16 @@ Backyard Babel 0 % hidden (open fronts).
 8. Client FPS on the densest maps (5 MB, 566k surface voxels).
 9. Assist-structure Babel (§8.8): confirm it runs on the target server's babel_script unchanged; find by playtest which
    assist gaps (0 vs a few blocks) keep rounds from ending too fast.
+10. Colour (guide §9): what in-game clients paint on dug-out faces; whether client shading changes how the 212 snow cap
+    reads; the crest-coverage / sparkle thresholds and the trial fog pairings are not client-tested.
 
 ---
 
 ## 21. Sources
+
+* Colour palettes (2026-11-19): owner-supplied PDF *Color palettes for VXL maps* field guide; Sean Barrett's VXL spec
+  (silverspaceship.com/aosmap); piqueserver protocol075; colour-theory primers (Wikipedia, Sessions, DecoArt, Figma,
+  Zollie Makes), Indieklem #21, Stuart's Pixel Games palettes — digest and full list in `docs/colour_palette_guide.md` §11
 
 * piqueserver / pyspades **1.4.2** (tag v1.4.2, commit e555d210, 2026-07-08): pyspades/vxl_c.cpp, vxl.pyx, world_c.cpp,
   player.py, server.py; piqueserver/map.py, server.py, player.py, game_modes/{babel,push,arena}.py,

@@ -1,5 +1,6 @@
 # build outputs (regenerate with scenes/*.py)
 out/
+_out/
 __pycache__/
 *.pyc
 .pytest_cache/
@@ -19,11 +20,28 @@ _updates/
 
 # per-map material grids written by scenes/*/wkh_main.py (regenerate)
 maps/**/mat.npy
+maps/**/terrain_H.npy
 
 # community reference maps and guides (not ours to publish)
 refs/
 *.pdf
 opencode.jsonc
+
+# locally compiled helpers (scenes/bloomhop_kingdom/vxlenc.c -> libvxlenc.so)
+*.so
+*.dll
+*.lib
+*.exp
+
+# Claude Code: per-session worktrees and personal settings
+.claude/worktrees/
+.claude/settings.local.json
+
+# community map collection (aloha.pk maps repo; not ours to publish)
+map_collection/
+
+# per-map authored terrain heights written by kit builds (regenerate)
+maps/**/terrain_H.npy
 
 # per-session analysis of third-party maps (originals must not be pushed)
 work/

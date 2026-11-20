@@ -58,6 +58,9 @@ A valid VXL with crude shapes or flat empty layout is a **prototype**, not a fin
 13. Vegetation: non-deterministic, varied, smooth colour gradients, **three distinct random details per plant**.
 14. Keep old versions; new versions get new folders and bumped `.txt` version.
 15. Edits of community maps stay "relatively the same" and credit the original author.
+16. **Island maps have two styles** (2026-11-15): our dense **current** style is the default. When the brief says
+    **"classic island map"**, build the classic style: one natural island in a painted sea, sparse repeated props, and
+    0–2 modest landmarks (`docs/classic_island_style.md`). Build only the style the brief names, not both.
 
 ## 4. Hard technical facts you design against
 
@@ -146,7 +149,8 @@ script before designing; a community name defines no rules. The owner's stair/le
 Note the mode script and version, team colours, platform constants.
 
 **Phase 1 — Ask (mandatory, one focused round).** Typical questions:
-* Exact mode/script; full 512 map or island; ground height relative to water; mountain ring or open edges.
+* Exact mode/script; full 512 map or island (current or classic island style?); ground height relative to water;
+  mountain ring or open edges.
 * Which of your three concepts; where the landmarks go (centre, edge, under the platform); what fills the centre;
   underground layer?
 * Water: walkable, cursed (`water_damage`), or `boundary_damage` box.
@@ -251,5 +255,8 @@ per run and record it.
 * Placing scenery before mirroring (it gets duplicated); forgetting column 256 after mirroring.
 * Diagonal trunk/branch contact; carving doors under roof beams (floating vigas) — re-check floating after carves.
 * Per-voxel colour noise (shimmer, "too noisy"); hard material edges; white snow; black nights; fog matching the terrain.
+* Snow done right: a light grey-blue field (luma ~165–185, max channel ≤ 212), darker connected trough patches along
+  tracks, a short broken crest on exposed lips only, rock/timber/treeline as dark anchors; hue-shifted ramps (warm or
+  cool light, chroma falling at both ends); fog in a hue the palette lacks, low chroma, not within 30° of a team hue.
 * Arena gates 3 thick; Push palettes with pure team hues; `on_block_destroy` returning `None`; `hash()` seeds.
 * Calling a preview a client capture, or a graph route check proof of playability.

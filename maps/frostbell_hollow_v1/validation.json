@@ -1,0 +1,1031 @@
+{
+ "model": {
+  "rules": "hc",
+  "axis": "x512",
+  "exposure": "calibrated",
+  "max_drop_safe": 9,
+  "note": "graph model, not a collision simulation"
+ },
+ "reader": {
+  "bytes": 2851828,
+  "reencode_identical": true,
+  "surface_all_coloured": true,
+  "z63_solid": true
+ },
+ "pyspades": {
+  "generate_identical": true,
+  "solid_mismatch_20k": 0,
+  "colour_mismatch_20k": 0
+ },
+ "floating_components": {
+  "count": 0,
+  "voxels": 0,
+  "list": [],
+  "expected_count": 5,
+  "expected_voxels": 5999
+ },
+ "sky_layer": {
+  "objects": 5,
+  "min_platform_dist": 126.8,
+  "any_over_spawn": false,
+  "min_air_below": 15,
+  "rules_met": true,
+  "rows": [
+   {
+    "name": "sleigh and reindeer",
+    "voxels": 575,
+    "platform_dist": 174.0,
+    "over_spawn_square": false,
+    "air_below_min": 33,
+    "z": [
+     8,
+     9
+    ]
+   },
+   {
+    "name": "snow cloud 0",
+    "voxels": 1960,
+    "platform_dist": 127.5,
+    "over_spawn_square": false,
+    "air_below_min": 21,
+    "z": [
+     8,
+     16
+    ]
+   },
+   {
+    "name": "snow cloud 1",
+    "voxels": 1130,
+    "platform_dist": 126.8,
+    "over_spawn_square": false,
+    "air_below_min": 24,
+    "z": [
+     8,
+     14
+    ]
+   },
+   {
+    "name": "snow cloud 2",
+    "voxels": 651,
+    "platform_dist": 136.2,
+    "over_spawn_square": false,
+    "air_below_min": 27,
+    "z": [
+     11,
+     15
+    ]
+   },
+   {
+    "name": "snow cloud 3",
+    "voxels": 2988,
+    "platform_dist": 127.1,
+    "over_spawn_square": false,
+    "air_below_min": 15,
+    "z": [
+     8,
+     16
+    ]
+   }
+  ]
+ },
+ "mirror": {
+  "solid_mismatch": 0,
+  "material_mismatch": 0,
+  "solid_mismatch_unfiltered": 5347,
+  "excluded_boxes": [
+   [
+    226,
+    285,
+    81,
+    87
+   ],
+   [
+    356,
+    454,
+    105,
+    115
+   ],
+   [
+    233,
+    237,
+    383,
+    387
+   ],
+   [
+    275,
+    279,
+    383,
+    387
+   ],
+   [
+    59,
+    63,
+    282,
+    286
+   ],
+   [
+    449,
+    453,
+    282,
+    286
+   ],
+   [
+    204,
+    208,
+    290,
+    294
+   ],
+   [
+    304,
+    308,
+    290,
+    294
+   ],
+   [
+    228,
+    279,
+    48,
+    66
+   ],
+   [
+    81,
+    111,
+    145,
+    155
+   ],
+   [
+    405,
+    433,
+    151,
+    162
+   ],
+   [
+    97,
+    123,
+    379,
+    386
+   ],
+   [
+    386,
+    421,
+    369,
+    383
+   ],
+   [
+    228,
+    279,
+    48,
+    66
+   ],
+   [
+    81,
+    111,
+    145,
+    155
+   ],
+   [
+    405,
+    433,
+    151,
+    162
+   ],
+   [
+    97,
+    123,
+    379,
+    386
+   ],
+   [
+    386,
+    421,
+    369,
+    383
+   ]
+  ],
+  "axis": "x512"
+ },
+ "platform_volume_voxels": 0,
+ "platform_margin_voxels": 0,
+ "ground_under_platform_ends": {
+  "blue_end": {
+   "top_z_min": 50,
+   "top_z_max": 50,
+   "water_cols": 0
+  },
+  "red_end": {
+   "top_z_min": 50,
+   "top_z_max": 50,
+   "water_cols": 0
+  }
+ },
+ "spawn_squares": {
+  "blue": {
+   "top_z_values": {
+    "48": 550,
+    "49": 1131
+   },
+   "top_z_min": 48,
+   "top_z_max": 49,
+   "flat_share": 0.67,
+   "water_cols": 0,
+   "roof_cols": 0
+  },
+  "red": {
+   "top_z_values": {
+    "48": 550,
+    "49": 1131
+   },
+   "top_z_min": 48,
+   "top_z_max": 49,
+   "flat_share": 0.67,
+   "water_cols": 0,
+   "roof_cols": 0
+  },
+  "mirror_equal_share": 1.0
+ },
+ "routes": {
+  "blue": {
+   "to_own_platform_end": 68.0,
+   "to_enemy_spawn": 236.0,
+   "to_enemy_spawn_any_drop": 236.0,
+   "reachable_nodes_pct": 88.7,
+   "reachable_nodes_safe": 263498,
+   "reachable_nodes_any": 263518,
+   "safe_descent_to_tower_zone": true,
+   "tower_zone_min_cost": 30.0
+  },
+  "red": {
+   "to_own_platform_end": 69.0,
+   "to_enemy_spawn": 236.0,
+   "to_enemy_spawn_any_drop": 236.0,
+   "reachable_nodes_pct": 88.7,
+   "reachable_nodes_safe": 263498,
+   "reachable_nodes_any": 263518,
+   "safe_descent_to_tower_zone": true,
+   "tower_zone_min_cost": 31.0
+  }
+ },
+ "safe_descent": {
+  "blue": {
+   "ground_cols_reachable_any": 229279,
+   "ground_cols_reachable_safe": 229279,
+   "safe_share_pct": 100.0
+  },
+  "red": {
+   "ground_cols_reachable_any": 229279,
+   "ground_cols_reachable_safe": 229279,
+   "safe_share_pct": 100.0
+  }
+ },
+ "periphery": {
+  "ground_cols": 256160,
+  "reachable_pct": 87.2
+ },
+ "trap_cells": {
+  "count": 0,
+  "of_cells": 253373,
+  "sample": []
+ },
+ "interiors": {
+  "checked": 172,
+  "reachable_and_exit": 172,
+  "failures": []
+ },
+ "flank": {
+  "band": [
+   130,
+   210
+  ],
+  "blue_to_red_cost": {
+   "north": 456.0,
+   "south": 458.0
+  },
+  "exists": true
+ },
+ "build_gap": {
+  "blue": {
+   "graph": "safe",
+   "margin": 24,
+   "highest_reachable_near_platform_z": 48,
+   "blocks_to_build_up_to_platform_level": 46,
+   "platform_reachable_on_foot": false
+  },
+  "red": {
+   "graph": "safe",
+   "margin": 24,
+   "highest_reachable_near_platform_z": 48,
+   "blocks_to_build_up_to_platform_level": 46,
+   "platform_reachable_on_foot": false
+  }
+ },
+ "anchors": {
+  "blue": {
+   "face_x": 211,
+   "enemy_face_step_min": 0,
+   "raised": false,
+   "enemy_face_walk_on_rows": 32
+  },
+  "red": {
+   "face_x": 300,
+   "enemy_face_step_min": 0,
+   "raised": false,
+   "enemy_face_walk_on_rows": 32
+  }
+ },
+ "spawn_exposure": {
+  "blue": {
+   "preset": "calibrated",
+   "viewers_per_spot_mean": 2.92,
+   "viewers_max": 11,
+   "hidden_pct": 72.6,
+   "exposed_pct": 27.4,
+   "n_viewers": 65,
+   "n_spots": 441,
+   "targets_met": true
+  },
+  "red": {
+   "preset": "calibrated",
+   "viewers_per_spot_mean": 2.65,
+   "viewers_max": 10,
+   "hidden_pct": 72.6,
+   "exposed_pct": 27.4,
+   "n_viewers": 65,
+   "n_spots": 441,
+   "targets_met": true
+  }
+ },
+ "check_seconds": 6.2,
+ "summary": [
+  {
+   "rule": "parser",
+   "ok": true,
+   "detail": {
+    "bytes": 2851828,
+    "reencode_identical": true,
+    "surface_all_coloured": true,
+    "z63_solid": true
+   }
+  },
+  {
+   "rule": "pyspades",
+   "ok": true,
+   "detail": {
+    "generate_identical": true,
+    "solid_mismatch_20k": 0,
+    "colour_mismatch_20k": 0
+   }
+  },
+  {
+   "rule": "no unintended floating",
+   "ok": true,
+   "detail": 0
+  },
+  {
+   "rule": "mirror",
+   "ok": true,
+   "detail": 0
+  },
+  {
+   "rule": "platform volume clear",
+   "ok": true,
+   "detail": 0
+  },
+  {
+   "rule": "ground under both platform ends",
+   "ok": true,
+   "detail": {
+    "blue_end": {
+     "top_z_min": 50,
+     "top_z_max": 50,
+     "water_cols": 0
+    },
+    "red_end": {
+     "top_z_min": 50,
+     "top_z_max": 50,
+     "water_cols": 0
+    }
+   }
+  },
+  {
+   "rule": "spawn squares: no water / roofs",
+   "ok": true,
+   "detail": {
+    "blue": {
+     "top_z_values": {
+      "48": 550,
+      "49": 1131
+     },
+     "top_z_min": 48,
+     "top_z_max": 49,
+     "flat_share": 0.67,
+     "water_cols": 0,
+     "roof_cols": 0
+    },
+    "red": {
+     "top_z_values": {
+      "48": 550,
+      "49": 1131
+     },
+     "top_z_min": 48,
+     "top_z_max": 49,
+     "flat_share": 0.67,
+     "water_cols": 0,
+     "roof_cols": 0
+    }
+   }
+  },
+  {
+   "rule": "safe descent to tower zone",
+   "ok": true,
+   "detail": {
+    "blue": 30.0,
+    "red": 31.0
+   }
+  },
+  {
+   "rule": "enemy spawn reachable on foot",
+   "ok": true,
+   "detail": {
+    "blue": 236.0,
+    "red": 236.0
+   }
+  },
+  {
+   "rule": "no trap cells",
+   "ok": true,
+   "detail": 0
+  },
+  {
+   "rule": "interiors reachable",
+   "ok": true,
+   "detail": 172
+  },
+  {
+   "rule": "flank route exists",
+   "ok": true,
+   "detail": {
+    "north": 456.0,
+    "south": 458.0
+   }
+  },
+  {
+   "rule": "platform not reachable on foot",
+   "ok": true,
+   "detail": {
+    "blue": 46,
+    "red": 46
+   }
+  },
+  {
+   "rule": "no walk-on steps on the enemy face of the anchors",
+   "ok": true,
+   "detail": {
+    "blue": {
+     "face_x": 211,
+     "enemy_face_step_min": 0,
+     "raised": false,
+     "enemy_face_walk_on_rows": 32
+    },
+    "red": {
+     "face_x": 300,
+     "enemy_face_step_min": 0,
+     "raised": false,
+     "enemy_face_walk_on_rows": 32
+    }
+   }
+  },
+  {
+   "rule": "spawn exposure blue (<= 10 viewers, >= 15 % hidden)",
+   "ok": true,
+   "detail": {
+    "mean": 2.92,
+    "hidden_pct": 72.6
+   }
+  },
+  {
+   "rule": "spawn exposure red (<= 10 viewers, >= 15 % hidden)",
+   "ok": true,
+   "detail": {
+    "mean": 2.65,
+    "hidden_pct": 72.6
+   }
+  }
+ ],
+ "fh_checks": {
+  "front": {
+   "west": {
+    "min_free_share": 0.816,
+    "worst_x": 174,
+    "mean_free_share": 0.932
+   },
+   "east": {
+    "min_free_share": 0.816,
+    "worst_x": 338,
+    "mean_free_share": 0.932
+   },
+   "max_prop_height": 6,
+   "columns_over_5": 4,
+   "columns_over_6": 0,
+   "ok": true
+  },
+  "gatehouse": {
+   "west": {
+    "open_share": 0.735,
+    "widest_pier": 5
+   },
+   "east": {
+    "open_share": 0.735,
+    "widest_pier": 5
+   },
+   "ok": true
+  },
+  "tunnel_exclusion": {
+   "west": {
+    "box": [
+     150,
+     215,
+     232,
+     280
+    ],
+    "air_below_surface": 0
+   },
+   "east": {
+    "box": [
+     297,
+     362,
+     232,
+     280
+    ],
+    "air_below_surface": 0
+   },
+   "ok": true
+  },
+  "flank_bands": {
+   "blue": {
+    "north": 456.0,
+    "south": 458.0,
+    "diff_share": 0.004
+   },
+   "red": {
+    "north": 456.0,
+    "south": 458.0,
+    "diff_share": 0.004
+   },
+   "ok": true
+  },
+  "sky_ceiling": {
+   "solid_z_le_6": 0,
+   "solid_z_le_2_over_platform_margin": 0,
+   "top_solid_z": 7,
+   "ok": true
+  },
+  "prop_free_zones": {
+   "spawn margin 0": 0,
+   "spawn margin 1": 0,
+   "anchor W": 0,
+   "anchor E": 0,
+   "anchor_flat": true,
+   "ok": true
+  },
+  "underground": {
+   "network_cells": 5100,
+   "reachable_from_blue_pct": 100.0,
+   "reachable_from_red_pct": 100.0,
+   "walk_out_to_a_spawn_pct": 100.0,
+   "entrances": [
+    {
+     "entrance": "mine adit (W)",
+     "top_cells": 13,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "mine adit (E)",
+     "top_cells": 13,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "cellar house stair (W)",
+     "top_cells": 8,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "cellar house stair (E)",
+     "top_cells": 8,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "hatch N (W)",
+     "top_cells": 9,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "hatch N (E)",
+     "top_cells": 9,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "hatch S (W)",
+     "top_cells": 9,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "hatch S (E)",
+     "top_cells": 9,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "tavern cellar stair (W)",
+     "top_cells": 9,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    },
+    {
+     "entrance": "tavern cellar stair (E)",
+     "top_cells": 9,
+     "down_to_network": true,
+     "up_from_network": true,
+     "top_reachable_both_spawns": true
+    }
+   ],
+   "ok": true
+  },
+  "featureless": {
+   "largest_side": 22,
+   "at_xy_min_corner": [
+    243,
+    376
+   ],
+   "z": 50,
+   "largest_patches": [
+    {
+     "side": 22,
+     "x": [
+      248,
+      269
+     ],
+     "y": [
+      376,
+      397
+     ]
+    },
+    {
+     "side": 21,
+     "x": [
+      431,
+      451
+     ],
+     "y": [
+      99,
+      119
+     ]
+    },
+    {
+     "side": 21,
+     "x": [
+      397,
+      417
+     ],
+     "y": [
+      100,
+      120
+     ]
+    },
+    {
+     "side": 21,
+     "x": [
+      103,
+      123
+     ],
+     "y": [
+      100,
+      120
+     ]
+    },
+    {
+     "side": 21,
+     "x": [
+      73,
+      93
+     ],
+     "y": [
+      99,
+      119
+     ]
+    },
+    {
+     "side": 20,
+     "x": [
+      303,
+      322
+     ],
+     "y": [
+      213,
+      232
+     ]
+    }
+   ],
+   "definition": "largest square of same-height terrain-top columns with nothing over them, exempt zones removed",
+   "max_allowed": 24,
+   "ok": true
+  },
+  "market_gaps": {
+   "min_gap": 7,
+   "closest_pairs": [
+    [
+     7,
+     "stall 1",
+     "stall 5"
+    ],
+    [
+     7,
+     "stall 14",
+     "hatch stall S"
+    ],
+    [
+     7,
+     "stall 15",
+     "hatch stall S"
+    ],
+    [
+     7,
+     "stall 2",
+     "spruce"
+    ],
+    [
+     7,
+     "stall 4",
+     "stall 5"
+    ]
+   ],
+   "ok": true
+  },
+  "collision_diff": {
+   "graybox_standable": 286510,
+   "art_standable": 296951,
+   "differing_cells": 19845,
+   "allowed": {
+    "a_vegetation": 18392,
+    "c_pads": 140,
+    "d_sky": 2087,
+    "e_tag": 0,
+    "f_prop_envelope": 68,
+    "b_trim": 322
+   },
+   "unallowed": 0,
+   "unallowed_ground_level": 0,
+   "unallowed_by_zone": {
+    "front": 0,
+    "anchors": 0,
+    "spawn squares": 0,
+    "lanes": 0,
+    "interiors": 0,
+    "tunnels": 0
+   },
+   "unallowed_sample": [],
+   "ok": true
+  },
+  "summary": [
+   {
+    "rule": "front open (every N-S section >= 70 % free, props <= 5, lanterns <= 6)",
+    "ok": true,
+    "detail": {
+     "min_free": 0.816,
+     "max_prop_height": 6,
+     "columns_over_5": 4
+    }
+   },
+   {
+    "rule": "gatehouse >= 60 % open, piers <= 5",
+    "ok": true,
+    "detail": {
+     "west": {
+      "open_share": 0.735,
+      "widest_pier": 5
+     },
+     "east": {
+      "open_share": 0.735,
+      "widest_pier": 5
+     }
+    }
+   },
+   {
+    "rule": "no tunnel under the tower corridor",
+    "ok": true,
+    "detail": {
+     "west": 0,
+     "east": 0
+    }
+   },
+   {
+    "rule": "flank routes N and S both teams, within 10 %",
+    "ok": true,
+    "detail": {
+     "blue": {
+      "north": 456.0,
+      "south": 458.0,
+      "diff_share": 0.004
+     },
+     "red": {
+      "north": 456.0,
+      "south": 458.0,
+      "diff_share": 0.004
+     }
+    }
+   },
+   {
+    "rule": "nothing at z <= 6; platform volume + margin clear",
+    "ok": true,
+    "detail": {
+     "solid_z_le_6": 0,
+     "solid_z_le_2_over_platform_margin": 0,
+     "top_solid_z": 7,
+     "ok": true
+    }
+   },
+   {
+    "rule": "spawn margins + anchors prop-free, anchors flat",
+    "ok": true,
+    "detail": {
+     "spawn margin 0": 0,
+     "spawn margin 1": 0,
+     "anchor W": 0,
+     "anchor E": 0,
+     "anchor_flat": true,
+     "ok": true
+    }
+   },
+   {
+    "rule": "underground connected, reachable from both spawns, walk-out",
+    "ok": true,
+    "detail": {
+     "network_cells": 5100,
+     "reachable_from_blue_pct": 100.0,
+     "reachable_from_red_pct": 100.0,
+     "walk_out_to_a_spawn_pct": 100.0
+    }
+   },
+   {
+    "rule": "largest featureless flat patch <= 24 (exempt: spawn squares, anchors, under-platform)",
+    "ok": true,
+    "detail": {
+     "largest_side": 22,
+     "at_xy_min_corner": [
+      243,
+      376
+     ],
+     "largest_patches": [
+      {
+       "side": 22,
+       "x": [
+        248,
+        269
+       ],
+       "y": [
+        376,
+        397
+       ]
+      },
+      {
+       "side": 21,
+       "x": [
+        431,
+        451
+       ],
+       "y": [
+        99,
+        119
+       ]
+      },
+      {
+       "side": 21,
+       "x": [
+        397,
+        417
+       ],
+       "y": [
+        100,
+        120
+       ]
+      },
+      {
+       "side": 21,
+       "x": [
+        103,
+        123
+       ],
+       "y": [
+        100,
+        120
+       ]
+      },
+      {
+       "side": 21,
+       "x": [
+        73,
+        93
+       ],
+       "y": [
+        99,
+        119
+       ]
+      },
+      {
+       "side": 20,
+       "x": [
+        303,
+        322
+       ],
+       "y": [
+        213,
+        232
+       ]
+      }
+     ]
+    }
+   },
+   {
+    "rule": "market gaps >= 7 between stalls and set pieces",
+    "ok": true,
+    "detail": {
+     "min_gap": 7,
+     "closest_pairs": [
+      [
+       7,
+       "stall 1",
+       "stall 5"
+      ],
+      [
+       7,
+       "stall 14",
+       "hatch stall S"
+      ],
+      [
+       7,
+       "stall 15",
+       "hatch stall S"
+      ],
+      [
+       7,
+       "stall 2",
+       "spruce"
+      ],
+      [
+       7,
+       "stall 4",
+       "stall 5"
+      ]
+     ],
+     "ok": true
+    }
+   },
+   {
+    "rule": "art vs graybox collision: 0 unallowed standable-cell changes",
+    "ok": true,
+    "detail": {
+     "differing_cells": 19845,
+     "allowed": {
+      "a_vegetation": 18392,
+      "c_pads": 140,
+      "d_sky": 2087,
+      "e_tag": 0,
+      "f_prop_envelope": 68,
+      "b_trim": 322
+     },
+     "unallowed": 0,
+     "unallowed_ground_level": 0,
+     "unallowed_by_zone": {
+      "front": 0,
+      "anchors": 0,
+      "spawn squares": 0,
+      "lanes": 0,
+      "interiors": 0,
+      "tunnels": 0
+     }
+    }
+   }
+  ]
+ },
+ "txt": {
+  "ok": true,
+  "issues": [
+   "note: water_damage needs piqueserver.scripts.map_extensions in the server script list"
+  ]
+ }
+}

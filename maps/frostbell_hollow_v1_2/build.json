@@ -1,0 +1,1681 @@
+{
+ "map": "Frostbell Hollow",
+ "file": "frostbell_hollow",
+ "sha256": "81557f06c9de5aba2d4333cb964b91bcfc49fc0cc637b53b8a51927fbdc8e219",
+ "bytes": 2894668,
+ "stage": "art",
+ "layout_seed": 20261110,
+ "axis": "x512",
+ "floating_before_cleanup": 0,
+ "cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "scatter": {
+  "pines": 236,
+  "ring_pines": 75,
+  "outcrops": 12,
+  "small_props": 31,
+  "feature_pads": [
+   {
+    "kind": "present pile",
+    "box": [
+     233,
+     237,
+     383,
+     387
+    ]
+   },
+   {
+    "kind": "snowman",
+    "box": [
+     146,
+     150,
+     214,
+     218
+    ]
+   }
+  ],
+  "veg_seed": 4015401698,
+  "nooks_filled": 1,
+  "trap_pines_removed": 4,
+  "pinned_firs": 8,
+  "break_flats": {
+   "placed": 4,
+   "largest_side_after_west": 22
+  }
+ },
+ "market_boxes": [
+  [
+   "stall 0",
+   224,
+   231,
+   165,
+   171
+  ],
+  [
+   "stall 1",
+   217,
+   225,
+   185,
+   194
+  ],
+  [
+   "stall 2",
+   224,
+   237,
+   211,
+   217
+  ],
+  [
+   "stall 3",
+   165,
+   174,
+   198,
+   210
+  ],
+  [
+   "stall 4",
+   186,
+   193,
+   206,
+   212
+  ],
+  [
+   "stall 5",
+   201,
+   209,
+   194,
+   202
+  ],
+  [
+   "stall 6",
+   216,
+   223,
+   141,
+   148
+  ],
+  [
+   "stall 7",
+   186,
+   194,
+   145,
+   153
+  ],
+  [
+   "stall 8",
+   169,
+   175,
+   154,
+   161
+  ],
+  [
+   "stall 9",
+   224,
+   233,
+   293,
+   299
+  ],
+  [
+   "stall 10",
+   219,
+   225,
+   317,
+   326
+  ],
+  [
+   "stall 11",
+   220,
+   230,
+   343,
+   349
+  ],
+  [
+   "stall 12",
+   168,
+   176,
+   297,
+   303
+  ],
+  [
+   "stall 13",
+   189,
+   195,
+   297,
+   310
+  ],
+  [
+   "stall 14",
+   203,
+   209,
+   326,
+   333
+  ],
+  [
+   "stall 15",
+   170,
+   179,
+   348,
+   355
+  ],
+  [
+   "stall 16",
+   196,
+   204,
+   359,
+   365
+  ],
+  [
+   "hatch stall N",
+   184,
+   195,
+   172,
+   186
+  ],
+  [
+   "hatch stall S",
+   184,
+   195,
+   326,
+   340
+  ]
+ ],
+ "mill": {
+  "box": [
+   142,
+   158,
+   400,
+   412
+  ],
+  "floor": 54,
+  "wheel_c": [
+   150,
+   58
+  ],
+  "wheel_y": [
+   413,
+   415
+  ]
+ },
+ "rail_tunnel": {
+  "covered_x": [
+   154,
+   166
+  ]
+ },
+ "deviations": [
+  "post office x 96-122 (spec 100-126): keeps an 8-wide lane to the NE house and the gatehouse statue",
+  "gatehouse y 220-292 (spec 222-290): end towers 12 long so a 2-flight stair (floor 50 -> gallery 40) fits",
+  "gallery floor z 40, passages z 41-49 air, roof slab z 28-29 (as spec); stairs only inside the end towers",
+  "bridge abutments: earth ramps at z 52 from the bank to the deck (y 398-413, 451-461) so the deck at z 52 joins the banks; the sledding hill ends on the south abutment (run y 462-500 from z 30 to 52)",
+  "creek banks 24 wide (spec ~28) so the meandering valley stays inside the south flank zone",
+  "water mill placed from the creek centre line (x 142-158, 9 voxels north of the water), floor = local bank height so its north door opens onto level ground",
+  "village: 4 houses (3 with L/T wings), barn, 3 sheds; market: 17 stalls + hatch stall per side in arcs and clusters (spec: 4 per side)",
+  "station box x 242-270 after the mirror (written as 242-269 so its recorded interior stays at x 255), train x 226-285 on rails z 48, chassis z 47",
+  "railway rails stay straight (no end bends); the embankment has noisy shoulders instead"
+ ],
+ "veg_seed": 4015401698,
+ "art": {
+  "terrain": {
+   "snow_cols": 136014,
+   "rock_cols": 77472,
+   "cobble_cols": 32758
+  },
+  "lit_windows": 52,
+  "v12": {
+   "glow_added": 13
+  },
+  "props": {
+   "other": 47,
+   "logs": 23,
+   "timber": 7,
+   "mailbox": 2,
+   "lantern": 12,
+   "wood": 57,
+   "sled": 9,
+   "letters": 1,
+   "presents": 6,
+   "hay": 3,
+   "ice": 5,
+   "sculpted": 28,
+   "animal": 1
+  },
+  "stall_bulbs": 34,
+  "mine_lamps": 22,
+  "holly_voxels": 126,
+  "spruce": {
+   "ornament_lights": 7
+  },
+  "trees": {
+   "trees": 80,
+   "by_species": {
+    "spruce": 51,
+    "fir": 16,
+    "birch": 13
+   },
+   "details": {
+    "birdhouse": 23,
+    "nest": 31,
+    "robin": 28,
+    "frost tips": 24,
+    "icicles": 38,
+    "mistletoe": 20,
+    "ribbon": 6,
+    "pinecones": 21,
+    "squirrel": 26,
+    "lantern": 8,
+    "star": 9,
+    "baubles": 6
+   },
+   "pruned_voxels": 0,
+   "ring_pines_painted": 160
+  },
+  "glow_sources_west": 217,
+  "glow_skipped": 11
+ },
+ "art_floating_before_cleanup": 0,
+ "art_cleanup": {
+  "removed_components": 0,
+  "removed_voxels": 0,
+  "kept_floating": []
+ },
+ "post_mirror_floating": {
+  "unexpected": 0,
+  "expected": 5,
+  "unexpected_list": []
+ },
+ "pads_built": [
+  {
+   "pad": [
+    233,
+    237,
+    383,
+    387
+   ],
+   "kind": "present pile"
+  },
+  {
+   "pad": [
+    275,
+    279,
+    383,
+    387
+   ],
+   "kind": "present pile"
+  },
+  {
+   "pad": [
+    146,
+    150,
+    214,
+    218
+   ],
+   "kind": "snowman",
+   "hat": "flowerpot",
+   "accessory": "shovel",
+   "scarf": [
+    168,
+    46,
+    48
+   ],
+   "pruned": 12
+  },
+  {
+   "pad": [
+    362,
+    366,
+    214,
+    218
+   ],
+   "kind": "snowman",
+   "hat": "bucket",
+   "accessory": "lantern",
+   "scarf": [
+    70,
+    96,
+    150
+   ]
+  }
+ ],
+ "sky": [
+  {
+   "name": "sleigh and reindeer",
+   "voxels": 575,
+   "x": [
+    228,
+    279
+   ],
+   "y": [
+    48,
+    66
+   ],
+   "z": [
+    8,
+    9
+   ]
+  },
+  {
+   "name": "snow cloud 0",
+   "voxels": 1960,
+   "x": [
+    81,
+    111
+   ],
+   "y": [
+    145,
+    155
+   ],
+   "z": [
+    8,
+    16
+   ]
+  },
+  {
+   "name": "snow cloud 1",
+   "voxels": 1130,
+   "x": [
+    405,
+    433
+   ],
+   "y": [
+    151,
+    162
+   ],
+   "z": [
+    8,
+    14
+   ]
+  },
+  {
+   "name": "snow cloud 2",
+   "voxels": 651,
+   "x": [
+    97,
+    123
+   ],
+   "y": [
+    379,
+    386
+   ],
+   "z": [
+    11,
+    15
+   ]
+  },
+  {
+   "name": "snow cloud 3",
+   "voxels": 2988,
+   "x": [
+    386,
+    421
+   ],
+   "y": [
+    369,
+    383
+   ],
+   "z": [
+    8,
+    16
+   ]
+  }
+ ],
+ "tag_rect": [
+  356,
+  454,
+  105,
+  115,
+  50
+ ],
+ "tag_margin": null,
+ "finish": {
+  "grade": [
+   0.55,
+   0.556,
+   0.602
+  ],
+  "brightness": {
+   "dark_floors_raised": 17465,
+   "whites_capped": 0
+  },
+  "glow_sources": 435,
+  "glow_lit_voxels": 47936,
+  "palette_nudged": 6
+ },
+ "feature_pads": [
+  {
+   "kind": "present pile",
+   "box": [
+    233,
+    237,
+    383,
+    387
+   ]
+  },
+  {
+   "kind": "snowman",
+   "box": [
+    146,
+    150,
+    214,
+    218
+   ]
+  }
+ ],
+ "colour_stats": {
+  "top_luma_median": 89.8,
+  "top_dark_share_pct": 0.0,
+  "top_bright_share_pct": 0.17
+ },
+ "front_exempt_boxes": [
+  [
+   143,
+   151,
+   220,
+   292
+  ],
+  [
+   361,
+   369,
+   220,
+   292
+  ]
+ ],
+ "cosmetic_asymmetric_bbox": [
+  226,
+  285,
+  81,
+  87
+ ],
+ "cosmetic_asymmetric_boxes": [
+  [
+   226,
+   285,
+   81,
+   87
+  ],
+  [
+   356,
+   454,
+   105,
+   115
+  ],
+  [
+   233,
+   237,
+   383,
+   387
+  ],
+  [
+   275,
+   279,
+   383,
+   387
+  ],
+  [
+   146,
+   150,
+   214,
+   218
+  ],
+  [
+   362,
+   366,
+   214,
+   218
+  ],
+  [
+   228,
+   279,
+   48,
+   66
+  ],
+  [
+   81,
+   111,
+   145,
+   155
+  ],
+  [
+   405,
+   433,
+   151,
+   162
+  ],
+  [
+   97,
+   123,
+   379,
+   386
+  ],
+  [
+   386,
+   421,
+   369,
+   383
+  ]
+ ],
+ "materials": {
+  "air": 0,
+  "ground": 1,
+  "cobble": 2,
+  "rock": 3,
+  "ice": 4,
+  "water": 5,
+  "ballast": 6,
+  "gravel": 7,
+  "building": 8,
+  "furniture": 9,
+  "stair": 10,
+  "prop": 11,
+  "roof": 12,
+  "letters": 13,
+  "fence": 14,
+  "statue": 15,
+  "hedge": 16,
+  "gazebo": 17,
+  "hearth": 18,
+  "brazier": 19,
+  "trestle": 20,
+  "planter": 21,
+  "planter_fir": 22,
+  "hay": 23,
+  "buttress": 24,
+  "veg": 25,
+  "timber": 26,
+  "animal": 27,
+  "rail": 28,
+  "mine": 29,
+  "pad": 30,
+  "glass": 31,
+  "chimney": 32,
+  "holly": 33,
+  "spruce": 34,
+  "bark": 35,
+  "star": 36,
+  "leaf": 37,
+  "birdhouse": 38,
+  "icicle": 39,
+  "ribbon": 40,
+  "berry": 41,
+  "cone": 42,
+  "twig": 43,
+  "iron": 44,
+  "ornament": 45,
+  "robin": 46,
+  "squirrel": 47,
+  "train": 48,
+  "present": 49,
+  "snowman": 50,
+  "sky": 51
+ },
+ "build_seconds": 10.9,
+ "sky_objects": [
+  {
+   "name": "sleigh and reindeer",
+   "voxels": 575,
+   "x": [
+    228,
+    279
+   ],
+   "y": [
+    48,
+    66
+   ],
+   "z": [
+    8,
+    9
+   ]
+  },
+  {
+   "name": "snow cloud 0",
+   "voxels": 1960,
+   "x": [
+    81,
+    111
+   ],
+   "y": [
+    145,
+    155
+   ],
+   "z": [
+    8,
+    16
+   ]
+  },
+  {
+   "name": "snow cloud 1",
+   "voxels": 1130,
+   "x": [
+    405,
+    433
+   ],
+   "y": [
+    151,
+    162
+   ],
+   "z": [
+    8,
+    14
+   ]
+  },
+  {
+   "name": "snow cloud 2",
+   "voxels": 651,
+   "x": [
+    97,
+    123
+   ],
+   "y": [
+    379,
+    386
+   ],
+   "z": [
+    11,
+    15
+   ]
+  },
+  {
+   "name": "snow cloud 3",
+   "voxels": 2988,
+   "x": [
+    386,
+    421
+   ],
+   "y": [
+    369,
+    383
+   ],
+   "z": [
+    8,
+    16
+   ]
+  }
+ ],
+ "interiors": [
+  [
+   "chapel nave floor 0 (W)",
+   79,
+   256,
+   49
+  ],
+  [
+   "chapel nave floor 0 (E)",
+   433,
+   256,
+   49
+  ],
+  [
+   "bell tower floor 0 (W)",
+   63,
+   256,
+   49
+  ],
+  [
+   "bell tower floor 0 (E)",
+   449,
+   256,
+   49
+  ],
+  [
+   "bell tower floor 1 (W)",
+   63,
+   256,
+   43
+  ],
+  [
+   "bell tower floor 1 (E)",
+   449,
+   256,
+   43
+  ],
+  [
+   "bell tower floor 2 (W)",
+   63,
+   256,
+   37
+  ],
+  [
+   "bell tower floor 2 (E)",
+   449,
+   256,
+   37
+  ],
+  [
+   "bell tower floor 3 (W)",
+   63,
+   256,
+   31
+  ],
+  [
+   "bell tower floor 3 (E)",
+   449,
+   256,
+   31
+  ],
+  [
+   "post office counter room floor 0 (W)",
+   109,
+   209,
+   49
+  ],
+  [
+   "post office counter room floor 0 (E)",
+   403,
+   209,
+   49
+  ],
+  [
+   "post office parcel wing floor 0 (W)",
+   109,
+   191,
+   49
+  ],
+  [
+   "post office parcel wing floor 0 (E)",
+   403,
+   191,
+   49
+  ],
+  [
+   "post office sorting room (W)",
+   101,
+   209,
+   49
+  ],
+  [
+   "post office sorting room (E)",
+   411,
+   209,
+   49
+  ],
+  [
+   "house NW floor 0 (W)",
+   73,
+   195,
+   49
+  ],
+  [
+   "house NW floor 0 (E)",
+   439,
+   195,
+   49
+  ],
+  [
+   "house NW floor 1 (W)",
+   73,
+   195,
+   44
+  ],
+  [
+   "house NW floor 1 (E)",
+   439,
+   195,
+   44
+  ],
+  [
+   "house NW wing floor 0 (W)",
+   75,
+   182,
+   49
+  ],
+  [
+   "house NW wing floor 0 (E)",
+   437,
+   182,
+   49
+  ],
+  [
+   "house NE floor 0 (W)",
+   138,
+   195,
+   49
+  ],
+  [
+   "house NE floor 0 (E)",
+   374,
+   195,
+   49
+  ],
+  [
+   "house NE floor 1 (W)",
+   138,
+   195,
+   44
+  ],
+  [
+   "house NE floor 1 (E)",
+   374,
+   195,
+   44
+  ],
+  [
+   "house NE floor 2 (W)",
+   138,
+   195,
+   39
+  ],
+  [
+   "house NE floor 2 (E)",
+   374,
+   195,
+   39
+  ],
+  [
+   "cellar house SW floor 0 (W)",
+   72,
+   301,
+   49
+  ],
+  [
+   "cellar house SW floor 0 (E)",
+   440,
+   301,
+   49
+  ],
+  [
+   "cellar house SW floor 1 (W)",
+   72,
+   301,
+   44
+  ],
+  [
+   "cellar house SW floor 1 (E)",
+   440,
+   301,
+   44
+  ],
+  [
+   "cellar house SW wing floor 0 (W)",
+   57,
+   305,
+   49
+  ],
+  [
+   "cellar house SW wing floor 0 (E)",
+   455,
+   305,
+   49
+  ],
+  [
+   "house SE floor 0 (W)",
+   131,
+   306,
+   49
+  ],
+  [
+   "house SE floor 0 (E)",
+   381,
+   306,
+   49
+  ],
+  [
+   "house SE floor 1 (W)",
+   131,
+   306,
+   44
+  ],
+  [
+   "house SE floor 1 (E)",
+   381,
+   306,
+   44
+  ],
+  [
+   "house SE wing floor 0 (W)",
+   131,
+   320,
+   49
+  ],
+  [
+   "house SE wing floor 0 (E)",
+   381,
+   320,
+   49
+  ],
+  [
+   "barn floor 0 (W)",
+   98,
+   297,
+   49
+  ],
+  [
+   "barn floor 0 (E)",
+   414,
+   297,
+   49
+  ],
+  [
+   "shed NW floor 0 (W)",
+   50,
+   188,
+   49
+  ],
+  [
+   "shed NW floor 0 (E)",
+   462,
+   188,
+   49
+  ],
+  [
+   "shed S floor 0 (W)",
+   104,
+   326,
+   49
+  ],
+  [
+   "shed S floor 0 (E)",
+   408,
+   326,
+   49
+  ],
+  [
+   "woodshed floor 0 (W)",
+   86,
+   235,
+   49
+  ],
+  [
+   "woodshed floor 0 (E)",
+   426,
+   235,
+   49
+  ],
+  [
+   "front hut 0 (W)",
+   170,
+   235,
+   50
+  ],
+  [
+   "front hut 0 (E)",
+   342,
+   235,
+   50
+  ],
+  [
+   "front hut 1 (W)",
+   185,
+   276,
+   50
+  ],
+  [
+   "front hut 1 (E)",
+   327,
+   276,
+   50
+  ],
+  [
+   "stall 0 (W)",
+   227,
+   168,
+   50
+  ],
+  [
+   "stall 0 (E)",
+   285,
+   168,
+   50
+  ],
+  [
+   "stall 1 (W)",
+   220,
+   189,
+   50
+  ],
+  [
+   "stall 1 (E)",
+   292,
+   189,
+   50
+  ],
+  [
+   "stall 2 (W)",
+   228,
+   214,
+   50
+  ],
+  [
+   "stall 2 (E)",
+   284,
+   214,
+   50
+  ],
+  [
+   "stall 3 (W)",
+   169,
+   201,
+   50
+  ],
+  [
+   "stall 3 (E)",
+   343,
+   201,
+   50
+  ],
+  [
+   "stall 4 (W)",
+   189,
+   209,
+   50
+  ],
+  [
+   "stall 4 (E)",
+   323,
+   209,
+   50
+  ],
+  [
+   "stall 5 (W)",
+   206,
+   198,
+   50
+  ],
+  [
+   "stall 5 (E)",
+   306,
+   198,
+   50
+  ],
+  [
+   "stall 6 (W)",
+   219,
+   144,
+   50
+  ],
+  [
+   "stall 6 (E)",
+   293,
+   144,
+   50
+  ],
+  [
+   "stall 7 (W)",
+   190,
+   148,
+   50
+  ],
+  [
+   "stall 7 (E)",
+   322,
+   148,
+   50
+  ],
+  [
+   "stall 8 (W)",
+   172,
+   157,
+   50
+  ],
+  [
+   "stall 8 (E)",
+   340,
+   157,
+   50
+  ],
+  [
+   "stall 9 (W)",
+   227,
+   296,
+   50
+  ],
+  [
+   "stall 9 (E)",
+   285,
+   296,
+   50
+  ],
+  [
+   "stall 10 (W)",
+   222,
+   321,
+   50
+  ],
+  [
+   "stall 10 (E)",
+   290,
+   321,
+   50
+  ],
+  [
+   "stall 11 (W)",
+   224,
+   346,
+   50
+  ],
+  [
+   "stall 11 (E)",
+   288,
+   346,
+   50
+  ],
+  [
+   "stall 12 (W)",
+   172,
+   300,
+   50
+  ],
+  [
+   "stall 12 (E)",
+   340,
+   300,
+   50
+  ],
+  [
+   "stall 13 (W)",
+   192,
+   306,
+   50
+  ],
+  [
+   "stall 13 (E)",
+   320,
+   306,
+   50
+  ],
+  [
+   "stall 14 (W)",
+   206,
+   329,
+   50
+  ],
+  [
+   "stall 14 (E)",
+   306,
+   329,
+   50
+  ],
+  [
+   "stall 15 (W)",
+   173,
+   351,
+   50
+  ],
+  [
+   "stall 15 (E)",
+   339,
+   351,
+   50
+  ],
+  [
+   "stall 16 (W)",
+   200,
+   362,
+   50
+  ],
+  [
+   "stall 16 (E)",
+   312,
+   362,
+   50
+  ],
+  [
+   "hatch stall N (W)",
+   189,
+   179,
+   50
+  ],
+  [
+   "hatch stall N (E)",
+   323,
+   179,
+   50
+  ],
+  [
+   "hatch stall S (W)",
+   189,
+   333,
+   50
+  ],
+  [
+   "hatch stall S (E)",
+   323,
+   333,
+   50
+  ],
+  [
+   "station floor 0 (W)",
+   255,
+   67,
+   49
+  ],
+  [
+   "station floor 0 (E)",
+   257,
+   67,
+   49
+  ],
+  [
+   "nativity stable (W)",
+   252,
+   115,
+   50
+  ],
+  [
+   "nativity stable (E)",
+   260,
+   115,
+   50
+  ],
+  [
+   "tavern floor 0 (W)",
+   255,
+   147,
+   50
+  ],
+  [
+   "tavern floor 0 (E)",
+   257,
+   147,
+   50
+  ],
+  [
+   "tavern floor 1 (W)",
+   255,
+   147,
+   45
+  ],
+  [
+   "tavern floor 1 (E)",
+   257,
+   147,
+   45
+  ],
+  [
+   "carousel (W)",
+   251,
+   292,
+   49
+  ],
+  [
+   "carousel (E)",
+   261,
+   292,
+   49
+  ],
+  [
+   "sleigh workshop floor 0 (W)",
+   255,
+   365,
+   50
+  ],
+  [
+   "sleigh workshop floor 0 (E)",
+   257,
+   365,
+   50
+  ],
+  [
+   "covered bridge (W)",
+   252,
+   432,
+   52
+  ],
+  [
+   "covered bridge (E)",
+   260,
+   432,
+   52
+  ],
+  [
+   "water mill floor 0 (W)",
+   150,
+   406,
+   54
+  ],
+  [
+   "water mill floor 0 (E)",
+   362,
+   406,
+   54
+  ],
+  [
+   "water mill floor 1 (W)",
+   150,
+   406,
+   49
+  ],
+  [
+   "water mill floor 1 (E)",
+   362,
+   406,
+   49
+  ],
+  [
+   "spur rail tunnel (W)",
+   160,
+   84,
+   49
+  ],
+  [
+   "spur rail tunnel (E)",
+   352,
+   84,
+   49
+  ],
+  [
+   "tunnel trunk W 0 (W)",
+   48,
+   196,
+   59
+  ],
+  [
+   "tunnel trunk W 0 (E)",
+   464,
+   196,
+   59
+  ],
+  [
+   "tunnel trunk W 1 (W)",
+   49,
+   255,
+   59
+  ],
+  [
+   "tunnel trunk W 1 (E)",
+   463,
+   255,
+   59
+  ],
+  [
+   "tunnel trunk W 2 (W)",
+   50,
+   314,
+   59
+  ],
+  [
+   "tunnel trunk W 2 (E)",
+   462,
+   314,
+   59
+  ],
+  [
+   "tunnel north lateral 0 (W)",
+   72,
+   166,
+   59
+  ],
+  [
+   "tunnel north lateral 0 (E)",
+   440,
+   166,
+   59
+  ],
+  [
+   "tunnel north lateral 1 (W)",
+   118,
+   167,
+   59
+  ],
+  [
+   "tunnel north lateral 1 (E)",
+   394,
+   167,
+   59
+  ],
+  [
+   "tunnel north lateral 2 (W)",
+   166,
+   167,
+   59
+  ],
+  [
+   "tunnel north lateral 2 (E)",
+   346,
+   167,
+   59
+  ],
+  [
+   "tunnel north lateral 3 (W)",
+   212,
+   168,
+   59
+  ],
+  [
+   "tunnel north lateral 3 (E)",
+   300,
+   168,
+   59
+  ],
+  [
+   "tunnel tavern link N-S 0 (W)",
+   234,
+   152,
+   59
+  ],
+  [
+   "tunnel tavern link N-S 0 (E)",
+   278,
+   152,
+   59
+  ],
+  [
+   "tunnel tavern link N-S 1 (W)",
+   236,
+   163,
+   59
+  ],
+  [
+   "tunnel tavern link N-S 1 (E)",
+   276,
+   163,
+   59
+  ],
+  [
+   "tunnel tavern link W-E 0 (W)",
+   236,
+   148,
+   59
+  ],
+  [
+   "tunnel tavern link W-E 0 (E)",
+   276,
+   148,
+   59
+  ],
+  [
+   "tunnel tavern link W-E 1 (W)",
+   239,
+   148,
+   59
+  ],
+  [
+   "tunnel tavern link W-E 1 (E)",
+   273,
+   148,
+   59
+  ],
+  [
+   "tunnel south lateral 0 (W)",
+   73,
+   342,
+   59
+  ],
+  [
+   "tunnel south lateral 0 (E)",
+   439,
+   342,
+   59
+  ],
+  [
+   "tunnel south lateral 1 (W)",
+   122,
+   343,
+   59
+  ],
+  [
+   "tunnel south lateral 1 (E)",
+   390,
+   343,
+   59
+  ],
+  [
+   "tunnel south lateral 2 (W)",
+   171,
+   344,
+   59
+  ],
+  [
+   "tunnel south lateral 2 (E)",
+   341,
+   344,
+   59
+  ],
+  [
+   "tunnel cellar link 0 (W)",
+   52,
+   300,
+   59
+  ],
+  [
+   "tunnel cellar link 0 (E)",
+   460,
+   300,
+   59
+  ],
+  [
+   "tunnel cellar link 1 (W)",
+   60,
+   302,
+   59
+  ],
+  [
+   "tunnel cellar link 1 (E)",
+   452,
+   302,
+   59
+  ],
+  [
+   "tunnel adit foot 0 (W)",
+   49,
+   208,
+   59
+  ],
+  [
+   "tunnel adit foot 0 (E)",
+   463,
+   208,
+   59
+  ],
+  [
+   "tunnel adit foot 1 (W)",
+   50,
+   210,
+   59
+  ],
+  [
+   "tunnel adit foot 1 (E)",
+   462,
+   210,
+   59
+  ],
+  [
+   "elf mine north (W)",
+   104,
+   167,
+   59
+  ],
+  [
+   "elf mine north (E)",
+   408,
+   167,
+   59
+  ],
+  [
+   "elf mine south (W)",
+   121,
+   343,
+   59
+  ],
+  [
+   "elf mine south (E)",
+   391,
+   343,
+   59
+  ],
+  [
+   "house cellar (W)",
+   68,
+   305,
+   59
+  ],
+  [
+   "house cellar (E)",
+   444,
+   305,
+   59
+  ],
+  [
+   "mine adit (W)",
+   54,
+   209,
+   57
+  ],
+  [
+   "mine adit (E)",
+   458,
+   209,
+   57
+  ],
+  [
+   "hatch stair N (W)",
+   189,
+   171,
+   56
+  ],
+  [
+   "hatch stair N (E)",
+   323,
+   171,
+   56
+  ],
+  [
+   "hatch stair S (W)",
+   189,
+   339,
+   56
+  ],
+  [
+   "hatch stair S (E)",
+   323,
+   339,
+   56
+  ],
+  [
+   "tavern cellar (W)",
+   246,
+   148,
+   59
+  ],
+  [
+   "tavern cellar (E)",
+   266,
+   148,
+   59
+  ],
+  [
+   "train carriage 0",
+   235,
+   84,
+   47
+  ],
+  [
+   "train carriage 1",
+   249,
+   84,
+   47
+  ],
+  [
+   "train carriage 2",
+   263,
+   84,
+   47
+  ],
+  [
+   "locomotive cab",
+   283,
+   84,
+   47
+  ]
+ ]
+}
