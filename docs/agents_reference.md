@@ -14,6 +14,13 @@ pointers in `AGENTS.md`. Read this when you need the catalogue, a past lesson, o
 * Dense foliage creates walk-out pockets (Backyard Babel). Check for trap cells, and keep foliage off spawn fronts.
 * A painted z = 63 sea or sky (Cloud Smash technique) gives a large visual payoff at zero gameplay cost.
 * Big maps are fine for the server, but watch the file size: Backyard Babel is 7.6 MB, about 3× normandie. Client FPS is untested.
+* **Floebreaker v1 (2026-11-20): the quality regression.** It was built outside the pipeline (a generic recreate skill
+  instead of `/recreate`, own primitives instead of `aosmap.kit`, no palette guide on a snow map, no baked light, no
+  planner/builder/runner split) and judged by gate numbers instead of by looking. The result was box huts on a white
+  sheet and bare spawn yards. Use `/new-map` / `/recreate` and the kit, and do the visual review in
+  `docs/craft_standard.md` §5 at every stage, not just the first.
+* Late gate-chasing degrades art: when a rule check fails at the end, fix it in the design, then re-review the
+  close-ups. Never patch a check with a quick wall or flat box.
 
 ## 9. Map catalogue
 
