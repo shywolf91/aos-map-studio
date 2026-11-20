@@ -24,3 +24,6 @@ maps/**/mat.npy
 refs/
 *.pdf
 opencode.jsonc
+
+# per-session analysis of third-party maps (originals must not be pushed)
+work/
