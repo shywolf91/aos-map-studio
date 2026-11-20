@@ -1,0 +1,108 @@
+{
+ "variant": "day",
+ "reader_ok": true,
+ "bytes": 2606464,
+ "roundtrip_identical": true,
+ "floating_components": 61,
+ "floating_voxels": 10103,
+ "expected_floating_pieces": 26,
+ "expected_floating_voxels": 10103,
+ "unexpected_floating_voxels": 0,
+ "babel": [
+  "Finding(level='info', rule='babel_spawn_zone', detail='base 118,256: spawn heights median z=59, min z=58, water columns=0', where=(118, 256))",
+  "Finding(level='info', rule='babel_spawn_zone', detail='base 394,256: spawn heights median z=59, min z=58, water columns=0', where=(394, 256))",
+  "Finding(level='info', rule='babel_spawn_symmetry', detail='spawn-zone heights equal under x-mirror: 1.00, under 180 rotation: 0.37', where=None)"
+ ],
+ "anchor_west_end_land_pct": 100.0,
+ "anchor_east_end_land_pct": 100.0,
+ "spawn_blue": {
+  "z_min": 58,
+  "z_max": 59,
+  "z_median": 59,
+  "water_cols": 0,
+  "relief": 1
+ },
+ "spawn_red": {
+  "z_min": 58,
+  "z_max": 59,
+  "z_median": 59,
+  "water_cols": 0,
+  "relief": 1
+ },
+ "babel_routes": {
+  "team1": {
+   "spawn_columns": 1681,
+   "reachable_nodes": 260510,
+   "platform_reachable_without_building": false,
+   "build_gap_voxels": 53.0,
+   "gap_from": [
+    241,
+    247,
+    53
+   ],
+   "gap_vertical": 53,
+   "gap_horizontal": 0.0
+  },
+  "team2": {
+   "spawn_columns": 1681,
+   "reachable_nodes": 260510,
+   "platform_reachable_without_building": false,
+   "build_gap_voxels": 53.0,
+   "gap_from": [
+    241,
+    247,
+    53
+   ],
+   "gap_vertical": 53,
+   "gap_horizontal": 0.0
+  }
+ },
+ "blue_to_red_spawn_cost": 237.4,
+ "red_to_blue_spawn_cost": 237.4,
+ "land_nodes": 204327,
+ "land_nodes_reachable_from_blue_pct": 92.4,
+ "ship_interiors": {
+  "hold_floor": {
+   "nodes": 2106,
+   "reachable_pct": 100.0
+  },
+  "main_deck": {
+   "nodes": 1894,
+   "reachable_pct": 100.0
+  },
+  "level_B": {
+   "nodes": 284,
+   "reachable_pct": 100.0
+  },
+  "bridge_C": {
+   "nodes": 342,
+   "reachable_pct": 94.2
+  },
+  "roof": {
+   "nodes": 466,
+   "reachable_pct": 100.0
+  }
+ },
+ "periphery_ring_reach_pct": null,
+ "periphery_nodes_reachable_pct": 93.9,
+ "highest_standable_z_within_60_of_platform": 46,
+ "spawn_exposure": {
+  "team1": {
+   "spawn_points": 441,
+   "exposed_pct": 35.4,
+   "mean_viewers_per_point": 3.0,
+   "median_depression_angle_deg": 33.5,
+   "median_floor_z": 59,
+   "median_horizontal_dist": 87.5
+  },
+  "team2": {
+   "spawn_points": 441,
+   "exposed_pct": 35.4,
+   "mean_viewers_per_point": 2.8,
+   "median_depression_angle_deg": 33.2,
+   "median_floor_z": 59,
+   "median_horizontal_dist": 88.5
+  }
+ },
+ "elapsed_s": 11.3
+}

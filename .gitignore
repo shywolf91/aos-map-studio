@@ -48,3 +48,4 @@ work/
 
 # per-map material grids (regenerate)
 maps/*/*_mat.npy
+maps/*/*.npy
