@@ -1,0 +1,107 @@
+{
+ "map_dir": "C:/Users/SHYWOL~1/AppData/Local/Temp/claude/8bb31348dbb83a80/4a4bf1e9-788c-4d95-8269-c8420e382828/scratchpad/probe_day",
+ "mode": "babel",
+ "seconds": 2.0,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Floebreaker (Day)",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "boundary_damage": "{'left': 28, 'right': 484, 'top': 28, 'bottom': 484, 'damage': 1}",
+   "heavens_color": [
+    158,
+    200,
+    238,
+    255
+   ],
+   "glow_enabled": true
+  },
+  "fog": [
+   202,
+   180,
+   200
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   59,
+   59
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "59": 217,
+     "58": 183
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     59.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "59": 217,
+     "58": 183
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     59.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "log_tail": [
+  "Loading config from 'C:\\\\Users\\\\SHYWOL~1\\\\AppData\\\\Local\\\\Temp\\\\aoskit_probe_x672wbyi\\\\config.toml'",
+  "2026-11-20T16:31:42-0500 [piqueserver.server#info] piqueserver started on Fri Nov 20 16:31:42 2026",
+  "2026-11-20T16:31:42-0500 [piqueserver.server#info] advancing to map 'floebreaker_day'",
+  "2026-11-20T16:31:42-0500 [piqueserver.server#warn] The following config items are not used:",
+  "2026-11-20T16:31:42-0500 [stdout#info] {'ban_publish': {'enabled': False}}",
+  "2026-11-20T16:31:42-0500 [piqueserver.server#info] Started server...",
+  "2026-11-20T16:31:42-0500 [piqueserver.server#info] Retrieving external IP from https://services.buildandshoot.com/getip to generate server identifier.",
+  "2026-11-20T16:31:43-0500 [piqueserver.server#info] starting ban vacuum with 0 bans",
+  "2026-11-20T16:31:43-0500 [piqueserver.map#info] Loading map 'Floebreaker (Day)'...",
+  "2026-11-20T16:31:43-0500 [piqueserver.map#info] Map loaded successfully. (took 0.25s)",
+  "2026-11-20T16:31:43-0500 [piqueserver.server#info] Server public ip address: 159.26.97.43:32999",
+  "2026-11-20T16:31:43-0500 [piqueserver.server#info] Public aos identifier: aos://727784095:32999",
+  "2026-11-20T16:31:43-0500 [piqueserver.server#info] Local aos identifier: aos://16777343:32999"
+ ],
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

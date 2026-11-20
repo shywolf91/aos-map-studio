@@ -1,0 +1,30 @@
+[
+ {
+  "map": "floebreaker_day",
+  "colours": 28600,
+  "hue_families_90": 3,
+  "top_noise": 1.15,
+  "coherence_4": 2.09,
+  "top_flat_pct": 38.9,
+  "ramp_step": 0.82,
+  "height_L_corr": 0.07,
+  "side_minus_top_L": -28.0,
+  "vert_detail": 1.55,
+  "relief_16": 15.7,
+  "land_cols": 184300
+ },
+ {
+  "map": "floebreaker_night",
+  "colours": 18283,
+  "hue_families_90": 1,
+  "top_noise": 0.73,
+  "coherence_4": 2.08,
+  "top_flat_pct": 43.5,
+  "ramp_step": 0.73,
+  "height_L_corr": 0.35,
+  "side_minus_top_L": -16.2,
+  "vert_detail": 1.56,
+  "relief_16": 16.4,
+  "land_cols": 183714
+ }
+]

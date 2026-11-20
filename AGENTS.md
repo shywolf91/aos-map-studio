@@ -18,6 +18,7 @@ section you need (each has a Contents list — grep the heading, then read that 
 
 | task | read |
 |---|---|
+| **any map build, any model (required)** | **`docs/craft_standard.md`** (2026-11-20): structure craft, spawns for every mode, the release gate; look at `docs/img/craft/structures_good_vs_bad.png` before building |
 | any map design/build | `docs/knowledge/project_memory.md` (newest entries win), then the matching sections of `docs/knowledge/aos_map_design_knowledge.md` (§7–§11 design, §14 questions, §15 checklist) |
 | Babel spawns / zones | `docs/babel_rotation_guide_notes.md`; `docs/babel_zone_study.md` (2026-11-13; four §9 targets adopted in §4, rest proposals) |
 | island brief | `docs/classic_island_style.md` (required, two island styles §4) |
@@ -77,6 +78,11 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 * `.txt` author is always `author = 'shywolf91 + AI'`.
 
 ### General
+* **Quality must not drop as a build goes on** (2026-11-20, after Floebreaker v1: "structures look horrible"). Benchmarks
+  are Silverpine Hunt, The Wicker King's Harvest and Death Swamp. Follow `docs/craft_standard.md`: main buildings are
+  real landmarks (pitched roof with ridge and eaves, 2+ volumes, textured walls, trim, base course, baked light, a
+  dressed yard). Every spawn, in every mode, is a designed place with cover, never a roof, pit or bare field. Build with
+  `aosmap.kit` only, and pass `python -m aosmap.kit.craft_checks` + the visual review before any hand-off.
 * **Ground is solid all the way down** (like remus/normandie), unless a tunnel or underground structure is intended.
   * The bottom layer is water, or whatever block is put there. Islands get seabed foundations.
   * No protection script is needed for this.
@@ -200,7 +206,9 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
    Put the numbers in a `SPEC` dict in the generator as the single source of truth.
 5. Graybox, then check: floating components, mirror, platform clearance, anchors, spawn squares, routes, descents, traps, build gaps, spawn exposure, building interiors (every room/floor reachable).
    Build with **`aosmap.kit`** and run `python -m aosmap.kit.babel_checks <dir>`, which does all of these (`docs/kit.md`; template `scenes/kit_example/`).
-6. Art pass in a separate module, then re-run every check.
+6. Art pass in a separate module, then re-run every check, including `python -m aosmap.kit.craft_checks <dir> --mode <mode>`
+   (building gates for every registered structure, spawn gates for every mode) and the visual review in
+   `docs/craft_standard.md` §5.
 7. Export `.vxl` + `.txt` (`aosmap.kit.build.export`). Cross-check with pyspades, load on a live piqueserver in the mode (`python -m aosmap.kit.probe <dir>`), render previews (`aosmap.kit.preview`).
 8. Write `docs/<map>_spec.md` with status, layout table, validation table, known limits and regenerate commands.
    Put the map, renders and `validation.json` in `maps/<map>_vN/`.

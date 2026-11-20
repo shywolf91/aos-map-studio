@@ -1,0 +1,44 @@
+{
+ "day": {
+  "bytes": 2606464,
+  "pyspades_parse_ok": true,
+  "generate_identical": true,
+  "get_z_platform_end_206_250": 59,
+  "map_load": {
+   "ok": true,
+   "name": "Floebreaker (Day)",
+   "author": "shywolf91 + AI",
+   "has_get_spawn_location": false,
+   "has_get_entity_location": false,
+   "extension_keys": [
+    "babel",
+    "boundary_damage",
+    "glow_enabled",
+    "glow_stored_colors",
+    "heavens_color"
+   ],
+   "data_get_z_200_260": 59
+  }
+ },
+ "night": {
+  "bytes": 2606932,
+  "pyspades_parse_ok": true,
+  "generate_identical": true,
+  "get_z_platform_end_206_250": 59,
+  "map_load": {
+   "ok": true,
+   "name": "Floebreaker (Night)",
+   "author": "shywolf91 + AI",
+   "has_get_spawn_location": false,
+   "has_get_entity_location": false,
+   "extension_keys": [
+    "babel",
+    "boundary_damage",
+    "glow_enabled",
+    "glow_stored_colors",
+    "heavens_color"
+   ],
+   "data_get_z_200_260": 59
+  }
+ }
+}

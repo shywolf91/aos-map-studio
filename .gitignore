@@ -42,3 +42,10 @@ map_collection/
 
 # per-map authored terrain heights written by kit builds (regenerate)
 maps/**/terrain_H.npy
+
+# per-session analysis of third-party maps (originals must not be pushed)
+work/
+
+# per-map material grids (regenerate)
+maps/*/*_mat.npy
+maps/*/*.npy
