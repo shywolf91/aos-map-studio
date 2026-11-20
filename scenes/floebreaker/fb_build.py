@@ -34,7 +34,7 @@ def build(decor_seed=1, layout_seed=7311, graybox=False):
     blue_rows = [(142, 206, 262, 5, 29, 8), (152, 250, 308, 5, 29, -8)]
     for i, (cx, y0, y1, th, zt, ln) in enumerate(blue_rows):
         P.fin_wall(W, H, cx, y0, y1, th, zt, ln, seed=100 + i)
-        P.fin_wall(W, H, 512 - cx - th + 1, y0, y1, th, zt, -ln, seed=100 + i)
+        P.fin_wall(W, H, 512 - cx - th + 1, y0, y1, th, zt, -ln, seed=100 + i, mirror=True)
     P.whale(W, H, 255.5, 318, 416)
     build_ship(W, H)
     # ---- research camps (4, mirrored) in the centre zone

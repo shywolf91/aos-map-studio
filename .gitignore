@@ -27,3 +27,6 @@ opencode.jsonc
 
 # per-session analysis of third-party maps (originals must not be pushed)
 work/
+
+# per-map material grids (regenerate)
+maps/*/*_mat.npy

@@ -120,6 +120,8 @@ def icebergs(W, H, land):
         r = int(rng.integers(13, 30)); h = int(rng.integers(16, 34))
         if dsea[cx, cy] < r * 0.9 + 6:
             continue
+        if (384 < cx < 472 and 456 < cy < 488) or (40 < cx < 128 and 456 < cy < 488):   # corner tag clear
+            continue
         if cx > 240 and abs(cy - 256) < 60:           # keep the sea off the platform axis clear
             continue
         if any(np.hypot(cx - o[0], cy - o[1]) < (r + o[2]) * 0.85 for o in out):

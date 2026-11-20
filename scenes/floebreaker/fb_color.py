@@ -71,15 +71,18 @@ def colorize(W, night=False):
     ic = ic + (nA[:, None] * np.array([-10, 14, 6]))
     ic = np.where(top[:, None], ic * np.array([1.0, 1.0, 1.0]), ic * np.array([0.92, 0.96, 1.0]))
     sel = mid == MAT['ice']; col[sel] = ic[sel]
-    bi = lerp((60, 126, 196), (96, 176, 222), np.clip(t + 0.15 * nB, 0, 1)) + (nA[:, None] * np.array([-6, 12, 4]))
+    topz = np.argmax(solid[:, :, :63], axis=2)[xs, ys]
+    dtop = np.clip(zs - topz, 0, 18) / 18.0
+    bi = lerp((150, 208, 232), (58, 122, 194), np.clip(dtop * 0.9 + 0.12 * nB, 0, 1)) + (nA[:, None] * np.array([-8, 14, 4]))
+    bi = np.where(top[:, None], bi * 1.05, bi)
     sel = mid == MAT['blueice']; col[sel] = bi[sel]
     rk = lerp((92, 96, 110), (122, 112, 104), np.clip(t, 0, 1)) * (1 + 0.04 * nB)[:, None]
     rk = np.where((top & (nC > 0.15))[:, None], np.array([140, 128, 98]) * (1 + 0.05 * nB)[:, None], rk)
     sel = mid == MAT['rock']; col[sel] = rk[sel]
     # icebergs: three facet tones, lighter toward the tips (smaller z)
     tip = np.clip((50 - zs) / 40.0, 0, 1)
-    for name, base, hi in (('berg_a', (140, 204, 236), (206, 238, 248)), ('berg_b', (96, 164, 218), (170, 214, 240)),
-                           ('berg_c', (176, 226, 242), (222, 244, 250))):
+    for name, base, hi in (('berg_a', (130, 196, 232), (190, 226, 242)), ('berg_b', (92, 160, 216), (156, 204, 236)),
+                           ('berg_c', (164, 216, 238), (204, 236, 248))):
         c = lerp(base, hi, tip) + nA[:, None] * np.array([-6, 6, 4])
         sel = mid == MAT[name]; col[sel] = c[sel]
     for name, rgb in C.items():
@@ -96,15 +99,18 @@ def colorize(W, night=False):
     cloud_under = (mid == MAT['cloud']) & ~top
     col[cloud_under] = C['cloud_s']
     # snow cap: keep max channel <= 212
-    for name in ('snow', 'pack', 'ice', 'berg_c'):
+    for name in ('snow', 'pack', 'ice', 'berg_a', 'berg_b', 'berg_c'):
         sel = mid == MAT[name]
         mx = col[sel].max(axis=1)
         k = np.minimum(1.0, 212.0 / np.maximum(mx, 1))
         col[sel] = col[sel] * k[:, None]
+    sel = mid == MAT['blueice']
+    k = np.minimum(1.0, 224.0 / np.maximum(col[sel].max(axis=1), 1))
+    col[sel] = col[sel] * k[:, None]
     # night grade on everything except sky decor and glow sources
     if night:
         gradable = ~np.isin(mid, [MAT[k] for k in SKY]) & ~np.isin(mid, [MAT[k] for k in GLOW])
-        g = col * np.array([0.40, 0.48, 0.68]) + np.array([10, 12, 30])
+        g = col * np.array([0.34, 0.42, 0.64]) + np.array([8, 10, 28])
         col[gradable] = g[gradable]
     out = np.clip(np.rint(col), 0, 255).astype(np.int64)
     # glow sources: exact palette colours
@@ -125,7 +131,7 @@ def colorize(W, night=False):
     rip = fbm(W.seed + 31, (30, 14, 6), (1, .6, .3), fold=False)[..., None]
     sea = sea * (1 + 0.06 * rip)
     if night:
-        sea = sea * np.array([0.40, 0.48, 0.68]) + np.array([10, 12, 30])
+        sea = sea * np.array([0.50, 0.58, 0.78]) + np.array([10, 14, 34])
     sea = np.clip(sea, 0, 255).astype(np.uint32)
     # corner tag painted on the seabed plane (map name only)
     tag = text_mask(['Floebreaker'])

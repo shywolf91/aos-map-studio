@@ -283,20 +283,24 @@ def fins_for_spawn(W, H, side, rows):
         fin_wall(W, H, x, y0, y1, thick, zt, lean, seed=100 + i + (7 if side > 0 else 0))
 
 
-def fin_wall(W, H, cx, y0, y1, thick, zt, lean, seed=0):
+def fin_wall(W, H, cx, y0, y1, thick, zt, lean, seed=0, mirror=False):
+    """Glacier fin: ragged crest, wandering thickness, buttresses on both flanks; every column grounded."""
     rng = np.random.default_rng(seed)
     n = y1 - y0 + 1
     ys = np.arange(y0, y1 + 1)
     t = (ys - y0) / max(n - 1, 1)
     prof = np.clip(np.sin(np.pi * t) ** 0.45, 0, 1)
-    jag = ndi.gaussian_filter(rng.standard_normal(n), 1.2) * 2.4
+    jag = ndi.gaussian_filter(rng.standard_normal(n), 1.0) * 4.2
+    wob = np.round(ndi.gaussian_filter(rng.standard_normal(n), 4) * 2.2).astype(int)
+    if mirror:
+        wob = -wob
+    butt = {int(b): int(rng.integers(0, 2)) for b in rng.integers(4, n - 4, size=max(n // 12, 3))}
     for i, y in enumerate(ys):
-        off = int(round(lean * (t[i] - 0.5)))
-        for u in range(thick):
+        off = int(round(lean * (t[i] - 0.5))) + int(wob[i])
+        for u in range(-1 if i in butt else 0, thick + (1 if i in butt else 0)):
             x = cx + off + u
             g = int(H[x, y])
-            top = int(round(g - (g - zt) * prof[i] + jag[i] * prof[i]))
+            top = int(round(g - (g - zt) * prof[i] * (0.7 if (u < 0 or u >= thick) else 1.0) + jag[i] * prof[i]))
             top = min(top, g - 3)
-            sidew = u in (0, thick - 1)
             W.m[x, y, top:g] = MAT['blueice']
-            W.m[x, y, top] = MAT['snow'] if not sidew else MAT['blueice']
+            W.m[x, y, top] = MAT['snow'] if (u in (1, 2) and (i % 5)) else MAT['blueice']
