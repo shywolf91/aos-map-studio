@@ -13,6 +13,10 @@ Read-only: change nothing in the repo.
    compare 20,000 sampled voxels (solid + colour).
 3. Run `python -m aosmap.kit.babel_checks <dir> --out <scratch>/validation.json` (Babel maps). Write the
    report to a scratch directory, never over the folder's own `validation.json`.
+   Also run `python -m aosmap.kit.craft_checks <dir> --mode <mode> --out <scratch>/craft.json` (every mode:
+   registered structures against the craft gates, every team's spawn set against the spawn gates) and
+   `python tools/palette_audit.py <vxl>`. Render close-ups of every `main` structure and each spawn for the
+   visual review in `docs/craft_standard.md` §5.
 4. `.txt` checks: it loads, only real keys, author `shywolf91 + AI`, no spawn hooks, fog channels ~150+.
 5. Live probe: `python -m aosmap.kit.probe <dir> --mode babel` (piqueserver 1.4.2 in a temp config).
 6. Print one pass/fail table, the differences against the folder's `validation.json`, and the highest

@@ -4,7 +4,7 @@ argument-hint: <file.vxl>
 ---
 Map to recreate: $ARGUMENTS
 
-Same pipeline as /new-map (sync, branch `map/<new-slug>`, questions, concepts, graybox, art pass, export,
+Use this command for every `[recreate]`, not a generic recreate skill (Floebreaker lesson, 2026-11-20). Same pipeline as /new-map (sync, branch `map/<new-slug>`, questions, concepts, graybox, art pass, export,
 validate, probe, spec, PR), with the `[recreate]` flow from `docs/remus_recreate_report.md` in front:
 
 1. Sync and branch as in /new-map step 1.

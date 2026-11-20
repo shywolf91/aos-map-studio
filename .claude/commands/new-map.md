@@ -23,17 +23,24 @@ Steps:
 
 1. Sync and branch. In the main checkout: `git checkout main && git pull`, then `git checkout -b map/<slug>`.
    In a worktree (main is held by the main checkout): `git fetch origin && git checkout -b map/<slug> origin/main`.
-2. Read AGENTS.md §4, `docs/knowledge/project_memory.md` (newest entries win) and knowledge base §14.
+2. Read AGENTS.md §4, **`docs/craft_standard.md`** (structures, spawns for every mode, release gate; open
+   `docs/img/craft/structures_good_vs_bad.png`), `docs/knowledge/project_memory.md` (newest entries win) and
+   knowledge base §14. Snow, winter or any palette-led theme: `docs/colour_palette_guide.md` too.
    Ask my standard questions (mode/script, Babel type, full map or island, water, extras: underground,
    sky decor, glow, heavens_color, fog, corner tag, must-have objects). **Stop until I answer.**
 3. Offer three distinct concepts (identity, Babel style, spawn floor z, target build gaps, art and play risk)
    and recommend one, unless I already gave a concept. **Stop for my pick.**
 4. Log my answers and pick in `docs/knowledge/project_memory.md` (`- [stated] … (date)`).
 5. Put every number in a SPEC dict in `scenes/<slug>/`. Build the graybox with `aosmap.kit`
-   (`canvas`, `structures`, `symmetry`). Run `python -m aosmap.kit.babel_checks` and fix failures.
-   Commit "graybox" and push.
-6. Art pass in its own module (`aosmap.kit.color`, `veg`, `tag`, `sky`). The art pass must not change
-   gameplay geometry. Re-run every check. Commit "art pass" and push.
+   (`canvas`, `structures`, `symmetry`). Register every structure (`build.json` `structures`: name, box, role).
+   Run `python -m aosmap.kit.babel_checks` (Babel) and `python -m aosmap.kit.craft_checks <dir> --mode <mode>`
+   (spawn gates for every mode) and fix failures. Commit "graybox" and push.
+6. Art pass in its own module (`aosmap.kit.palette` ramps, `color.lighting`, `veg`, `tag`, `sky`). The art pass
+   must not change gameplay geometry. Re-run every check, including `craft_checks` (building gates) and
+   `tools/palette_audit.py`. Then the **visual review** (`docs/craft_standard.md` §5): close-ups of every main
+   building and both spawns next to the exemplar sheet, one verdict line each. Rework anything plainer than the
+   exemplars before committing "art pass". The same review repeats at release; quality must not drop as the build
+   goes on.
 7. Export `.vxl` + `.txt` and `build.json` (`aosmap.kit.build`). Cross-check with our reader and pyspades.
    Run the live server probe (`python -m aosmap.kit.probe`) in the target mode. Render previews and label
    them numpy previews.
