@@ -26,6 +26,9 @@ Owner: shywolf91. Last consolidated 2026-11-09 (moved from the claude.ai Project
    * `docs/under_the_tree_spec.md` and `docs/bloomhop_kingdom_spec.md` are the newest Babel examples (2026-11-09).
    * `docs/remus_recreate_report.md` is the template for a `[recreate]` job.
 
+8. `docs/colour_palette_guide.md` before any palette, fog or snow work (2026-11-19): snow rules, ramps, fog choice,
+   winter audit, `aosmap/palette.py` + `tools/palette_audit.py`.
+
 `docs/knowledge/aos_map_designer_agent_prompt.md` is a self-contained system prompt for other AIs.
 `docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md` and `docs/heightmap_colourmap_tutorials.md` are
 deeper background. Read them when you touch those areas.
@@ -101,6 +104,9 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 * **Vegetation:** non-deterministic, varied colours with smooth gradients, **three random details per plant**,
   groves not even scatter, striking and intricate.
 * Players hate maps that are **too white** (snow: cap max channel ~212) and **too black** (floors luma ≥ 40).
+  * Snow field = light grey-blue/cream at luma ~165–185, never white; brightest crest short and broken on exposed lips
+    (≤ ~5 % of the top surface); no isolated bright voxels. Run `tools/palette_audit.py` on every export.
+    (`docs/colour_palette_guide.md` §4 — guide-derived, not an owner rule yet.)
 * Optional extras he often picks: glow blocks (format in knowledge base §11.4), a floating sky-decor layer, an
   underground layer, `heavens_color`. Ask; don't assume.
 
