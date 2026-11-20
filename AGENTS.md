@@ -25,6 +25,7 @@ section you need (each has a Contents list — grep the heading, then read that 
 | format / runtime / toolchain | `docs/vxl_and_runtime_reference.md`, `docs/kit.md`; deeper: `docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md`, `docs/heightmap_colourmap_tutorials.md` |
 | example of a finished map | the spec of the newest similar map (catalogue: `docs/agents_reference.md` §9; newest Babel examples `docs/under_the_tree_spec.md`, `docs/bloomhop_kingdom_spec.md`) |
 | original brief / per-mode prompts | `docs/project_brief/` |
+| palette, fog, snow or winter colours | `docs/colour_palette_guide.md` (2026-11-19): snow rules, ramps, fog choice, winter audit; tools `aosmap/kit/palette.py`, `tools/palette_audit.py` |
 | git, catalogue, lessons, Claude Code tooling | `docs/agents_reference.md` |
 | git question, small fix, doc edit | nothing beyond this file |
 
@@ -102,6 +103,9 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 * **Vegetation:** non-deterministic, varied colours with smooth gradients, **three random details per plant**,
   groves not even scatter, striking and intricate.
 * Players hate maps that are **too white** (snow: cap max channel ~212) and **too black** (floors luma ≥ 40).
+  * Snow field = light grey-blue/cream at luma ~165–185, never white; brightest crest short and broken on exposed lips
+    (≤ ~5 % of the top surface); no isolated bright voxels. Run `tools/palette_audit.py` on every export.
+    (`docs/colour_palette_guide.md` §4 — guide-derived, not an owner rule yet.)
 * Optional extras he often picks: glow blocks (format in knowledge base §11.4), a floating sky-decor layer, an
   underground layer, `heavens_color`. Ask; don't assume.
 
