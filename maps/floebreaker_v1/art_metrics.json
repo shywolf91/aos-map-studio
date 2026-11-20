@@ -1,30 +1,30 @@
 [
  {
   "map": "floebreaker_day",
-  "colours": 5869,
+  "colours": 4829,
   "hue_families_90": 3,
-  "top_noise": 0.2,
-  "coherence_4": 2.39,
-  "top_flat_pct": 82.2,
+  "top_noise": 0.18,
+  "coherence_4": 2.4,
+  "top_flat_pct": 83.2,
   "ramp_step": 0.26,
-  "height_L_corr": -0.17,
+  "height_L_corr": -0.16,
   "side_minus_top_L": -10.2,
-  "vert_detail": 1.41,
-  "relief_16": 13.2,
-  "land_cols": 178527
+  "vert_detail": 1.43,
+  "relief_16": 13.0,
+  "land_cols": 174279
  },
  {
   "map": "floebreaker_night",
-  "colours": 4371,
+  "colours": 3367,
   "hue_families_90": 1,
-  "top_noise": 0.13,
-  "coherence_4": 2.49,
-  "top_flat_pct": 89.7,
-  "ramp_step": 0.34,
-  "height_L_corr": 0.34,
-  "side_minus_top_L": -3.2,
-  "vert_detail": 1.43,
-  "relief_16": 13.8,
-  "land_cols": 177632
+  "top_noise": 0.11,
+  "coherence_4": 2.46,
+  "top_flat_pct": 90.9,
+  "ramp_step": 0.28,
+  "height_L_corr": 0.36,
+  "side_minus_top_L": -3.0,
+  "vert_detail": 1.45,
+  "relief_16": 14.1,
+  "land_cols": 173198
  }
 ]

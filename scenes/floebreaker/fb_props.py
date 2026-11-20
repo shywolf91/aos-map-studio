@@ -52,6 +52,18 @@ def hut(W, H, x0, y0, w, d, door='S', mat='dwood', roof='plank', zf=None):
         W.carve(x1, x1, cy, cy + 1, zf - 3, zf - 1)
     else:
         W.carve(x0, x0, cy, cy + 1, zf - 3, zf - 1)
+    # door ramp: bring the ground in front of the door up to the sill in 1-voxel steps
+    dx, dy = {'S': (0, 1), 'N': (0, -1), 'E': (1, 0), 'W': (-1, 0)}[door]
+    bx0, by0 = {'S': (cx, y1), 'N': (cx, y0), 'E': (x1, cy), 'W': (x0, cy)}[door]
+    for k in range(1, 4):
+        level = zf + (k - 1)
+        for wdt in (0, 1):
+            xx = bx0 + dx * k + (wdt if dx == 0 else 0); yy = by0 + dy * k + (wdt if dy == 0 else 0)
+            h0 = int(H[xx, yy])
+            if h0 > level and h0 < 62:
+                W.m[xx, yy, level:h0] = MAT['pack']
+                W.m[xx, yy, level] = MAT['snow']
+                H[xx, yy] = level
     # windows (2 wide x 2 high) on the walls that are not the door wall
     if door not in ('N',):
         W.carve(x0 + 1, x0 + 2, y0, y0, zf - 3, zf - 2)
@@ -59,12 +71,16 @@ def hut(W, H, x0, y0, w, d, door='S', mat='dwood', roof='plank', zf=None):
         W.carve(x1 - 2, x1 - 1, y1, y1, zf - 3, zf - 2)
     W.carve(x0, x0, y0 + 1, y0 + 2, zf - 3, zf - 2) if door != 'W' else None
     W.carve(x1, x1, y1 - 2, y1 - 1, zf - 3, zf - 2) if door != 'E' else None
-    # furniture: bunk, table, stove, lamp
-    W.box(x0 + 1, x0 + 2, y0 + 1, y0 + min(4, d - 2), zf - 1, zf - 1, 'plank')
-    W.box(x1 - 2, x1 - 1, y1 - 3, y1 - 2, zf - 2, zf - 2, 'dwood')
-    W.box(x1 - 2, x1 - 2, y1 - 3, y1 - 3, zf - 1, zf - 1, 'dwood')
-    W.box(x1 - 1, x1 - 1, y0 + 1, y0 + 1, zf - 2, zf - 1, 'dsteel')
+    # furniture (never on the door row): bunk in the NW corner, table + stove away from the door
+    W.box(x0 + 1, x0 + 2, y0 + 1, y0 + 2, zf - 1, zf - 1, 'plank')
+    if door in ('E', 'W'):
+        W.box(x0 + 3, x0 + 4, y1 - 2, y1 - 1, zf - 2, zf - 2, 'dwood'); W.box(x0 + 3, x0 + 3, y1 - 2, y1 - 2, zf - 1, zf - 1, 'dwood')
+        W.box(x0 + 5, x0 + 5, y0 + 1, y0 + 1, zf - 2, zf - 1, 'dsteel')
+    else:
+        W.box(x1 - 2, x1 - 1, cy - 1, cy, zf - 2, zf - 2, 'dwood'); W.box(x1 - 2, x1 - 2, cy - 1, cy - 1, zf - 1, zf - 1, 'dwood')
+        W.box(x1 - 1, x1 - 1, y0 + 1 if door == 'S' else y1 - 1, y0 + 1 if door == 'S' else y1 - 1, zf - 2, zf - 1, 'dsteel')
     W.pt(cx, cy, zc + 1, 'lamp')
+    W.interiors.append(('hut', cx, cy + 1, zf))
     return zf
 
 
@@ -89,8 +105,8 @@ def tent(W, H, x0, y0, length=8, half=3, door='S', mat='canvas_o', zf=None):
         z = zf - 1 - h
         for x in range(cx - hw, cx + hw + 1):
             W.pt(x, y1 if door == 'S' else y0, z, mat)
-    W.pt(cx, y0 + length // 2, zf - 3, 'lamp')
-    W.box(cx - 1, cx, y0 + 2, y0 + 3, zf - 1, zf - 1, 'canvas_b')
+    W.pt(cx, y0 + length // 2, zf - 1 - half - 1, 'lamp')            # lantern on the ridge (keeps the inside walkable)
+    W.box(cx - 1, cx, y0 + 2, y0 + 3, zf, zf, 'canvas_b')              # bedroll mat flush with the floor
     return zf
 
 
@@ -146,6 +162,7 @@ def weather_tower(W, H, x0, y0):
     W.box(x0 + 3, x0 + 5, y0 + 3, y0 + 5, zf - 24, zf - 23, 'orange')   # anemometer head
     W.pt(x0 + 4, y0 + 4, zf - 25, 'lamp')
     W.pt(x0 + 4, y0 + 2, zf - 5, 'lamp'); W.pt(x0 + 4, y0 + 6, zf - 11, 'lamp')
+    W.interiors.append(('tower_ground', x0 + 6, y0 + 3, zf)); W.interiors.append(('tower_upper', x0 + 6, y0 + 3, zf - 6))
     return zf
 
 

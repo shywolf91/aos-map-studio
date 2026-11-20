@@ -56,7 +56,18 @@ def build_variant(variant, decor_seed, out, sky=True):
     info = {'variant': variant, 'sha256': hashlib.sha256(data).hexdigest(), 'bytes': len(data),
             'decor_seed': decor_seed, 'layout_seed': W.seed, 'tag_rect': tag, 'glow_sources': len(glow),
             'floating_pieces': len(W.floating), 'build_s': round(time.time() - t0, 1), **W.stats}
-    json.dump({**info, 'floating': W.floating}, open(os.path.join(out, fname + '_build.json'), 'w'), indent=1)
+    ship_pts = [('ship_hold', 252, 150, 59), ('ship_deck_A', 252, 146, 49), ('ship_level_B', 252, 146, 43),
+                ('ship_bridge', 252, 146, 37), ('ship_roof', 252, 136, 31)]
+    boxes = [(226, 286, 36, 192), (226, 286, 296, 432), (tag[0] - 4, tag[2] + 4, tag[1] - 4, tag[3] + 4)]         + [tuple(b) for b in W.marks['penguin_boxes']] + [(p['x'][0], p['x'][1], p['y'][0], p['y'][1]) for p in W.floating]
+    json.dump({**info, 'floating': W.floating,
+               'sky_objects': [{'name': p['name'], 'x': list(p['x']), 'y': list(p['y']), 'z': list(p['z']),
+                                'voxels': p['voxels']} for p in W.floating],
+               'cosmetic_asymmetric_boxes': [list(map(int, b)) for b in boxes],
+               'interiors': [list(i) for i in W.interiors] + [list(i) for i in ship_pts],
+               'tag_rect': list(tag), 'axis': 'x512',
+               'front_exempt_boxes': [[140, 158, 204, 310], [354, 372, 204, 310]]},
+              open(os.path.join(out, fname + '_build.json'), 'w'), indent=1, default=int)
+    np.save(os.path.join(out, fname + '_terrain_H.npy'), W.H)
     print(json.dumps(info))
     return W
 

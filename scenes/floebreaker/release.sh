@@ -7,5 +7,6 @@ VENV_PY=${VENV_PY:-"D:/Ace of Spades/Aos_Map/venv/Scripts/python.exe"}
 python scenes/floebreaker/fb_main.py $R ${1:+--seed $1}
 for v in day night; do python scenes/floebreaker/fb_float.py $R $v; python -I scenes/floebreaker/fb_check.py $R $v --exposure >/dev/null; done
 "$VENV_PY" scenes/floebreaker/fb_pyspades.py $R >/dev/null
+"$VENV_PY" scenes/floebreaker/fb_rules.py $R | grep -E "FAIL|=====|^ +[a-z]" || true
 python scenes/floebreaker/fb_render.py $R $R/previews
 python -I tools/art_metrics.py $R/art_metrics.json $R/floebreaker_day.vxl $R/floebreaker_night.vxl

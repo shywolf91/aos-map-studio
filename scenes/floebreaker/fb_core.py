@@ -39,6 +39,7 @@ class World:
         self.glow = []                                    # (x, y, z) glow source voxels (colour from material)
         self.floating = []                                # expected-floating bboxes (sky decor)
         self.marks = {}
+        self.interiors = []                               # (name, x, y, floor z) for the interiors reachability check
         self.stats = {}
 
     # ---- primitives

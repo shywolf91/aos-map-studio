@@ -1,7 +1,7 @@
 {
  "variant": "day",
  "reader_ok": true,
- "bytes": 2434728,
+ "bytes": 2438060,
  "roundtrip_identical": true,
  "floating_components": 46,
  "floating_voxels": 9739,
@@ -32,35 +32,35 @@
  "babel_routes": {
   "team1": {
    "spawn_columns": 1681,
-   "reachable_nodes": 258581,
+   "reachable_nodes": 255392,
    "platform_reachable_without_building": false,
-   "build_gap_voxels": 55.1,
+   "build_gap_voxels": 53.0,
    "gap_from": [
-    191,
-    212,
-    45
+    241,
+    247,
+    53
    ],
-   "gap_vertical": 45,
-   "gap_horizontal": 31.8
+   "gap_vertical": 53,
+   "gap_horizontal": 0.0
   },
   "team2": {
    "spawn_columns": 1681,
-   "reachable_nodes": 258581,
+   "reachable_nodes": 255392,
    "platform_reachable_without_building": false,
-   "build_gap_voxels": 55.1,
+   "build_gap_voxels": 53.0,
    "gap_from": [
-    191,
-    212,
-    45
+    241,
+    247,
+    53
    ],
-   "gap_vertical": 45,
-   "gap_horizontal": 31.8
+   "gap_vertical": 53,
+   "gap_horizontal": 0.0
   }
  },
- "blue_to_red_spawn_cost": 260.7,
- "red_to_blue_spawn_cost": 260.7,
- "land_nodes": 186181,
- "land_nodes_reachable_from_blue_pct": 96.3,
+ "blue_to_red_spawn_cost": 276.0,
+ "red_to_blue_spawn_cost": 276.0,
+ "land_nodes": 181974,
+ "land_nodes_reachable_from_blue_pct": 95.7,
  "ship_interiors": {
   "hold_floor": {
    "nodes": 2106,

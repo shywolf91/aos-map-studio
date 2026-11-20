@@ -116,7 +116,7 @@ def icebergs(W, H, land):
     tries = 0
     while len(out) < 26 and tries < 4000:
         tries += 1
-        cx = int(rng.integers(24, 256)); cy = int(rng.integers(24, 488))
+        cx = int(rng.integers(24, 236)); cy = int(rng.integers(24, 488))
         r = int(rng.integers(13, 30)); h = int(rng.integers(16, 34))
         if dsea[cx, cy] < r * 0.9 + 6:
             continue
@@ -127,14 +127,9 @@ def icebergs(W, H, land):
         if any(np.hypot(cx - o[0], cy - o[1]) < (r + o[2]) * 0.85 for o in out):
             continue
         out.append((cx, cy, r, h))
-    # pair every berg across the mirror, add a few singles on the middle seam
-    pairs = []
     for cx, cy, r, h in out:
-        pairs.append((cx, cy, r, h))
-        pairs.append((512 - cx, cy, r, h))
-    for cx, cy, r, h in pairs:
         berg(W, cx, cy, r, h)
-    return pairs
+    return out
 
 
 def berg(W, cx, cy, r, h, tilt=0.0):

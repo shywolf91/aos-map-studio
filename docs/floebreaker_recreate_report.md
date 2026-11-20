@@ -47,7 +47,8 @@ Depth **Reimagine**; mode **Babel**; two versions, **Day and Night**; name left 
 | solid or unexplored ship | **fixed**: all floors reachable (graph model) |
 | sparse props, flat ice | **improved**: ~7 object families, caves, ponds, crevasses |
 | unknown mode and metadata | **resolved by choice**: Babel, new `.txt` |
-| spawn exposure | **improved, not eliminated**: see spec, known limits |
+| spawn exposure | **fixed with a trade-off**: 3.8 viewers, 35–37 % hidden, via two declared tall fins; see spec, known limits |
+| bare spawn-to-tower front (2026-11-13 rules) | **fixed**: dressed front, backdrop, low objects under the platform; all four zone rules pass |
 
 ## Credit
 Based on `arctic_icebreaker.vxl` by its original, unidentified author. The `.txt` description says so; the `author` field stays `'shywolf91 + AI'`.
