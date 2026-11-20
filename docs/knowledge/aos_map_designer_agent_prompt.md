@@ -255,5 +255,8 @@ per run and record it.
 * Placing scenery before mirroring (it gets duplicated); forgetting column 256 after mirroring.
 * Diagonal trunk/branch contact; carving doors under roof beams (floating vigas) — re-check floating after carves.
 * Per-voxel colour noise (shimmer, "too noisy"); hard material edges; white snow; black nights; fog matching the terrain.
+* Snow done right: a light grey-blue field (luma ~165–185, max channel ≤ 212), darker connected trough patches along
+  tracks, a short broken crest on exposed lips only, rock/timber/treeline as dark anchors; hue-shifted ramps (warm or
+  cool light, chroma falling at both ends); fog in a hue the palette lacks, low chroma, not within 30° of a team hue.
 * Arena gates 3 thick; Push palettes with pure team hues; `on_block_destroy` returning `None`; `hash()` seeds.
 * Calling a preview a client capture, or a graph route check proof of playability.

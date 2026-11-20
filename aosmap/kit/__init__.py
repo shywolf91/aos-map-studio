@@ -8,6 +8,7 @@ It merges the helpers that every per-map generator in scenes/ used to copy:
     structures  stairs, spiral stairs, doors, windows, enterable buildings    (hc_build, bloomhop builds, generate.py)
     symmetry    mirror, floating components, orphan cleanup, trap fill        (gf_build, ds_core, bloomhop main, ...)
     color       mix/shade/ramp, baked light + AO, glow bake, team recolour    (bloomhop main, *_color.py)
+    palette     OKLab ramps, snow under the cap, starter palettes, fog checks (2026-11-19, docs/colour_palette_guide.md)
     veg         trees with three random details, groves, saved OS seed        (sph_trees, bloomhop veg)
     tag         corner name tag on the ground                                 (paint_tag / corner_tag copies)
     sky         opt-in floating sky decor with the placement rules           (wkh_sky, sph_sky, bloomhop sky_decor)
