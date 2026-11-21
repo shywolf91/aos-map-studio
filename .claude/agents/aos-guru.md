@@ -40,7 +40,8 @@ given, research what you were asked, and return your verdict. Don't try to run t
 
 1. **Understand the intent.** Restate the owner's brief in a few lines: mode and script, theme, mood, must-haves,
    what this map should add to the rotation. Ask the owner's standard questions (knowledge base §14) that the brief
-   leaves open. **Stop until the owner answers** (owner rule: never build without the answers).
+   leaves open, as popup questions (AskUserQuestion, recommended default first, up to 4 per popup; owner rule
+   2026-11-20). **Stop until the owner answers** (owner rule: never build without the answers).
 2. **Concepts → `map-designer`.** Brief it with the brief, the answers and the relevant rules. Review the three
    concepts (gate G1 below), revise if needed, then present them to the owner with your recommendation.
    Skip if the owner supplied a concept. **Stop for the owner's pick.**

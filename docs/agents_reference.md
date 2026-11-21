@@ -63,6 +63,7 @@ pointers in `AGENTS.md`. Read this when you need the catalogue, a past lesson, o
 | Floebreaker (Day / Night) ([recreate] of arctic_icebreaker) | ice-floe ground Babel | v1.0 | server-loaded (live bots on a dev build of day); not client-inspected | `scenes/floebreaker/`, spec `docs/floebreaker_spec.md`, report `docs/floebreaker_recreate_report.md` |
 | Floebreaker v2 (Day / Night) | ice-floe ground Babel, rebuilt to the craft standard | v2.0 | server-loaded (live probe both versions); not client-inspected | `scenes/floebreaker_v2/`, spec `docs/floebreaker_v2_spec.md` |
 | Frozen Icebreaker | polar-night pack-ice Babel (inspired by arctic_icebreaker; beset icebreaker, drift station, blue-ice tunnels) | v1.0 | server-loaded (live probe); not client-inspected | `scenes/frozen_icebreaker/`, spec `docs/frozen_icebreaker_spec.md` |
+| Hrafnfjord Yule | polar-night Viking-age Yule Babel + stock CTF (frozen fjord, ice bay, Raven Gate, stave churches, Sleipnir) | v1.0 | server-loaded (live probe, babel); not client-inspected | `scenes/nordic-christmas/`, spec `docs/hrafnfjord_yule_spec.md` |
 
 Maps marked "zip from its chat" were built in Claude's sandbox. Their generator code is in the zip delivered in that
 chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` and `maps/<map>_vN/` to bring them into the repo (see §11 below).

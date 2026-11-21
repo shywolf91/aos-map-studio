@@ -73,6 +73,7 @@ These come from the owner's decisions and playtest feedback, 2026-10-12 → 2026
 
 ### Process
 * **Always ask questions before building a map** — never build without the answers (question list: knowledge base §14).
+  Ask the standard questions as **popup questions** (AskUserQuestion, recommended default first, up to 4 per popup) (2026-11-20).
   Then offer three concepts unless he supplied one.
 * `[recreate]` tag + attached `.vxl` = analyse that map and redesign it with new life through the normal pipeline
   (example: `docs/remus_recreate_report.md`). Edits of community maps otherwise stay "relatively the same" and credit

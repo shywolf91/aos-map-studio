@@ -10,6 +10,7 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | Map | Chat | Imported into repo? |
 |---|---|---|
 | Frozen Icebreaker | built in Claude Code (2026-11-20), branch `map/frozen-icebreaker` | yes (`scenes/frozen_icebreaker/`, `maps/frozen_icebreaker_v1/`) |
+| Hrafnfjord Yule | built in Claude Code (2026-11-20/21), branch `map/nordic-christmas` | yes (`scenes/nordic-christmas/`, `maps/hrafnfjord_yule_v1/`) |
 | Cursed Skull Reef | built in Claude Code (2026-11-16), branch `ccr-e22e20a5-bpypq9` | yes (`scenes/cursed_skull_reef/`, `maps/cursed_skull_reef_v1/`) |
 | Elderveil | built in Claude Code (2026-11-14), branch `map/elderveil` | yes (`scenes/elderveil/`, `maps/elderveil_v1/`, `maps/elderveil_v1_1/`) |
 | Frostbell Hollow | built in Claude Code (2026-11-10), branch `map/frostbell-hollow` | yes (`scenes/frostbell_hollow/`, `maps/frostbell_hollow_v1/`, `maps/frostbell_hollow_v1_1/`, `maps/frostbell_hollow_v1_2/`) |
