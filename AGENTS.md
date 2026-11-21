@@ -27,6 +27,8 @@ section you need (each has a Contents list — grep the heading, then read that 
 | example of a finished map | the spec of the newest similar map (catalogue: `docs/agents_reference.md` §9; newest Babel examples `docs/under_the_tree_spec.md`, `docs/bloomhop_kingdom_spec.md`) |
 | original brief / per-mode prompts | `docs/project_brief/` |
 | palette, fog, snow or winter colours | `docs/colour_palette_guide.md` (2026-11-19): snow rules, ramps, fog choice, winter audit; tools `aosmap/kit/palette.py`, `tools/palette_audit.py` |
+| map pipeline roles (guru, designer, builder, runner), handoffs, review gates | `docs/agent_pipeline.md` |
+| technical AoS / piqueserver / VXL research | `docs/knowledge/aos_research_prompt.md` (method), then `docs/vxl_and_runtime_reference.md` |
 | git, catalogue, lessons, Claude Code tooling | `docs/agents_reference.md` |
 | git question, small fix, doc edit | nothing beyond this file |
 
@@ -264,4 +266,6 @@ steps) are in `docs/agents_reference.md` §11. The rules that apply every time:
   `tooling/<topic>` / `docs/<topic>`); commit after graybox, art pass and release and push after each commit; PR into
   `main` at release, merge only when the owner says so. Ask before committing files over ~50 MB; never force-push
   `main`; if a push fails, say so and leave the work committed locally.
+* **Map jobs run through the agent pipeline** `[USER]` (2026-11-20): `aos-guru` leads, talks to the owner and
+  reviews; `map-designer` concepts, `map-builder` questions + SPEC + build, `map-runner` evidence (`docs/agent_pipeline.md`).
 * New maps use the shared kit `aosmap.kit` (`docs/kit.md`). Finish every map with `docs/<map>_spec.md`.

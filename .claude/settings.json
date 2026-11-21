@@ -1,4 +1,5 @@
 {
+  "agent": "aos-guru",
   "permissions": {
     "allow": [
       "Bash(\"D:/Ace of Spades/Aos_Map/venv/Scripts/python\":*)",

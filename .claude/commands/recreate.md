@@ -30,10 +30,10 @@ validate, probe, spec, PR), with the `[recreate]` flow from `docs/remus_recreate
    fidelity and problem-ledger sections. The report goes in `docs/<new-slug>_recreate_report.md` and credits
    the original map and its author.
 
-**Model split (owner, 2026-11-15).** The planning model (Fable) does the analysis reading, ledger, questions,
-concepts and the SPEC numbers, and reviews every stage (graybox, art pass, release) against AGENTS.md §4 and the
-check output before it is committed. Implementation (generator code, art pass, export, running the checks) is
-delegated to the `map-builder` subagent (Opus) working from the written SPEC; running the analysis tool,
-checks, export, probe, previews and the report draft goes to `map-runner` (Sonnet). A recreate is always tier L
-in /new-map step 0. In a session that cannot spawn subagents, do both
-roles in order and say so in the hand-off.
+**Model split (owner, 2026-11-15; agent roles 2026-11-20, `docs/agent_pipeline.md`).** This session acts as
+`aos-guru`: it reads the analysis with you, owns the element ledger and the questions to me, and reviews every
+stage (concepts, SPEC, graybox, art pass, release) against AGENTS.md §4 and the evidence before it is committed.
+`map-runner` (Sonnet) runs the analysis tool, the checks, the probe, the previews and the report draft.
+`map-designer` (Sonnet) turns the analysis + ledger + my answers into three concepts. `map-builder` (Opus) asks
+its design questions, writes the SPEC numbers and implements them. A recreate is always tier L in /new-map step 0.
+In a session that cannot spawn subagents, do the roles in order and say so in the hand-off.
