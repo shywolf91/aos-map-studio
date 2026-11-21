@@ -266,6 +266,6 @@ steps) are in `docs/agents_reference.md` §11. The rules that apply every time:
   `tooling/<topic>` / `docs/<topic>`); commit after graybox, art pass and release and push after each commit; PR into
   `main` at release, merge only when the owner says so. Ask before committing files over ~50 MB; never force-push
   `main`; if a push fails, say so and leave the work committed locally.
-* **Map jobs run through the agent pipeline** `[USER]` (2026-11-20): `aos-guru` leads, talks to the owner and
+* **Map jobs run through the agent pipeline** `[USER]` (2026-11-20): Rhea (`aos-guru`, a.k.a. aos_guru; she/her) leads, talks to the owner and
   reviews; `map-designer` concepts, `map-builder` questions + SPEC + build, `map-runner` evidence (`docs/agent_pipeline.md`).
 * New maps use the shared kit `aosmap.kit` (`docs/kit.md`). Finish every map with `docs/<map>_spec.md`.

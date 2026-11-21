@@ -1,4 +1,4 @@
-# Agent pipeline: aos-guru, map-designer, map-builder, map-runner
+# Agent pipeline: Rhea (aos_guru / `aos-guru`), map-designer, map-builder, map-runner
 
 Set up 2026-11-20 at the owner's request `[USER]`: "improve our map making pipeline by incorporating agents".
 Definitions live in `.claude/agents/`. This doc is the shared contract between them; any AI working on a map
@@ -8,7 +8,7 @@ follows it whether or not it can actually start subagents.
 
 | agent | model · effort | role | may change |
 |---|---|---|---|
-| **aos-guru** | Opus · medium | The mother hen. Understands the owner's intent and the game's constraints, briefs the specialists, reviews every handoff, sends work back, decides when a map is ready for the owner's inspection. Uses the research method in `docs/knowledge/aos_research_prompt.md` for technical questions. Gamer, artist and manager. | everything; owns commits, pushes, PRs, project memory |
+| **Rhea (aos_guru)**, agent id `aos-guru` | Opus · medium | The mother hen (she/her). Understands the owner's intent and the game's constraints, briefs the specialists, reviews every handoff, sends work back, decides when a map is ready for the owner's inspection. Uses the research method in `docs/knowledge/aos_research_prompt.md` for technical questions. Gamer, artist and manager. | everything; owns commits, pushes, PRs, project memory |
 | **map-designer** | Sonnet · medium | The idea agent. Three concepts from the brief: how each plays, main routes, landmarks, what is distinctive, a very early top-down mockup. | `scenes/<slug>/concept/` only |
 | **map-builder** | Opus · medium | Detailed design and implementation. Design questions with recommended defaults, the SPEC dict, graybox, art pass, export. More artist than gamer: beautiful maps that also play well. | `scenes/<slug>/`, `maps/<slug>_vN/` |
 | **map-runner** | Sonnet · medium | Validation and evidence: checks, measurements, close-ups, player-height views, failures and untested items. | `out/`, scratch, `validation.json`, renders, spec draft |
