@@ -52,7 +52,7 @@ Files: `maps/frozen_icebreaker_v1/`. Generator: `scenes/frozen_icebreaker/` (bui
 ## Validation (release build, decor seed 850689747; seeds 101 and 202 also pass the same rows)
 | check | result |
 |---|---|
-| `aosmap.kit.babel_checks`: parser, pyspades, floating, mirror (0 outside the declared cosmetic boxes), platform volume, ground under ends, spawn squares, safe descent, routes, traps (0), interiors (46/46), flank (north 478 / south 480), platform not reachable on foot, anchors, 4 zone rules | **all pass** except spawn exposure (below) |
+| `aosmap.kit.babel_checks` (exposure rows WAIVED by the owner): parser, pyspades, floating, mirror (0 outside the declared cosmetic boxes), platform volume, ground under ends, spawn squares, safe descent, routes, traps (0), interiors (46/46), flank (north 478 / south 480), platform not reachable on foot, anchors, 4 zone rules | **all pass** except spawn exposure (below) |
 | build gap | 47 blocks (highest reachable near the platform z 49), equal both teams |
 | routes spawn → own platform end / enemy spawn | blue 68 / 236, red 69 / 236 |
 | zone rules | front 7 objects 17.8 %, p90 height 9; spawn cover enemy side 42.6 %, rear 38.4 %; strip 20.1 %; centre median footprint 32 cells |
@@ -61,7 +61,10 @@ Files: `maps/frozen_icebreaker_v1/`. Generator: `scenes/frozen_icebreaker/` (bui
 | `tools/palette_audit.py` | verdict ok: snow 0.4 % (0 % over the cap), max top luma 195, value bands 90–150: 85 %, sparkle 10.6 / 10k |
 | determinism | layout fixed (`layout_seed` 20261120); decor from a saved OS seed. The trap repair pass (`open_traps`) opened 0 cells on this seed |
 
-## Open trade-off for the owner `[OPEN]`
+## Spawn exposure vs open front: accepted `[USER]` (2026-11-20)
+The owner accepted 7.9 % hidden (option 1). `build.json` carries a waiver, so `babel_checks` prints both exposure
+rows as WAIVED, with their numbers.
+
 **Spawn exposure vs open front.** On the exposure model, a platform eye looks down at 0.6–0.7 voxels per column.
 A cover object of height h therefore hides only the spawn spots within about (h − 2)/0.65 columns of it. With
 the front capped at 10 tall by the zone rules, only the eastmost spot columns can be hidden. The best result

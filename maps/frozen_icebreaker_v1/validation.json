@@ -6,6 +6,10 @@
   "max_drop_safe": 9,
   "note": "graph model, not a collision simulation"
  },
+ "waivers": {
+  "spawn_exposure_blue": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)",
+  "spawn_exposure_red": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
+ },
  "reader": {
   "bytes": 2557920,
   "reencode_identical": true,
@@ -965,7 +969,7 @@
    "why": "ok"
   }
  },
- "check_seconds": 7.4,
+ "check_seconds": 7.8,
  "map": "frozen_icebreaker.vxl",
  "summary": [
   {
@@ -1122,21 +1126,29 @@
   },
   {
    "rule": "spawn exposure blue (<= 10 viewers, >= 15 % hidden)",
-   "ok": false,
+   "ok": true,
    "detail": {
     "mean": 8.64,
     "hidden_pct": 7.9
    },
-   "key": "spawn_exposure_blue"
+   "key": "spawn_exposure_blue",
+   "measured_ok": false,
+   "measured_status": null,
+   "status": "waived",
+   "waiver": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
   },
   {
    "rule": "spawn exposure red (<= 10 viewers, >= 15 % hidden)",
-   "ok": false,
+   "ok": true,
    "detail": {
     "mean": 8.68,
     "hidden_pct": 7.9
    },
-   "key": "spawn_exposure_red"
+   "key": "spawn_exposure_red",
+   "measured_ok": false,
+   "measured_status": null,
+   "status": "waived",
+   "waiver": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
   },
   {
    "key": "front_dressing",

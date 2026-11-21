@@ -130,6 +130,9 @@ def build_map(out, decor_seed=None, graybox=False):
                     'cleanup_west': orphans_w, 'cleanup': orphans, 'pits_filled': pits, 'trap_cells_opened': traps_opened, 'brightness': bright,
                     'tag_rect': list(rect), 'cosmetic_asymmetric_boxes': cosmetic,
                     'structures': fi_world.STRUCTS,
+                    'waivers': {k: 'owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap '
+                                   'limits hiding (docs/frozen_icebreaker_spec.md)'
+                                for k in ('spawn_exposure_blue', 'spawn_exposure_red')},
                     'check_targets': {'ship hold (tunnel end W)': [232, 240, 160, 172, 55, 61],
                                       'ship bridge': [224, 243, 171, 181, 24, 29],
                                       'drill tower top floor': [253, 259, 317, 327, 40, 48]}})

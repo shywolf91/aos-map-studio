@@ -203,6 +203,10 @@
    "role": "vessel"
   }
  ],
+ "waivers": {
+  "spawn_exposure_blue": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)",
+  "spawn_exposure_red": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
+ },
  "check_targets": {
   "ship hold (tunnel end W)": [
    232,
