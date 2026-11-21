@@ -1,0 +1,510 @@
+{
+ "map": "Frozen Icebreaker",
+ "file": "frozen_icebreaker",
+ "sha256": "797a6c3f38c24d31846ad8a86af0a8d7d831c19f35899fe43d555955f880a971",
+ "bytes": 2557920,
+ "mode": "babel",
+ "axis": "x512",
+ "layout_seed": 20261120,
+ "decor_seed": 850689747,
+ "graybox": false,
+ "land_share": 0.656,
+ "ridge_blocks_west": 100,
+ "icebergs_west": 9,
+ "glow_sources": 178,
+ "cleanup_west": {
+  "removed_components": 13,
+  "removed_voxels": 339,
+  "kept_floating": []
+ },
+ "cleanup": {
+  "removed_components": 7,
+  "removed_voxels": 11,
+  "kept_floating": []
+ },
+ "pits_filled": 0,
+ "trap_cells_opened": 0,
+ "brightness": {
+  "dark_floors_raised": 951,
+  "whites_capped": 871
+ },
+ "tag_rect": [
+  401,
+  505,
+  495,
+  505,
+  63
+ ],
+ "cosmetic_asymmetric_boxes": [
+  [
+   160,
+   352,
+   146,
+   206
+  ],
+  [
+   166,
+   196,
+   404,
+   424
+  ],
+  [
+   414,
+   446,
+   318,
+   340
+  ],
+  [
+   401,
+   505,
+   495,
+   505
+  ]
+ ],
+ "structures": [
+  {
+   "name": "expedition lodge (W)",
+   "box": [
+    56,
+    84,
+    236,
+    263
+   ],
+   "role": "main"
+  },
+  {
+   "name": "survey hut (W)",
+   "box": [
+    146,
+    155,
+    246,
+    263
+   ],
+   "role": "small"
+  },
+  {
+   "name": "ice-fishing hut (W)",
+   "box": [
+    178,
+    188,
+    244,
+    252
+   ],
+   "role": "small"
+  },
+  {
+   "name": "core lab + drill tower",
+   "box": [
+    243,
+    269,
+    298,
+    330
+   ],
+   "role": "main"
+  },
+  {
+   "name": "glaciology lab (W)",
+   "box": [
+    183,
+    209,
+    317,
+    339
+   ],
+   "role": "main"
+  },
+  {
+   "name": "generator shed (W)",
+   "box": [
+    221,
+    233,
+    301,
+    310
+   ],
+   "role": "small"
+  },
+  {
+   "name": "expedition schooner",
+   "box": [
+    236,
+    276,
+    72,
+    137
+   ],
+   "role": "ruin"
+  },
+  {
+   "name": "crashed ski-plane",
+   "box": [
+    226,
+    286,
+    376,
+    422
+   ],
+   "role": "vessel"
+  },
+  {
+   "name": "expedition lodge (E)",
+   "box": [
+    428,
+    456,
+    236,
+    263
+   ],
+   "role": "main"
+  },
+  {
+   "name": "survey hut (E)",
+   "box": [
+    357,
+    366,
+    246,
+    263
+   ],
+   "role": "small"
+  },
+  {
+   "name": "ice-fishing hut (E)",
+   "box": [
+    324,
+    334,
+    244,
+    252
+   ],
+   "role": "small"
+  },
+  {
+   "name": "glaciology lab (E)",
+   "box": [
+    303,
+    329,
+    317,
+    339
+   ],
+   "role": "main"
+  },
+  {
+   "name": "generator shed (E)",
+   "box": [
+    279,
+    291,
+    301,
+    310
+   ],
+   "role": "small"
+  },
+  {
+   "name": "icebreaker",
+   "box": [
+    178,
+    330,
+    164,
+    188
+   ],
+   "role": "vessel"
+  }
+ ],
+ "check_targets": {
+  "ship hold (tunnel end W)": [
+   232,
+   240,
+   160,
+   172,
+   55,
+   61
+  ],
+  "ship bridge": [
+   224,
+   243,
+   171,
+   181,
+   24,
+   29
+  ],
+  "drill tower top floor": [
+   253,
+   259,
+   317,
+   327,
+   40,
+   48
+  ]
+ },
+ "interiors": [
+  [
+   "tunnel mouth (W)",
+   94,
+   132,
+   61
+  ],
+  [
+   "tunnel mouth (E)",
+   418,
+   132,
+   61
+  ],
+  [
+   "crystal chamber (W)",
+   150,
+   136,
+   61
+  ],
+  [
+   "crystal chamber (E)",
+   362,
+   136,
+   61
+  ],
+  [
+   "tunnel run (W)",
+   200,
+   140,
+   61
+  ],
+  [
+   "tunnel run (E)",
+   312,
+   140,
+   61
+  ],
+  [
+   "tunnel end (W)",
+   236,
+   152,
+   61
+  ],
+  [
+   "tunnel end (E)",
+   276,
+   152,
+   61
+  ],
+  [
+   "expedition lodge hall f0 (W)",
+   64,
+   250,
+   53
+  ],
+  [
+   "expedition lodge hall f0 (E)",
+   448,
+   250,
+   53
+  ],
+  [
+   "expedition lodge hall f1 (W)",
+   64,
+   250,
+   48
+  ],
+  [
+   "expedition lodge hall f1 (E)",
+   448,
+   250,
+   48
+  ],
+  [
+   "expedition lodge radio room f0 (W)",
+   76,
+   244,
+   53
+  ],
+  [
+   "expedition lodge radio room f0 (E)",
+   436,
+   244,
+   53
+  ],
+  [
+   "survey hut f0 (W)",
+   150,
+   255,
+   54
+  ],
+  [
+   "survey hut f0 (E)",
+   362,
+   255,
+   54
+  ],
+  [
+   "ice-fishing hut f0 (W)",
+   183,
+   249,
+   54
+  ],
+  [
+   "ice-fishing hut f0 (E)",
+   329,
+   249,
+   54
+  ],
+  [
+   "glaciology lab f0 (W)",
+   196,
+   324,
+   54
+  ],
+  [
+   "glaciology lab f0 (E)",
+   316,
+   324,
+   54
+  ],
+  [
+   "lab workshop f0 (W)",
+   195,
+   335,
+   54
+  ],
+  [
+   "lab workshop f0 (E)",
+   317,
+   335,
+   54
+  ],
+  [
+   "generator shed f0 (W)",
+   227,
+   306,
+   54
+  ],
+  [
+   "generator shed f0 (E)",
+   285,
+   306,
+   54
+  ],
+  [
+   "schooner hold (W)",
+   251,
+   92,
+   54
+  ],
+  [
+   "schooner hold (E)",
+   261,
+   92,
+   54
+  ],
+  [
+   "schooner cabin (W)",
+   253,
+   128,
+   47
+  ],
+  [
+   "schooner cabin (E)",
+   259,
+   128,
+   47
+  ],
+  [
+   "plane cabin (W)",
+   254,
+   388,
+   52
+  ],
+  [
+   "plane cabin (E)",
+   258,
+   388,
+   52
+  ],
+  [
+   "core lab hall f0",
+   256,
+   307,
+   54
+  ],
+  [
+   "core lab hall f1",
+   256,
+   307,
+   49
+  ],
+  [
+   "drill tower f0",
+   256,
+   323,
+   54
+  ],
+  [
+   "drill tower f1",
+   256,
+   323,
+   48
+  ],
+  [
+   "superstructure deck 0",
+   223,
+   178,
+   44
+  ],
+  [
+   "superstructure deck 1",
+   223,
+   178,
+   39
+  ],
+  [
+   "superstructure deck 2",
+   223,
+   178,
+   34
+  ],
+  [
+   "bridge",
+   232,
+   178,
+   29
+  ],
+  [
+   "boat deck",
+   204,
+   176,
+   29
+  ],
+  [
+   "helideck",
+   192,
+   182,
+   39
+  ],
+  [
+   "forecastle",
+   310,
+   176,
+   39
+  ],
+  [
+   "forecastle store",
+   300,
+   176,
+   44
+  ],
+  [
+   "main deck",
+   270,
+   176,
+   44
+  ],
+  [
+   "tween deck",
+   250,
+   176,
+   53
+  ],
+  [
+   "hold fore",
+   262,
+   176,
+   61
+  ],
+  [
+   "hold aft (engines)",
+   212,
+   176,
+   61
+  ]
+ ]
+}

@@ -49,6 +49,33 @@ def _cub(cv, x, y):
     put(cv, x - 3, y + 1, g - 4, 'fur_dark')
 
 
+def open_traps(cv, rounds=3):
+    """Decor is placed from a per-build OS seed, so rubble can close small pockets. Find standable ground cells
+    reachable from a spawn that cannot walk back (the babel_checks trap model) and clear the ice slabs ('ice'
+    material) in a 7 x 7 column window above them. Returns the number of cells opened."""
+    from aosmap.kit.babel_checks import Nav
+    ice = cv.materials.get('ice')
+    opened = 0
+    for _ in range(rounds):
+        nav = Nav(cv.solid)
+        p = nav.xyz
+        src = nav.nodes_in(98, 138, 236, 276)
+        src = np.concatenate([src, nav.nodes_in(374, 414, 236, 276)])
+        fwd = np.isfinite(nav.dist_from(src))
+        back = np.isfinite(nav.dist_from(nav.nodes_in(98, 414, 200, 312, 0, 62)[::5], reverse=True))
+        land = np.abs(p[:, 2] - cv.H[p[:, 0], p[:, 1]]) <= 3
+        trap = p[fwd & ~back & land]
+        if not len(trap):
+            break
+        for (x, y, z) in trap:
+            sl = (slice(max(x - 3, 0), x + 4), slice(max(y - 3, 0), y + 4), slice(max(z - 8, 0), z))
+            m = cv.mat[sl] == ice
+            cv.solid[sl][m] = False
+            cv.mat[sl][m] = 0
+            opened += 1
+    return opened
+
+
 def build_map(out, decor_seed=None, graybox=False):
     decor_seed = noise.os_seed() if decor_seed is None else int(decor_seed)
     rng = np.random.default_rng(decor_seed)
@@ -76,6 +103,7 @@ def build_map(out, decor_seed=None, graybox=False):
     fi_ship.build_ship(cv, rng)
     places.open_tunnel_into_hold(cv)
     one_offs(cv, rng)
+    traps_opened = open_traps(cv)
     orphans = symmetry.remove_orphans(cv)
     pits = 0                     # kit fill_pits tests the highest neighbour, not all four: not used (trap check instead)
     # ---------------------------------------------------------------- colour
@@ -99,7 +127,7 @@ def build_map(out, decor_seed=None, graybox=False):
         build_info={'mode': 'babel', 'axis': SPEC['axis'], 'layout_seed': SPEC['layout_seed'],
                     'decor_seed': decor_seed, 'graybox': graybox, 'land_share': terr['land_share'],
                     'ridge_blocks_west': n_ridge, 'icebergs_west': n_berg, 'glow_sources': glow_n,
-                    'cleanup_west': orphans_w, 'cleanup': orphans, 'pits_filled': pits, 'brightness': bright,
+                    'cleanup_west': orphans_w, 'cleanup': orphans, 'pits_filled': pits, 'trap_cells_opened': traps_opened, 'brightness': bright,
                     'tag_rect': list(rect), 'cosmetic_asymmetric_boxes': cosmetic,
                     'structures': fi_world.STRUCTS,
                     'check_targets': {'ship hold (tunnel end W)': [232, 240, 160, 172, 55, 61],

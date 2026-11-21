@@ -70,14 +70,23 @@ def ground(cv, x, y):
     return int(cv.H[int(x), int(y)])
 
 
-def pad(cv, x0, x1, y0, y1, z=None, name='track', mat='ground'):
+def pad(cv, x0, x1, y0, y1, z=None, name='track', mat='ground', max_raise=3):
     """Level a site to z (default: median terrain height) and give it a packed-snow top. Returns z."""
     x0, x1, y0, y1 = max(0, x0), min(511, x1), max(0, y0), min(511, y1)
     if z is None:
         z = int(np.median(cv.H[x0:x1 + 1, y0:y1 + 1]))
+    old = cv.H[x0:x1 + 1, y0:y1 + 1].copy()
+    if (old - z > max_raise).any():                    # never build plinths out over the sea / a slope:
+        lo = old - z > max_raise                       # shrink the pad to its land part
+        xs, ys = np.nonzero(~lo)
+        x0, x1, y0, y1 = x0 + xs.min(), x0 + xs.max(), y0 + ys.min(), y0 + ys.max()
+        old = cv.H[x0:x1 + 1, y0:y1 + 1].copy()
+    keep_rgb = cv.rgb[x0:x1 + 1, y0:y1 + 1, z].copy()
     cv.carve(x0, x1, y0, y1, 0, z - 1)
     cv.box(x0, x1, y0, y1, z + 1, 63, P('snow'), 'ground')
-    cv.box(x0, x1, y0, y1, z, z, P(name), mat)
+    cv.box(x0, x1, y0, y1, z, z, P('snow'), mat)
+    same = old == z                                    # unchanged columns keep their painted snow / tracks
+    cv.rgb[x0:x1 + 1, y0:y1 + 1, z][same] = keep_rgb[same]
     cv.H[x0:x1 + 1, y0:y1 + 1] = z
     return z
 

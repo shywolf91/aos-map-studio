@@ -151,7 +151,7 @@ def colour_fn(H, land, dist, lead, wake, trk):
     lee = land & ((gx + gy) < 0) & ~raised
     cls[lee] = 2                                             # trough
     tr = noise.value_noise2((512, 512), 23, 'troughfield', SPEC['layout_seed'])
-    cls[land & (tr > 0.7) & (cls == 0)] = 2
+    cls[land & (tr > 0.8) & (cls == 0)] = 2
     cls[trk] = 3
     cls[lead] = 4
     cls[land & (dist < SPEC['shore_band'] + 1) & (H > ICE)] = 5      # coastal slope / cliff: ice

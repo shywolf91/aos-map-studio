@@ -414,7 +414,8 @@ def plane(cv, rng):
     lamp(cv, 255, (ya + yb) // 2 - 4, fz - 5, 'warm')
     cv.interiors.append(['plane cabin', 254, ya + 10, fz])
     # wreck yard: scattered cargo, a fuel drum, a sledge, and the ridge the nose ploughed into
-    rubble(cv, rng, 248, ya - 6, n=10, spread=6, hmin=3, hmax=7)
+    heap(cv, rng, 244, ya - 8, n=6, hmin=3, hmax=6)
+    heap(cv, rng, 250, ya - 7, n=4, hmin=2, hmax=5)
     crate_stack(cv, 236, ya + 24, 4)
     drum_stack(cv, 232, yb - 2, ('drum_s', 'drum_y'))
     cargo_sled(cv, 238, yb + 1, 'x')
@@ -447,8 +448,8 @@ def ridges(cv, rng):
                 y = int(y0 + (y1 - y0) * t + rng.integers(-1, 2))
                 if cv.H[x, y] >= 62 or _in_square(x, y, 6) or cv.keep[x, y] or (150 <= x and 130 <= y <= 382):
                     continue
-                ice_block(cv, x, y, int(rng.integers(2, 5)), int(rng.integers(2, 5)), int(rng.integers(3, 8)),
-                          int(rng.integers(-2, 3)))
+                ice_block(cv, x, y, int(rng.integers(3, 7)), int(rng.integers(3, 5)), int(rng.integers(2, 5)),
+                          int(rng.integers(-3, 4)))
                 n += 1
     return n
 
@@ -458,26 +459,42 @@ BERGS = [(18, 60, 20, 34), (70, 22, 16, 26), (150, 10, 18, 30), (8, 160, 12, 22)
 
 
 def bergs(cv, rng):
-    """Grounded icebergs in the sea ring: faceted (stepped) bodies, snow caps, deep-ice bases; solid to the seabed."""
+    """Grounded icebergs in the sea ring, two kinds: tabular (flat snow top, sheer walls with strata, a wave-cut
+    notch at the waterline) and pinnacle (two or three noisy peaks). Solid to the seabed, never floating."""
     placed = 0
-    for (cx, cy, r, hgt) in BERGS:
+    for n_, (cx, cy, r, hgt) in enumerate(BERGS):
         if cv.H[cx, cy] < 62:
             continue
+        tabular = n_ % 3 != 1
         ph = rng.uniform(0, math.tau)
-        facets = int(rng.integers(5, 8))
-        for x in range(cx - r - 3, cx + r + 4):
-            for y in range(cy - r - 3, cy + r + 4):
+        peaks = [(cx + rng.uniform(-r / 3, r / 3), cy + rng.uniform(-r / 3, r / 3)) for _ in range(3)]
+        for x in range(cx - r - 4, cx + r + 5):
+            for y in range(cy - r - 4, cy + r + 5):
                 if not (0 <= x < 256 and 0 <= y < 512) or cv.H[x, y] < 62:
                     continue
                 a = math.atan2(y - cy, x - cx)
-                k = math.cos(math.pi / facets) / math.cos(((a + ph) % (math.tau / facets)) - math.pi / facets)
-                rr = math.hypot(x - cx, y - cy) / (r * k)
+                warp = 1 + 0.16 * math.sin(3 * a + ph) + 0.08 * math.sin(7 * a + 2 * ph)
+                rr = math.hypot(x - cx, y - cy) / (r * warp)
                 if rr > 1:
                     continue
-                h = int(hgt * (1 - rr ** 1.6) // 2 * 2) + 2                       # stepped faces read as facets
+                jit = (int((x * 73856093) ^ (y * 19349663)) & 7) / 7.0
+                if tabular:
+                    h = hgt if rr < 0.78 else hgt * (1 - rr) / 0.22
+                else:
+                    pk = max(1 - math.hypot(x - px, y - py) / (r * 0.9) for (px, py) in peaks)
+                    h = hgt * max(pk, 0) ** 1.2 * (1 - rr ** 3) + 3 * (1 - rr)
+                h = int(max(h, 2))
                 zt = 62 - h
+                flat_top = rr < 0.74 if tabular else rr < 0.35
                 for z in range(zt, 64):
-                    nm = 'ice_cap' if z <= zt + 1 and rr < 0.8 else ('ice_deep' if z > 58 else 'ice')
+                    if z == zt and flat_top:
+                        nm = 'ice_cap'
+                    elif z in (59, 60) and rr > 0.7:
+                        nm = 'ice_deep'
+                    elif (z + int(rr * 5)) % 6 == 0:
+                        nm = 'ice_deep'
+                    else:
+                        nm = 'ice'
                     put(cv, x, y, z, nm, 'ice', salt=int(rr * 6))
         placed += 1
     return placed

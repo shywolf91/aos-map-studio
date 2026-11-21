@@ -320,16 +320,20 @@ def tent(cv, x, y, fam='canvas_o', size=7, name=None):
 
 
 def ice_block(cv, x, y, w, d, h, tilt=0, name='ice'):
-    """A tilted slab of pack ice: blue body, snow cap, darker underside; tilt raises one side by up to 2."""
-    g = g_at(cv, x + w // 2, y + d // 2)
+    """A tilted slab of pack ice (a wedge, not a pillar): h at the low edge rising by `tilt` across x, blue glass
+    sides with darker strata, a snow-dusted top face and a broken (notched) upper edge."""
     for i in range(w):
         for j in range(d):
             hh = h + (tilt * i // max(w - 1, 1) if tilt >= 0 else -tilt * (w - 1 - i) // max(w - 1, 1))
+            if (i in (0, w - 1)) and (j in (0, d - 1)):
+                hh -= 1                                                        # rounded corners
+            if _h(x + i, y + j, 0, 11) % 5 == 0:
+                hh -= 1                                                        # notched, broken top edge
+            hh = max(hh, 1)
             gg = g_at(cv, x + i, y + j)
             for z in range(gg - hh, gg):
-                put(cv, x + i, y + j, z, 'ice' if z > gg - hh else 'ice_cap', 'ice')
-            if gg - hh - 1 >= 0 and (i + j) % 3:
-                pass
+                nm = 'ice_cap' if z == gg - hh else ('ice_deep' if (z + x // 3) % 4 == 0 else 'ice')
+                put(cv, x + i, y + j, z, nm, 'ice')
 
 
 def rubble(cv, rng, cx, cy, n=8, spread=6, hmin=2, hmax=5, avoid=None):
@@ -339,8 +343,8 @@ def rubble(cv, rng, cx, cy, n=8, spread=6, hmin=2, hmax=5, avoid=None):
         y = int(cy + rng.integers(-spread, spread + 1))
         if avoid is not None and avoid(x, y):
             continue
-        w, d = int(rng.integers(2, 5)), int(rng.integers(2, 5))
-        ice_block(cv, x, y, w, d, int(rng.integers(hmin, hmax + 1)), int(rng.integers(-2, 3)))
+        w, d = int(rng.integers(3, 7)), int(rng.integers(3, 5))
+        ice_block(cv, x, y, w, d, int(rng.integers(hmin, hmax + 1)), int(rng.integers(-3, 4)))
 
 
 def heap(cv, rng, cx, cy, n=6, hmin=3, hmax=6):
@@ -348,8 +352,8 @@ def heap(cv, rng, cx, cy, n=6, hmin=3, hmax=6):
     counts as one object)."""
     x, y = cx, cy
     for _ in range(n):
-        w, d = int(rng.integers(3, 5)), int(rng.integers(3, 5))
-        ice_block(cv, x, y, w, d, int(rng.integers(hmin, hmax + 1)), int(rng.integers(-2, 3)))
+        w, d = int(rng.integers(4, 7)), int(rng.integers(3, 6))
+        ice_block(cv, x, y, w, d, int(rng.integers(hmin, hmax - 1)), int(rng.integers(-3, 4)))
         x += int(rng.integers(-2, 3))
         y += int(rng.integers(-2, 3))
 

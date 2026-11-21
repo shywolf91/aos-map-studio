@@ -401,8 +401,8 @@ def ice_collar(cv, rng):
     for i in range(14):                                                 # bow wave: heaped floes ahead
         x = int(325 + rng.integers(0, 10))
         y = int(CY + rng.integers(-9, 9))
-        ice_block(cv, x, y, int(rng.integers(3, 6)), int(rng.integers(3, 6)), int(rng.integers(3, 8)),
-                  int(rng.integers(-2, 3)))
+        ice_block(cv, x, y, int(rng.integers(4, 7)), int(rng.integers(3, 6)), int(rng.integers(2, 5)),
+                  int(rng.integers(-3, 4)))
 
 
 def build_ship(cv, rng):

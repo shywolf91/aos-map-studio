@@ -30,8 +30,8 @@ SPEC = {
     'ship_cosmetic_box': [160, 352, 146, 206],      # symmetric about x 256 (bow-wave floes included)
     'station': {'lab_x': 186, 'lab_y': 300, 'derrick_y': 300},
     'lodge': {'x': 58, 'y': 238},                 # expedition lodge behind the blue spawn (rear backdrop)
-    'schooner': {'y': (64, 120)},                  # old expedition schooner frozen in, keel on x = 256 (north flank)
-    'plane': {'y': (404, 446)},                    # crashed ski-plane, fuselage on x = 256 (south flank)
+    'schooner': {'y': (80, 136)},                  # old expedition schooner frozen in, keel on x = 256 (north flank)
+    'plane': {'y': (378, 420)},                    # crashed ski-plane, fuselage on x = 256 (south flank)
     'tunnel': {'mouth': (92, 132), 'run_y': 140, 'end_x': 236, 'floor_z': 61, 'air': (56, 60)},
     # ---------------------------------------------------------------- look
     'fog': (164, 186, 160),      # pale aurora green: hue absent from the palette, neutral between blue and red
