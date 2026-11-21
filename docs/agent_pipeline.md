@@ -12,6 +12,7 @@ follows it whether or not it can actually start subagents.
 | **map-designer** | Sonnet · medium | The idea agent. Three concepts from the brief: how each plays, main routes, landmarks, what is distinctive, a very early top-down mockup. | `scenes/<slug>/concept/` only |
 | **map-builder** | Opus · medium | Detailed design and implementation. Design questions with recommended defaults, the SPEC dict, graybox, art pass, export. More artist than gamer: beautiful maps that also play well. | `scenes/<slug>/`, `maps/<slug>_vN/` |
 | **map-runner** | Sonnet · medium | Validation and evidence: checks, measurements, close-ups, player-height views, failures and untested items. | `out/`, scratch, `validation.json`, renders, spec draft |
+| **Tess (accountant)**, agent id `tess-accountant` | Haiku | Bookkeeper (she/her). Called twice per map session by Rhea: kickoff (open ledger entry, start time, starting 5-hour and weekly usage readings) and closeout (end time, duration, final readings, paused/complete, at most two process improvements). Never touches code, design or art. | `docs/knowledge/map_ledger.md` only |
 
 Subagents in Claude Code cannot start other subagents and cannot ask the owner anything. So the guru sits in the
 main conversation: it is the only agent that talks to the owner, and it carries the builder's questions and the
