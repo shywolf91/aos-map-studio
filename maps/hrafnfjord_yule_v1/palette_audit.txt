@@ -1,0 +1,7 @@
+
+== hrafnfjord_yule.vxl  (land columns 238199, glow voxels excluded 76145)
+  value bands <40|40-90|90-150|150-190|190+ : [0.0, 18.3, 59.3, 22.4, 0.0]
+  dominant #707185 covers 13.8% | snow 10.7% (over cap 0.0%) | max top luma 198.0 (brightest band 0.0%)
+  dark tops 0.01% | sparkle 21.3/10k | hue families 5: neutral:57%, 210-240:13%, 270-300:13%, 120-150:7%, 180-210:2%
+  fog (176, 164, 196)  team lean {'hue': 302.3211517247841, 'chroma': 0.04731415352023453, 'deg_to_blue': 38, 'deg_to_red': 87, 'side': 'blue', 'warn': False}
+  verdict: fog (176, 164, 196) nearly equals top#4 #8CA2B0 (dE 6.0): it merges with the fog at distance - fine for ground, not for a skyline, landmark or objective; fog (176, 164, 196) nearly equals top#5 #96B0BD (dE 5.0): it merges with the fog at distance - fine for ground, not for a skyline, landmark or objective; fog hue 302 deg shares a hue family with: top#1, top#6

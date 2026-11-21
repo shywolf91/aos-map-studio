@@ -1,0 +1,16 @@
+[
+ {
+  "map": "hrafnfjord_yule",
+  "colours": 41685,
+  "hue_families_90": 9,
+  "top_noise": 3.54,
+  "coherence_4": 1.59,
+  "top_flat_pct": 37.0,
+  "ramp_step": 3.91,
+  "height_L_corr": -0.02,
+  "side_minus_top_L": -27.0,
+  "vert_detail": 1.6,
+  "relief_16": 11.3,
+  "land_cols": 262144
+ }
+]
