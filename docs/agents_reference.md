@@ -86,7 +86,7 @@ chat (links: `docs/knowledge/map_sources.md`). Unpack it under `scenes/<map>/` a
   (`out/recreate/<stem>/`); `--compare <new.vxl>` adds the fidelity section. `/recreate` describes the flow and the
   planning/implementation model split (owner, 2026-11-15).
 * **Slash commands** (`.claude/commands/`): `/new-map <brief>`, `/recreate <file.vxl>`, `/check-map <maps dir>`,
-  `/remember <rule>`, `/sync`. Subagents (`.claude/agents/`): `map-builder` (Opus, generator code) and `map-runner` (Sonnet, checks/export/probe/specs); `/new-map` step 0 picks tier S/M/L and routes stages to them. `/check-map` and `/remember` run on Sonnet, `/sync` on Haiku. `.claude/settings.json` allowlists routine work; force-push and pushes to main are denied.
+  `/remember <rule>`, `/sync`. Agents (`.claude/agents/`, contract in `docs/agent_pipeline.md`, 2026-11-20): `aos-guru` (Opus, lead + reviewer, the main conversation by default), `map-designer` (Sonnet, concepts + mockups), `map-builder` (Opus, questions, SPEC, graybox, art, export) and `map-runner` (Sonnet, checks, measurements, player-height views); `/new-map` step 0 picks tier S/M/L and routes stages to them. `/check-map` and `/remember` run on Sonnet, `/sync` on Haiku. `.claude/settings.json` allowlists routine work; force-push and pushes to main are denied.
 * **Shared kit** (`aosmap/kit/`, `docs/kit.md`): new maps import codec, canvas, structures, symmetry, colour, veg,
   tag, sky, checks, probe, export and previews from here instead of copying `*_core.py` / `*_check.py`. Old
   generators stay as they are. `tools/kit_acceptance.py` proves the suite reproduces the legacy reports.
