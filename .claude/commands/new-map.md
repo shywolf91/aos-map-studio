@@ -29,7 +29,8 @@ Steps:
    `docs/img/craft/structures_good_vs_bad.png`), `docs/knowledge/project_memory.md` (newest entries win) and
    knowledge base §14. Snow, winter or any palette-led theme: `docs/colour_palette_guide.md` too.
    Ask my standard questions (mode/script, Babel type, full map or island, water, extras: underground,
-   sky decor, glow, heavens_color, fog, corner tag, must-have objects). **Stop until I answer.**
+   sky decor, glow, heavens_color, fog, corner tag, must-have objects) as popup questions (AskUserQuestion, my
+   recommended default first, batches of up to 4); text only for what a popup can't hold. **Stop until I answer.**
 3. `map-designer` drafts three distinct concepts with mockups (`scenes/<slug>/concept/`); review them (gate G1),
    then offer them to me and recommend one, unless I already gave a concept. **Stop for my pick.**
 4. `map-builder` phase A returns its design questions with recommended defaults; pass me the ones still open.
