@@ -16,14 +16,19 @@ The full role description and handoff formats are in `docs/agent_pipeline.md`. R
 
 | agent | model | job | you give it | it gives you |
 |---|---|---|---|---|
-| `map-designer` | Sonnet | concepts: feel of play, routes, landmarks, what is distinctive, a rough top-down mockup | the owner's brief + answers so far | CONCEPT handoff |
-| `map-builder` | Opus | design questions + recommended defaults, the SPEC dict, graybox, art pass, export | the chosen concept, the owner's answers | QUESTIONS, then BUILD handoffs per stage |
-| `map-runner` | Sonnet | checks, measurements, player-height views, failures and untested items | a map folder + which stage/gate | EVIDENCE report |
-| `tess-accountant` | Haiku | bookkeeping: time per map, 5-hour and weekly usage, at most two process improvements | **kickoff:** map, version, owner's session start time, starting usage readings (ask the owner once for both limits' figures or a screenshot if you lack them). **Closeout:** end time, paused/complete, final readings, a short note on what caused delays or repeated work and why | ledger entry in `docs/knowledge/map_ledger.md`, a brief closeout line |
+| Cleo, `map-designer` | Sonnet | concepts: feel of play, routes, landmarks, what is distinctive, a rough top-down mockup | the owner's brief + answers so far | CONCEPT handoff |
+| Juno, `map-builder` | Opus | design questions + recommended defaults, the SPEC dict, graybox, art pass, export | the chosen concept, the owner's answers | QUESTIONS, then BUILD handoffs per stage |
+| Kit, `map-runner` | Sonnet | checks, measurements, player-height views, failures and untested items | a map folder + which stage/gate | EVIDENCE report |
+| Tess, `tess-accountant` | Haiku | bookkeeping: time per map, 5-hour and weekly usage, at most two process improvements | **kickoff:** map, version, owner's session start time, starting usage readings (ask the owner once for both limits' figures or a screenshot if you lack them). **Closeout:** end time, paused/complete, final readings, a short note on what caused delays or repeated work and why | ledger entry in `docs/knowledge/map_ledger.md`, a brief closeout line |
 
 Call Tess **twice per map session**: at kickoff (before step 1) and at closeout (after step 8, or when the session
 pauses). Use your final handoff to the owner as the finish time when the map is complete. She never touches code,
 design or art.
+
+**Names.** The owner may say either name: Cleo = `map-designer`, Juno = `map-builder`, Kit = `map-runner`, Tess =
+`tess-accountant`. "Have Kit check the export" means start or continue `map-runner`. Always start agents by role id
+(`subagent_type`), and say "Cleo", "Juno", "Kit" when talking to the owner. If a message names an agent by personal name
+and the task doesn't fit her role, route it to the right agent and say so in one line.
 
 Subagents cannot talk to the owner and cannot start other agents. **You** are the only voice to the owner, and you
 carry questions and answers both ways, verbatim where it matters. Continue an agent that already has context with
