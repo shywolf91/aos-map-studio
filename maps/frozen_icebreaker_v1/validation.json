@@ -1,0 +1,1341 @@
+{
+ "model": {
+  "rules": "hc",
+  "axis": "x512",
+  "exposure": "calibrated",
+  "max_drop_safe": 9,
+  "note": "graph model, not a collision simulation"
+ },
+ "waivers": {
+  "spawn_exposure_blue": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)",
+  "spawn_exposure_red": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
+ },
+ "reader": {
+  "bytes": 2557920,
+  "reencode_identical": true,
+  "surface_all_coloured": true,
+  "z63_solid": true
+ },
+ "pyspades": {
+  "generate_identical": true,
+  "solid_mismatch_20k": 0,
+  "colour_mismatch_20k": 0
+ },
+ "floating_components": {
+  "count": 0,
+  "voxels": 0,
+  "list": [],
+  "expected_count": 0,
+  "expected_voxels": 0
+ },
+ "mirror": {
+  "solid_mismatch": 0,
+  "material_mismatch": 0,
+  "solid_mismatch_unfiltered": 18265,
+  "excluded_boxes": [
+   [
+    160,
+    352,
+    146,
+    206
+   ],
+   [
+    166,
+    196,
+    404,
+    424
+   ],
+   [
+    414,
+    446,
+    318,
+    340
+   ],
+   [
+    401,
+    505,
+    495,
+    505
+   ]
+  ],
+  "axis": "x512"
+ },
+ "platform_volume_voxels": 0,
+ "platform_margin_voxels": 0,
+ "ground_under_platform_ends": {
+  "blue_end": {
+   "top_z_min": 54,
+   "top_z_max": 54,
+   "water_cols": 0
+  },
+  "red_end": {
+   "top_z_min": 54,
+   "top_z_max": 54,
+   "water_cols": 0
+  }
+ },
+ "spawn_squares": {
+  "blue": {
+   "top_z_values": {
+    "54": 310,
+    "55": 1371
+   },
+   "top_z_min": 54,
+   "top_z_max": 55,
+   "flat_share": 0.82,
+   "water_cols": 0,
+   "roof_cols": 0
+  },
+  "red": {
+   "top_z_values": {
+    "54": 310,
+    "55": 1371
+   },
+   "top_z_min": 54,
+   "top_z_max": 55,
+   "flat_share": 0.82,
+   "water_cols": 0,
+   "roof_cols": 0
+  },
+  "mirror_equal_share": 1.0
+ },
+ "routes": {
+  "blue": {
+   "to_own_platform_end": 68.0,
+   "to_enemy_spawn": 236.0,
+   "to_enemy_spawn_any_drop": 236.0,
+   "reachable_nodes_pct": 90.3,
+   "reachable_nodes_safe": 249475,
+   "reachable_nodes_any": 249585,
+   "to_ship hold (tunnel end W)": 158.0,
+   "to_ship bridge": 225.0,
+   "to_drill tower top floor": 165.0,
+   "safe_descent_to_tower_zone": true,
+   "tower_zone_min_cost": 30.0
+  },
+  "red": {
+   "to_own_platform_end": 69.0,
+   "to_enemy_spawn": 236.0,
+   "to_enemy_spawn_any_drop": 236.0,
+   "reachable_nodes_pct": 90.3,
+   "reachable_nodes_safe": 249475,
+   "reachable_nodes_any": 249585,
+   "to_ship hold (tunnel end W)": 198.0,
+   "to_ship bridge": 287.0,
+   "to_drill tower top floor": 165.0,
+   "safe_descent_to_tower_zone": true,
+   "tower_zone_min_cost": 31.0
+  }
+ },
+ "safe_descent": {
+  "blue": {
+   "ground_cols_reachable_any": 235695,
+   "ground_cols_reachable_safe": 235585,
+   "safe_share_pct": 100.0
+  },
+  "red": {
+   "ground_cols_reachable_any": 235695,
+   "ground_cols_reachable_safe": 235585,
+   "safe_share_pct": 100.0
+  }
+ },
+ "periphery": {
+  "ground_cols": 185468,
+  "reachable_pct": 85.7
+ },
+ "trap_cells": {
+  "count": 0,
+  "of_cells": 242592,
+  "sample": []
+ },
+ "interiors": {
+  "checked": 46,
+  "reachable_and_exit": 46,
+  "failures": []
+ },
+ "flank": {
+  "band": [
+   130,
+   210
+  ],
+  "blue_to_red_cost": {
+   "north": 478.0,
+   "south": 480.0
+  },
+  "exists": true
+ },
+ "build_gap": {
+  "blue": {
+   "graph": "safe",
+   "margin": 24,
+   "highest_reachable_near_platform_z": 49,
+   "blocks_to_build_up_to_platform_level": 47,
+   "platform_reachable_on_foot": false
+  },
+  "red": {
+   "graph": "safe",
+   "margin": 24,
+   "highest_reachable_near_platform_z": 49,
+   "blocks_to_build_up_to_platform_level": 47,
+   "platform_reachable_on_foot": false
+  }
+ },
+ "anchors": {
+  "blue": {
+   "face_x": 211,
+   "enemy_face_step_min": 0,
+   "raised": false,
+   "enemy_face_walk_on_rows": 32
+  },
+  "red": {
+   "face_x": 300,
+   "enemy_face_step_min": 0,
+   "raised": false,
+   "enemy_face_walk_on_rows": 32
+  }
+ },
+ "spawn_exposure": {
+  "blue": {
+   "preset": "calibrated",
+   "viewers_per_spot_mean": 8.64,
+   "viewers_max": 11,
+   "hidden_pct": 7.9,
+   "exposed_pct": 92.1,
+   "n_viewers": 65,
+   "n_spots": 441,
+   "targets_met": false
+  },
+  "red": {
+   "preset": "calibrated",
+   "viewers_per_spot_mean": 8.68,
+   "viewers_max": 10,
+   "hidden_pct": 7.9,
+   "exposed_pct": 92.1,
+   "n_viewers": 65,
+   "n_spots": 441,
+   "targets_met": false
+  }
+ },
+ "zone_profile": {
+  "teams": {
+   "blue": {
+    "spawn": {
+     "floor_z": 55,
+     "top_z_mean": 54.82,
+     "top_z_min": 54,
+     "top_z_max": 55,
+     "top_z_std": 0.39,
+     "near_mode_share": 1.0,
+     "roof_cols": 0,
+     "deck_cols": 0,
+     "water_cols": 0,
+     "roughness": 0.031,
+     "height_above_front": -1.8,
+     "height_above_centre_ground": -0.82,
+     "height_above_map_median_land": -0.82,
+     "platform_drop": 53.82,
+     "platform_angle_deg": 31.4,
+     "enclosure": {
+      "r0_8_enemy_vol": 3.36,
+      "r0_8_enemy_cover3": 0.497,
+      "r0_8_rear_vol": 1.12,
+      "r0_8_rear_cover3": 0.095,
+      "r0_8_lateral_vol": 1.33,
+      "r0_8_lateral_cover3": 0.154,
+      "r8_20_enemy_vol": 2.67,
+      "r8_20_enemy_cover3": 0.392,
+      "r8_20_rear_vol": 1.96,
+      "r8_20_rear_cover3": 0.148,
+      "r8_20_lateral_vol": 1.68,
+      "r8_20_lateral_cover3": 0.112,
+      "r20_40_enemy_vol": 1.42,
+      "r20_40_enemy_cover3": 0.144,
+      "r20_40_rear_vol": 3.19,
+      "r20_40_rear_cover3": 0.384,
+      "r20_40_lateral_vol": 1.87,
+      "r20_40_lateral_cover3": 0.144
+     },
+     "exits": {
+      "r1": {
+       "open_share": 0.917,
+       "exits": 2,
+       "narrowest": 23,
+       "total_width": 154
+      },
+      "r8": {
+       "open_share": 0.866,
+       "exits": 12,
+       "narrowest": 3,
+       "total_width": 194
+      },
+      "r20": {
+       "open_share": 0.85,
+       "exits": 12,
+       "narrowest": 2,
+       "total_width": 272
+      }
+     },
+     "exit_min_cut": 64,
+     "sealable": false,
+     "platform_viewers_mean": 8.64,
+     "platform_viewers_max": 11,
+     "platform_hidden_pct": 7.9,
+     "seen_from_tower_zone_ground_share": 0.404,
+     "seen_from_tower_zone_ground_viewers_mean": 1.34,
+     "seen_from_centre_ground_share": 0.254,
+     "steps_to_own_end": 68.0,
+     "steps_to_own_end_median": 94.0,
+     "detour_to_own_end_median": 1.06,
+     "spots_reaching_own_end_share": 1.0,
+     "straight_to_own_end": 88,
+     "anchor_minus_spawn_height": 0.82
+    },
+    "front": {
+     "profile_h_every4": [
+      9.8,
+      13.0,
+      11.3,
+      12.5,
+      10.8,
+      9.0,
+      9.2,
+      9.8,
+      9.1,
+      9.0,
+      10.3,
+      10.3,
+      10.3,
+      9.6,
+      9.2,
+      9.0,
+      9.0,
+      9.0,
+      9.0
+     ],
+     "h_mean": 9.98,
+     "slope_per10_toward_platform": -0.39,
+     "raised_vs_spawn": 1.8,
+     "raised_vs_centre": 0.98,
+     "flat_share": 0.818,
+     "water_share": 0.0,
+     "lowland_share": 0.0,
+     "land_width_min": 331,
+     "land_width_p50": 396.0,
+     "object_share": 0.182,
+     "object_h": {
+      "n": 546,
+      "mean": 5.58,
+      "p10": 3.0,
+      "p50": 5.0,
+      "p90": 9.0,
+      "max": 10.0
+     },
+     "objects": 7,
+     "object_footprint": {
+      "n": 7,
+      "mean": 76.86,
+      "p10": 19.6,
+      "p50": 30.0,
+      "p90": 173.2,
+      "max": 274.0
+     },
+     "free_share": 0.818,
+     "free_share_min_section8": 0.494,
+     "largest_empty_diam": 28.8,
+     "anchor_top_mean": 54.0,
+     "anchor_blocks_to_platform": 52.0,
+     "anchor_water_cols": 0,
+     "highest_walkable_near_end_z": 53,
+     "build_gap_blocks": 51,
+     "platform_reachable_on_foot": false,
+     "los_toward_platform_mean": 64.7,
+     "los_along_x_mean": 54.8,
+     "los_16dir_mean": 47.0,
+     "seen_from_enemy_tower_zone_share": 0.23,
+     "anchor_enemy_face": {
+      "face_x": 211,
+      "enemy_face_step_min": 0,
+      "raised": false,
+      "enemy_face_walk_on_rows": 32
+     }
+    }
+   },
+   "red": {
+    "spawn": {
+     "floor_z": 55,
+     "top_z_mean": 54.82,
+     "top_z_min": 54,
+     "top_z_max": 55,
+     "top_z_std": 0.39,
+     "near_mode_share": 1.0,
+     "roof_cols": 0,
+     "deck_cols": 0,
+     "water_cols": 0,
+     "roughness": 0.031,
+     "height_above_front": -1.79,
+     "height_above_centre_ground": -0.82,
+     "height_above_map_median_land": -0.82,
+     "platform_drop": 53.82,
+     "platform_angle_deg": 31.2,
+     "enclosure": {
+      "r0_8_enemy_vol": 3.36,
+      "r0_8_enemy_cover3": 0.497,
+      "r0_8_rear_vol": 1.12,
+      "r0_8_rear_cover3": 0.095,
+      "r0_8_lateral_vol": 1.33,
+      "r0_8_lateral_cover3": 0.154,
+      "r8_20_enemy_vol": 2.67,
+      "r8_20_enemy_cover3": 0.392,
+      "r8_20_rear_vol": 1.96,
+      "r8_20_rear_cover3": 0.148,
+      "r8_20_lateral_vol": 1.68,
+      "r8_20_lateral_cover3": 0.112,
+      "r20_40_enemy_vol": 1.42,
+      "r20_40_enemy_cover3": 0.144,
+      "r20_40_rear_vol": 3.19,
+      "r20_40_rear_cover3": 0.384,
+      "r20_40_lateral_vol": 1.87,
+      "r20_40_lateral_cover3": 0.144
+     },
+     "exits": {
+      "r1": {
+       "open_share": 0.917,
+       "exits": 2,
+       "narrowest": 23,
+       "total_width": 154
+      },
+      "r8": {
+       "open_share": 0.866,
+       "exits": 12,
+       "narrowest": 3,
+       "total_width": 194
+      },
+      "r20": {
+       "open_share": 0.85,
+       "exits": 12,
+       "narrowest": 2,
+       "total_width": 272
+      }
+     },
+     "exit_min_cut": 64,
+     "sealable": false,
+     "platform_viewers_mean": 8.68,
+     "platform_viewers_max": 10,
+     "platform_hidden_pct": 7.9,
+     "seen_from_tower_zone_ground_share": 0.37,
+     "seen_from_tower_zone_ground_viewers_mean": 1.34,
+     "seen_from_centre_ground_share": 0.254,
+     "steps_to_own_end": 69.0,
+     "steps_to_own_end_median": 95.0,
+     "detour_to_own_end_median": 1.06,
+     "spots_reaching_own_end_share": 1.0,
+     "straight_to_own_end": 89,
+     "anchor_minus_spawn_height": 0.82
+    },
+    "front": {
+     "profile_h_every4": [
+      9.8,
+      13.0,
+      11.3,
+      12.5,
+      10.8,
+      9.0,
+      9.2,
+      9.8,
+      9.1,
+      9.0,
+      10.3,
+      10.3,
+      10.3,
+      9.6,
+      9.2,
+      9.0,
+      9.0,
+      9.0,
+      9.0
+     ],
+     "h_mean": 9.97,
+     "slope_per10_toward_platform": -0.39,
+     "raised_vs_spawn": 1.79,
+     "raised_vs_centre": 0.97,
+     "flat_share": 0.82,
+     "water_share": 0.0,
+     "lowland_share": 0.0,
+     "land_width_min": 331,
+     "land_width_p50": 397.5,
+     "object_share": 0.18,
+     "object_h": {
+      "n": 546,
+      "mean": 5.58,
+      "p10": 3.0,
+      "p50": 5.0,
+      "p90": 9.0,
+      "max": 10.0
+     },
+     "objects": 7,
+     "object_footprint": {
+      "n": 7,
+      "mean": 76.86,
+      "p10": 19.6,
+      "p50": 30.0,
+      "p90": 173.2,
+      "max": 274.0
+     },
+     "free_share": 0.82,
+     "free_share_min_section8": 0.494,
+     "largest_empty_diam": 28.8,
+     "anchor_top_mean": 54.0,
+     "anchor_blocks_to_platform": 52.0,
+     "anchor_water_cols": 0,
+     "highest_walkable_near_end_z": 53,
+     "build_gap_blocks": 51,
+     "platform_reachable_on_foot": false,
+     "los_toward_platform_mean": 65.3,
+     "los_along_x_mean": 56.5,
+     "los_16dir_mean": 44.2,
+     "seen_from_enemy_tower_zone_share": 0.167,
+     "anchor_enemy_face": {
+      "face_x": 300,
+      "enemy_face_step_min": 0,
+      "raised": false,
+      "enemy_face_walk_on_rows": 32
+     }
+    }
+   }
+  },
+  "avg": {
+   "spawn": {
+    "floor_z": 55.0,
+    "top_z_mean": 54.82,
+    "top_z_min": 54.0,
+    "top_z_max": 55.0,
+    "top_z_std": 0.39,
+    "near_mode_share": 1.0,
+    "roof_cols": 0.0,
+    "deck_cols": 0.0,
+    "water_cols": 0.0,
+    "roughness": 0.031,
+    "height_above_front": -1.795,
+    "height_above_centre_ground": -0.82,
+    "height_above_map_median_land": -0.82,
+    "platform_drop": 53.82,
+    "platform_angle_deg": 31.3,
+    "enclosure": {
+     "r0_8_enemy_vol": 3.36,
+     "r0_8_enemy_cover3": 0.497,
+     "r0_8_rear_vol": 1.12,
+     "r0_8_rear_cover3": 0.095,
+     "r0_8_lateral_vol": 1.33,
+     "r0_8_lateral_cover3": 0.154,
+     "r8_20_enemy_vol": 2.67,
+     "r8_20_enemy_cover3": 0.392,
+     "r8_20_rear_vol": 1.96,
+     "r8_20_rear_cover3": 0.148,
+     "r8_20_lateral_vol": 1.68,
+     "r8_20_lateral_cover3": 0.112,
+     "r20_40_enemy_vol": 1.42,
+     "r20_40_enemy_cover3": 0.144,
+     "r20_40_rear_vol": 3.19,
+     "r20_40_rear_cover3": 0.384,
+     "r20_40_lateral_vol": 1.87,
+     "r20_40_lateral_cover3": 0.144
+    },
+    "exits": {
+     "r1": {
+      "open_share": 0.917,
+      "exits": 2.0,
+      "narrowest": 23.0,
+      "total_width": 154.0
+     },
+     "r8": {
+      "open_share": 0.866,
+      "exits": 12.0,
+      "narrowest": 3.0,
+      "total_width": 194.0
+     },
+     "r20": {
+      "open_share": 0.85,
+      "exits": 12.0,
+      "narrowest": 2.0,
+      "total_width": 272.0
+     }
+    },
+    "exit_min_cut": 64.0,
+    "sealable": false,
+    "platform_viewers_mean": 8.66,
+    "platform_viewers_max": 10.5,
+    "platform_hidden_pct": 7.9,
+    "seen_from_tower_zone_ground_share": 0.387,
+    "seen_from_tower_zone_ground_viewers_mean": 1.34,
+    "seen_from_centre_ground_share": 0.254,
+    "steps_to_own_end": 68.5,
+    "steps_to_own_end_median": 94.5,
+    "detour_to_own_end_median": 1.06,
+    "spots_reaching_own_end_share": 1.0,
+    "straight_to_own_end": 88.5,
+    "anchor_minus_spawn_height": 0.82
+   },
+   "front": {
+    "profile_h_every4": [
+     9.8,
+     13.0,
+     11.3,
+     12.5,
+     10.8,
+     9.0,
+     9.2,
+     9.8,
+     9.1,
+     9.0,
+     10.3,
+     10.3,
+     10.3,
+     9.6,
+     9.2,
+     9.0,
+     9.0,
+     9.0,
+     9.0
+    ],
+    "h_mean": 9.975,
+    "slope_per10_toward_platform": -0.39,
+    "raised_vs_spawn": 1.795,
+    "raised_vs_centre": 0.975,
+    "flat_share": 0.819,
+    "water_share": 0.0,
+    "lowland_share": 0.0,
+    "land_width_min": 331.0,
+    "land_width_p50": 396.75,
+    "object_share": 0.181,
+    "object_h": {
+     "n": 546.0,
+     "mean": 5.58,
+     "p10": 3.0,
+     "p50": 5.0,
+     "p90": 9.0,
+     "max": 10.0
+    },
+    "objects": 7.0,
+    "object_footprint": {
+     "n": 7.0,
+     "mean": 76.86,
+     "p10": 19.6,
+     "p50": 30.0,
+     "p90": 173.2,
+     "max": 274.0
+    },
+    "free_share": 0.819,
+    "free_share_min_section8": 0.494,
+    "largest_empty_diam": 28.8,
+    "anchor_top_mean": 54.0,
+    "anchor_blocks_to_platform": 52.0,
+    "anchor_water_cols": 0.0,
+    "highest_walkable_near_end_z": 53.0,
+    "build_gap_blocks": 51.0,
+    "platform_reachable_on_foot": false,
+    "los_toward_platform_mean": 65.0,
+    "los_along_x_mean": 55.65,
+    "los_16dir_mean": 45.6,
+    "seen_from_enemy_tower_zone_share": 0.199,
+    "anchor_enemy_face": {
+     "face_x": 255.5,
+     "enemy_face_step_min": 0.0,
+     "raised": false,
+     "enemy_face_walk_on_rows": 32.0
+    }
+   }
+  },
+  "centre": {
+   "strip": {
+    "ground_z_median": 54.0,
+    "water_share": 0.0,
+    "object_share": 0.201,
+    "object_h": {
+     "n": 572,
+     "mean": 4.51,
+     "p10": 2.0,
+     "p50": 5.0,
+     "p90": 9.0,
+     "max": 9.0
+    },
+    "highest_z_under_platform": 45,
+    "min_gap_to_platform": 43,
+    "cols_within_8_of_platform": 0
+   },
+   "zone": {
+    "land_share": 1.0,
+    "object_share": 0.169,
+    "built_volume_per_col": 1.625,
+    "objects": 87,
+    "objects_per_10k": 16.14,
+    "object_footprint": {
+     "n": 87,
+     "mean": 133.95,
+     "p10": 8.0,
+     "p50": 36.0,
+     "p90": 274.0,
+     "max": 3411.0
+    },
+    "object_height": {
+     "n": 87,
+     "mean": 7.49,
+     "p10": 2.0,
+     "p50": 5.0,
+     "p90": 16.0,
+     "max": 42.0
+    },
+    "free_share": 0.831,
+    "gap_width": {
+     "p10": 2.0,
+     "p50": 6.32,
+     "p90": 31.05
+    },
+    "largest_empty_diam": 60.5,
+    "indoor_share": 0.178,
+    "multilevel_share": 0.077,
+    "walkable_col_share": 0.95,
+    "walk_height": {
+     "p5": 2.0,
+     "p50": 9.0,
+     "p95": 19.0
+    },
+    "los_mean": 54.2,
+    "los_p90": 128.0,
+    "seen_from_blue_end_share": 0.405,
+    "seen_from_red_end_share": 0.395,
+    "high_ground_cols_near_ends": [
+     2,
+     2
+    ],
+    "crossing_width": 154,
+    "lanes_at_axis": 4,
+    "lane_widths_at_axis": [
+     167,
+     42,
+     23,
+     5,
+     2,
+     1
+    ]
+   }
+  },
+  "routes": {
+   "spawn_to_enemy_spawn_steps": 236.0,
+   "flank_north_steps": 478.0,
+   "flank_south_steps": 480.0,
+   "flank_exists": true,
+   "flank_ratio": 2.03,
+   "map_crossing_width": 205
+  },
+  "map": {
+   "land_share": 0.708,
+   "land_height": {
+    "p10": 8.0,
+    "p50": 9.0,
+    "p90": 15.0
+   },
+   "void_cols": 0,
+   "symmetry": {
+    "type": "x512~",
+    "best": "x512",
+    "best_mismatch": 0.0217,
+    "mismatch": {
+     "x512": 0.0217,
+     "x511": 0.0649,
+     "y512": 0.4377,
+     "y511": 0.4411,
+     "point511": 0.4423,
+     "point512": 0.4377
+    }
+   }
+  },
+  "class": {
+   "class": "ground",
+   "assist": false,
+   "stock_fit": true
+  }
+ },
+ "zone_rules": {
+  "object_ground": "terrain_H",
+  "thresholds": {
+   "baseline_window": 25,
+   "object_min_h": 2,
+   "relief_step": 2,
+   "relief_steep_share": 0.5,
+   "min_object_cells": 4,
+   "applicable_land_min": 0.5,
+   "front": {
+    "objects": [
+     4,
+     15
+    ],
+    "share": [
+     0.05,
+     0.3
+    ],
+    "low_h": 10,
+    "low_share_min": 0.9,
+    "section": 8,
+    "section_free_min": 0.5
+   },
+   "spawn_cover": {
+    "cover_h": 3,
+    "enemy_r": 20,
+    "enemy_min": 0.25,
+    "rear_r": [
+     20,
+     40
+    ],
+    "rear_min": 0.3
+   },
+   "under_platform": {
+    "share": [
+     0.15,
+     0.45
+    ],
+    "min_air": 25,
+    "anchor_flat_range": 1
+   },
+   "centre": {
+    "box": [
+     150,
+     362,
+     130,
+     382
+    ],
+    "footprint_p50_min": 25
+   }
+  },
+  "front_exempt_boxes": [],
+  "front_exempt": [],
+  "front_dressing": {
+   "status": "pass",
+   "values": {
+    "blue": {
+     "applicable": true,
+     "objects": 7,
+     "object_share": 0.18,
+     "object_heights": [
+      3,
+      4,
+      5,
+      5,
+      8,
+      10,
+      10
+     ],
+     "low_share": 1.0,
+     "cell_height_p90": 9.0,
+     "section_free_min": 0.564,
+     "worst_section_x": [
+      139,
+      146
+     ],
+     "section_free": [
+      0.564,
+      0.841,
+      0.994,
+      0.814,
+      0.997,
+      0.915,
+      0.909,
+      0.966,
+      1.0
+     ],
+     "land_share": 1.0,
+     "exempt_cols": 0
+    },
+    "red": {
+     "applicable": true,
+     "objects": 7,
+     "object_share": 0.177,
+     "object_heights": [
+      3,
+      4,
+      5,
+      5,
+      8,
+      10,
+      10
+     ],
+     "low_share": 1.0,
+     "cell_height_p90": 9.0,
+     "section_free_min": 0.564,
+     "worst_section_x": [
+      366,
+      373
+     ],
+     "section_free": [
+      0.564,
+      0.841,
+      0.994,
+      0.814,
+      0.997,
+      0.915,
+      0.909,
+      0.966,
+      1.0
+     ],
+     "land_share": 1.0,
+     "exempt_cols": 0
+    }
+   },
+   "why": "ok",
+   "avg": {
+    "objects": 7.0,
+    "object_share": 0.178,
+    "low_share": 1.0,
+    "cell_height_p90": 9.0,
+    "section_free_min": 0.564
+   }
+  },
+  "spawn_cover": {
+   "status": "pass",
+   "values": {
+    "blue": {
+     "applicable": true,
+     "floor_z": 55,
+     "enemy_0_20": 0.426,
+     "enemy_0_8": 0.497,
+     "enemy_8_20": 0.392,
+     "rear_20_40": 0.384,
+     "enemy_0_20_land_only": 0.426
+    },
+    "red": {
+     "applicable": true,
+     "floor_z": 55,
+     "enemy_0_20": 0.426,
+     "enemy_0_8": 0.497,
+     "enemy_8_20": 0.392,
+     "rear_20_40": 0.384,
+     "enemy_0_20_land_only": 0.426
+    }
+   },
+   "why": "ok",
+   "avg": {
+    "enemy_0_20": 0.426,
+    "enemy_0_8": 0.497,
+    "enemy_8_20": 0.392,
+    "rear_20_40": 0.384
+   }
+  },
+  "under_platform": {
+   "status": "pass",
+   "values": {
+    "strip": [
+     212,
+     300,
+     240,
+     271
+    ],
+    "strip_land_share": 1.0,
+    "object_share": 0.201,
+    "object_height_max": 9,
+    "min_air_objects": 43,
+    "min_air_all": 43,
+    "anchors": {
+     "blue": {
+      "applicable": true,
+      "x": [
+       206,
+       211
+      ],
+      "top_z_range": 0,
+      "prop_cols": 0
+     },
+     "red": {
+      "applicable": true,
+      "x": [
+       300,
+       305
+      ],
+      "top_z_range": 0,
+      "prop_cols": 0
+     }
+    }
+   },
+   "why": "ok"
+  },
+  "centre_footprint": {
+   "status": "pass",
+   "values": {
+    "objects": 73,
+    "footprint_p50": 32.0,
+    "footprint_p25": 24.0,
+    "footprint_p75": 85.0,
+    "objects_ge_25_cells": 53,
+    "land_share": 1.0
+   },
+   "why": "ok"
+  }
+ },
+ "check_seconds": 7.8,
+ "map": "frozen_icebreaker.vxl",
+ "summary": [
+  {
+   "rule": "parser",
+   "ok": true,
+   "detail": {
+    "bytes": 2557920,
+    "reencode_identical": true,
+    "surface_all_coloured": true,
+    "z63_solid": true
+   },
+   "key": "parser"
+  },
+  {
+   "rule": "pyspades",
+   "ok": true,
+   "detail": {
+    "generate_identical": true,
+    "solid_mismatch_20k": 0,
+    "colour_mismatch_20k": 0
+   },
+   "key": "pyspades"
+  },
+  {
+   "rule": "no unintended floating",
+   "ok": true,
+   "detail": 0,
+   "key": "floating"
+  },
+  {
+   "rule": "mirror",
+   "ok": true,
+   "detail": 0,
+   "key": "mirror"
+  },
+  {
+   "rule": "platform volume clear",
+   "ok": true,
+   "detail": 0,
+   "key": "platform_volume"
+  },
+  {
+   "rule": "ground under both platform ends",
+   "ok": true,
+   "detail": {
+    "blue_end": {
+     "top_z_min": 54,
+     "top_z_max": 54,
+     "water_cols": 0
+    },
+    "red_end": {
+     "top_z_min": 54,
+     "top_z_max": 54,
+     "water_cols": 0
+    }
+   },
+   "key": "platform_ends"
+  },
+  {
+   "rule": "spawn squares: no water / roofs",
+   "ok": true,
+   "detail": {
+    "blue": {
+     "top_z_values": {
+      "54": 310,
+      "55": 1371
+     },
+     "top_z_min": 54,
+     "top_z_max": 55,
+     "flat_share": 0.82,
+     "water_cols": 0,
+     "roof_cols": 0
+    },
+    "red": {
+     "top_z_values": {
+      "54": 310,
+      "55": 1371
+     },
+     "top_z_min": 54,
+     "top_z_max": 55,
+     "flat_share": 0.82,
+     "water_cols": 0,
+     "roof_cols": 0
+    }
+   },
+   "key": "spawn_squares"
+  },
+  {
+   "rule": "safe descent to tower zone",
+   "ok": true,
+   "detail": {
+    "blue": 30.0,
+    "red": 31.0
+   },
+   "key": "safe_descent"
+  },
+  {
+   "rule": "enemy spawn reachable on foot",
+   "ok": true,
+   "detail": {
+    "blue": 236.0,
+    "red": 236.0
+   },
+   "key": "enemy_spawn"
+  },
+  {
+   "rule": "no trap cells",
+   "ok": true,
+   "detail": 0,
+   "key": "traps"
+  },
+  {
+   "rule": "interiors reachable",
+   "ok": true,
+   "detail": 46,
+   "key": "interiors"
+  },
+  {
+   "rule": "flank route exists",
+   "ok": true,
+   "detail": {
+    "north": 478.0,
+    "south": 480.0
+   },
+   "key": "flank"
+  },
+  {
+   "rule": "platform not reachable on foot",
+   "ok": true,
+   "detail": {
+    "blue": 47,
+    "red": 47
+   },
+   "key": "platform_on_foot"
+  },
+  {
+   "rule": "no walk-on steps on the enemy face of the anchors",
+   "ok": true,
+   "detail": {
+    "blue": {
+     "face_x": 211,
+     "enemy_face_step_min": 0,
+     "raised": false,
+     "enemy_face_walk_on_rows": 32
+    },
+    "red": {
+     "face_x": 300,
+     "enemy_face_step_min": 0,
+     "raised": false,
+     "enemy_face_walk_on_rows": 32
+    }
+   },
+   "key": "anchor_face"
+  },
+  {
+   "rule": "spawn exposure blue (<= 10 viewers, >= 15 % hidden)",
+   "ok": true,
+   "detail": {
+    "mean": 8.64,
+    "hidden_pct": 7.9
+   },
+   "key": "spawn_exposure_blue",
+   "measured_ok": false,
+   "measured_status": null,
+   "status": "waived",
+   "waiver": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
+  },
+  {
+   "rule": "spawn exposure red (<= 10 viewers, >= 15 % hidden)",
+   "ok": true,
+   "detail": {
+    "mean": 8.68,
+    "hidden_pct": 7.9
+   },
+   "key": "spawn_exposure_red",
+   "measured_ok": false,
+   "measured_status": null,
+   "status": "waived",
+   "waiver": "owner accepted 2026-11-20: ~8 % hidden, mean viewers <= 10; the 10-tall front cap limits hiding (docs/frozen_icebreaker_spec.md)"
+  },
+  {
+   "key": "front_dressing",
+   "rule": "zone: front dressed, not blocked (4-15 low objects on 5-30 %, >= 90 % of them <= 10 tall, every 8-col section >= 50 % free)",
+   "ok": true,
+   "status": "pass",
+   "detail": {
+    "why": "ok",
+    "avg": {
+     "objects": 7.0,
+     "object_share": 0.178,
+     "low_share": 1.0,
+     "cell_height_p90": 9.0,
+     "section_free_min": 0.564
+    },
+    "values": {
+     "blue": {
+      "applicable": true,
+      "objects": 7,
+      "object_share": 0.18,
+      "object_heights": [
+       3,
+       4,
+       5,
+       5,
+       8,
+       10,
+       10
+      ],
+      "low_share": 1.0,
+      "cell_height_p90": 9.0,
+      "section_free_min": 0.564,
+      "worst_section_x": [
+       139,
+       146
+      ],
+      "section_free": [
+       0.564,
+       0.841,
+       0.994,
+       0.814,
+       0.997,
+       0.915,
+       0.909,
+       0.966,
+       1.0
+      ],
+      "land_share": 1.0,
+      "exempt_cols": 0
+     },
+     "red": {
+      "applicable": true,
+      "objects": 7,
+      "object_share": 0.177,
+      "object_heights": [
+       3,
+       4,
+       5,
+       5,
+       8,
+       10,
+       10
+      ],
+      "low_share": 1.0,
+      "cell_height_p90": 9.0,
+      "section_free_min": 0.564,
+      "worst_section_x": [
+       366,
+       373
+      ],
+      "section_free": [
+       0.564,
+       0.841,
+       0.994,
+       0.814,
+       0.997,
+       0.915,
+       0.909,
+       0.966,
+       1.0
+      ],
+      "land_share": 1.0,
+      "exempt_cols": 0
+     }
+    },
+    "object_ground": "terrain_H",
+    "front_exempt": []
+   }
+  },
+  {
+   "key": "spawn_cover",
+   "rule": "zone: spawn cover (enemy side within 20: >= 25 % cover >= 3 tall; rear 20-40: >= 30 % backdrop)",
+   "ok": true,
+   "status": "pass",
+   "detail": {
+    "why": "ok",
+    "avg": {
+     "enemy_0_20": 0.426,
+     "enemy_0_8": 0.497,
+     "enemy_8_20": 0.392,
+     "rear_20_40": 0.384
+    },
+    "values": {
+     "blue": {
+      "applicable": true,
+      "floor_z": 55,
+      "enemy_0_20": 0.426,
+      "enemy_0_8": 0.497,
+      "enemy_8_20": 0.392,
+      "rear_20_40": 0.384,
+      "enemy_0_20_land_only": 0.426
+     },
+     "red": {
+      "applicable": true,
+      "floor_z": 55,
+      "enemy_0_20": 0.426,
+      "enemy_0_8": 0.497,
+      "enemy_8_20": 0.392,
+      "rear_20_40": 0.384,
+      "enemy_0_20_land_only": 0.426
+     }
+    },
+    "object_ground": "terrain_H"
+   }
+  },
+  {
+   "key": "under_platform",
+   "rule": "zone: strip under the platform (15-45 % low objects, >= 25 air to the platform, anchor ends flat + prop-free)",
+   "ok": true,
+   "status": "pass",
+   "detail": {
+    "why": "ok",
+    "avg": null,
+    "values": {
+     "strip": [
+      212,
+      300,
+      240,
+      271
+     ],
+     "strip_land_share": 1.0,
+     "object_share": 0.201,
+     "object_height_max": 9,
+     "min_air_objects": 43,
+     "min_air_all": 43,
+     "anchors": {
+      "blue": {
+       "applicable": true,
+       "x": [
+        206,
+        211
+       ],
+       "top_z_range": 0,
+       "prop_cols": 0
+      },
+      "red": {
+       "applicable": true,
+       "x": [
+        300,
+        305
+       ],
+       "top_z_range": 0,
+       "prop_cols": 0
+      }
+     }
+    },
+    "object_ground": "terrain_H"
+   }
+  },
+  {
+   "key": "centre_footprint",
+   "rule": "zone: centre anchored by room-sized pieces (median object footprint >= 25 cells)",
+   "ok": true,
+   "status": "pass",
+   "detail": {
+    "why": "ok",
+    "avg": null,
+    "values": {
+     "objects": 73,
+     "footprint_p50": 32.0,
+     "footprint_p25": 24.0,
+     "footprint_p75": 85.0,
+     "objects_ge_25_cells": 53,
+     "land_share": 1.0
+    },
+    "object_ground": "terrain_H"
+   }
+  }
+ ]
+}
