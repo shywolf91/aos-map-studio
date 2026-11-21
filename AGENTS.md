@@ -268,5 +268,10 @@ steps) are in `docs/agents_reference.md` §11. The rules that apply every time:
   `main` at release, merge only when the owner says so. Ask before committing files over ~50 MB; never force-push
   `main`; if a push fails, say so and leave the work committed locally.
 * **Map jobs run through the agent pipeline** `[USER]` (2026-11-20): Rhea (`aos-guru`, a.k.a. aos_guru; she/her) leads, talks to the owner and
-  reviews; `map-designer` concepts, `map-builder` questions + SPEC + build, `map-runner` evidence (`docs/agent_pipeline.md`).
+  reviews; Cleo (`map-designer`) concepts, Juno (`map-builder`) questions + SPEC + build, Kit (`map-runner`) evidence
+  (`docs/agent_pipeline.md`).
+* **Agent names** `[USER]` (2026-11-21): refer to an agent by personal name or role ID, interchangeably: Rhea = `aos-guru`,
+  Cleo = `map-designer`, Juno = `map-builder`, Kit = `map-runner`, Tess = `tess-accountant`. "Have Kit check the export"
+  routes to `map-runner`. Role IDs stay the file names and `subagent_type` values; a table is in `docs/agent_pipeline.md`.
+  Rhea resolves the name and starts the agent by role ID.
 * New maps use the shared kit `aosmap.kit` (`docs/kit.md`). Finish every map with `docs/<map>_spec.md`.
