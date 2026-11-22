@@ -1,0 +1,118 @@
+{
+ "map_dir": "maps/royal_parade_snow_night_v2_recolor",
+ "mode": "babel",
+ "seconds": 2.8,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Royal Parade Snow Night Recolor",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 2,
+   "heavens_color": [
+    78,
+    74,
+    128,
+    255
+   ],
+   "glow_enabled": true
+  },
+  "fog": [
+   168,
+   160,
+   196
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   54,
+   54
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "56": 362,
+     "47": 6,
+     "53": 1,
+     "49": 10,
+     "54": 11,
+     "52": 10
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     54.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "56": 358,
+     "49": 11,
+     "52": 1,
+     "48": 3,
+     "54": 18,
+     "45": 2,
+     "50": 5,
+     "53": 1,
+     "51": 1
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     54.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "log_tail": [
+  "Loading config from 'C:\\\\Users\\\\SHYWOL~1\\\\AppData\\\\Local\\\\Temp\\\\aoskit_probe_tiouu0r3\\\\config.toml'",
+  "2026-11-22T13:17:15-0500 [piqueserver.server#info] piqueserver started on Sun Nov 22 13:17:15 2026",
+  "2026-11-22T13:17:15-0500 [piqueserver.server#info] advancing to map 'RoyalParadeSnowNight_recolor'",
+  "2026-11-22T13:17:15-0500 [piqueserver.server#warn] The following config items are not used:",
+  "2026-11-22T13:17:15-0500 [stdout#info] {'ban_publish': {'enabled': False}}",
+  "2026-11-22T13:17:15-0500 [piqueserver.server#info] Started server...",
+  "2026-11-22T13:17:15-0500 [piqueserver.server#info] Retrieving external IP from https://services.buildandshoot.com/getip to generate server identifier.",
+  "2026-11-22T13:17:15-0500 [piqueserver.server#info] starting ban vacuum with 0 bans",
+  "2026-11-22T13:17:16-0500 [piqueserver.map#info] Loading map 'Royal Parade Snow Night Recolor'...",
+  "2026-11-22T13:17:16-0500 [piqueserver.map#info] Map loaded successfully. (took 0.25s)",
+  "2026-11-22T13:17:16-0500 [piqueserver.server#info] Server public ip address: 97.104.55.169:32999",
+  "2026-11-22T13:17:16-0500 [piqueserver.server#info] Public aos identifier: aos://2838980705:32999",
+  "2026-11-22T13:17:16-0500 [piqueserver.server#info] Local aos identifier: aos://16777343:32999"
+ ],
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

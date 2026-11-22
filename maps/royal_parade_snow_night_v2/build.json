@@ -1,0 +1,3066 @@
+{
+ "map": "Royal Parade Snow Night",
+ "file": "RoyalParadeSnowNight",
+ "sha256": "96194233065a1fcc45c3bb33ed93241b19d34f4fd2827bc9a5eb5d874de44016",
+ "bytes": 2855532,
+ "stage": "art",
+ "version": "2.0",
+ "layout_seed": 20261122,
+ "deco_seed": 3560922333,
+ "source": {
+  "vxl": "D:/Ace of Spades/Aloha.pk_Map/maps/RoyalParadeSnowNight.vxl",
+  "txt": "D:/Ace of Spades/Aloha.pk_Map/maps/RoyalParadeSnowNight.txt",
+  "sha256": "2c022e0b0d49928b9eec3b8ef55c40d2877ae6542b21d94f1a33a6f8e5319d3e",
+  "name": "Royal Parade Night",
+  "authors": "Bradley & Mile",
+  "courtesy": "Sauerkraut"
+ },
+ "regenerate": "python scenes/royal_parade_snow_night/rpsn_main.py <out> --stage art --deco-seed 3560922333",
+ "classify": {
+  "components": 248,
+  "by_kind": {
+   "prop": 124,
+   "building": 15,
+   "vehicle": 25,
+   "jet": 18,
+   "planter": 23,
+   "tree": 26,
+   "median": 2,
+   "figure": 14,
+   "guard": 1
+  },
+  "vehicles_found": [
+   "van_2",
+   "sleigh_w",
+   "car_1",
+   "tree_float_w",
+   "gift_truck_w",
+   "car_3",
+   "car_4",
+   "bus_c1",
+   "decker_c",
+   "car_5",
+   "van_1",
+   "car_2",
+   "coach_c",
+   "van_3",
+   "van_4",
+   "bus_c2",
+   "car_6",
+   "car_7",
+   "gift_truck_e",
+   "tree_float_e",
+   "limo_e",
+   "sleigh_e",
+   "truck_n",
+   "car_8",
+   "car_9"
+  ],
+  "floating_original": [
+   {
+    "box": [
+     36,
+     36,
+     256,
+     256
+    ],
+    "z": [
+     49,
+     50
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     143,
+     159,
+     159,
+     175
+    ],
+    "z": [
+     14,
+     23
+    ],
+    "voxels": 357
+   },
+   {
+    "box": [
+     240,
+     254,
+     323,
+     341
+    ],
+    "z": [
+     4,
+     14
+    ],
+    "voxels": 332
+   },
+   {
+    "box": [
+     373,
+     382,
+     325,
+     347
+    ],
+    "z": [
+     15,
+     26
+    ],
+    "voxels": 342
+   },
+   {
+    "box": [
+     409,
+     425,
+     161,
+     177
+    ],
+    "z": [
+     24,
+     33
+    ],
+    "voxels": 357
+   },
+   {
+    "box": [
+     510,
+     511,
+     201,
+     201
+    ],
+    "z": [
+     53,
+     53
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     202,
+     202
+    ],
+    "z": [
+     48,
+     48
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     202,
+     202
+    ],
+    "z": [
+     54,
+     54
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     203,
+     203
+    ],
+    "z": [
+     43,
+     43
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     203,
+     203
+    ],
+    "z": [
+     49,
+     49
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     204,
+     204
+    ],
+    "z": [
+     44,
+     44
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     204,
+     204
+    ],
+    "z": [
+     50,
+     50
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     205,
+     205
+    ],
+    "z": [
+     45,
+     45
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     205,
+     205
+    ],
+    "z": [
+     51,
+     51
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     206,
+     206
+    ],
+    "z": [
+     46,
+     46
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     286,
+     286
+    ],
+    "z": [
+     52,
+     52
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     287,
+     287
+    ],
+    "z": [
+     53,
+     53
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     288,
+     288
+    ],
+    "z": [
+     54,
+     54
+    ],
+    "voxels": 2
+   }
+  ],
+  "land_columns": 65869,
+  "credit_voxels": {
+   "title": 3380,
+   "by": 1708
+  }
+ },
+ "vehicles": {
+  "gift_truck_w": {
+   "name": "gift_truck_w gift stack",
+   "kind": "gifts",
+   "voxels": 155,
+   "box": [
+    142,
+    149,
+    240,
+    246
+   ],
+   "z": [
+    41,
+    45
+   ],
+   "boxes": [
+    {
+     "box": [
+      142,
+      144,
+      240,
+      246
+     ],
+     "z": [
+      44,
+      62
+     ],
+     "mat": "gift0"
+    },
+    {
+     "box": [
+      145,
+      149,
+      241,
+      246
+     ],
+     "z": [
+      45,
+      62
+     ],
+     "mat": "gift1"
+    },
+    {
+     "box": [
+      143,
+      148,
+      241,
+      245
+     ],
+     "z": [
+      42,
+      44
+     ],
+     "mat": "gift2"
+    }
+   ]
+  },
+  "gift_truck_e": {
+   "name": "gift_truck_e gift stack",
+   "kind": "gifts",
+   "voxels": 229,
+   "box": [
+    363,
+    370,
+    240,
+    245
+   ],
+   "z": [
+    41,
+    51
+   ],
+   "boxes": [
+    {
+     "box": [
+      363,
+      365,
+      240,
+      245
+     ],
+     "z": [
+      44,
+      62
+     ],
+     "mat": "gift0"
+    },
+    {
+     "box": [
+      366,
+      370,
+      241,
+      245
+     ],
+     "z": [
+      45,
+      62
+     ],
+     "mat": "gift1"
+    },
+    {
+     "box": [
+      364,
+      369,
+      241,
+      244
+     ],
+     "z": [
+      42,
+      44
+     ],
+     "mat": "gift2"
+    }
+   ]
+  },
+  "tree_float_w": {
+   "name": "tree_float_w tree",
+   "kind": "tree",
+   "voxels": 435,
+   "box": [
+    139,
+    146,
+    265,
+    274
+   ],
+   "z": [
+    24,
+    48
+   ],
+   "c": [
+    142.0,
+    269.5
+   ],
+   "r": 4.0,
+   "h": 22,
+   "ground": 49,
+   "star": [
+    142,
+    269,
+    24
+   ]
+  },
+  "tree_float_e": {
+   "name": "tree_float_e tree",
+   "kind": "tree",
+   "voxels": 435,
+   "box": [
+    366,
+    373,
+    265,
+    274
+   ],
+   "z": [
+    24,
+    48
+   ],
+   "c": [
+    370.0,
+    269.5
+   ],
+   "r": 4.0,
+   "h": 22,
+   "ground": 49,
+   "star": [
+    370,
+    269,
+    24
+   ]
+  },
+  "sleigh_w": {
+   "name": "sleigh_w santa sleigh",
+   "kind": "sleigh_float",
+   "voxels": 154,
+   "box": [
+    62,
+    73,
+    245,
+    248
+   ],
+   "z": [
+    48,
+    56
+   ],
+   "removed": 172,
+   "noses": [
+    [
+     73,
+     245,
+     50
+    ],
+    [
+     73,
+     248,
+     50
+    ]
+   ],
+   "facing": "x+",
+   "h_before": 8
+  },
+  "sleigh_e": {
+   "name": "sleigh_e santa sleigh",
+   "kind": "sleigh_float",
+   "voxels": 122,
+   "box": [
+    445,
+    453,
+    264,
+    267
+   ],
+   "z": [
+    51,
+    56
+   ],
+   "removed": 120,
+   "noses": [],
+   "facing": "x-",
+   "h_before": 4
+  }
+ },
+ "cover": {
+  "blue": [
+   {
+    "name": "blue great tree (median)",
+    "kind": "tree",
+    "voxels": 833,
+    "box": [
+     139,
+     150,
+     250,
+     262
+    ],
+    "z": [
+     27,
+     55
+    ],
+    "c": [
+     144.0,
+     256.0
+    ],
+    "r": 5.5,
+    "h": 24,
+    "ground": 54,
+    "star": [
+     144,
+     256,
+     27
+    ],
+    "team": "blue"
+   },
+   {
+    "name": "blue parked sleigh (by the truck)",
+    "kind": "sleigh",
+    "voxels": 110,
+    "box": [
+     139,
+     141,
+     240,
+     246
+    ],
+    "z": [
+     48,
+     55
+    ],
+    "h": 7,
+    "team": "blue"
+   },
+   {
+    "name": "blue snowman drift",
+    "kind": "drift",
+    "voxels": 30,
+    "box": [
+     139,
+     141,
+     264,
+     266
+    ],
+    "z": [
+     52,
+     55
+    ],
+    "h": 4,
+    "team": "blue"
+   },
+   {
+    "name": "blue snowman drift snowman",
+    "kind": "snowman",
+    "voxels": 86,
+    "box": [
+     139,
+     143,
+     263,
+     267
+    ],
+    "z": [
+     39,
+     51
+    ],
+    "face": "y+",
+    "team": "blue"
+   },
+   {
+    "name": "blue lane-edge drift",
+    "kind": "drift",
+    "voxels": 25,
+    "box": [
+     139,
+     140,
+     247,
+     248
+    ],
+    "z": [
+     49,
+     55
+    ],
+    "h": 7,
+    "team": "blue"
+   }
+  ],
+  "red": [
+   {
+    "name": "red great tree (median)",
+    "kind": "tree",
+    "voxels": 833,
+    "box": [
+     362,
+     373,
+     250,
+     262
+    ],
+    "z": [
+     27,
+     55
+    ],
+    "c": [
+     368.0,
+     256.0
+    ],
+    "r": 5.5,
+    "h": 24,
+    "ground": 54,
+    "star": [
+     368,
+     256,
+     27
+    ],
+    "team": "red"
+   },
+   {
+    "name": "red parked sleigh (by the truck)",
+    "kind": "sleigh",
+    "voxels": 68,
+    "box": [
+     371,
+     373,
+     240,
+     246
+    ],
+    "z": [
+     45,
+     55
+    ],
+    "h": 7,
+    "team": "red"
+   },
+   {
+    "name": "red snowman drift",
+    "kind": "drift",
+    "voxels": 31,
+    "box": [
+     371,
+     373,
+     264,
+     266
+    ],
+    "z": [
+     52,
+     55
+    ],
+    "h": 4,
+    "team": "red"
+   },
+   {
+    "name": "red snowman drift snowman",
+    "kind": "snowman",
+    "voxels": 87,
+    "box": [
+     370,
+     373,
+     262,
+     267
+    ],
+    "z": [
+     39,
+     51
+    ],
+    "face": "x+",
+    "team": "red"
+   },
+   {
+    "name": "red lane-edge drift",
+    "kind": "drift",
+    "voxels": 25,
+    "box": [
+     372,
+     373,
+     247,
+     248
+    ],
+    "z": [
+     49,
+     55
+    ],
+    "h": 7,
+    "team": "red"
+   }
+  ]
+ },
+ "lamps": {
+  "count": 24,
+  "lights": [
+   [
+    14,
+    234,
+    48
+   ],
+   [
+    38,
+    234,
+    48
+   ],
+   [
+    62,
+    234,
+    48
+   ],
+   [
+    86,
+    234,
+    48
+   ],
+   [
+    152,
+    234,
+    48
+   ],
+   [
+    177,
+    234,
+    48
+   ],
+   [
+    345,
+    234,
+    48
+   ],
+   [
+    371,
+    234,
+    48
+   ],
+   [
+    419,
+    234,
+    48
+   ],
+   [
+    446,
+    234,
+    48
+   ],
+   [
+    470,
+    234,
+    48
+   ],
+   [
+    494,
+    234,
+    48
+   ],
+   [
+    14,
+    277,
+    48
+   ],
+   [
+    38,
+    277,
+    48
+   ],
+   [
+    62,
+    277,
+    48
+   ],
+   [
+    86,
+    277,
+    48
+   ],
+   [
+    158,
+    277,
+    48
+   ],
+   [
+    182,
+    277,
+    48
+   ],
+   [
+    325,
+    277,
+    48
+   ],
+   [
+    353,
+    277,
+    48
+   ],
+   [
+    422,
+    277,
+    48
+   ],
+   [
+    446,
+    277,
+    48
+   ],
+   [
+    470,
+    277,
+    48
+   ],
+   [
+    494,
+    277,
+    48
+   ]
+  ]
+ },
+ "snowmen": {
+  "count": 12,
+  "at": [
+   [
+    319,
+    312
+   ],
+   [
+    260,
+    293
+   ],
+   [
+    489,
+    290
+   ],
+   [
+    347,
+    207
+   ],
+   [
+    384,
+    294
+   ],
+   [
+    459,
+    230
+   ],
+   [
+    316,
+    211
+   ],
+   [
+    242,
+    210
+   ],
+   [
+    94,
+    311
+   ],
+   [
+    34,
+    221
+   ],
+   [
+    166,
+    218
+   ],
+   [
+    471,
+    197
+   ]
+  ]
+ },
+ "kerb_drifts": {
+  "cols_1": 472,
+  "cols_2": 58
+ },
+ "icicles": {
+  "count": 570
+ },
+ "connectivity_build": {
+  "floating_now": 20,
+  "floating_original": 20,
+  "new_floating": []
+ },
+ "placer_refused": 29,
+ "pieces": [
+  {
+   "name": "gift_truck_w gift stack",
+   "kind": "gifts",
+   "voxels": 155,
+   "box": [
+    142,
+    149,
+    240,
+    246
+   ],
+   "z": [
+    41,
+    45
+   ],
+   "boxes": [
+    {
+     "box": [
+      142,
+      144,
+      240,
+      246
+     ],
+     "z": [
+      44,
+      62
+     ],
+     "mat": "gift0"
+    },
+    {
+     "box": [
+      145,
+      149,
+      241,
+      246
+     ],
+     "z": [
+      45,
+      62
+     ],
+     "mat": "gift1"
+    },
+    {
+     "box": [
+      143,
+      148,
+      241,
+      245
+     ],
+     "z": [
+      42,
+      44
+     ],
+     "mat": "gift2"
+    }
+   ]
+  },
+  {
+   "name": "gift_truck_e gift stack",
+   "kind": "gifts",
+   "voxels": 229,
+   "box": [
+    363,
+    370,
+    240,
+    245
+   ],
+   "z": [
+    41,
+    51
+   ],
+   "boxes": [
+    {
+     "box": [
+      363,
+      365,
+      240,
+      245
+     ],
+     "z": [
+      44,
+      62
+     ],
+     "mat": "gift0"
+    },
+    {
+     "box": [
+      366,
+      370,
+      241,
+      245
+     ],
+     "z": [
+      45,
+      62
+     ],
+     "mat": "gift1"
+    },
+    {
+     "box": [
+      364,
+      369,
+      241,
+      244
+     ],
+     "z": [
+      42,
+      44
+     ],
+     "mat": "gift2"
+    }
+   ]
+  },
+  {
+   "name": "tree_float_w tree",
+   "kind": "tree",
+   "voxels": 435,
+   "box": [
+    139,
+    146,
+    265,
+    274
+   ],
+   "z": [
+    24,
+    48
+   ],
+   "c": [
+    142.0,
+    269.5
+   ],
+   "r": 4.0,
+   "h": 22,
+   "ground": 49,
+   "star": [
+    142,
+    269,
+    24
+   ]
+  },
+  {
+   "name": "tree_float_e tree",
+   "kind": "tree",
+   "voxels": 435,
+   "box": [
+    366,
+    373,
+    265,
+    274
+   ],
+   "z": [
+    24,
+    48
+   ],
+   "c": [
+    370.0,
+    269.5
+   ],
+   "r": 4.0,
+   "h": 22,
+   "ground": 49,
+   "star": [
+    370,
+    269,
+    24
+   ]
+  },
+  {
+   "name": "sleigh_w santa sleigh",
+   "kind": "sleigh_float",
+   "voxels": 154,
+   "box": [
+    62,
+    73,
+    245,
+    248
+   ],
+   "z": [
+    48,
+    56
+   ],
+   "removed": 172,
+   "noses": [
+    [
+     73,
+     245,
+     50
+    ],
+    [
+     73,
+     248,
+     50
+    ]
+   ],
+   "facing": "x+",
+   "h_before": 8
+  },
+  {
+   "name": "sleigh_e santa sleigh",
+   "kind": "sleigh_float",
+   "voxels": 122,
+   "box": [
+    445,
+    453,
+    264,
+    267
+   ],
+   "z": [
+    51,
+    56
+   ],
+   "removed": 120,
+   "noses": [],
+   "facing": "x-",
+   "h_before": 4
+  },
+  {
+   "name": "blue great tree (median)",
+   "kind": "tree",
+   "voxels": 833,
+   "box": [
+    139,
+    150,
+    250,
+    262
+   ],
+   "z": [
+    27,
+    55
+   ],
+   "c": [
+    144.0,
+    256.0
+   ],
+   "r": 5.5,
+   "h": 24,
+   "ground": 54,
+   "star": [
+    144,
+    256,
+    27
+   ],
+   "team": "blue"
+  },
+  {
+   "name": "blue parked sleigh (by the truck)",
+   "kind": "sleigh",
+   "voxels": 110,
+   "box": [
+    139,
+    141,
+    240,
+    246
+   ],
+   "z": [
+    48,
+    55
+   ],
+   "h": 7,
+   "team": "blue"
+  },
+  {
+   "name": "blue snowman drift",
+   "kind": "drift",
+   "voxels": 30,
+   "box": [
+    139,
+    141,
+    264,
+    266
+   ],
+   "z": [
+    52,
+    55
+   ],
+   "h": 4,
+   "team": "blue"
+  },
+  {
+   "name": "blue snowman drift snowman",
+   "kind": "snowman",
+   "voxels": 86,
+   "box": [
+    139,
+    143,
+    263,
+    267
+   ],
+   "z": [
+    39,
+    51
+   ],
+   "face": "y+",
+   "team": "blue"
+  },
+  {
+   "name": "blue lane-edge drift",
+   "kind": "drift",
+   "voxels": 25,
+   "box": [
+    139,
+    140,
+    247,
+    248
+   ],
+   "z": [
+    49,
+    55
+   ],
+   "h": 7,
+   "team": "blue"
+  },
+  {
+   "name": "red great tree (median)",
+   "kind": "tree",
+   "voxels": 833,
+   "box": [
+    362,
+    373,
+    250,
+    262
+   ],
+   "z": [
+    27,
+    55
+   ],
+   "c": [
+    368.0,
+    256.0
+   ],
+   "r": 5.5,
+   "h": 24,
+   "ground": 54,
+   "star": [
+    368,
+    256,
+    27
+   ],
+   "team": "red"
+  },
+  {
+   "name": "red parked sleigh (by the truck)",
+   "kind": "sleigh",
+   "voxels": 68,
+   "box": [
+    371,
+    373,
+    240,
+    246
+   ],
+   "z": [
+    45,
+    55
+   ],
+   "h": 7,
+   "team": "red"
+  },
+  {
+   "name": "red snowman drift",
+   "kind": "drift",
+   "voxels": 31,
+   "box": [
+    371,
+    373,
+    264,
+    266
+   ],
+   "z": [
+    52,
+    55
+   ],
+   "h": 4,
+   "team": "red"
+  },
+  {
+   "name": "red snowman drift snowman",
+   "kind": "snowman",
+   "voxels": 87,
+   "box": [
+    370,
+    373,
+    262,
+    267
+   ],
+   "z": [
+    39,
+    51
+   ],
+   "face": "x+",
+   "team": "red"
+  },
+  {
+   "name": "red lane-edge drift",
+   "kind": "drift",
+   "voxels": 25,
+   "box": [
+    372,
+    373,
+    247,
+    248
+   ],
+   "z": [
+    49,
+    55
+   ],
+   "h": 7,
+   "team": "red"
+  },
+  {
+   "name": "lamp 14,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    14,
+    14,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    14,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     14,
+     234,
+     48
+    ],
+    [
+     14,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 38,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    38,
+    38,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    38,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     38,
+     234,
+     48
+    ],
+    [
+     38,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 62,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    62,
+    62,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    62,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     62,
+     234,
+     48
+    ],
+    [
+     62,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 86,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    86,
+    86,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    86,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     86,
+     234,
+     48
+    ],
+    [
+     86,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 152,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    152,
+    152,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    152,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     152,
+     234,
+     48
+    ],
+    [
+     152,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 177,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    177,
+    177,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    177,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     177,
+     234,
+     48
+    ],
+    [
+     177,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 345,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    345,
+    345,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    345,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     345,
+     234,
+     48
+    ],
+    [
+     345,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 371,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    371,
+    371,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    371,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     371,
+     234,
+     48
+    ],
+    [
+     371,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 419,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    419,
+    419,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    419,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     419,
+     234,
+     48
+    ],
+    [
+     419,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 446,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    446,
+    446,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    446,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     446,
+     234,
+     48
+    ],
+    [
+     446,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 470,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    470,
+    470,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    470,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     470,
+     234,
+     48
+    ],
+    [
+     470,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 494,234",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    494,
+    494,
+    234,
+    234
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    494,
+    234,
+    48
+   ],
+   "lights": [
+    [
+     494,
+     234,
+     48
+    ],
+    [
+     494,
+     234,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 14,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    14,
+    14,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    14,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     14,
+     277,
+     48
+    ],
+    [
+     14,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 38,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    38,
+    38,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    38,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     38,
+     277,
+     48
+    ],
+    [
+     38,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 62,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    62,
+    62,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    62,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     62,
+     277,
+     48
+    ],
+    [
+     62,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 86,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    86,
+    86,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    86,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     86,
+     277,
+     48
+    ],
+    [
+     86,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 158,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    158,
+    158,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    158,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     158,
+     277,
+     48
+    ],
+    [
+     158,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 182,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    182,
+    182,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    182,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     182,
+     277,
+     48
+    ],
+    [
+     182,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 325,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    325,
+    325,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    325,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     325,
+     277,
+     48
+    ],
+    [
+     325,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 353,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    353,
+    353,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    353,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     353,
+     277,
+     48
+    ],
+    [
+     353,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 422,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    422,
+    422,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    422,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     422,
+     277,
+     48
+    ],
+    [
+     422,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 446,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    446,
+    446,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    446,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     446,
+     277,
+     48
+    ],
+    [
+     446,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 470,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    470,
+    470,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    470,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     470,
+     277,
+     48
+    ],
+    [
+     470,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "lamp 494,277",
+   "kind": "lamp",
+   "voxels": 10,
+   "box": [
+    494,
+    494,
+    277,
+    277
+   ],
+   "z": [
+    46,
+    55
+   ],
+   "light": [
+    494,
+    277,
+    48
+   ],
+   "lights": [
+    [
+     494,
+     277,
+     48
+    ],
+    [
+     494,
+     277,
+     49
+    ]
+   ]
+  },
+  {
+   "name": "snowman drift 319,312",
+   "kind": "drift",
+   "voxels": 115,
+   "box": [
+    315,
+    323,
+    308,
+    316
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 319,312",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    316,
+    322,
+    309,
+    314
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y-"
+  },
+  {
+   "name": "snowman drift 260,293",
+   "kind": "drift",
+   "voxels": 122,
+   "box": [
+    256,
+    264,
+    289,
+    297
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 260,293",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    257,
+    262,
+    290,
+    296
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "x-"
+  },
+  {
+   "name": "snowman drift 489,290",
+   "kind": "drift",
+   "voxels": 120,
+   "box": [
+    485,
+    493,
+    286,
+    294
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 489,290",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    487,
+    492,
+    287,
+    293
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "x+"
+  },
+  {
+   "name": "snowman drift 347,207",
+   "kind": "drift",
+   "voxels": 118,
+   "box": [
+    343,
+    351,
+    203,
+    211
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 347,207",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    345,
+    350,
+    204,
+    210
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "x+"
+  },
+  {
+   "name": "snowman drift 384,294",
+   "kind": "drift",
+   "voxels": 123,
+   "box": [
+    380,
+    388,
+    290,
+    298
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 384,294",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    381,
+    387,
+    291,
+    296
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y-"
+  },
+  {
+   "name": "snowman drift 459,230",
+   "kind": "drift",
+   "voxels": 119,
+   "box": [
+    455,
+    463,
+    226,
+    234
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 459,230",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    456,
+    462,
+    228,
+    233
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y+"
+  },
+  {
+   "name": "snowman drift 316,211",
+   "kind": "drift",
+   "voxels": 121,
+   "box": [
+    312,
+    320,
+    207,
+    215
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 316,211",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    313,
+    319,
+    208,
+    213
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y-"
+  },
+  {
+   "name": "snowman drift 242,210",
+   "kind": "drift",
+   "voxels": 121,
+   "box": [
+    238,
+    246,
+    206,
+    214
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 242,210",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    239,
+    245,
+    207,
+    212
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y-"
+  },
+  {
+   "name": "snowman drift 94,311",
+   "kind": "drift",
+   "voxels": 116,
+   "box": [
+    90,
+    98,
+    307,
+    315
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 94,311",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    91,
+    97,
+    309,
+    314
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y+"
+  },
+  {
+   "name": "snowman drift 34,221",
+   "kind": "drift",
+   "voxels": 121,
+   "box": [
+    30,
+    38,
+    217,
+    225
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 34,221",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    31,
+    37,
+    219,
+    224
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y+"
+  },
+  {
+   "name": "snowman drift 166,218",
+   "kind": "drift",
+   "voxels": 121,
+   "box": [
+    162,
+    170,
+    214,
+    222
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 166,218",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    163,
+    169,
+    215,
+    220
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "y-"
+  },
+  {
+   "name": "snowman drift 471,197",
+   "kind": "drift",
+   "voxels": 121,
+   "box": [
+    467,
+    475,
+    193,
+    201
+   ],
+   "z": [
+    54,
+    55
+   ],
+   "h": 2
+  },
+  {
+   "name": "snowman 471,197",
+   "kind": "snowman",
+   "voxels": 105,
+   "box": [
+    468,
+    473,
+    194,
+    200
+   ],
+   "z": [
+    41,
+    53
+   ],
+   "face": "x-"
+  },
+  {
+   "name": "icicles",
+   "kind": "icicle",
+   "voxels": 570
+  }
+ ],
+ "materials": {
+  "air": 0,
+  "water": 1,
+  "credit_title": 2,
+  "credit_by": 3,
+  "street": 4,
+  "ground": 5,
+  "prop": 6,
+  "building": 7,
+  "vehicle:van_2": 8,
+  "jet": 9,
+  "planter": 10,
+  "tree": 11,
+  "vehicle:sleigh_w": 12,
+  "median": 13,
+  "figure": 14,
+  "vehicle:car_1": 15,
+  "vehicle:tree_float_w": 16,
+  "vehicle:gift_truck_w": 17,
+  "vehicle:car_3": 18,
+  "vehicle:car_4": 19,
+  "vehicle:bus_c1": 20,
+  "vehicle:decker_c": 21,
+  "vehicle:car_5": 22,
+  "vehicle:van_1": 23,
+  "vehicle:car_2": 24,
+  "vehicle:coach_c": 25,
+  "vehicle:van_3": 26,
+  "vehicle:van_4": 27,
+  "vehicle:bus_c2": 28,
+  "vehicle:car_6": 29,
+  "vehicle:car_7": 30,
+  "vehicle:gift_truck_e": 31,
+  "vehicle:tree_float_e": 32,
+  "guard": 33,
+  "vehicle:limo_e": 34,
+  "vehicle:sleigh_e": 35,
+  "vehicle:truck_n": 36,
+  "vehicle:car_8": 37,
+  "vehicle:car_9": 38,
+  "gift0": 39,
+  "gift1": 40,
+  "gift2": 41,
+  "gift_bow": 42,
+  "floattree_trunk": 43,
+  "floattree": 44,
+  "floattree_star": 45,
+  "santa_sleigh_runner": 46,
+  "santa_sleigh_back": 47,
+  "santa_sleigh_body": 48,
+  "reindeer": 49,
+  "reindeer_nose": 50,
+  "reindeer_antler": 51,
+  "harness": 52,
+  "sack": 53,
+  "greattree_tub": 54,
+  "greattree_trunk": 55,
+  "greattree": 56,
+  "greattree_star": 57,
+  "parkedsleigh_runner": 58,
+  "parkedsleigh_back": 59,
+  "parkedsleigh_body": 60,
+  "coverdrift": 61,
+  "snowman": 62,
+  "snowman_coal": 63,
+  "snowman_hat": 64,
+  "snowman_scarf": 65,
+  "snowman_arm": 66,
+  "lamp_post": 67,
+  "lamp_collar": 68,
+  "lamp_light": 69,
+  "lamp_cap": 70,
+  "snowcap": 71,
+  "kerbdrift": 72,
+  "snowman_nose": 73,
+  "icicle": 74
+ },
+ "art": {
+  "ramps": {
+   "snow": [
+    [
+     74,
+     92,
+     125
+    ],
+    [
+     87,
+     105,
+     138
+    ],
+    [
+     99,
+     118,
+     152
+    ],
+    [
+     114,
+     131,
+     166
+    ],
+    [
+     113,
+     136,
+     169
+    ],
+    [
+     112,
+     141,
+     172
+    ],
+    [
+     112,
+     146,
+     175
+    ]
+   ],
+   "slush": [
+    [
+     63,
+     72,
+     89
+    ],
+    [
+     71,
+     83,
+     106
+    ],
+    [
+     80,
+     94,
+     122
+    ],
+    [
+     91,
+     106,
+     129
+    ],
+    [
+     104,
+     118,
+     135
+    ]
+   ],
+   "brick": [
+    [
+     56,
+     40,
+     39
+    ],
+    [
+     74,
+     52,
+     49
+    ],
+    [
+     92,
+     66,
+     58
+    ],
+    [
+     104,
+     83,
+     73
+    ],
+    [
+     116,
+     100,
+     90
+    ]
+   ],
+   "stone": [
+    [
+     57,
+     60,
+     72
+    ],
+    [
+     70,
+     77,
+     92
+    ],
+    [
+     82,
+     94,
+     112
+    ],
+    [
+     99,
+     112,
+     126
+    ],
+    [
+     117,
+     130,
+     140
+    ]
+   ],
+   "evergreen": [
+    [
+     18,
+     38,
+     38
+    ],
+    [
+     25,
+     52,
+     49
+    ],
+    [
+     34,
+     66,
+     58
+    ],
+    [
+     55,
+     78,
+     68
+    ],
+    [
+     74,
+     90,
+     80
+    ]
+   ]
+  },
+  "street_cols": 43117,
+  "quay_ice_cols": 5119,
+  "tag_rect": [
+   315,
+   495,
+   426,
+   451,
+   63
+  ],
+  "tree_details": {
+   "greattree@144,255": [
+    "pinecones",
+    "ribbon",
+    "snow_heavy"
+   ],
+   "greattree@367,255": [
+    "baubles",
+    "pinecones",
+    "tinsel"
+   ],
+   "floattree@142,269": [
+    "baubles",
+    "pinecones",
+    "tinsel"
+   ],
+   "floattree@369,269": [
+    "pinecones",
+    "ribbon",
+    "tinsel"
+   ]
+  },
+  "windows": {
+   "units": 544,
+   "recessed_panes": 29,
+   "openings": 1686,
+   "opening_looks": 779,
+   "sources": 199,
+   "sill_candles": 91,
+   "orig_yellow_lights": 81,
+   "orig_yellow_sources": 11
+  },
+  "string_lights": {
+   "wire_voxels": 2713,
+   "bulbs": 863,
+   "bulb_sources": 185
+  },
+  "bunting": {
+   "voxels": 228
+  },
+  "lamp_garlands_voxels": 61,
+  "bulbs": {
+   "tree_bulbs_src": 30,
+   "tree_bulbs_dim": 59
+  },
+  "brightness": {
+   "dark_floors_raised": 625,
+   "whites_capped": 2573
+  },
+  "glow_sources": 477,
+  "glow_stored": 58838,
+  "palette_nudged": 2,
+  "geometry_unchanged_sha": "dacedfe9c0f7d2a4b6dbf687b449e4dd71de6d4d72e9dd44495db1335ff41559"
+ },
+ "structures": [],
+ "kept_floating_note": "original jets and stubs: listed in sky_objects, unchanged",
+ "build_seconds": 19.2,
+ "sky_objects": [
+  {
+   "name": "original floating piece",
+   "x": [
+    36,
+    36
+   ],
+   "y": [
+    256,
+    256
+   ],
+   "z": [
+    49,
+    50
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    143,
+    159
+   ],
+   "y": [
+    159,
+    175
+   ],
+   "z": [
+    14,
+    23
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    240,
+    254
+   ],
+   "y": [
+    323,
+    341
+   ],
+   "z": [
+    4,
+    14
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    373,
+    382
+   ],
+   "y": [
+    325,
+    347
+   ],
+   "z": [
+    15,
+    26
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    409,
+    425
+   ],
+   "y": [
+    161,
+    177
+   ],
+   "z": [
+    24,
+    33
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    201,
+    201
+   ],
+   "z": [
+    53,
+    53
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    202,
+    202
+   ],
+   "z": [
+    48,
+    48
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    202,
+    202
+   ],
+   "z": [
+    54,
+    54
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    203,
+    203
+   ],
+   "z": [
+    43,
+    43
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    203,
+    203
+   ],
+   "z": [
+    49,
+    49
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    203,
+    203
+   ],
+   "z": [
+    55,
+    55
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    204,
+    204
+   ],
+   "z": [
+    44,
+    44
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    204,
+    204
+   ],
+   "z": [
+    50,
+    50
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    205,
+    205
+   ],
+   "z": [
+    45,
+    45
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    205,
+    205
+   ],
+   "z": [
+    51,
+    51
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    206,
+    206
+   ],
+   "z": [
+    46,
+    46
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    286,
+    286
+   ],
+   "z": [
+    52,
+    52
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    287,
+    287
+   ],
+   "z": [
+    53,
+    53
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    288,
+    288
+   ],
+   "z": [
+    54,
+    54
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    289,
+    289
+   ],
+   "z": [
+    55,
+    55
+   ]
+  }
+ ]
+}

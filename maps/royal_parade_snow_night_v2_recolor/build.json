@@ -1,0 +1,944 @@
+{
+ "map": "Royal Parade Snow Night Recolor",
+ "file": "RoyalParadeSnowNight_recolor",
+ "sha256": "886998cd80698b54b2bf48e29894f9ed5866c99f346ecb622cd20fbf324a5f9f",
+ "bytes": 2834348,
+ "stage": "art",
+ "version": "2.0",
+ "layout_seed": 20261122,
+ "deco_seed": 387005701,
+ "source": {
+  "vxl": "D:/Ace of Spades/Aloha.pk_Map/maps/RoyalParadeSnowNight.vxl",
+  "txt": "D:/Ace of Spades/Aloha.pk_Map/maps/RoyalParadeSnowNight.txt",
+  "sha256": "2c022e0b0d49928b9eec3b8ef55c40d2877ae6542b21d94f1a33a6f8e5319d3e",
+  "name": "Royal Parade Night",
+  "authors": "Bradley & Mile",
+  "courtesy": "Sauerkraut"
+ },
+ "regenerate": "python scenes/royal_parade_snow_night/rpsn_main.py <out> --variant recolor --deco-seed 387005701",
+ "classify": {
+  "components": 248,
+  "by_kind": {
+   "prop": 124,
+   "building": 15,
+   "vehicle": 25,
+   "jet": 18,
+   "planter": 23,
+   "tree": 26,
+   "median": 2,
+   "figure": 14,
+   "guard": 1
+  },
+  "vehicles_found": [
+   "van_2",
+   "sleigh_w",
+   "car_1",
+   "tree_float_w",
+   "gift_truck_w",
+   "car_3",
+   "car_4",
+   "bus_c1",
+   "decker_c",
+   "car_5",
+   "van_1",
+   "car_2",
+   "coach_c",
+   "van_3",
+   "van_4",
+   "bus_c2",
+   "car_6",
+   "car_7",
+   "gift_truck_e",
+   "tree_float_e",
+   "limo_e",
+   "sleigh_e",
+   "truck_n",
+   "car_8",
+   "car_9"
+  ],
+  "floating_original": [
+   {
+    "box": [
+     36,
+     36,
+     256,
+     256
+    ],
+    "z": [
+     49,
+     50
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     143,
+     159,
+     159,
+     175
+    ],
+    "z": [
+     14,
+     23
+    ],
+    "voxels": 357
+   },
+   {
+    "box": [
+     240,
+     254,
+     323,
+     341
+    ],
+    "z": [
+     4,
+     14
+    ],
+    "voxels": 332
+   },
+   {
+    "box": [
+     373,
+     382,
+     325,
+     347
+    ],
+    "z": [
+     15,
+     26
+    ],
+    "voxels": 342
+   },
+   {
+    "box": [
+     409,
+     425,
+     161,
+     177
+    ],
+    "z": [
+     24,
+     33
+    ],
+    "voxels": 357
+   },
+   {
+    "box": [
+     510,
+     511,
+     201,
+     201
+    ],
+    "z": [
+     53,
+     53
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     202,
+     202
+    ],
+    "z": [
+     48,
+     48
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     202,
+     202
+    ],
+    "z": [
+     54,
+     54
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     203,
+     203
+    ],
+    "z": [
+     43,
+     43
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     203,
+     203
+    ],
+    "z": [
+     49,
+     49
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     204,
+     204
+    ],
+    "z": [
+     44,
+     44
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     204,
+     204
+    ],
+    "z": [
+     50,
+     50
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     205,
+     205
+    ],
+    "z": [
+     45,
+     45
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     205,
+     205
+    ],
+    "z": [
+     51,
+     51
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     206,
+     206
+    ],
+    "z": [
+     46,
+     46
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     286,
+     286
+    ],
+    "z": [
+     52,
+     52
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     287,
+     287
+    ],
+    "z": [
+     53,
+     53
+    ],
+    "voxels": 2
+   },
+   {
+    "box": [
+     510,
+     511,
+     288,
+     288
+    ],
+    "z": [
+     54,
+     54
+    ],
+    "voxels": 2
+   }
+  ],
+  "land_columns": 65869,
+  "credit_voxels": {
+   "title": 3380,
+   "by": 1708
+  }
+ },
+ "vehicles": {},
+ "cover": {},
+ "lamps": {
+  "count": 14,
+  "lights": [
+   [
+    84,
+    242,
+    49
+   ],
+   [
+    92,
+    270,
+    49
+   ],
+   [
+    94,
+    242,
+    49
+   ],
+   [
+    102,
+    270,
+    49
+   ],
+   [
+    249,
+    240,
+    49
+   ],
+   [
+    249,
+    256,
+    49
+   ],
+   [
+    250,
+    272,
+    49
+   ],
+   [
+    263,
+    240,
+    49
+   ],
+   [
+    264,
+    256,
+    49
+   ],
+   [
+    264,
+    272,
+    49
+   ],
+   [
+    419,
+    243,
+    49
+   ],
+   [
+    427,
+    269,
+    49
+   ],
+   [
+    431,
+    243,
+    49
+   ],
+   [
+    439,
+    269,
+    49
+   ]
+  ],
+  "note": "original street posts used as lamps"
+ },
+ "snowmen": {
+  "count": 0
+ },
+ "kerb_drifts": {
+  "cols_1": 0,
+  "cols_2": 0
+ },
+ "icicles": {
+  "count": 0
+ },
+ "connectivity_build": {
+  "floating_now": 20,
+  "floating_original": 20,
+  "new_floating": []
+ },
+ "placer_refused": 0,
+ "pieces": [
+  {
+   "name": "icicles",
+   "kind": "icicle",
+   "voxels": 0
+  }
+ ],
+ "materials": {
+  "air": 0,
+  "water": 1,
+  "credit_title": 2,
+  "credit_by": 3,
+  "street": 4,
+  "ground": 5,
+  "prop": 6,
+  "building": 7,
+  "vehicle:van_2": 8,
+  "jet": 9,
+  "planter": 10,
+  "tree": 11,
+  "vehicle:sleigh_w": 12,
+  "median": 13,
+  "figure": 14,
+  "vehicle:car_1": 15,
+  "vehicle:tree_float_w": 16,
+  "vehicle:gift_truck_w": 17,
+  "vehicle:car_3": 18,
+  "vehicle:car_4": 19,
+  "vehicle:bus_c1": 20,
+  "vehicle:decker_c": 21,
+  "vehicle:car_5": 22,
+  "vehicle:van_1": 23,
+  "vehicle:car_2": 24,
+  "vehicle:coach_c": 25,
+  "vehicle:van_3": 26,
+  "vehicle:van_4": 27,
+  "vehicle:bus_c2": 28,
+  "vehicle:car_6": 29,
+  "vehicle:car_7": 30,
+  "vehicle:gift_truck_e": 31,
+  "vehicle:tree_float_e": 32,
+  "guard": 33,
+  "vehicle:limo_e": 34,
+  "vehicle:sleigh_e": 35,
+  "vehicle:truck_n": 36,
+  "vehicle:car_8": 37,
+  "vehicle:car_9": 38
+ },
+ "art": {
+  "ramps": {
+   "snow": [
+    [
+     74,
+     92,
+     125
+    ],
+    [
+     87,
+     105,
+     138
+    ],
+    [
+     99,
+     118,
+     152
+    ],
+    [
+     114,
+     131,
+     166
+    ],
+    [
+     113,
+     136,
+     169
+    ],
+    [
+     112,
+     141,
+     172
+    ],
+    [
+     112,
+     146,
+     175
+    ]
+   ],
+   "slush": [
+    [
+     63,
+     72,
+     89
+    ],
+    [
+     71,
+     83,
+     106
+    ],
+    [
+     80,
+     94,
+     122
+    ],
+    [
+     91,
+     106,
+     129
+    ],
+    [
+     104,
+     118,
+     135
+    ]
+   ],
+   "brick": [
+    [
+     56,
+     40,
+     39
+    ],
+    [
+     74,
+     52,
+     49
+    ],
+    [
+     92,
+     66,
+     58
+    ],
+    [
+     104,
+     83,
+     73
+    ],
+    [
+     116,
+     100,
+     90
+    ]
+   ],
+   "stone": [
+    [
+     57,
+     60,
+     72
+    ],
+    [
+     70,
+     77,
+     92
+    ],
+    [
+     82,
+     94,
+     112
+    ],
+    [
+     99,
+     112,
+     126
+    ],
+    [
+     117,
+     130,
+     140
+    ]
+   ],
+   "evergreen": [
+    [
+     18,
+     38,
+     38
+    ],
+    [
+     25,
+     52,
+     49
+    ],
+    [
+     34,
+     66,
+     58
+    ],
+    [
+     55,
+     78,
+     68
+    ],
+    [
+     74,
+     90,
+     80
+    ]
+   ]
+  },
+  "street_cols": 44662,
+  "quay_ice_cols": 5119,
+  "tag_rect": [
+   315,
+   495,
+   426,
+   451,
+   63
+  ],
+  "tree_details": {},
+  "windows": {
+   "units": 543,
+   "recessed_panes": 29,
+   "openings": 1686,
+   "opening_looks": 764,
+   "sources": 190,
+   "sill_candles": 89,
+   "orig_yellow_lights": 85,
+   "orig_yellow_sources": 11
+  },
+  "string_lights": {
+   "wire_voxels": 2773,
+   "bulbs": 893,
+   "bulb_sources": 194
+  },
+  "bunting": {
+   "voxels": 249
+  },
+  "lamp_garlands_voxels": 0,
+  "bulbs": {
+   "tree_bulbs_src": 0,
+   "tree_bulbs_dim": 0
+  },
+  "brightness": {
+   "dark_floors_raised": 597,
+   "whites_capped": 11
+  },
+  "glow_sources": 390,
+  "glow_stored": 56069,
+  "palette_nudged": 0,
+  "geometry_unchanged_sha": "9664ec808e98bee99b89abcc2e0c9f41b5898da82cc910f4acd9bbefd5d83251"
+ },
+ "structures": [],
+ "kept_floating_note": "original jets and stubs: listed in sky_objects, unchanged",
+ "build_seconds": 17.8,
+ "variant": "recolor",
+ "geometry_vs_original": {
+  "identical": true,
+  "added_voxels": 0,
+  "removed_voxels": 0
+ },
+ "sky_objects": [
+  {
+   "name": "original floating piece",
+   "x": [
+    36,
+    36
+   ],
+   "y": [
+    256,
+    256
+   ],
+   "z": [
+    49,
+    50
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    143,
+    159
+   ],
+   "y": [
+    159,
+    175
+   ],
+   "z": [
+    14,
+    23
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    240,
+    254
+   ],
+   "y": [
+    323,
+    341
+   ],
+   "z": [
+    4,
+    14
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    373,
+    382
+   ],
+   "y": [
+    325,
+    347
+   ],
+   "z": [
+    15,
+    26
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    409,
+    425
+   ],
+   "y": [
+    161,
+    177
+   ],
+   "z": [
+    24,
+    33
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    201,
+    201
+   ],
+   "z": [
+    53,
+    53
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    202,
+    202
+   ],
+   "z": [
+    48,
+    48
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    202,
+    202
+   ],
+   "z": [
+    54,
+    54
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    203,
+    203
+   ],
+   "z": [
+    43,
+    43
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    203,
+    203
+   ],
+   "z": [
+    49,
+    49
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    203,
+    203
+   ],
+   "z": [
+    55,
+    55
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    204,
+    204
+   ],
+   "z": [
+    44,
+    44
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    204,
+    204
+   ],
+   "z": [
+    50,
+    50
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    205,
+    205
+   ],
+   "z": [
+    45,
+    45
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    205,
+    205
+   ],
+   "z": [
+    51,
+    51
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    206,
+    206
+   ],
+   "z": [
+    46,
+    46
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    286,
+    286
+   ],
+   "z": [
+    52,
+    52
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    287,
+    287
+   ],
+   "z": [
+    53,
+    53
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    288,
+    288
+   ],
+   "z": [
+    54,
+    54
+   ]
+  },
+  {
+   "name": "original floating piece",
+   "x": [
+    510,
+    511
+   ],
+   "y": [
+    289,
+    289
+   ],
+   "z": [
+    55,
+    55
+   ]
+  }
+ ]
+}
