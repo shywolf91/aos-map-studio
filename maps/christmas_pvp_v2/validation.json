@@ -16,7 +16,7 @@
   "under_platform": "owner decision 2026-11-22: giant trees under the platform kept unchanged"
  },
  "reader": {
-  "bytes": 3269876,
+  "bytes": 3269484,
   "reencode_identical": true,
   "surface_all_coloured": true,
   "z63_solid": true
@@ -356,7 +356,7 @@
  },
  "mirror": {
   "solid_mismatch": 14446,
-  "material_mismatch": 17236,
+  "material_mismatch": 17242,
   "solid_mismatch_unfiltered": 14446,
   "excluded_boxes": [],
   "axis": "x512"
@@ -425,9 +425,9 @@
    "to_own_platform_end": 68.0,
    "to_enemy_spawn": 236.0,
    "to_enemy_spawn_any_drop": 236.0,
-   "reachable_nodes_pct": 88.4,
-   "reachable_nodes_safe": 258256,
-   "reachable_nodes_any": 259220,
+   "reachable_nodes_pct": 88.5,
+   "reachable_nodes_safe": 258264,
+   "reachable_nodes_any": 259228,
    "safe_descent_to_tower_zone": true,
    "tower_zone_min_cost": 30.0
   },
@@ -435,32 +435,32 @@
    "to_own_platform_end": 69.0,
    "to_enemy_spawn": 236.0,
    "to_enemy_spawn_any_drop": 236.0,
-   "reachable_nodes_pct": 88.4,
-   "reachable_nodes_safe": 258256,
-   "reachable_nodes_any": 259220,
+   "reachable_nodes_pct": 88.5,
+   "reachable_nodes_safe": 258264,
+   "reachable_nodes_any": 259228,
    "safe_descent_to_tower_zone": true,
    "tower_zone_min_cost": 31.0
   }
  },
  "safe_descent": {
   "blue": {
-   "ground_cols_reachable_any": 242725,
-   "ground_cols_reachable_safe": 242697,
+   "ground_cols_reachable_any": 242897,
+   "ground_cols_reachable_safe": 242869,
    "safe_share_pct": 100.0
   },
   "red": {
-   "ground_cols_reachable_any": 242725,
-   "ground_cols_reachable_safe": 242697,
+   "ground_cols_reachable_any": 242897,
+   "ground_cols_reachable_safe": 242869,
    "safe_share_pct": 100.0
   }
  },
  "periphery": {
-  "ground_cols": 55995,
-  "reachable_pct": 69.4
+  "ground_cols": 55873,
+  "reachable_pct": 69.6
  },
  "trap_cells": {
   "count": 266,
-  "of_cells": 249715,
+  "of_cells": 249723,
   "sample": [
    [
     93,
@@ -660,20 +660,20 @@
  "spawn_exposure": {
   "blue": {
    "preset": "calibrated",
-   "viewers_per_spot_mean": 4.39,
+   "viewers_per_spot_mean": 4.32,
    "viewers_max": 11,
-   "hidden_pct": 17.5,
-   "exposed_pct": 82.5,
+   "hidden_pct": 18.4,
+   "exposed_pct": 81.6,
    "n_viewers": 65,
    "n_spots": 441,
    "targets_met": true
   },
   "red": {
    "preset": "calibrated",
-   "viewers_per_spot_mean": 4.58,
+   "viewers_per_spot_mean": 4.51,
    "viewers_max": 12,
-   "hidden_pct": 17.7,
-   "exposed_pct": 82.3,
+   "hidden_pct": 19.0,
+   "exposed_pct": 81.0,
    "n_viewers": 65,
    "n_spots": 441,
    "targets_met": true
@@ -693,20 +693,20 @@
      "deck_cols": 14,
      "water_cols": 1075,
      "roughness": 0.335,
-     "height_above_front": -5.38,
+     "height_above_front": -5.23,
      "height_above_centre_ground": -13.84,
      "height_above_map_median_land": -2.84,
      "platform_drop": 59.84,
      "platform_angle_deg": 34.2,
      "enclosure": {
-      "r0_8_enemy_vol": 3.96,
-      "r0_8_enemy_cover3": 0.735,
+      "r0_8_enemy_vol": 3.51,
+      "r0_8_enemy_cover3": 0.63,
       "r0_8_rear_vol": 16.89,
       "r0_8_rear_cover3": 0.657,
       "r0_8_lateral_vol": 1.88,
       "r0_8_lateral_cover3": 0.151,
-      "r8_20_enemy_vol": 1.99,
-      "r8_20_enemy_cover3": 0.369,
+      "r8_20_enemy_vol": 1.79,
+      "r8_20_enemy_cover3": 0.321,
       "r8_20_rear_vol": 0.0,
       "r8_20_rear_cover3": 0.0,
       "r8_20_lateral_vol": 5.0,
@@ -738,14 +738,14 @@
        "total_width": 169
       }
      },
-     "exit_min_cut": 66,
+     "exit_min_cut": 68,
      "sealable": false,
-     "platform_viewers_mean": 4.39,
+     "platform_viewers_mean": 4.32,
      "platform_viewers_max": 11,
-     "platform_hidden_pct": 17.5,
+     "platform_hidden_pct": 18.4,
      "seen_from_tower_zone_ground_share": 0.893,
-     "seen_from_tower_zone_ground_viewers_mean": 8.65,
-     "seen_from_centre_ground_share": 0.719,
+     "seen_from_tower_zone_ground_viewers_mean": 9.11,
+     "seen_from_centre_ground_share": 0.71,
      "steps_to_own_end": 68.0,
      "steps_to_own_end_median": 92.0,
      "detour_to_own_end_median": 1.05,
@@ -755,10 +755,10 @@
     },
     "front": {
      "profile_h_every4": [
-      2.1,
-      9.6,
-      11.6,
-      5.0,
+      1.0,
+      9.4,
+      11.8,
+      3.2,
       7.6,
       7.4,
       1.5,
@@ -775,32 +775,32 @@
       9.1,
       17.4
      ],
-     "h_mean": 7.54,
-     "slope_per10_toward_platform": 0.22,
-     "raised_vs_spawn": 5.38,
-     "raised_vs_centre": -8.46,
-     "flat_share": 0.108,
-     "water_share": 0.441,
+     "h_mean": 7.39,
+     "slope_per10_toward_platform": 0.32,
+     "raised_vs_spawn": 5.23,
+     "raised_vs_centre": -8.61,
+     "flat_share": 0.116,
+     "water_share": 0.461,
      "lowland_share": 0.0,
-     "land_width_min": 2,
-     "land_width_p50": 20.0,
-     "object_share": 0.559,
+     "land_width_min": 0,
+     "land_width_p50": 18.0,
+     "object_share": 0.539,
      "object_h": {
-      "n": 1673,
-      "mean": 12.71,
+      "n": 1612,
+      "mean": 12.87,
       "p10": 3.0,
-      "p50": 9.0,
-      "p90": 30.0,
+      "p50": 8.0,
+      "p90": 31.0,
       "max": 51.0
      },
      "objects": 3,
      "object_footprint": {
       "n": 3,
-      "mean": 934.0,
+      "mean": 913.67,
       "p10": 60.6,
       "p50": 195.0,
-      "p90": 2103.0,
-      "max": 2580.0
+      "p90": 2054.2,
+      "max": 2519.0
      },
      "free_share": 0.0,
      "free_share_min_section8": 0.0,
@@ -811,10 +811,10 @@
      "highest_walkable_near_end_z": 57,
      "build_gap_blocks": 55,
      "platform_reachable_on_foot": false,
-     "los_toward_platform_mean": 48.1,
-     "los_along_x_mean": 41.5,
-     "los_16dir_mean": 44.0,
-     "seen_from_enemy_tower_zone_share": 0.033,
+     "los_toward_platform_mean": 48.9,
+     "los_along_x_mean": 43.8,
+     "los_16dir_mean": 45.8,
+     "seen_from_enemy_tower_zone_share": 0.03,
      "anchor_enemy_face": {
       "face_x": 211,
       "enemy_face_step_min": -31,
@@ -835,20 +835,20 @@
      "deck_cols": 14,
      "water_cols": 1075,
      "roughness": 0.335,
-     "height_above_front": -5.57,
+     "height_above_front": -5.42,
      "height_above_centre_ground": -13.84,
      "height_above_map_median_land": -2.84,
      "platform_drop": 59.84,
      "platform_angle_deg": 33.9,
      "enclosure": {
-      "r0_8_enemy_vol": 3.96,
-      "r0_8_enemy_cover3": 0.735,
+      "r0_8_enemy_vol": 3.51,
+      "r0_8_enemy_cover3": 0.63,
       "r0_8_rear_vol": 16.89,
       "r0_8_rear_cover3": 0.657,
       "r0_8_lateral_vol": 1.88,
       "r0_8_lateral_cover3": 0.151,
-      "r8_20_enemy_vol": 1.99,
-      "r8_20_enemy_cover3": 0.369,
+      "r8_20_enemy_vol": 1.79,
+      "r8_20_enemy_cover3": 0.321,
       "r8_20_rear_vol": 0.0,
       "r8_20_rear_cover3": 0.0,
       "r8_20_lateral_vol": 5.01,
@@ -880,14 +880,14 @@
        "total_width": 169
       }
      },
-     "exit_min_cut": 66,
+     "exit_min_cut": 68,
      "sealable": false,
-     "platform_viewers_mean": 4.58,
+     "platform_viewers_mean": 4.51,
      "platform_viewers_max": 12,
-     "platform_hidden_pct": 17.7,
-     "seen_from_tower_zone_ground_share": 0.907,
-     "seen_from_tower_zone_ground_viewers_mean": 7.9,
-     "seen_from_centre_ground_share": 0.719,
+     "platform_hidden_pct": 19.0,
+     "seen_from_tower_zone_ground_share": 0.902,
+     "seen_from_tower_zone_ground_viewers_mean": 8.38,
+     "seen_from_centre_ground_share": 0.71,
      "steps_to_own_end": 69.0,
      "steps_to_own_end_median": 93.0,
      "detour_to_own_end_median": 1.05,
@@ -897,10 +897,10 @@
     },
     "front": {
      "profile_h_every4": [
-      2.1,
-      9.6,
-      11.6,
-      5.0,
+      1.0,
+      9.4,
+      11.8,
+      3.2,
       7.6,
       7.4,
       1.5,
@@ -917,32 +917,32 @@
       9.1,
       17.4
      ],
-     "h_mean": 7.73,
-     "slope_per10_toward_platform": 0.36,
-     "raised_vs_spawn": 5.57,
-     "raised_vs_centre": -8.27,
-     "flat_share": 0.107,
-     "water_share": 0.439,
+     "h_mean": 7.58,
+     "slope_per10_toward_platform": 0.46,
+     "raised_vs_spawn": 5.42,
+     "raised_vs_centre": -8.42,
+     "flat_share": 0.115,
+     "water_share": 0.459,
      "lowland_share": 0.0,
-     "land_width_min": 2,
-     "land_width_p50": 20.0,
-     "object_share": 0.561,
+     "land_width_min": 0,
+     "land_width_p50": 18.5,
+     "object_share": 0.541,
      "object_h": {
-      "n": 1702,
-      "mean": 13.0,
+      "n": 1641,
+      "mean": 13.17,
       "p10": 3.0,
-      "p50": 9.0,
-      "p90": 31.0,
+      "p50": 8.0,
+      "p90": 32.0,
       "max": 55.0
      },
      "objects": 3,
      "object_footprint": {
       "n": 3,
-      "mean": 950.67,
+      "mean": 930.33,
       "p10": 62.4,
       "p50": 204.0,
-      "p90": 2137.6,
-      "max": 2621.0
+      "p90": 2088.8,
+      "max": 2560.0
      },
      "free_share": 0.0,
      "free_share_min_section8": 0.0,
@@ -953,10 +953,10 @@
      "highest_walkable_near_end_z": 57,
      "build_gap_blocks": 55,
      "platform_reachable_on_foot": false,
-     "los_toward_platform_mean": 47.9,
-     "los_along_x_mean": 39.2,
-     "los_16dir_mean": 43.7,
-     "seen_from_enemy_tower_zone_share": 0.123,
+     "los_toward_platform_mean": 44.6,
+     "los_along_x_mean": 41.3,
+     "los_16dir_mean": 44.9,
+     "seen_from_enemy_tower_zone_share": 0.093,
      "anchor_enemy_face": {
       "face_x": 300,
       "enemy_face_step_min": -16,
@@ -978,20 +978,20 @@
     "deck_cols": 14.0,
     "water_cols": 1075.0,
     "roughness": 0.335,
-    "height_above_front": -5.475,
+    "height_above_front": -5.325,
     "height_above_centre_ground": -13.84,
     "height_above_map_median_land": -2.84,
     "platform_drop": 59.84,
     "platform_angle_deg": 34.05,
     "enclosure": {
-     "r0_8_enemy_vol": 3.96,
-     "r0_8_enemy_cover3": 0.735,
+     "r0_8_enemy_vol": 3.51,
+     "r0_8_enemy_cover3": 0.63,
      "r0_8_rear_vol": 16.89,
      "r0_8_rear_cover3": 0.657,
      "r0_8_lateral_vol": 1.88,
      "r0_8_lateral_cover3": 0.151,
-     "r8_20_enemy_vol": 1.99,
-     "r8_20_enemy_cover3": 0.369,
+     "r8_20_enemy_vol": 1.79,
+     "r8_20_enemy_cover3": 0.321,
      "r8_20_rear_vol": 0.0,
      "r8_20_rear_cover3": 0.0,
      "r8_20_lateral_vol": 5.005,
@@ -1023,14 +1023,14 @@
       "total_width": 169.0
      }
     },
-    "exit_min_cut": 66.0,
+    "exit_min_cut": 68.0,
     "sealable": false,
-    "platform_viewers_mean": 4.485,
+    "platform_viewers_mean": 4.415,
     "platform_viewers_max": 11.5,
-    "platform_hidden_pct": 17.6,
-    "seen_from_tower_zone_ground_share": 0.9,
-    "seen_from_tower_zone_ground_viewers_mean": 8.275,
-    "seen_from_centre_ground_share": 0.719,
+    "platform_hidden_pct": 18.7,
+    "seen_from_tower_zone_ground_share": 0.897,
+    "seen_from_tower_zone_ground_viewers_mean": 8.745,
+    "seen_from_centre_ground_share": 0.71,
     "steps_to_own_end": 68.5,
     "steps_to_own_end_median": 92.5,
     "detour_to_own_end_median": 1.05,
@@ -1040,10 +1040,10 @@
    },
    "front": {
     "profile_h_every4": [
-     2.1,
-     9.6,
-     11.6,
-     5.0,
+     1.0,
+     9.4,
+     11.8,
+     3.2,
      7.6,
      7.4,
      1.5,
@@ -1060,32 +1060,32 @@
      9.1,
      17.4
     ],
-    "h_mean": 7.635,
-    "slope_per10_toward_platform": 0.29,
-    "raised_vs_spawn": 5.475,
-    "raised_vs_centre": -8.365,
-    "flat_share": 0.107,
-    "water_share": 0.44,
+    "h_mean": 7.485,
+    "slope_per10_toward_platform": 0.39,
+    "raised_vs_spawn": 5.325,
+    "raised_vs_centre": -8.515,
+    "flat_share": 0.116,
+    "water_share": 0.46,
     "lowland_share": 0.0,
-    "land_width_min": 2.0,
-    "land_width_p50": 20.0,
-    "object_share": 0.56,
+    "land_width_min": 0.0,
+    "land_width_p50": 18.25,
+    "object_share": 0.54,
     "object_h": {
-     "n": 1687.5,
-     "mean": 12.855,
+     "n": 1626.5,
+     "mean": 13.02,
      "p10": 3.0,
-     "p50": 9.0,
-     "p90": 30.5,
+     "p50": 8.0,
+     "p90": 31.5,
      "max": 53.0
     },
     "objects": 3.0,
     "object_footprint": {
      "n": 3.0,
-     "mean": 942.335,
+     "mean": 922.0,
      "p10": 61.5,
      "p50": 199.5,
-     "p90": 2120.3,
-     "max": 2600.5
+     "p90": 2071.5,
+     "max": 2539.5
     },
     "free_share": 0.0,
     "free_share_min_section8": 0.0,
@@ -1096,10 +1096,10 @@
     "highest_walkable_near_end_z": 57.0,
     "build_gap_blocks": 55.0,
     "platform_reachable_on_foot": false,
-    "los_toward_platform_mean": 48.0,
-    "los_along_x_mean": 40.35,
-    "los_16dir_mean": 43.85,
-    "seen_from_enemy_tower_zone_share": 0.078,
+    "los_toward_platform_mean": 46.75,
+    "los_along_x_mean": 42.55,
+    "los_16dir_mean": 45.35,
+    "seen_from_enemy_tower_zone_share": 0.061,
     "anchor_enemy_face": {
      "face_x": 255.5,
      "enemy_face_step_min": -23.5,
@@ -1128,12 +1128,12 @@
    "zone": {
     "land_share": 0.596,
     "object_share": 0.324,
-    "built_volume_per_col": 7.028,
+    "built_volume_per_col": 7.02,
     "objects": 56,
     "objects_per_10k": 10.39,
     "object_footprint": {
      "n": 56,
-     "mean": 473.71,
+     "mean": 471.54,
      "p10": 8.0,
      "p50": 71.0,
      "p90": 530.5,
@@ -1154,7 +1154,7 @@
      "p90": 20.0
     },
     "largest_empty_diam": 41.2,
-    "indoor_share": 0.165,
+    "indoor_share": 0.164,
     "multilevel_share": 0.025,
     "walkable_col_share": 0.83,
     "walk_height": {
@@ -1162,10 +1162,10 @@
      "p50": 2.0,
      "p95": 10.0
     },
-    "los_mean": 37.2,
-    "los_p90": 89.5,
-    "seen_from_blue_end_share": 0.44,
-    "seen_from_red_end_share": 0.52,
+    "los_mean": 37.1,
+    "los_p90": 88.0,
+    "seen_from_blue_end_share": 0.432,
+    "seen_from_red_end_share": 0.53,
     "high_ground_cols_near_ends": [
      0,
      0
@@ -1198,14 +1198,14 @@
    "symmetry": {
     "type": "x512~",
     "best": "x512",
-    "best_mismatch": 0.0674,
+    "best_mismatch": 0.0675,
     "mismatch": {
-     "x512": 0.0674,
-     "x511": 0.3225,
-     "y512": 0.7152,
-     "y511": 0.7421,
-     "point511": 0.7871,
-     "point512": 0.7201
+     "x512": 0.0675,
+     "x511": 0.3226,
+     "y512": 0.7156,
+     "y511": 0.7427,
+     "point511": 0.7877,
+     "point512": 0.7205
     }
    }
   },
@@ -1274,7 +1274,7 @@
     "blue": {
      "applicable": true,
      "objects": 4,
-     "object_share": 0.529,
+     "object_share": 0.504,
      "object_heights": [
       8,
       17,
@@ -1282,15 +1282,15 @@
       50
      ],
      "low_share": 0.25,
-     "cell_height_p90": 30.0,
+     "cell_height_p90": 31.0,
      "section_free_min": 0.055,
      "worst_section_x": [
       163,
       170
      ],
      "section_free": [
-      0.701,
-      0.616,
+      0.591,
+      0.518,
       0.119,
       0.055,
       0.207,
@@ -1299,13 +1299,13 @@
       0.143,
       0.222
      ],
-     "land_share": 0.559,
+     "land_share": 0.539,
      "exempt_cols": 0
     },
     "red": {
      "applicable": true,
      "objects": 4,
-     "object_share": 0.531,
+     "object_share": 0.506,
      "object_heights": [
       8,
       17,
@@ -1313,15 +1313,15 @@
       54
      ],
      "low_share": 0.25,
-     "cell_height_p90": 32.0,
+     "cell_height_p90": 33.0,
      "section_free_min": 0.055,
      "worst_section_x": [
       342,
       349
      ],
      "section_free": [
-      0.701,
-      0.616,
+      0.591,
+      0.518,
       0.119,
       0.055,
       0.207,
@@ -1330,13 +1330,13 @@
       0.143,
       0.229
      ],
-     "land_share": 0.561,
+     "land_share": 0.541,
      "exempt_cols": 0
     }
    },
    "why": "skipped: model does not fit: the arena floor is z 62, which the kit counts as water, so free ground reads as 0 and the band is \"land\" only where objects stand (original: N/A). Forced numbers before/after are in rework.front_forced; the cover firs are 18 tall walk-under trees (owner chose lit trees as light cover)",
    "measured_status": "fail",
-   "measured_why": "blue object share 0.529 > 0.3 (over by 0.229); blue share of objects <= 10 tall 0.25 < 0.9 (short by 0.65); blue free share of the 8-col section x 163-170 0.055 < 0.5 (short by 0.445); red object share 0.531 > 0.3 (over by 0.231); red share of objects <= 10 tall 0.25 < 0.9 (short by 0.65); red free share of the 8-col section x 342-349 0.055 < 0.5 (short by 0.445)"
+   "measured_why": "blue object share 0.504 > 0.3 (over by 0.204); blue share of objects <= 10 tall 0.25 < 0.9 (short by 0.65); blue free share of the 8-col section x 163-170 0.055 < 0.5 (short by 0.445); red object share 0.506 > 0.3 (over by 0.206); red share of objects <= 10 tall 0.25 < 0.9 (short by 0.65); red free share of the 8-col section x 342-349 0.055 < 0.5 (short by 0.445)"
   },
   "spawn_cover": {
    "status": "n.a.",
@@ -1402,13 +1402,13 @@
    "why": "ok"
   }
  },
- "check_seconds": 9.3,
+ "check_seconds": 8.4,
  "summary": [
   {
    "rule": "parser",
    "ok": true,
    "detail": {
-    "bytes": 3269876,
+    "bytes": 3269484,
     "reencode_identical": true,
     "surface_all_coloured": true,
     "z63_solid": true
@@ -1604,8 +1604,8 @@
    "rule": "spawn exposure blue (<= 10 viewers, >= 15 % hidden)",
    "ok": true,
    "detail": {
-    "mean": 4.39,
-    "hidden_pct": 17.5
+    "mean": 4.32,
+    "hidden_pct": 18.4
    },
    "key": "spawn_exposure_blue"
   },
@@ -1613,8 +1613,8 @@
    "rule": "spawn exposure red (<= 10 viewers, >= 15 % hidden)",
    "ok": true,
    "detail": {
-    "mean": 4.58,
-    "hidden_pct": 17.7
+    "mean": 4.51,
+    "hidden_pct": 19.0
    },
    "key": "spawn_exposure_red"
   },
@@ -1630,7 +1630,7 @@
      "blue": {
       "applicable": true,
       "objects": 4,
-      "object_share": 0.529,
+      "object_share": 0.504,
       "object_heights": [
        8,
        17,
@@ -1638,15 +1638,15 @@
        50
       ],
       "low_share": 0.25,
-      "cell_height_p90": 30.0,
+      "cell_height_p90": 31.0,
       "section_free_min": 0.055,
       "worst_section_x": [
        163,
        170
       ],
       "section_free": [
-       0.701,
-       0.616,
+       0.591,
+       0.518,
        0.119,
        0.055,
        0.207,
@@ -1655,13 +1655,13 @@
        0.143,
        0.222
       ],
-      "land_share": 0.559,
+      "land_share": 0.539,
       "exempt_cols": 0
      },
      "red": {
       "applicable": true,
       "objects": 4,
-      "object_share": 0.531,
+      "object_share": 0.506,
       "object_heights": [
        8,
        17,
@@ -1669,15 +1669,15 @@
        54
       ],
       "low_share": 0.25,
-      "cell_height_p90": 32.0,
+      "cell_height_p90": 33.0,
       "section_free_min": 0.055,
       "worst_section_x": [
        342,
        349
       ],
       "section_free": [
-       0.701,
-       0.616,
+       0.591,
+       0.518,
        0.119,
        0.055,
        0.207,
@@ -1686,7 +1686,7 @@
        0.143,
        0.229
       ],
-      "land_share": 0.561,
+      "land_share": 0.541,
       "exempt_cols": 0
      }
     },
@@ -1785,38 +1785,38 @@
  "rework": {
   "source_sha256": "b029818c8d7f4a62c6501c6b15ef3bfcff1f488ef6ff3704a273c872c39e93cb",
   "voxel_diff": {
-   "added": 4594,
+   "added": 3886,
    "removed": 0,
    "added_where": {
     "clusters": 14,
     "list": [
      {
-      "voxels": 2105,
+      "voxels": 1723,
       "x": [
-       139,
-       153
+       140,
+       151
       ],
       "y": [
-       238,
-       275
+       240,
+       274
       ],
       "z": [
-       40,
+       41,
        61
       ]
      },
      {
-      "voxels": 2105,
+      "voxels": 1723,
       "x": [
-       359,
-       373
+       361,
+       372
       ],
       "y": [
-       238,
-       275
+       240,
+       274
       ],
       "z": [
-       40,
+       41,
        61
       ]
      },
@@ -1851,74 +1851,74 @@
       ]
      },
      {
-      "voxels": 35,
+      "voxels": 57,
       "x": [
-       150,
-       152
-      ],
-      "y": [
-       254,
-       258
-      ],
-      "z": [
-       59,
-       61
-      ]
-     },
-     {
-      "voxels": 35,
-      "x": [
-       360,
-       362
-      ],
-      "y": [
-       254,
-       258
-      ],
-      "z": [
-       59,
-       61
-      ]
-     },
-     {
-      "voxels": 18,
-      "x": [
-       149,
-       153
-      ],
-      "y": [
-       262,
-       265
-      ],
-      "z": [
-       60,
-       61
-      ]
-     },
-     {
-      "voxels": 18,
-      "x": [
-       359,
-       363
-      ],
-      "y": [
-       262,
-       265
-      ],
-      "z": [
-       60,
-       61
-      ]
-     },
-     {
-      "voxels": 17,
-      "x": [
-       149,
+       148,
        153
       ],
       "y": [
        248,
-       252
+       258
+      ],
+      "z": [
+       59,
+       61
+      ]
+     },
+     {
+      "voxels": 57,
+      "x": [
+       359,
+       364
+      ],
+      "y": [
+       248,
+       258
+      ],
+      "z": [
+       59,
+       61
+      ]
+     },
+     {
+      "voxels": 35,
+      "x": [
+       147,
+       153
+      ],
+      "y": [
+       260,
+       266
+      ],
+      "z": [
+       60,
+       61
+      ]
+     },
+     {
+      "voxels": 35,
+      "x": [
+       359,
+       365
+      ],
+      "y": [
+       260,
+       266
+      ],
+      "z": [
+       60,
+       61
+      ]
+     },
+     {
+      "voxels": 15,
+      "x": [
+       140,
+       146
+      ],
+      "y": [
+       273,
+       276
       ],
       "z": [
        61,
@@ -1926,14 +1926,14 @@
       ]
      },
      {
-      "voxels": 17,
+      "voxels": 15,
       "x": [
-       359,
-       363
+       366,
+       372
       ],
       "y": [
-       248,
-       252
+       273,
+       276
       ],
       "z": [
        61,
@@ -1971,14 +1971,14 @@
       ]
      },
      {
-      "voxels": 10,
+      "voxels": 1,
       "x": [
-       141,
-       146
+       145,
+       145
       ],
       "y": [
-       274,
-       276
+       250,
+       250
       ],
       "z": [
        61,
@@ -1986,14 +1986,14 @@
       ]
      },
      {
-      "voxels": 10,
+      "voxels": 1,
       "x": [
-       366,
-       371
+       367,
+       367
       ],
       "y": [
-       274,
-       276
+       250,
+       250
       ],
       "z": [
        61,
@@ -2029,12 +2029,12 @@
   },
   "spawn_exposure_after": {
    "team1": {
-    "exposed_pct": 82.5,
-    "mean_viewers_per_point": 4.4
+    "exposed_pct": 81.6,
+    "mean_viewers_per_point": 4.3
    },
    "team2": {
-    "exposed_pct": 82.3,
-    "mean_viewers_per_point": 4.6
+    "exposed_pct": 81.0,
+    "mean_viewers_per_point": 4.5
    }
   },
   "colour_before": {
@@ -2048,19 +2048,19 @@
   },
   "colour_after": {
    "top_luma_p10": 61.4,
-   "top_luma_p50": 123.9,
-   "top_luma_p90": 149.9,
-   "top_luma_spread_p90_p10": 88.5,
-   "top_dark_lt40_pct": 0.0,
-   "top_maxch_gt212_pct": 2.79,
-   "surface_maxch_gt212_pct": 2.42,
+   "top_luma_p50": 123.8,
+   "top_luma_p90": 148.5,
+   "top_luma_spread_p90_p10": 87.1,
+   "top_dark_lt40_pct": 0.01,
+   "top_maxch_gt212_pct": 1.72,
+   "surface_maxch_gt212_pct": 1.07,
    "top_maxch_gt212_pct_excl_glow_lit": 0.0,
    "surface_maxch_gt212_pct_excl_glow_lit": 0.0
   },
   "glow": {
-   "sources": 1040,
-   "stored_entries": 104611,
-   "txt_bytes": 5854263
+   "sources": 692,
+   "stored_entries": 95274,
+   "txt_bytes": 2389296
   },
   "txt_check": {
    "ok": true,
@@ -2224,9 +2224,9 @@
     "status": "fail",
     "avg": {
      "objects": 3.0,
-     "object_share": 0.56,
+     "object_share": 0.54,
      "low_share": 0.0,
-     "cell_height_p90": 30.5,
+     "cell_height_p90": 31.5,
      "section_free_min": 0.027
     }
    }

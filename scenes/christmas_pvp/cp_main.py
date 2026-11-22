@@ -39,7 +39,7 @@ def light_layout(cv, spec, cover_rep):
     for i, p in enumerate(sorted(wall_b, key=lambda q: (q[2], abs(q[0] - 256), q[1]))):
         lights.append(('wall_bulb', p, cyc[i % len(cyc)]))
     for i, p in enumerate(gb.rail_bulbs(cv, spec)):
-        lights.append(('rail_bulb', p, ('amber', 'yellow', 'amber', 'red')[i % 4]))
+        lights.append(('rail_bulb', p, cyc[i % len(cyc)]))
     for i, p in enumerate(gb.tower_rings(cv, TOWERS)):
         lights.append(('tower_ring', p, ('amber', 'yellow')[i % 2]))
     trees = [tuple(v[:4]) for v in spec['assist_trees'].values()]
@@ -50,7 +50,7 @@ def light_layout(cv, spec, cover_rep):
     for p in gb.window_lights(cv, cv.materials['orig_glass']):
         lights.append(('window', p, 'amber'))
     for i, (kind, p) in enumerate(cover_rep['lights']):
-        lights.append((kind, p, 'yellow' if kind == 'fir_star' else cyc[(i * 3) % len(cyc)]))
+        lights.append((kind, p, 'yellow' if kind == 'fir_star' else ('amber', 'red', 'yellow')[i % 3]))
     return gar, lights
 
 
@@ -97,7 +97,23 @@ def build_map(out, stage='art', deco_seed=None):
                        txt=dict(name=SPEC['name'], description=desc, fog=SPEC['fog'], extensions=ext,
                                 version=SPEC['version']),
                        build_info=info)
+    if 'glow_stored_colors' in ext:
+        compact_txt(os.path.join(out, SPEC['file'] + '.txt'), ext)
     return res
+
+
+def compact_txt(path, ext):
+    """Rewrite the extensions block without pprint's 24-space indents: 8 glow entries per line, no spaces.
+    Same keys and values (piqueserver imports the .txt as Python); cuts the .txt by about 40 %."""
+    text = open(path, encoding='utf-8').read()
+    head = text[:text.index('extensions = ')]
+    rest = {k: v for k, v in ext.items() if k != 'glow_stored_colors'}
+    items = [f'({x},{y},{z}):({r},{g},{b})' for (x, y, z), (r, g, b) in ext['glow_stored_colors'].items()]
+    rows = [','.join(items[i:i + 8]) for i in range(0, len(items), 8)]
+    body = ('extensions = {' + ', '.join(f'{k!r}: {v!r}' for k, v in rest.items())
+            + ",\n 'glow_stored_colors': {\n" + ',\n'.join(rows) + '}}\n')
+    with open(path, 'w', encoding='utf-8', newline='\n') as f:
+        f.write(head + body)
 
 
 if __name__ == '__main__':

@@ -1,13 +1,13 @@
 {
  "map": "Christmas PVP",
  "file": "ChristmasPVP",
- "sha256": "0dfac1ee00b8721c5b7aff8a185bd18fb53b5980a75675674acc775d2161df78",
- "bytes": 3269876,
+ "sha256": "3cd15ec252233c5592b63193f790cee3355575a310b82493d6ac8674f67b4ceb",
+ "bytes": 3269484,
  "stage": "art",
  "source": "ChristmasPVP.vxl",
  "source_sha256": "b029818c8d7f4a62c6501c6b15ef3bfcff1f488ef6ff3704a273c872c39e93cb",
  "layout_seed": 20261122,
- "deco_seed": 2989363809,
+ "deco_seed": 3019137834,
  "axis": "x512",
  "variant": "Babel with assist structures",
  "assist_structures": {
@@ -29,41 +29,31 @@
    {
     "name": "lit fir N",
     "floor_z": 62,
-    "tip_z": 40,
+    "tip_z": 41,
     "bulbs": [
      [
-      140,
-      249,
+      150,
+      248,
       57
      ],
      [
-      144,
-      239,
-      55
+      141,
+      241,
+      57
      ],
      [
-      150,
-      245,
+      142,
+      247,
       53
      ],
      [
-      146,
-      249,
-      51
-     ],
-     [
-      143,
-      244,
+      145,
+      241,
       49
      ],
      [
-      146,
-      243,
-      47
-     ],
-     [
-      146,
-      246,
+      148,
+      245,
       45
      ]
     ],
@@ -92,14 +82,9 @@
       145,
       245,
       41
-     ],
-     [
-      145,
-      244,
-      40
      ]
     ],
-    "baubles": 9,
+    "baubles": 0,
     "box": [
      139,
      153,
@@ -110,41 +95,31 @@
    {
     "name": "lit fir C",
     "floor_z": 62,
-    "tip_z": 40,
+    "tip_z": 41,
     "bulbs": [
      [
-      139,
+      141,
+      253,
+      57
+     ],
+     [
+      150,
       260,
       57
      ],
      [
-      147,
-      252,
-      55
-     ],
-     [
-      149,
-      260,
+      150,
+      254,
       53
      ],
      [
-      144,
+      145,
       260,
-      51
+      49
      ],
      [
       144,
       255,
-      49
-     ],
-     [
-      147,
-      256,
-      47
-     ],
-     [
-      144,
-      257,
       45
      ]
     ],
@@ -173,14 +148,9 @@
       145,
       257,
       41
-     ],
-     [
-      145,
-      256,
-      40
      ]
     ],
-    "baubles": 12,
+    "baubles": 0,
     "box": [
      139,
      153,
@@ -191,40 +161,30 @@
    {
     "name": "lit fir S",
     "floor_z": 62,
-    "tip_z": 40,
+    "tip_z": 41,
     "bulbs": [
      [
-      139,
-      264,
+      150,
+      272,
       57
      ],
      [
-      147,
-      263,
-      55
-     ],
-     [
-      148,
-      273,
-      53
+      141,
+      265,
+      57
      ],
      [
       142,
-      271,
-      51
+      272,
+      53
      ],
      [
       146,
-      266,
+      265,
       49
      ],
      [
       147,
-      269,
-      47
-     ],
-     [
-      146,
       270,
       45
      ]
@@ -254,14 +214,9 @@
       145,
       269,
       41
-     ],
-     [
-      145,
-      268,
-      40
      ]
     ],
-    "baubles": 10,
+    "baubles": 0,
     "box": [
      139,
      153,
@@ -281,7 +236,7 @@
    ]
   },
   "pruned_voxels": 0,
-  "voxels_per_side": 2297,
+  "voxels_per_side": 1943,
   "mirror_clash_voxels": 0,
   "boxes_west": [
    {
@@ -380,14 +335,14 @@
  },
  "garland_voxels": 1722,
  "light_counts": {
-  "wall_bulb": 220,
-  "rail_bulb": 264,
+  "wall_bulb": 108,
+  "rail_bulb": 110,
   "tower_ring": 151,
-  "giant_tree_string": 169,
+  "giant_tree_string": 91,
   "lamp_head": 107,
   "path_star": 2,
   "window": 87,
-  "fir_string": 42,
+  "fir_string": 30,
   "fir_star": 6
  },
  "corner_tag": "skipped: every arena corner is occupied by coaster terraces / props",
@@ -409,24 +364,24 @@
   "other": 390946
  },
  "paint_counts": {
-  "cover_leaf": 2966,
+  "cover_leaf": 1958,
+  "fir_inner": 644,
   "cover_trunk": 432,
   "runner": 48,
   "sleigh": 120,
   "sleigh_trim": 28,
   "sack": 8,
-  "star": 36,
-  "cover_snow": 552,
+  "star": 30,
+  "cover_snow": 276,
   "drift": 268,
   "gift": 30,
-  "gift_ribbon": 48,
-  "bauble": 62
+  "gift_ribbon": 48
  },
- "n_glow_sources": 1048,
+ "n_glow_sources": 692,
  "brightness": {
   "dark_floors_raised": 1472,
-  "whites_capped": 169
+  "whites_capped": 179
  },
- "glow_nudged": 178,
- "glow_stored_entries": 104611
+ "glow_nudged": 13,
+ "glow_stored_entries": 95274
 }

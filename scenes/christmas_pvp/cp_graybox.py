@@ -29,60 +29,65 @@ def _floor(cv, x, y):
 
 
 # ------------------------------------------------------------------------------------------------ cover pieces
-def lit_fir(cv, lrng, drng, t, min_x):
-    """Tiered fir: 2x2 trunk, crown from `clear` above the floor (walk under it), jagged tiers with snow on the
-    tier lips, a spiral light string (glow sources), baubles and a star. Geometry from the layout rng; the
-    decoration (bauble colours/places, string phase) from the OS-seeded rng."""
+def lit_fir(cv, lrng, drng, t, min_x, skirts=(6.0, 4.8, 3.6, 2.4), lengths=(4, 4, 4, 3)):
+    """Stacked-skirt fir: 2x2 trunk, crown from `clear` above the floor (walk under it), four skirts that narrow
+    going up (each tapers to 45 % of its base radius), snow only on the up-facing lip of each skirt, a darker
+    inner core, a warm star and five warm bulbs (2 on the lowest skirt, 1 on each other). Crown radius never exceeds t['r'].
+    Geometry from the layout rng; bulb angles from the OS-seeded rng."""
     x, y, h, R, clear = t['x'], t['y'], t['h'], t['r'], t['clear']
     g = min(_floor(cv, x + dx, y + dy) for dx in (0, 1) for dy in (0, 1))
     for k in range(h):
         for dx in (0, 1):
             for dy in (0, 1):
                 cv.set(x + dx, y + dy, g - 1 - k, FUNC['cover_trunk'], 'cover_trunk')
-    period = 3
     jag = veg._jag(lrng)
     cx, cy = x + 0.5, y + 0.5
-    crown = []
-    for k in range(clear, h + 1):
-        f = (k - clear) / max(h - clear, 1)
-        phase = ((k - clear) % period) / period
-        r = R * (1 - f) ** 1.05 * (1 - 0.30 * phase) + 0.6
-        z = g - 1 - k
-        ri = int(math.ceil(r * 1.4 + 1))
-        for X in range(x - ri, x + ri + 2):
-            if X < min_x:
-                continue
-            for Y in range(y - ri, y + ri + 2):
-                d = math.hypot(X - cx, Y - cy)
-                if d <= r * jag(math.atan2(Y - cy, X - cx)) and not cv.solid[X, Y, z]:
-                    lip = phase == 0 and d > r * 0.7 and noise.hash3(np.array([X]), np.array([Y]), np.array([z]), 41)[0] < 0.65
-                    cv.set(X, Y, z, FUNC['cover_snow' if lip else 'cover_leaf'], 'cover_snow' if lip else 'cover_leaf')
-                    crown.append((X, Y, z, d, k))
-    tip = g - 1 - h                                                   # the 2x2 trunk tops out at g - h
-    cv.set(x, y, tip, FUNC['cover_leaf'], 'cover_leaf')                # leader shoot under the star
-    cv.set(x, y, tip - 1, FUNC['cover_leaf'], 'cover_leaf')
-    star = [(x, y, tip - 2), (x - 1, y, tip - 2), (x + 1, y, tip - 2), (x, y - 1, tip - 2), (x, y + 1, tip - 2),
-            (x, y, tip - 3)]
-    # spiral light string: one bulb every 2 levels on the outermost crown voxel near a rotating angle
-    bulbs = []
+    k = clear
+    lips, bulbs = [], []
     ph = drng.random() * 2 * math.pi
-    for k in range(clear, h - 1, 2):
-        ang = ph + k * 0.9
-        ring = [(X, Y, z, d) for (X, Y, z, d, kk) in crown if kk == k]
-        if not ring:
-            continue
-        best = max(ring, key=lambda p: math.cos(math.atan2(p[1] - cy, p[0] - cx) - ang) * 2 + p[3] * 0.3)
-        bulbs.append(best[:3])
-    # baubles: OS-seeded, on the crown surface
-    outer = [p for p in crown if p[3] > 0.6 * max(1.0, R * (1 - (p[4] - clear) / max(h - clear, 1)))]
-    nb = min(len(outer), int(drng.integers(9, 14)))
-    baubles = [outer[int(i)][:3] for i in drng.choice(len(outer), size=nb, replace=False)] if outer else []
-    for (X, Y, z) in baubles:
-        cv.set(X, Y, z, FUNC['bauble'], 'bauble')
-    for p in star:
+    for si, (rb, n) in enumerate(zip(skirts, lengths)):
+        rb = min(rb * R / 6.0, R)
+        for j in range(n):
+            if k > h:
+                break
+            r = rb * (1 - 0.55 * j / max(n - 1, 1))
+            z = g - 1 - k
+            ri = int(math.ceil(r + 2))
+            ring = []
+            for X in range(x - ri, x + ri + 2):
+                if X < min_x:
+                    continue
+                for Y in range(y - ri, y + ri + 2):
+                    d = math.hypot(X - cx, Y - cy)
+                    rr = min(R, r * (1 + 0.6 * (jag(math.atan2(Y - cy, X - cx)) - 1)))
+                    if d <= rr and not cv.solid[X, Y, z]:
+                        inner = d < 0.55 * rr
+                        cv.set(X, Y, z, FUNC['cover_leaf'], 'fir_inner' if inner else 'cover_leaf')
+                        if j == 0 and not inner:
+                            ring.append((X, Y, z, d))
+            if j == 0:
+                lips += [p[:3] for p in ring]
+                if ring:
+                    for a in (ph + si * 2.1, ph + si * 2.1 + math.pi)[:2 if si == 0 else 1]:
+                        best = max(ring, key=lambda p: math.cos(math.atan2(p[1] - cy, p[0] - cx) - a) * 3 + p[3])
+                        bulbs.append(best[:3])
+            k += 1
+    # snow only on the up-facing lip of each skirt (the bottom ring that sticks out under the next skirt)
+    for (X, Y, z) in lips:
+        if not cv.solid[X, Y, z - 1] and noise.hash3(np.array([X]), np.array([Y]), np.array([z]), 41)[0] < 0.75:
+            cv.set(X, Y, z, FUNC['cover_snow'], 'cover_snow')
+    tip = g - 1 - h
+    cv.set(x, y, tip, FUNC['cover_leaf'], 'cover_leaf')               # leader shoot under the star
+    cv.set(x, y, tip - 1, FUNC['cover_leaf'], 'cover_leaf')
+    centre = (x, y, tip - 2)
+    arms = [(x - 1, y, tip - 2), (x + 1, y, tip - 2), (x, y - 1, tip - 2), (x, y + 1, tip - 2)]
+    cv.set(*centre, FUNC['bulb'], 'star')
+    for p in arms:
         cv.set(*p, FUNC['bulb'], 'star')
-    return {'name': t['name'], 'floor_z': g, 'tip_z': tip - 3, 'bulbs': bulbs, 'star': star, 'baubles': len(baubles),
-            'box': [max(min_x, x - int(R) - 1), x + int(R) + 2, y - int(R) - 1, y + int(R) + 2]}
+    for p in bulbs:                                                    # bulbs replace lip voxels (snow or leaf)
+        cv.set(*p, FUNC['bulb'], 'cover_leaf')
+    return {'name': t['name'], 'floor_z': g, 'tip_z': tip - 2, 'bulbs': bulbs, 'star': [centre] + arms,
+            'baubles': 0, 'box': [max(min_x, x - int(R) - 1), x + int(R) + 2, y - int(R) - 1, y + int(R) + 2]}
 
 
 def drift(cv, d):

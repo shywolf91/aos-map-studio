@@ -14,7 +14,7 @@ Rationale for the numbers the guru is likely to question
   4 above the floor, so players walk under it (walk-through cover, the paths under them stay open).
 * garland hook height z 13 and sag 5 (z 13-18): hangs on the plain wall above the coaster terraces and floating decor
   (most tops z ~15-30), 44-49 above the arena floor (z 62), so it reads from spawn and front as a festive ring.
-* bulb spacing 4 along garlands, 6 along coaster rails: dots, never a 1-voxel stripe (anti-flicker rule).
+* bulb spacing 8 along garlands, 12 along coaster rails (r2: halved for speckle and .txt size): dots, never a 1-voxel stripe (anti-flicker rule).
 * fog: violet-rose dusk, not used by the graded palette, low chroma so it leans to neither team.
 """
 
@@ -54,14 +54,14 @@ SPEC = {
     },
 
     # ---------------------------------------------------------------- lights
-    'garland': {'hook_z': 13, 'sag': 5, 'period': 24, 'thick': 2, 'bulb_every': 4,
+    'garland': {'hook_z': 13, 'sag': 5, 'period': 24, 'thick': 2, 'bulb_every': 8,
                 'max_face_depth': 2},       # paint only the plain wall core (first solid within 2 of the perimeter)
-    'rail': {'bulb_every': 6, 'max_from_wall': 26},
-    'tree_lights': {'every': 11},            # spiral string on the cover firs and the giant centre trees
+    'rail': {'bulb_every': 12, 'max_from_wall': 26},
+    'tree_lights': {'every': 22},            # spiral string on the cover firs and the giant centre trees
     'glow_palette': {                       # knowledge base 11.4: only these colours are glow sources
         'white': (255, 255, 255), 'red': (255, 95, 95), 'yellow': (255, 255, 95),
         'cyan': (95, 255, 255), 'amber': (255, 175, 95), 'green': (95, 255, 95)},
-    'bulb_cycle': ('amber', 'red', 'amber', 'green', 'yellow', 'amber', 'cyan'),
+    'bulb_cycle': ('amber', 'red', 'amber', 'yellow'),      # warm strings only (r2: no cyan/green glitter)
     'glow': {'radius': 6.5, 'strength': 0.32},
 
     # ---------------------------------------------------------------- grade (OKLab / RGB anchors)

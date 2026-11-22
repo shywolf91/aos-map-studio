@@ -83,7 +83,8 @@ def grade_original(cv, spec, seed):
 
 
 ADD_PAINT = {
-    'cover_leaf': [(0.0, (28, 62, 56)), (0.5, (40, 84, 64)), (1.0, (60, 108, 76))],
+    'cover_leaf': [(0.0, (18, 52, 48)), (0.5, (26, 68, 56)), (1.0, (38, 86, 66))],   # deep blue-greens: the warm
+    'fir_inner': [(0.0, (14, 36, 36)), (1.0, (20, 48, 44))],                          # bulb halo lifts them
     'cover_trunk': [(0.0, (66, 48, 40)), (1.0, (92, 66, 50))],
     'runner': [(0.0, (70, 66, 76)), (1.0, (92, 88, 100))],
     'sleigh': [(0.0, (128, 30, 40)), (1.0, (164, 44, 50))],
@@ -105,11 +106,11 @@ def paint_additions(cv, spec, deco_rng):
         xs, ys, zs = np.nonzero(cv.mat == cv.materials[name])
         h = _hash(xs, ys, zs, 23)
         t = h
-        if name == 'cover_leaf':
-            t = 0.25 + 0.5 * h + 0.25 * np.clip((62 - zs) / 22.0, 0, 1)
+        if name in ('cover_leaf', 'fir_inner'):
+            t = 0.15 + 0.35 * h + 0.5 * np.clip((62 - zs) / 22.0, 0, 1)     # dark low skirts -> mid crown
         cv.rgb[xs, ys, zs] = np.rint(_ramp(stops, t)).astype(np.uint8)
         out[name] = int(len(xs))
-    for name, t0 in (('cover_snow', 0.66), ('drift', 0.62)):
+    for name, t0 in (('cover_snow', 0.56), ('drift', 0.62)):
         if name in cv.materials:
             xs, ys, zs = np.nonzero(cv.mat == cv.materials[name])
             t = t0 + 0.10 * (_hash(xs, ys, zs, 5) - 0.5) + (0.04 * (62 - zs) if name == 'drift' else 0.0)
@@ -141,12 +142,14 @@ def paint_garlands(cv, spec, gar):
 
 def place_glow(cv, spec, lights):
     """lights: list of (kind, (x, y, z), colour name). Sources must be solid voxels."""
+    from aosmap.kit.codec import surface_mask
+    surf = surface_mask(cv.solid)
     pal = spec['glow_palette']
     n = 0
     seen = set()
     for kind, p, cname in lights:
         p = tuple(int(v) for v in p)
-        if p in seen or not cv.solid[p]:
+        if p in seen or not cv.solid[p] or not surf[p]:      # enclosed voxels keep no colour in the .vxl
             continue
         seen.add(p)
         cv.add_glow(*p, pal[cname])
