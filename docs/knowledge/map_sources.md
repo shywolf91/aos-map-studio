@@ -38,6 +38,8 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 | Brimstone Atoll | https://claude.ai/chat/28b196a0-727b-4116-82e5-6d73dced5d47 | no |
 | spinline | https://claude.ai/chat/94dfe246-f63e-4bee-8401-471d20daeb92 | no |
 
+Royal Parade Snow Night v2 (2026-11-22) was built in the repo with Claude Code (`scenes/royal_parade_snow_night/`); it has no chat zip.
+
 Sprinkler Field (2026-11-15) was built in the repo with Claude Code (`scenes/sprinkler_field/`); it has no chat zip.
 
 Update the last column as maps are imported.
