@@ -197,8 +197,7 @@ def add_cover(cv, spec, layout_seed, deco_seed):
     for t in rep['trees']:
         for p in t['bulbs']:
             lights.append(('fir_string', p))
-        for p in t['star']:
-            lights.append(('fir_star', p))
+        lights.append(('fir_star', t['star'][0]))      # star centre glows; the arms are gold paint
     lights += [(k, (512 - p[0], p[1], p[2])) for k, p in lights]
     rep['lights'] = lights
     return rep

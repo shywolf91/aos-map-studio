@@ -158,7 +158,7 @@ def run(out):
         'spawn_exposure_after': exposure(solid),
         'colour_before': colour_stats(s0, rgb0),
         'colour_after': colour_stats(solid, rgb, set(stored.keys()) if stored else set()),
-        'glow': {'sources': sum(1 for k, v in stored.items() if tuple(rgb[k]) == tuple(v)),
+        'glow': {'sources': sum(1 for k, v in stored.items() if tuple(v) in {tuple(c) for c in SPEC['glow_palette'].values()} and tuple(rgb[k]) == tuple(v)),
                  'stored_entries': len(stored), 'txt_bytes': os.path.getsize(txt)},
         'txt_check': build.check_txt(txt),
         'assist_crest_gap': crest_gaps(solid),

@@ -1,0 +1,99 @@
+{
+ "map_dir": "maps/christmas_pvp_v2",
+ "mode": "babel",
+ "seconds": 3.5,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Christmas PVP",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 0,
+   "glow_enabled": true
+  },
+  "fog": [
+   188,
+   170,
+   198
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   62,
+   62
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "62": 259,
+     "59": 20,
+     "61": 60,
+     "58": 17,
+     "60": 28,
+     "45": 4,
+     "57": 9,
+     "35": 3
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     62.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "62": 253,
+     "61": 64,
+     "60": 30,
+     "59": 19,
+     "57": 6,
+     "45": 2,
+     "58": 23,
+     "63": 1,
+     "46": 2
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     62.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}

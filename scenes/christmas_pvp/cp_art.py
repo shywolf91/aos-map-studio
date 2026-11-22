@@ -89,6 +89,7 @@ ADD_PAINT = {
     'sleigh': [(0.0, (128, 30, 40)), (1.0, (164, 44, 50))],
     'sleigh_trim': [(0.0, (178, 136, 60)), (1.0, (210, 170, 84))],
     'sack': [(0.0, (112, 86, 64)), (1.0, (140, 108, 78))],
+    'star': [(0.0, (196, 150, 64)), (1.0, (214, 172, 84))],
 }
 GIFT_COLOURS = [(150, 40, 52), (46, 96, 132), (62, 116, 74), (128, 70, 140), (176, 120, 48)]
 RIBBON_COLOURS = [(206, 168, 80), (188, 186, 204), (170, 44, 56)]
@@ -108,10 +109,10 @@ def paint_additions(cv, spec, deco_rng):
             t = 0.25 + 0.5 * h + 0.25 * np.clip((62 - zs) / 22.0, 0, 1)
         cv.rgb[xs, ys, zs] = np.rint(_ramp(stops, t)).astype(np.uint8)
         out[name] = int(len(xs))
-    for name, t0 in (('cover_snow', 0.78), ('drift', 0.62)):
+    for name, t0 in (('cover_snow', 0.66), ('drift', 0.62)):
         if name in cv.materials:
             xs, ys, zs = np.nonzero(cv.mat == cv.materials[name])
-            t = t0 + 0.10 * (_hash(xs, ys, zs, 5) - 0.5) + 0.04 * (62 - zs)
+            t = t0 + 0.10 * (_hash(xs, ys, zs, 5) - 0.5) + (0.04 * (62 - zs) if name == 'drift' else 0.0)
             cv.rgb[xs, ys, zs] = np.rint(_ramp(G['snow_ramp'], t)).astype(np.uint8)
             out[name] = int(len(xs))
     # gifts: one colour per box (OS-seeded), ribbons in a contrasting tone; mirrored boxes keep their own draw
