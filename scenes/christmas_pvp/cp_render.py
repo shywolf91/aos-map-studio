@@ -59,8 +59,15 @@ def _stamp(im, text=LABEL):
     return im
 
 
+def _vxl(out):
+    import glob
+    v = sorted(glob.glob(os.path.join(out, '*.vxl')))
+    assert len(v) == 1, f'expected one .vxl in {out}'
+    return v[0]
+
+
 def render_all(out, fog=None, prefix=''):
-    data = open(os.path.join(out, SPEC['file'] + '.vxl'), 'rb').read()
+    data = open(_vxl(out), 'rb').read()
     solid, color, _ = codec.decode(data)
     rd = os.path.join(out, 'renders')
     os.makedirs(rd, exist_ok=True)
@@ -78,7 +85,7 @@ def render_all(out, fog=None, prefix=''):
 def before_after(out):
     src = open(SPEC['source'], 'rb').read()
     s0, c0, _ = codec.decode(src)
-    data = open(os.path.join(out, SPEC['file'] + '.vxl'), 'rb').read()
+    data = open(_vxl(out), 'rb').read()
     s1, c1, _ = codec.decode(data)
     rd = os.path.join(out, 'renders')
     pairs = []
@@ -98,7 +105,7 @@ def before_after(out):
     sheet = Image.new('RGB', (W, H), (24, 26, 30))
     d = ImageDraw.Draw(sheet)
     d.text((10, 8), 'BEFORE (original Christmas PVP, GTR-CODE)', fill=(255, 255, 255))
-    d.text((W // 2 + 10, 8), 'AFTER (Christmas PVP v2, cozy evening)', fill=(255, 255, 255))
+    d.text((W // 2 + 10, 8), 'AFTER (' + os.path.basename(_vxl(out)) + ', cozy evening)', fill=(255, 255, 255))
     y = 30
     for a, b in pairs:
         sheet.paste(a, (10, y))
@@ -113,7 +120,14 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('out')
     ap.add_argument('--before', action='store_true')
+    ap.add_argument('--only', help='comma list of view/iso names to render (default: all)')
     a = ap.parse_args()
+    if a.only:
+        keep = set(a.only.split(','))
+        for d in (ISO, VIEWS):
+            for k in list(d):
+                if k not in keep:
+                    del d[k]
     print(render_all(a.out))
     if a.before:
         print(before_after(a.out))

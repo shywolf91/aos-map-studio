@@ -117,15 +117,30 @@ def exposure(solid):
             for k, v in sightline.babel_spawn_report(solid).items()}
 
 
+def map_file(out):
+    import glob
+    v = sorted(glob.glob(os.path.join(out, '*.vxl')))
+    assert len(v) == 1, f'expected one .vxl in {out}'
+    return os.path.splitext(os.path.basename(v[0]))[0]
+
+
+RECOLOR_WAIVERS = {
+    'spawn_exposure_blue': 'owner choice 2026-11-22: recolour-only variant keeps the original geometry (no cover)',
+    'spawn_exposure_red': 'owner choice 2026-11-22: recolour-only variant keeps the original geometry (no cover)',
+}
+
+
 def run(out):
-    vx = os.path.join(out, SPEC['file'] + '.vxl')
+    fname = map_file(out)
+    vx = os.path.join(out, fname + '.vxl')
     data = open(vx, 'rb').read()
     bj = json.load(open(os.path.join(out, 'build.json')))
     mat = np.load(os.path.join(out, 'mat.npy'))
     H = np.load(os.path.join(out, 'terrain_H.npy'))
     assist = {k: tuple(v) for k, v in SPEC['assist_trees'].items()}
+    wv = dict(WAIVERS, **(RECOLOR_WAIVERS if bj.get('build_variant') == 'recolor' else {}))
     R = babel_checks.run_all(data, build=bj, mat=mat, terrain_H=H, axis=SPEC['axis'], assist=assist,
-                             waivers=WAIVERS, zone_rules_skip=ZONE_SKIP)
+                             waivers=wv, zone_rules_skip=ZONE_SKIP)
     R['summary'] = babel_checks.summary(R)
     solid, color, _ = codec.decode(data)
     rgb = codec.unpack_rgb(color)
@@ -136,7 +151,7 @@ def run(out):
     fl0, fl1 = floating_mask(s0), floating_mask(solid)
     mx = added[::-1]
     mx = np.roll(mx, 1, axis=0)                        # x512 mirror: index x -> 512 - x
-    txt = os.path.join(out, SPEC['file'] + '.txt')
+    txt = os.path.join(out, fname + '.txt')
     from aosmap import meta
     mod = meta.check_map_txt(txt)
     stored = mod.extensions.get('glow_stored_colors', {})
@@ -144,6 +159,7 @@ def run(out):
     common = surf0 & surf1
     R['rework'] = {
         'source_sha256': build.sha256(src),
+        'geometry_identical_to_original': bool(np.array_equal(solid, s0)),
         'voxel_diff': {'added': int(added.sum()), 'removed': int(removed.sum()),
                        'added_where': clusters(added), 'removed_where': clusters(removed),
                        'unchanged_solid_pct': round(100 * float((s0 & solid).sum() / s0.sum()), 3),

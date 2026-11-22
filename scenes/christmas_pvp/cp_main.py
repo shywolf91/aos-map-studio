@@ -54,19 +54,33 @@ def light_layout(cv, spec, cover_rep):
     return gar, lights
 
 
-def build_map(out, stage='art', deco_seed=None):
+VARIANTS = {   # v2: rework with spawn cover; recolor: the original geometry untouched (owner 2026-11-22)
+    'v2': {'file': SPEC['file'], 'name': SPEC['name'], 'cover': True},
+    'recolor': {'file': SPEC['file'] + '_recolor', 'name': SPEC['name'] + ' Recolor', 'cover': False,
+                'desc': ('Babel: evening recolour of Christmas PVP by GTR-CODE (Minecraft export, planetminecraft '
+                         'mapa-boxpvp-free), original geometry unchanged. The two giant trees reach just under '
+                         'the platform: build up through them.')},
+}
+
+
+def build_map(out, stage='art', deco_seed=None, variant='v2'):
+    V = VARIANTS[variant]
     deco_seed = noise.os_seed() if deco_seed is None else int(deco_seed)
     data0, solid0, rgb0, sha0 = cp_source.load(SPEC['source'])
     cls = cp_source.classify(solid0, rgb0, SPEC)
     cv = cp_source.to_canvas(solid0, rgb0, cls, SPEC['name'])
-    cover = gb.add_cover(cv, SPEC, SPEC['layout_seed'], deco_seed)
+    if V['cover']:
+        cover = gb.add_cover(cv, SPEC, SPEC['layout_seed'], deco_seed)
+    else:
+        cover = {'lights': [], 'note': 'recolour-only variant: no cover pieces'}
     gar, lights = light_layout(cv, SPEC, cover)
     counts = {}
     for kind, _, _ in lights:
         counts[kind] = counts.get(kind, 0) + 1
     info = {'stage': stage, 'source': os.path.basename(SPEC['source']), 'source_sha256': sha0,
             'layout_seed': SPEC['layout_seed'], 'deco_seed': deco_seed, 'axis': SPEC['axis'],
-            'variant': 'Babel with assist structures',
+            'variant': 'Babel with assist structures' if V['cover'] else 'recolor (original geometry)',
+            'build_variant': variant,
             'assist_structures': {k: list(v) for k, v in SPEC['assist_trees'].items()},
             'cover': {k: v for k, v in cover.items() if k != 'lights'},
             'garland_voxels': len(gar), 'light_counts': counts,
@@ -93,12 +107,16 @@ def build_map(out, stage='art', deco_seed=None):
     desc = ('Babel with assist structures: cozy Christmas evening rework of Christmas PVP by GTR-CODE '
             '(Minecraft export, planetminecraft mapa-boxpvp-free). The two giant trees under the platform ends '
             'reach just under it: build up through them to the platform.')
-    res = build.export(cv, out, SPEC['file'],
-                       txt=dict(name=SPEC['name'], description=desc, fog=SPEC['fog'], extensions=ext,
+    if variant == 'recolor':
+        desc = V['desc']
+        assert np.array_equal(cv.solid, solid0), 'recolour variant must keep the original geometry exactly'
+        info['geometry_identical_to_original'] = True
+    res = build.export(cv, out, V['file'],
+                       txt=dict(name=V['name'], description=desc, fog=SPEC['fog'], extensions=ext,
                                 version=SPEC['version']),
                        build_info=info)
     if 'glow_stored_colors' in ext:
-        compact_txt(os.path.join(out, SPEC['file'] + '.txt'), ext)
+        compact_txt(os.path.join(out, V['file'] + '.txt'), ext)
     return res
 
 
@@ -122,13 +140,14 @@ if __name__ == '__main__':
     ap.add_argument('--stage', default='art', choices=('graybox', 'art'))
     ap.add_argument('--deco-seed', type=int)
     ap.add_argument('--no-check', action='store_true')
+    ap.add_argument('--variant', default='v2', choices=tuple(VARIANTS))
     a = ap.parse_args()
-    res = build_map(a.out, a.stage, a.deco_seed)
+    res = build_map(a.out, a.stage, a.deco_seed, a.variant)
     print(json.dumps({k: res[k] for k in ('sha256', 'deco_seed', 'light_counts', 'n_glow_sources',
                                           'glow_stored_entries', 'brightness', 'glow_nudged') if k in res},
                      default=str))
-    print('cover:', {k: res['cover'][k] for k in ('voxels_per_side', 'mirror_clash_voxels', 'drift_voxels')})
-    print('txt:', build.check_txt(os.path.join(a.out, SPEC['file'] + '.txt')))
+    print('cover:', {k: res['cover'].get(k) for k in ('voxels_per_side', 'mirror_clash_voxels', 'drift_voxels')})
+    print('txt:', build.check_txt(os.path.join(a.out, VARIANTS[a.variant]['file'] + '.txt')))
     if not a.no_check:
         import cp_check
         cp_check.run(a.out)

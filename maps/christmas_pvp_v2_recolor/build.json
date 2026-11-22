@@ -1,0 +1,68 @@
+{
+ "map": "Christmas PVP Recolor",
+ "file": "ChristmasPVP_recolor",
+ "sha256": "6a1fa8b3bc4e380dad169a87ff6d86cfff76b9daf1e2906f09b5e2d24e5ff26f",
+ "bytes": 3253940,
+ "stage": "art",
+ "source": "ChristmasPVP.vxl",
+ "source_sha256": "b029818c8d7f4a62c6501c6b15ef3bfcff1f488ef6ff3704a273c872c39e93cb",
+ "layout_seed": 20261122,
+ "deco_seed": 3531995638,
+ "axis": "x512",
+ "variant": "recolor (original geometry)",
+ "build_variant": "recolor",
+ "assist_structures": {
+  "blue giant tree": [
+   209,
+   238,
+   236,
+   270
+  ],
+  "red giant tree": [
+   274,
+   303,
+   236,
+   270
+  ]
+ },
+ "cover": {
+  "note": "recolour-only variant: no cover pieces"
+ },
+ "garland_voxels": 1722,
+ "light_counts": {
+  "wall_bulb": 108,
+  "rail_bulb": 110,
+  "tower_ring": 151,
+  "giant_tree_string": 91,
+  "lamp_head": 93,
+  "path_star": 2,
+  "window": 87
+ },
+ "corner_tag": "skipped: every arena corner is occupied by coaster terraces / props",
+ "structures": [],
+ "class_counts": {
+  "wall": 51976,
+  "snow": 96658,
+  "ice": 26315,
+  "water": 180105,
+  "glass": 4580,
+  "other": 390947
+ },
+ "grade_counts": {
+  "wall": 51976,
+  "snow": 96658,
+  "ice": 26315,
+  "water": 180105,
+  "glass": 4580,
+  "other": 390947
+ },
+ "paint_counts": {},
+ "n_glow_sources": 642,
+ "brightness": {
+  "dark_floors_raised": 1472,
+  "whites_capped": 107
+ },
+ "glow_nudged": 13,
+ "glow_stored_entries": 91450,
+ "geometry_identical_to_original": true
+}
