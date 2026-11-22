@@ -26,6 +26,7 @@ from rpsn_spec import SPEC  # noqa: E402
 
 # name: (x0, y0, x1, y1, s, view)
 CROPS = {
+    'roundabout_west': (8, 222, 70, 292, 5, 0),
     'spawn_blue': (92, 222, 176, 290, 5, 0),
     'spawn_red': (336, 222, 420, 290, 5, 2),
     'great_tree_blue': (128, 238, 160, 276, 7, 0),

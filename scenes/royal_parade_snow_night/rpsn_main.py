@@ -64,7 +64,6 @@ def build_map(out, stage='art', deco_seed=None):
                        txt=dict(name=SPEC['name'], version=SPEC['version'], description=DESCRIPTION, fog=SPEC['fog'],
                                 extensions=ext),
                        build_info=info)
-    np.save(os.path.join(out, 'orig_solid_bits.npy'), np.packbits(orig))   # git-ignored, for rpsn_check reruns
     return cv, res, orig
 
 

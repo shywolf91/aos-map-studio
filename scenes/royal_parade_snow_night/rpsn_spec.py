@@ -77,9 +77,9 @@ SPEC = {
     'quay_ice': {'band': (1, 9), 'cell': 9},           # painted ice on the water (no geometry, water stays water)
     # ---------------------------------------------------------------- art
     'palette': {
-        # moonlit snow (blue-lilac, max channel ~170 on the broad field); shadows lean violet
-        'snow_mid': (126, 134, 166), 'snow_light_hue': 250, 'snow_shadow_hue': 290,
-        'slush': (88, 94, 122), 'ice': (104, 122, 156), 'ice_crack': (78, 94, 130),
+        # moonlit snow (cool blue, OKLCH hue ~262, max channel ~170) kept out of the fog's lilac hue bin (295)
+        'snow_mid': (114, 131, 166), 'snow_light_hue': 235, 'snow_shadow_hue': 262,
+        'slush': (80, 94, 122), 'ice': (104, 122, 156), 'ice_crack': (78, 94, 130),
         'water_deep': (38, 52, 100), 'water_near': (48, 68, 116),
         'brick': (92, 66, 58), 'stone': (82, 94, 112), 'stone_dark': (58, 66, 84), 'interior': (46, 44, 66),
         'evergreen': (34, 66, 58), 'iron': (54, 52, 64),
