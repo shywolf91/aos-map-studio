@@ -52,3 +52,19 @@ Owner's answers:
 ## Regenerate
 `python scenes/christmas_pvp/cp_main.py maps/christmas_pvp_v2 --stage art --deco-seed 3019137834`
 (layout seed 20261122; sha256 3cd15ec2…4ceb). Checks: `cp_check.py`; renders: `cp_render.py <dir> --before`.
+
+## Recolour-only variant (`maps/christmas_pvp_v2_recolor/`, owner request 2026-11-22)
+"100% original versions just recolored". The geometry is identical to the original: **+0 / −0 voxels**, asserted in the build and re-checked independently. The colours follow v2 art r2:
+* evening grade;
+* frozen-pond paint;
+* wall swags;
+* warm windows;
+* 642 glow sources, all on existing surface voxels (91 450 stored colours, `.txt` 2.29 MB).
+
+The v2 cover firs, drifts, gift pile and sleigh are absent.
+
+* Files: `ChristmasPVP_recolor.vxl` / `.txt`. Name 'Christmas PVP Recolor', version '2.0'. Same fog and extensions as v2.
+* Status: parser-validated (pyspades identical) · server-loaded (kit probe, babel) · not client-inspected.
+* Spawn exposure, the same as the original (accepted as the owner's choice): blue 4.1 % hidden / 5.8 viewers, red 5.0 % / 5.9.
+* Colour: top luma p10/p50/p90 61/124/148 (original 73/200/200).
+* Regenerate: `python scenes/christmas_pvp/cp_main.py maps/christmas_pvp_v2_recolor --stage art --variant recolor --deco-seed 3531995638` (sha256 6a1fa8b3…f26f). v2 still rebuilds byte-identically.
