@@ -1,0 +1,103 @@
+{
+ "map_dir": "maps/christmas_pvp_v2_recolor",
+ "mode": "babel",
+ "seconds": 3.4,
+ "config_dir": null,
+ "probe": {
+  "map_name": "Christmas PVP Recolor",
+  "author": "shywolf91 + AI",
+  "babel": true,
+  "cap_limit": 1,
+  "extensions": {
+   "babel": true,
+   "water_damage": 0,
+   "glow_enabled": true
+  },
+  "fog": [
+   188,
+   170,
+   198
+  ],
+  "platform_cells_z1": 3200,
+  "get_z_bases": [
+   62,
+   62
+  ],
+  "spawns_400": {
+   "Blue": {
+    "z": {
+     "62": 251,
+     "61": 54,
+     "58": 31,
+     "57": 9,
+     "60": 27,
+     "59": 20,
+     "45": 3,
+     "35": 3,
+     "47": 1,
+     "46": 1
+    },
+    "x_range": [
+     98.0,
+     138.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     118.0,
+     256.0,
+     62.0
+    ]
+   },
+   "Red": {
+    "z": {
+     "58": 22,
+     "62": 262,
+     "61": 52,
+     "59": 19,
+     "57": 8,
+     "60": 30,
+     "35": 1,
+     "47": 3,
+     "48": 1,
+     "63": 1,
+     "45": 1
+    },
+    "x_range": [
+     374.0,
+     414.0
+    ],
+    "y_range": [
+     236.0,
+     276.0
+    ],
+    "base": [
+     394.0,
+     256.0,
+     62.0
+    ]
+   }
+  },
+  "intel": [
+   [
+    256.0,
+    256.0,
+    1.0
+   ],
+   [
+    256.0,
+    256.0,
+    1.0
+   ]
+  ]
+ },
+ "checks": {
+  "loaded": true,
+  "platform_3200_cells": true,
+  "babel_extension": true,
+  "txt_loaded": true
+ },
+ "ok": true
+}
