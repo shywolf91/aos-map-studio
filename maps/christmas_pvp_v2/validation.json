@@ -1402,7 +1402,7 @@
    "why": "ok"
   }
  },
- "check_seconds": 8.4,
+ "check_seconds": 8.8,
  "summary": [
   {
    "rule": "parser",
@@ -2060,7 +2060,7 @@
   "glow": {
    "sources": 692,
    "stored_entries": 95274,
-   "txt_bytes": 2389296
+   "txt_bytes": 2389333
   },
   "txt_check": {
    "ok": true,

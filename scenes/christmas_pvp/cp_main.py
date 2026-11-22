@@ -92,7 +92,7 @@ def build_map(out, stage='art', deco_seed=None):
         ext = build.glow_extensions(stored, ext)
     desc = ('Babel with assist structures: cozy Christmas evening rework of Christmas PVP by GTR-CODE '
             '(Minecraft export, planetminecraft mapa-boxpvp-free). The two giant trees under the platform ends '
-            'are climbable assists.')
+            'reach just under it: build up through them to the platform.')
     res = build.export(cv, out, SPEC['file'],
                        txt=dict(name=SPEC['name'], description=desc, fog=SPEC['fog'], extensions=ext,
                                 version=SPEC['version']),

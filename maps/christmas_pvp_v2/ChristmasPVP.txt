@@ -3,7 +3,7 @@
 name = 'Christmas PVP'
 version = '2.0'
 author = 'shywolf91 + AI'
-description = 'Babel with assist structures: cozy Christmas evening rework of Christmas PVP by GTR-CODE (Minecraft export, planetminecraft mapa-boxpvp-free). The two giant trees under the platform ends are climbable assists.'
+description = 'Babel with assist structures: cozy Christmas evening rework of Christmas PVP by GTR-CODE (Minecraft export, planetminecraft mapa-boxpvp-free). The two giant trees under the platform ends reach just under it: build up through them to the platform.'
 fog = (188, 170, 198)
 
 extensions = {'babel': True, 'water_damage': 0, 'glow_enabled': True,
