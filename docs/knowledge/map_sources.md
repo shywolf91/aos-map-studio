@@ -40,6 +40,8 @@ was not found in the local repo on 2026-11-10, so use its chat zip.
 
 Royal Parade Snow Night v2 (2026-11-22) was built in the repo with Claude Code (`scenes/royal_parade_snow_night/`); it has no chat zip.
 
+Christmas PVP v2 (2026-11-22) was built in the repo with Claude Code (`scenes/christmas_pvp/`); it has no chat zip.
+
 Sprinkler Field (2026-11-15) was built in the repo with Claude Code (`scenes/sprinkler_field/`); it has no chat zip.
 
 Update the last column as maps are imported.
