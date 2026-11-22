@@ -234,3 +234,35 @@ def build(spec, deco_seed):
     rep['pieces'] = P.pieces
     rep['vehicle_names'] = {k: v for k, v in spec['vehicles'].items()}
     return cv, rep, P, orig_solid, vmasks
+
+
+def build_recolor(spec, deco_seed):
+    """Recolour-only variant: the original geometry untouched (+0 / -0 voxels, asserted). Festive vehicles, windows,
+    string lights and bunting become paint in rpsn_art; the original 2-column street posts ('figure' components)
+    serve as the lamps: their open-topped top voxel becomes the lantern (glow) and the pool is painted around it."""
+    solid, rgb, sha = rpsn_source.load(spec)
+    orig_solid = solid.copy()
+    orig_floating = symmetry.floating_components(solid)
+    cv, cinfo, lab = rpsn_source.classify(spec, solid, rgb)
+    for f in orig_floating:
+        cv.expect('original floating piece', f['x'][0], f['x'][1], f['y'][0], f['y'][1], f['z'][0], f['z'][1])
+    P = props.Placer(cv, spec['no_new_geometry'])
+    fig = cv.materials.get('figure')
+    lights = []
+    if fig is not None:
+        fl, _ = ndi.label(cv.mat == fig)
+        for sl in ndi.find_objects(fl):
+            if sl is None:
+                continue
+            z = sl[2].start
+            xs, ys = np.nonzero(cv.solid[sl][:, :, 0] & (cv.mat[sl][:, :, 0] == fig))
+            x, y = int(xs[0] + sl[0].start), int(ys[0] + sl[1].start)
+            if z == 0 or not cv.solid[x, y, z - 1]:                   # open top face
+                lights.append([x, y, int(z)])
+    rep = {'source_sha256': sha, 'classify': cinfo, 'vehicles': {}, 'cover': {},
+           'lamps': {'count': len(lights), 'lights': lights, 'note': 'original street posts used as lamps'},
+           'snowmen': {'count': 0}, 'kerb_drifts': {'cols_1': 0, 'cols_2': 0}, 'icicles': {'count': 0},
+           'connectivity': connectivity(cv, orig_floating), 'placer_refused': 0, 'pieces': [],
+           'vehicle_names': dict(spec['vehicles'])}
+    assert np.array_equal(cv.solid, orig_solid), 'recolour variant changed geometry'
+    return cv, rep, P, orig_solid, {}

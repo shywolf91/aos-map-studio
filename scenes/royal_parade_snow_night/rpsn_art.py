@@ -349,6 +349,9 @@ def art(cv, rep, spec, seed, P):
                   ('reindeer_nose', RED)):
         for (x, y, z) in np.argwhere((mat == mid(nm)) & S):
             add(x, y, z, c)
+    if spec.get('variant') == 'recolor':                 # original street posts: lantern on the open-topped cap
+        for (x, y, z) in rep['lamps']['lights']:
+            add(x, y, z, AMBER)
     # tree bulbs on the canopy surface
     nb = {'tree_bulbs_src': 0, 'tree_bulbs_dim': 0}
     for tname in ('greattree', 'floattree'):

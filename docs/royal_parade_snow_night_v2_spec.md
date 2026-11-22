@@ -55,3 +55,29 @@ Owner's answers:
 ## Regenerate
 `python scenes/royal_parade_snow_night/rpsn_main.py maps/royal_parade_snow_night_v2 --deco-seed 3560922333`
 (layout seed 20261122). Summary: `rpsn_summary.py`; renders: `rpsn_render.py`.
+
+## Recolour-only variant (2026-11-22)
+The owner asked for "100% original versions just recolored". Output: `maps/royal_parade_snow_night_v2_recolor/`
+(`RoyalParadeSnowNight_recolor.vxl` + `.txt`, name 'Royal Parade Snow Night Recolor', version 2.0, same fog
+(168,160,196), `heavens_color` (78,74,128,255), `water_damage` 2, glow keys, no spawn hooks).
+
+**Status:** generated · exported · parser-validated (pyspades `generate()` identical) · server-loaded (kit probe in
+babel: platform 3200 cells, babel extension and .txt loaded, `probe.json`) · not client-inspected · not playtested.
+
+**What differs from v2:** no voxels added or removed. The vehicles get a parade paint job only: no gift stacks, tree
+floats or rebuilt sleighs. There are no new lamps, snowmen, drifts, icicles, great trees or spawn cover, and none of
+v2's 141 removals. What the variant keeps is all colour: the moonlit grade, navy water, painted quay ice, lit windows
+(room or sill light on existing voxels), string lights and bunting on existing facades, and the "SNOW NIGHT" +
+"Royal Parade / By Bradley" water tag. The 14 original 2-column street posts act as the lamps: an amber source sits on
+each open-topped cap, with a pool painted around it. All 390 glow sources are existing surface voxels with an open
+face; the .txt stores 56,069 glow colours.
+
+| check | result |
+|---|---|
+| geometry vs original | **+0 / −0 voxels**, asserted in the build (`build.json` `geometry_vs_original`) |
+| spawn exposure, blue / red | 5.4 / 6.6 % hidden, 8.78 / 8.56 viewers per spot: the original's values, so the targets are not met (owner's choice) |
+| colour | land top luma p10 / p50 / p90 99 / 115 / 139 (original 221 throughout); max channel > 212: 0.19 % of tops (original 100 %); 39,282 unique surface colours (original 10,077); 0 glow-palette collisions |
+| kit rows | the same as the original: mirror, roof spawns in the squares, trap, flank, anchor face, front dressing, spawn cover and the under-platform strip fail |
+
+Regenerate: `python scenes/royal_parade_snow_night/rpsn_main.py maps/royal_parade_snow_night_v2_recolor --variant recolor --deco-seed 387005701`
+(renders: `rpsn_render.py <dir> --variant recolor`). v2 still rebuilds byte-identically with `--deco-seed 3560922333`.

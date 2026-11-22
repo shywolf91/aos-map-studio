@@ -31,12 +31,19 @@ from rpsn_spec import SPEC  # noqa: E402
 DESCRIPTION = ('Babel: the Royal Parade boulevard on a moonlit snow night - a Christmas parade of gift trucks, tree '
                'floats and sleighs under lit windows and string lights. Original map by Bradley & Mile, courtesy of '
                'Sauerkraut; snow night rework by shywolf91 + AI.')
+DESCRIPTION_RECOLOR = ('Babel: Royal Parade on a moonlit snow night - a recolour only, the original geometry is '
+                       'unchanged: parade paint on the vehicles, lit windows, string lights and lamp glow. Original '
+                       'map by Bradley & Mile, courtesy of Sauerkraut; recolour by shywolf91 + AI.')
+RECOLOR = {'variant': 'recolor', 'name': 'Royal Parade Snow Night Recolor', 'file': 'RoyalParadeSnowNight_recolor',
+           'out_version_dir': 'maps/royal_parade_snow_night_v2_recolor'}
 
 
 def build_map(out, stage='art', deco_seed=None):
     t0 = time.time()
     seed = noise.os_seed() if deco_seed is None else int(deco_seed)
-    cv, rep, P, orig, vmasks = rpsn_build.build(SPEC, seed)
+    recolor = SPEC.get('variant') == 'recolor'
+    builder = rpsn_build.build_recolor if recolor else rpsn_build.build
+    cv, rep, P, orig, vmasks = builder(SPEC, seed)
     geom_sha = None
     art = {}
     stored = {}
@@ -58,10 +65,19 @@ def build_map(out, stage='art', deco_seed=None):
             'materials': cv.materials, 'art': art, 'structures': [],
             'kept_floating_note': 'original jets and stubs: listed in sky_objects, unchanged'}
     info['build_seconds'] = round(time.time() - t0, 1)
+    if recolor:
+        same = bool(np.array_equal(cv.solid, orig))
+        assert same, 'recolour variant: geometry differs from the original'
+        info['variant'] = 'recolor'
+        info['regenerate'] = (f'python scenes/royal_parade_snow_night/rpsn_main.py <out> --variant recolor '
+                              f'--deco-seed {seed}')
+        info['geometry_vs_original'] = {'identical': same, 'added_voxels': int((cv.solid & ~orig).sum()),
+                                        'removed_voxels': int((orig & ~cv.solid).sum())}
     if geom_sha:
         info['geometry_sha'] = geom_sha
     res = build.export(cv, out, SPEC['file'],
-                       txt=dict(name=SPEC['name'], version=SPEC['version'], description=DESCRIPTION, fog=SPEC['fog'],
+                       txt=dict(name=SPEC['name'], version=SPEC['version'],
+                                description=DESCRIPTION_RECOLOR if recolor else DESCRIPTION, fog=SPEC['fog'],
                                 extensions=ext),
                        build_info=info)
     return cv, res, orig
@@ -110,7 +126,11 @@ if __name__ == '__main__':
     ap.add_argument('--deco-seed', type=int)
     ap.add_argument('--no-checks', action='store_true')
     ap.add_argument('--no-pyspades', action='store_true')
+    ap.add_argument('--variant', default='v2', choices=('v2', 'recolor'),
+                    help='v2 = the rework (default); recolor = original geometry, colour pass only')
     a = ap.parse_args()
+    if a.variant == 'recolor':
+        SPEC.update(RECOLOR)                     # every SPEC reader (build, art, checks, export) sees the variant
     cv, info, orig = build_map(a.out, a.stage, a.deco_seed)
     print(json.dumps({k: info[k] for k in ('sha256', 'bytes', 'deco_seed', 'build_seconds')}, indent=1))
     if not a.no_checks:

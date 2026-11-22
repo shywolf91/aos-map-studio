@@ -105,5 +105,9 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser()
     ap.add_argument('out')
     ap.add_argument('--crops')
+    ap.add_argument('--variant', default='v2', choices=('v2', 'recolor'))
     a = ap.parse_args()
+    if a.variant == 'recolor':
+        from rpsn_main import RECOLOR
+        SPEC.update(RECOLOR)
     print(render(a.out, a.crops.split(',') if a.crops else None))
