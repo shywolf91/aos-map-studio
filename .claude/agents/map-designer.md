@@ -16,6 +16,9 @@ brief and answers; you return concepts. You sketch, you don't build: no generato
 * Knowledge base `docs/knowledge/aos_map_design_knowledge.md` §8 (Babel zones, fronts, build gap, centre), §9 layout,
   §10 art direction. Island brief: `docs/classic_island_style.md`. `[recreate]`: the analysis the guru gives you.
 * `docs/craft_standard.md` §0 so your landmarks are things that can be built to that standard.
+* Winter / snow brief: `docs/winter-snow-guide.md` §3–§4 and §6. Each concept names its lighting, the colour of the
+  largest playable snowfield, the terrain feature that shapes its pattern, and the adjacent material that makes the
+  snow legible.
 
 ## What a concept is
 

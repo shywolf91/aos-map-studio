@@ -28,6 +28,10 @@ decides on. You measure; you don't design. Follow AGENTS.md (§3 honesty, §5–
 
 Every mode the map ships for gets its own `craft_checks` run.
 
+Snow / winter map or snow recolor: `docs/winter-snow-guide.md` §5–§6. Measure the whole exact mask (all layers) as well
+as land tops, give the zero-diff table for a recolor, and bring evidence for glare, moving sparkle, the skyline and both
+team silhouettes in the same views with the map's fog (OpenSpades when available). Mark every check not performed.
+
 ## Views (the guru needs to look, not just read numbers)
 
 * **Close-up sheet**: every registered `main` structure and each spawn area, `aosmap.render.isometric(crop=…, s=5)`,

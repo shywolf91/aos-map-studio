@@ -47,7 +47,10 @@ Its own module; it must not change gameplay geometry. Before writing it, open
 `docs/img/craft/structures_good_vs_bad.png` and the specs of Silverpine Hunt v2, The Wicker King's Harvest and Death
 Swamp: your structures must look like the top row, not the bottom row.
 Colour: `aosmap.kit.palette` ramps (hue-shifted, snow ≤ 212, broad field luma ≤ ~180), then
-`aosmap.kit.color.lighting` (baked light + AO), then `enforce_brightness`. Flat per-material colours with noise on
+`aosmap.kit.color.lighting` (baked light + AO), then `enforce_brightness`. Snow / winter: `docs/winter-snow-guide.md`
+§4–§6 — packed / field / soft lift / rare crest in RGB, each tied to a path, ledge, slope or shelter, patch scale and
+seed recorded; a recolor writes RGB only inside the exact stored-RGB mask frozen from the original (geometry, other
+materials and fourth bytes untouched, no map-wide `enforce_brightness`). Flat per-material colours with noise on
 top are a prototype, not an art pass. Vegetation per AGENTS.md §4 (groves, gradients, three random details per plant).
 Render close-ups of every main building and the spawn areas (`aosmap.render.isometric(crop=..., s=5)`) next to the
 exemplar sheet. If yours looks plainer than the exemplars, it is not done, whatever the numbers say.

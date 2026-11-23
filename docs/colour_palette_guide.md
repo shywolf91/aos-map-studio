@@ -145,6 +145,9 @@ P.shifted_ramp(P.hex_rgb('#A4B2BB'), 5, light_hue=220, shadow_hue=290, end_tint=
 
 ## 4. Snow and winter maps (the main problem)
 
+Per-map winter treatment, four-step recolor ramps and the exact-colour recolor proof: [`winter-snow-guide.md`](winter-snow-guide.md)
+(2026-11-22). This guide stays authoritative for the general rules.
+
 ### 4.1 What goes wrong: an audit of 29 community winter maps `[RUN]`
 `tools/palette_audit.py` on `map_collection/` winter maps, 2026-11-19. Top surface = what a player sees from above, z 63
 excluded. "Over cap" = snow-like top voxels with a max channel > 212. "Brightest band" = top voxels within 10 luma of
