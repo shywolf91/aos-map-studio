@@ -26,7 +26,7 @@ section you need (each has a Contents list — grep the heading, then read that 
 | format / runtime / toolchain | `docs/vxl_and_runtime_reference.md`, `docs/kit.md`; deeper: `docs/toolchain_and_art_kit.md`, `docs/phase2_exporter_validation.md`, `docs/heightmap_colourmap_tutorials.md` |
 | example of a finished map | the spec of the newest similar map (catalogue: `docs/agents_reference.md` §9; newest Babel examples `docs/under_the_tree_spec.md`, `docs/bloomhop_kingdom_spec.md`) |
 | original brief / per-mode prompts | `docs/project_brief/` |
-| palette, fog, snow or winter colours | `docs/colour_palette_guide.md` (2026-11-19): snow rules, ramps, fog choice, winter audit; tools `aosmap/kit/palette.py`, `tools/palette_audit.py` |
+| palette, fog, snow or winter colours | `docs/colour_palette_guide.md` (2026-11-19, authoritative): snow rules, ramps, fog choice, winter audit; tools `aosmap/kit/palette.py`, `tools/palette_audit.py`. Winter map or snow recolor: also `docs/winter-snow-guide.md` (2026-11-22): per-map snow treatment, four-step ramps, exact-colour recolor proof, who does what (§6) |
 | map pipeline roles (guru, designer, builder, runner), handoffs, review gates | `docs/agent_pipeline.md` |
 | technical AoS / piqueserver / VXL research | `docs/knowledge/aos_research_prompt.md` (method), then `docs/vxl_and_runtime_reference.md` |
 | git, catalogue, lessons, Claude Code tooling | `docs/agents_reference.md` |

@@ -43,7 +43,10 @@ given, research what you were asked, and return your verdict. Don't try to run t
 2. Read, on demand: AGENTS.md §4 (standing rules), `docs/craft_standard.md` (required; open
    `docs/img/craft/structures_good_vs_bad.png`), the newest entries of `docs/knowledge/project_memory.md`, and the
    sections of `docs/knowledge/aos_map_design_knowledge.md` the job touches (§7–§11 design, §14 questions,
-   §15 checklist). Island / snow / recreate briefs pull in the docs AGENTS.md §1 lists for them.
+   §15 checklist). Island / snow / recreate briefs pull in the docs AGENTS.md §1 lists for them. Winter maps and
+   snow recolors: `docs/winter-snow-guide.md` §6–§8. An exact-colour recolor stays Tier S (Juno art, Kit evidence);
+   check each map gets its own controlled winter treatment, and accept a reference claim only when the source map or
+   document is in hand and supports it.
 3. Classify the scope as tier S / M / L (`.claude/commands/new-map.md` step 0) and say it in one line.
 
 ## The pipeline you run
